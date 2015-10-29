@@ -112,4 +112,24 @@ public class C1InvSubLineCorrespondance implements SubLineCorrespondance {
     }
   }
 
+  @Override
+  public String toString() {
+    StringBuffer buff = new StringBuffer();
+    buff.append("C1' matching");
+    buff.append(System.getProperty("line.separator"));
+    buff.append(characPt);
+    buff.append(System.getProperty("line.separator"));
+    buff.append("is matched to:");
+    buff.append(System.getProperty("line.separator"));
+    buff.append(subLine);
+    return buff.toString();
+  }
+
+  @Override
+  public boolean containsSubLine(ILineString subLine) {
+    if (subLine.equals(this.subLine))
+      return true;
+    return false;
+  }
+
 }

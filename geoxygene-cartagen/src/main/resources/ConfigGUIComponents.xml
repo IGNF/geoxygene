@@ -1,5 +1,10 @@
 <Config-CartAGen-GUI-Components>
 	<Component>
+		<name>Continuous</name>
+		<path>fr.ign.cogit.geoxygene.appli.plugin.cartagen.util.ContinuousGUIComponent</path>
+	</Component>
+	<Component>
 		<name>Utilities</name>
-		<path>fr.ign.cogit.cartagen.software.interfacecartagen.menus.UtilitiesGUIComponent</path></Component>
+		<path>fr.ign.cogit.geoxygene.appli.plugin.cartagen.util.UtilitiesGUIComponent</path>
+	</Component>
 </Config-CartAGen-GUI-Components>

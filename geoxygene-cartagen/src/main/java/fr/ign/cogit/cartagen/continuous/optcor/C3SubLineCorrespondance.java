@@ -10,9 +10,7 @@
 package fr.ign.cogit.cartagen.continuous.optcor;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
@@ -59,35 +57,16 @@ public class C3SubLineCorrespondance implements SubLineCorrespondance {
 
   @Override
   public IDirectPositionList morphCorrespondance(double t) {
-    ILineString merged = Operateurs.compileArcs(finalLines);
+    IDirectPositionList initialPts = new DirectPositionList();
+    IDirectPositionList finalPts = new DirectPositionList();
 
-    Map<IDirectPosition, IDirectPosition> mapping = new HashMap<>();
-    double dist = 0.0;
-    double total = subLine.length();
-    double totalFinal = merged.length();
-    IDirectPosition prevPt = null;
-    for (IDirectPosition pt : subLine.coord()) {
-      if (prevPt == null) {
-        prevPt = pt;
-        mapping.put(pt, merged.startPoint());
-        continue;
-      }
-      dist += pt.distance2D(prevPt);
-      double ratio = dist / total;
-
-      // get the point at the curvilinear coordinate corresponding to
-      // ratio
-      double curvi = totalFinal * ratio;
-      IDirectPosition finalPt = Operateurs.pointEnAbscisseCurviligne(merged,
-          curvi);
-      mapping.put(pt, finalPt);
-      prevPt = pt;
-    }
+    matchVertices(initialPts, finalPts);
 
     // then, compute the intermediate position between each correspondant
     IDirectPositionList coord = new DirectPositionList();
-    for (IDirectPosition pt1 : subLine.coord()) {
-      IDirectPosition pt2 = mapping.get(pt1);
+    for (int i = 0; i < initialPts.size(); i++) {
+      IDirectPosition pt1 = initialPts.get(i);
+      IDirectPosition pt2 = finalPts.get(i);
       double newX = pt1.getX() + t * (pt2.getX() - pt1.getX());
       double newY = pt1.getY() + t * (pt2.getY() - pt1.getY());
       IDirectPosition newPt = new DirectPosition(newX, newY);
@@ -152,4 +131,25 @@ public class C3SubLineCorrespondance implements SubLineCorrespondance {
     }
   }
 
+  @Override
+  public String toString() {
+    StringBuffer buff = new StringBuffer();
+    buff.append("C3 matching");
+    buff.append(System.getProperty("line.separator"));
+    buff.append(subLine);
+    buff.append(System.getProperty("line.separator"));
+    buff.append("is matched to:");
+    buff.append(System.getProperty("line.separator"));
+    buff.append(finalLines);
+    return buff.toString();
+  }
+
+  @Override
+  public boolean containsSubLine(ILineString subLine) {
+    if (this.finalLines.contains(subLine))
+      return true;
+    if (subLine.equals(this.subLine))
+      return true;
+    return false;
+  }
 }

@@ -1,11 +1,11 @@
 /*******************************************************************************
  * This software is released under the licence CeCILL
- *  
- *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
- *  
- *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
- *  
- *  @copyright IGN
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
  ******************************************************************************/
 package fr.ign.cogit.cartagen.continuous;
 
@@ -20,40 +20,52 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
  * final geometry in a morphing process.
  * 
  * @author Guillaume Touya
- *
+ * 
  */
 public class MorphingVertexMapping {
 
-    private IDirectPositionList initialCoords, finalCoords;
-    private Map<IDirectPosition, IDirectPosition> mapping;
+  private IDirectPositionList initialCoords, finalCoords;
+  private Map<IDirectPosition, IDirectPosition> mapping;
 
-    public MorphingVertexMapping(IDirectPositionList initialCoords,
-            IDirectPositionList finalCoords) {
-        super();
-        this.initialCoords = initialCoords;
-        this.finalCoords = finalCoords;
-        mapping = new HashMap<>();
-        for (int i = 0; i < initialCoords.size(); i++)
-            mapping.put(initialCoords.get(i), finalCoords.get(i));
-    }
+  public MorphingVertexMapping(IDirectPositionList initialCoords,
+      IDirectPositionList finalCoords) {
+    super();
+    this.initialCoords = initialCoords;
+    this.finalCoords = finalCoords;
+    mapping = new HashMap<>();
+    for (int i = 0; i < initialCoords.size(); i++)
+      mapping.put(initialCoords.get(i), finalCoords.get(i));
+  }
 
-    public IDirectPositionList getInitialCoords() {
-        return initialCoords;
-    }
+  public IDirectPositionList getInitialCoords() {
+    return initialCoords;
+  }
 
-    public void setInitialCoords(IDirectPositionList initialCoords) {
-        this.initialCoords = initialCoords;
-    }
+  public void setInitialCoords(IDirectPositionList initialCoords) {
+    this.initialCoords = initialCoords;
+  }
 
-    public IDirectPositionList getFinalCoords() {
-        return finalCoords;
-    }
+  public IDirectPositionList getFinalCoords() {
+    return finalCoords;
+  }
 
-    public void setFinalCoords(IDirectPositionList finalCoords) {
-        this.finalCoords = finalCoords;
-    }
+  public void setFinalCoords(IDirectPositionList finalCoords) {
+    this.finalCoords = finalCoords;
+  }
 
-    public IDirectPosition getMapping(IDirectPosition initialVertex) {
-        return mapping.get(initialVertex);
-    }
+  public IDirectPosition getMapping(IDirectPosition initialVertex) {
+    return mapping.get(initialVertex);
+  }
+
+  @Override
+  public String toString() {
+    StringBuffer buff = new StringBuffer("initial coordinates list: "
+        + initialCoords);
+    buff.append(System.getProperty("line.separator"));
+    buff.append("final coordinates list: " + finalCoords);
+    buff.append(System.getProperty("line.separator"));
+    buff.append("mapping: " + mapping);
+    return buff.toString();
+  }
+
 }

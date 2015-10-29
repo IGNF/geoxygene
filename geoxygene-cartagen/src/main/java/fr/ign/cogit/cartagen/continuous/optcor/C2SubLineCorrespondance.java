@@ -120,4 +120,26 @@ public class C2SubLineCorrespondance implements SubLineCorrespondance {
     }
   }
 
+  @Override
+  public String toString() {
+    StringBuffer buff = new StringBuffer();
+    buff.append("C2 matching");
+    buff.append(System.getProperty("line.separator"));
+    buff.append(subLine1);
+    buff.append(System.getProperty("line.separator"));
+    buff.append("is matched to:");
+    buff.append(System.getProperty("line.separator"));
+    buff.append(subLine2);
+    return buff.toString();
+  }
+
+  @Override
+  public boolean containsSubLine(ILineString subLine) {
+    if (subLine.equals(this.subLine1))
+      return true;
+    if (subLine.equals(this.subLine2))
+      return true;
+    return false;
+  }
+
 }

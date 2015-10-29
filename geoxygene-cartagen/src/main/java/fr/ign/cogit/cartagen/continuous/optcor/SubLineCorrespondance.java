@@ -12,6 +12,7 @@ package fr.ign.cogit.cartagen.continuous.optcor;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 
 /**
  * Interface for correspondances between subline parts in the OptCor continuous
@@ -34,6 +35,12 @@ public interface SubLineCorrespondance {
   public CorrespondanceType getType();
 
   public IDirectPositionList morphCorrespondance(double t);
+
+  /**
+   * Verifies if a given sub line is part of this subline correspondance, either
+   * in the initial or final features.
+   */
+  public boolean containsSubLine(ILineString subLine);
 
   /**
    * Provides a one-to-one mapping of vertices of this correspondance by

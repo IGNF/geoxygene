@@ -77,6 +77,28 @@ public class C1SubLineCorrespondance implements SubLineCorrespondance {
   @Override
   public void matchVertices(IDirectPositionList initialCoord,
       IDirectPositionList finalCoord) {
+    // special case: there are two consecutive C1 correspondances: the previous
+    // one has to be modified
+    if (finalCoord.contains(characPt)) {
+      // first, extract the line previously matched to characPt in the
+      // initialCoord list.
+      int index = finalCoord.getList().indexOf(prevPt);
+      IDirectPositionList prevIniList = new DirectPositionList();
+      IDirectPositionList prevFinList = new DirectPositionList();
+      for (int i = index; i < initialCoord.size(); i++)
+        prevIniList.add(initialCoord.get(i));
+      for (int i = index; i < initialCoord.size(); i++)
+        prevFinList.add(finalCoord.get(i));
+      initialCoord.removeAll(prevIniList);
+      finalCoord.removeAll(prevFinList);
+
+      // then recompute the vertices match by combining this.subLine to the
+      // previous one
+      for (IDirectPosition pt : prevIniList.reverse()) {
+        if (!subLine.coord().contains(pt))
+          subLine.addControlPoint(0, pt);
+      }
+    }
     double dist = 0.0;
     double total = subLine.length();
     IDirectPositionList listSubLine2 = new DirectPositionList();
@@ -110,6 +132,26 @@ public class C1SubLineCorrespondance implements SubLineCorrespondance {
       finalCoord.add(finalPt);
       prevPt = pt;
     }
+  }
+
+  @Override
+  public String toString() {
+    StringBuffer buff = new StringBuffer();
+    buff.append("C1 matching");
+    buff.append(System.getProperty("line.separator"));
+    buff.append(subLine);
+    buff.append(System.getProperty("line.separator"));
+    buff.append("is matched to:");
+    buff.append(System.getProperty("line.separator"));
+    buff.append(characPt);
+    return buff.toString();
+  }
+
+  @Override
+  public boolean containsSubLine(ILineString subLine) {
+    if (subLine.equals(this.subLine))
+      return true;
+    return false;
   }
 
 }

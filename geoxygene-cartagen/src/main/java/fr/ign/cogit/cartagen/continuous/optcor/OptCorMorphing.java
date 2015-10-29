@@ -10,7 +10,9 @@
 package fr.ign.cogit.cartagen.continuous.optcor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -31,6 +33,7 @@ import fr.ign.cogit.geoxygene.generalisation.GaussianFilter;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Bezier;
 import fr.ign.cogit.geoxygene.spatial.geomengine.GeometryEngine;
+import fr.ign.cogit.geoxygene.util.Pair;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.LineDensification;
 import fr.ign.cogit.geoxygene.util.algo.geomstructure.Vector2D;
 
@@ -69,6 +72,13 @@ public class OptCorMorphing implements ContinuousGeneralisationMethod {
     super();
     this.geomIni = geomIni;
     this.geomFinal = geomFinal;
+    // check to line are in the same direction
+    double dist1 = geomIni.startPoint().distance2D(geomFinal.startPoint());
+    double dist2 = geomIni.startPoint().distance2D(geomFinal.endPoint());
+    if (dist2 < dist1) {
+      this.geomFinal = geomFinal.reverse();
+    }
+
   }
 
   @Override
@@ -99,8 +109,18 @@ public class OptCorMorphing implements ContinuousGeneralisationMethod {
     }
 
     // search for characteristic points in the lines
+    if (logger.isTraceEnabled())
+      logger.trace("characteristic points segmentation for initial line");
     subLinesIni = characteristicPoints(lineIni);
+
+    if (logger.isTraceEnabled())
+      logger.trace("characteristic points segmentation for final line");
     subLinesFin = characteristicPoints(lineFin);
+
+    if (logger.isTraceEnabled()) {
+      logger.trace("initial sublines list: " + subLinesIni);
+      logger.trace("final sublines list: " + subLinesFin);
+    }
 
     // then, map the points of each line
     List<SubLineCorrespondance> mapping = matchLinePoints(subLinesIni,
@@ -122,14 +142,31 @@ public class OptCorMorphing implements ContinuousGeneralisationMethod {
     // first, densify and smooth the line
     ILineString smoothLine = GaussianFilter.gaussianFilter(line, sigma, step);
 
+    if (logger.isTraceEnabled()) {
+      logger.trace("initial line: " + line);
+      logger.trace("smoothed line: " + smoothLine);
+      logger.trace(smoothLine.coord().size());
+    }
+
+    // special case: the smoothed line has only 3 vertices
+    if (smoothLine.coord().size() == 3) {
+      subLines.add(smoothLine);
+      return subLines;
+    }
+
     // then, loop on the line vertices from find points from start to end
     IDirectPositionList currentSubLine = new DirectPositionList();
     for (int i = 0; i < smoothLine.coord().size(); i++) {
       if (currentSubLine.size() < 3) {
         currentSubLine.add(smoothLine.coord().get(i));
+        if (i == smoothLine.coord().size() - 1 && currentSubLine.size() > 1) {
+          ILineString subLine = GeometryEngine.getFactory().createILineString(
+              currentSubLine);
+          subLines.add(subLine);
+        }
         continue;
       }
-      // first, if it's te last point of the line, just end the current
+      // first, if it's the last point of the line, just end the current
       // subLine
       if (i == smoothLine.coord().size() - 1) {
         currentSubLine.add(smoothLine.coord().get(i));
@@ -156,8 +193,10 @@ public class OptCorMorphing implements ContinuousGeneralisationMethod {
         currentSubLine.add(smoothLine.coord().get(i));
       }
     }
-    if (logger.isTraceEnabled())
+    if (logger.isTraceEnabled()) {
       logger.trace(subLines);
+      logger.trace("for line: " + line);
+    }
     return subLines;
   }
 
@@ -178,34 +217,50 @@ public class OptCorMorphing implements ContinuousGeneralisationMethod {
           subLinesFin.get(j - 1));
       distanceTable[0][j] = distanceTable[0][j - 1] + dist;
     }
+    Map<Pair<Integer, Integer>, Pair<Integer, Integer>> minimumStorage = new HashMap<>();
+    Map<Pair<Integer, Integer>, CorrespondanceType> typeStorage = new HashMap<>();
     for (int i = 1; i <= subLinesIni.size(); i++) {
       for (int j = 1; j <= subLinesFin.size(); j++) {
         double min = Double.MAX_VALUE;
-        CorrespondanceType typeMin = null;
-        int bestK = 0;
         // compute C1 distance
-        double dist = Distances.distance(subLinesFin.get(j - 1).endPoint(),
-            subLinesIni.get(i - 1));
+        double dist = Math.max(
+            subLinesFin.get(j - 1).endPoint()
+                .distance2D(subLinesIni.get(i - 1).startPoint()),
+            subLinesFin.get(j - 1).endPoint()
+                .distance2D(subLinesIni.get(i - 1).endPoint()));
         double distC1 = distanceTable[i - 1][j] + dist;
         if (distC1 < min) {
           min = distC1;
-          typeMin = CorrespondanceType.C1;
+          minimumStorage.put(new Pair<Integer, Integer>(i, j),
+              new Pair<Integer, Integer>(i - 1, j));
+          typeStorage.put(new Pair<Integer, Integer>(i, j),
+              CorrespondanceType.C1);
         }
         // compute C1' distance
-        dist = Distances.distance(subLinesIni.get(i - 1).endPoint(),
-            subLinesFin.get(j - 1));
+        dist = Math.max(
+            subLinesIni.get(i - 1).endPoint()
+                .distance2D(subLinesFin.get(j - 1).startPoint()),
+            subLinesIni.get(i - 1).endPoint()
+                .distance2D(subLinesFin.get(j - 1).endPoint()));
         double distC1_ = distanceTable[i][j - 1] + dist;
         if (distC1_ < min) {
           min = distC1_;
-          typeMin = CorrespondanceType.C1_;
+          minimumStorage.put(new Pair<Integer, Integer>(i, j),
+              new Pair<Integer, Integer>(i, j - 1));
+          typeStorage.put(new Pair<Integer, Integer>(i, j),
+              CorrespondanceType.C1_);
         }
         // compute C2 distance
         dist = this.distance(subLinesIni.get(i - 1), subLinesFin.get(j - 1));
         double distC2 = distanceTable[i - 1][j - 1] + dist;
         if (distC1_ < min) {
           min = distC2;
-          typeMin = CorrespondanceType.C2;
+          minimumStorage.put(new Pair<Integer, Integer>(i, j),
+              new Pair<Integer, Integer>(i - 1, j - 1));
+          typeStorage.put(new Pair<Integer, Integer>(i, j),
+              CorrespondanceType.C2);
         }
+
         // compute C3 distance
         for (int k = 2; k <= lookBackK; k++) {
           List<ILineString> toMerge = new ArrayList<>();
@@ -216,8 +271,10 @@ public class OptCorMorphing implements ContinuousGeneralisationMethod {
           double distC3 = distanceTable[i - 1][Math.max(0, j - k)] + dist;
           if (distC3 < min) {
             min = distC3;
-            typeMin = CorrespondanceType.C3;
-            bestK = k;
+            minimumStorage.put(new Pair<Integer, Integer>(i, j),
+                new Pair<Integer, Integer>(i - 1, Math.max(0, j - k)));
+            typeStorage.put(new Pair<Integer, Integer>(i, j),
+                CorrespondanceType.C3);
           }
         }
 
@@ -231,58 +288,95 @@ public class OptCorMorphing implements ContinuousGeneralisationMethod {
           double distC3_ = distanceTable[Math.max(0, i - k)][j - 1] + dist;
           if (distC3_ < min) {
             min = distC3_;
-            typeMin = CorrespondanceType.C3_;
-            bestK = k;
+            minimumStorage.put(new Pair<Integer, Integer>(i, j),
+                new Pair<Integer, Integer>(Math.max(0, i - k), j - 1));
+            typeStorage.put(new Pair<Integer, Integer>(i, j),
+                CorrespondanceType.C3_);
           }
         }
 
+        // update table(i,j) with the minimum value
         distanceTable[i][j] = min;
-        // store the minimum correspondance
-        if (typeMin.equals(CorrespondanceType.C1)) {
-          IDirectPosition prevPt = subLinesFin.get(j - 1).coord()
-              .get(subLinesFin.get(j - 1).coord().size() - 2);
-          IDirectPosition nextPt = null;
-          if (j < subLinesFin.size())
-            nextPt = subLinesFin.get(j).coord().get(1);
-          mapping.add(new C1SubLineCorrespondance(subLinesIni.get(i - 1),
-              subLinesFin.get(j - 1).endPoint(), prevPt, nextPt));
-          continue;
-        }
-        if (typeMin.equals(CorrespondanceType.C1_)) {
-          IDirectPosition prevPt = subLinesIni.get(i - 1).coord()
-              .get(subLinesIni.get(i - 1).coord().size() - 2);
-          IDirectPosition nextPt = null;
-          if (i < subLinesIni.size())
-            nextPt = subLinesIni.get(i).coord().get(1);
-          mapping.add(new C1InvSubLineCorrespondance(subLinesIni.get(i - 1)
-              .endPoint(), subLinesFin.get(j - 1), prevPt, nextPt));
-          continue;
-        }
-        if (typeMin.equals(CorrespondanceType.C2)) {
-          mapping.add(new C2SubLineCorrespondance(subLinesIni.get(i - 1),
-              subLinesFin.get(j - 1)));
-          continue;
-        }
-        if (typeMin.equals(CorrespondanceType.C3)) {
-          List<ILineString> toMerge = new ArrayList<>();
-          for (int l = j - bestK; l < j; l++)
-            toMerge.add(subLinesFin.get(l));
-          mapping.add(new C3SubLineCorrespondance(subLinesIni.get(i - 1),
-              toMerge));
-          continue;
-        }
-        if (typeMin.equals(CorrespondanceType.C3_)) {
-          List<ILineString> toMerge = new ArrayList<>();
-          for (int l = i - bestK; l < i; l++)
-            toMerge.add(subLinesIni.get(l));
-          mapping.add(new C3SubLineCorrespondance(subLinesFin.get(j - 1),
-              toMerge));
-          continue;
-        }
       }
     }
 
+    // backtracking the table to compute the mapping
+    boolean finished = false;
+    Pair<Integer, Integer> currentPair = new Pair<>(subLinesIni.size(),
+        subLinesFin.size());
+    while (!finished) {
+      // add the current correspondance at the beginning of mappings list
+      CorrespondanceType type = typeStorage.get(currentPair);
+      if (type.equals(CorrespondanceType.C1)) {
+        IDirectPosition prevPt = subLinesFin.get(currentPair.getV() - 1)
+            .coord()
+            .get(subLinesFin.get(currentPair.getV() - 1).coord().size() - 2);
+        IDirectPosition nextPt = null;
+        if (currentPair.getV() < subLinesFin.size())
+          nextPt = subLinesFin.get(currentPair.getV()).coord().get(1);
+        mapping.add(
+            0,
+            new C1SubLineCorrespondance(
+                subLinesIni.get(currentPair.getU() - 1), subLinesFin.get(
+                    currentPair.getV() - 1).endPoint(), prevPt, nextPt));
+      } else if (type.equals(CorrespondanceType.C1_)) {
+        IDirectPosition prevPt = subLinesIni.get(currentPair.getU() - 1)
+            .coord()
+            .get(subLinesIni.get(currentPair.getU() - 1).coord().size() - 2);
+        IDirectPosition nextPt = null;
+        if (currentPair.getU() < subLinesIni.size())
+          nextPt = subLinesIni.get(currentPair.getU()).coord().get(1);
+        mapping.add(
+            0,
+            new C1InvSubLineCorrespondance(subLinesIni.get(
+                currentPair.getU() - 1).endPoint(), subLinesFin.get(currentPair
+                .getV() - 1), prevPt, nextPt));
+      } else if (type.equals(CorrespondanceType.C2)) {
+        mapping.add(
+            0,
+            new C2SubLineCorrespondance(
+                subLinesIni.get(currentPair.getU() - 1), subLinesFin
+                    .get(currentPair.getV() - 1)));
+      } else if (type.equals(CorrespondanceType.C3)) {
+        List<ILineString> finalLines = new ArrayList<>();
+        Pair<Integer, Integer> previousPair = minimumStorage.get(currentPair);
+        for (int i = Math.max(0, previousPair.getV()); i < currentPair.getV(); i++)
+          finalLines.add(subLinesFin.get(i));
+        mapping.add(0,
+            new C3SubLineCorrespondance(
+                subLinesIni.get(currentPair.getU() - 1), finalLines));
+      } else {
+        List<ILineString> initialLines = new ArrayList<>();
+        Pair<Integer, Integer> previousPair = minimumStorage.get(currentPair);
+        for (int i = Math.max(0, previousPair.getU()); i < currentPair.getU(); i++)
+          initialLines.add(subLinesIni.get(i));
+        mapping.add(
+            0,
+            new C3InvSubLineCorrespondance(
+                subLinesFin.get(currentPair.getV() - 1), initialLines));
+      }
+      // get the previous pair
+      currentPair = minimumStorage.get(currentPair);
+      if (currentPair.getU() == 0 || currentPair.getV() == 0)
+        finished = true;
+    }
+
+    if (!isSublineMapped(subLinesIni.get(0), mapping)) {
+      mapping.add(0, new C1SubLineCorrespondance(subLinesIni.get(0),
+          subLinesFin.get(0).startPoint(), null, subLinesFin.get(0)
+              .getControlPoint(1)));
+    }
+
     return mapping;
+  }
+
+  private boolean isSublineMapped(ILineString subline,
+      List<SubLineCorrespondance> mapping) {
+    for (SubLineCorrespondance correspondance : mapping) {
+      if (correspondance.containsSubLine(subline))
+        return true;
+    }
+    return false;
   }
 
   private double distanceToBezier(IBezier curve, ILineString line) {
@@ -419,6 +513,9 @@ public class OptCorMorphing implements ContinuousGeneralisationMethod {
     // then, map the points of each line
     List<SubLineCorrespondance> mapping = matchLinePoints(subLinesIni,
         subLinesFin);
+    System.out.println("subLinesIni: " + subLinesIni);
+    System.out.println("subLinesFin: " + subLinesFin);
+    System.out.println(mapping);
 
     for (SubLineCorrespondance correspondance : mapping) {
       correspondance.matchVertices(initialCoords, finalCoords);
