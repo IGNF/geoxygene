@@ -578,8 +578,12 @@ public class GeometryPoolMenu extends JMenu {
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      CartAGenDoc.getInstance().getCurrentDataset().getGeometryPoolPop()
-          .clear();
+      if (CartAGenDoc.getInstance().getCurrentDataset() != null)
+        CartAGenDoc.getInstance().getCurrentDataset().getGeometryPoolPop()
+            .clear();
+      else
+        application.getMainFrame().getSelectedProjectFrame()
+            .getLayer("Geometry Pool").getFeatureCollection().clear();
     }
 
     public GeomPoolEmptyAction() {

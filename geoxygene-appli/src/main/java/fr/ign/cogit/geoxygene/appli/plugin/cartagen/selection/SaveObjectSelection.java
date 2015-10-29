@@ -11,7 +11,6 @@ package fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 
@@ -21,10 +20,9 @@ import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xerces.dom.DocumentImpl;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -34,6 +32,8 @@ import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.XMLFileFilter;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
+import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.util.XMLUtil;
 
 public class SaveObjectSelection extends AbstractAction {
 
@@ -62,6 +62,8 @@ public class SaveObjectSelection extends AbstractAction {
       e1.printStackTrace();
     } catch (ParserConfigurationException e1) {
       e1.printStackTrace();
+    } catch (TransformerException e1) {
+      e1.printStackTrace();
     }
   }
 
@@ -73,9 +75,12 @@ public class SaveObjectSelection extends AbstractAction {
   }
 
   private void saveSelectionToXml(Collection<IFeature> selection, String name,
-      File file) throws IOException, SAXException, ParserConfigurationException {
-    String cartagenDataset = CartAGenDoc.getInstance().getCurrentDataset()
-        .getCartAGenDB().getName();
+      File file) throws IOException, SAXException,
+      ParserConfigurationException, TransformerException {
+    String cartagenDataset = "default";
+    if (CartAGenDoc.getInstance().getCurrentDataset() != null)
+      cartagenDataset = CartAGenDoc.getInstance().getCurrentDataset()
+          .getCartAGenDB().getName();
     // first tests if 'file' is an existing xml file
     if (!file.exists()) {
       Document xmldoc = new DocumentImpl();
@@ -85,17 +90,7 @@ public class SaveObjectSelection extends AbstractAction {
 
       // write in the file
       xmldoc.appendChild(root);
-      FileOutputStream fos = new FileOutputStream(file);
-      // XERCES 1 or 2 additionnal classes.
-      OutputFormat of = new OutputFormat("XML", "ISO-8859-1", true);
-      of.setIndent(1);
-      of.setIndenting(true);
-      XMLSerializer serializer = new XMLSerializer(fos, of);
-      // As a DOM Serializer
-      serializer.asDOMSerializer();
-      serializer.serialize(xmldoc.getDocumentElement());
-      fos.close();
-
+      XMLUtil.writeDocumentToXml(xmldoc, file);
       return;
     }
 
@@ -114,16 +109,7 @@ public class SaveObjectSelection extends AbstractAction {
     addSelectionXML(root, doc, selection, name, cartagenDataset);
 
     // on enregistre dans le fichier fic
-    FileOutputStream fos = new FileOutputStream(file);
-    // XERCES 1 or 2 additionnal classes.
-    OutputFormat of = new OutputFormat("XML", "ISO-8859-1", true);
-    of.setIndent(1);
-    of.setIndenting(true);
-    XMLSerializer serializer = new XMLSerializer(fos, of);
-    // As a DOM Serializer
-    serializer.asDOMSerializer();
-    serializer.serialize(doc.getDocumentElement());
-    fos.close();
+    XMLUtil.writeDocumentToXml(doc, file);
   }
 
   private void addSelectionXML(Element root, Document xmldoc,
@@ -149,8 +135,20 @@ public class SaveObjectSelection extends AbstractAction {
       Element objElem = xmldoc.createElement("object");
       n = xmldoc.createTextNode(String.valueOf(obj.getId()));
       objElem.appendChild(n);
-      objElem.setAttribute("population-name", CartAGenDoc.getInstance()
-          .getCurrentDataset().getPopNameFromObj(obj));
+      String layerName = "";
+      if (CartAGenDoc.getInstance().getCurrentDataset() == null) {
+        for (Layer layer : appli.getMainFrame().getSelectedProjectFrame()
+            .getLayers()) {
+          if (layer.getFeatureCollection().contains(obj)) {
+            layerName = layer.getName();
+            break;
+          }
+        }
+      } else {
+        layerName = CartAGenDoc.getInstance().getCurrentDataset()
+            .getPopNameFromObj(obj);
+      }
+      objElem.setAttribute("population-name", layerName);
       objsElem.appendChild(objElem);
     }
   }

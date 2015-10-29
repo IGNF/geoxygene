@@ -66,12 +66,15 @@ public class ObjectSelection {
     this.cartagenDataset = versionElem.getChildNodes().item(0).getNodeValue();
     this.objs = new HashSet<IFeature>();
     // si les versions ne correspondent pas, on ne charge pas les objets
-    if (!document.getDatabases().containsKey(cartagenDataset))
+    if (!cartagenDataset.equals("default")
+        && !document.getDatabases().containsKey(cartagenDataset))
       return;
-    // set cartagen dataset as the current dataset
-    CartAGenDataSet dataset = document.getDatabases().get(cartagenDataset)
-        .getDataSet();
-    document.setCurrentDataset(dataset);
+    if (!cartagenDataset.equals("default")) {
+      // set cartagen dataset as the current dataset
+      CartAGenDataSet dataset = document.getDatabases().get(cartagenDataset)
+          .getDataSet();
+      document.setCurrentDataset(dataset);
+    }
     // on fait maintenant une boucle sur les objets de cette selection
     Element objsElem = (Element) root.getElementsByTagName("objects").item(0);
     for (int j = 0; j < objsElem.getElementsByTagName("object").getLength(); j++) {
@@ -80,7 +83,8 @@ public class ObjectSelection {
       int id = Integer.valueOf(objElem.getChildNodes().item(0).getNodeValue());
       String popName = objElem.getAttribute("population-name");
       IFeature feat = null;
-      for (IFeature f : dataset.getPopulation(popName)) {
+      for (IFeature f : appli.getMainFrame().getSelectedProjectFrame()
+          .getLayer(popName).getFeatureCollection()) {
         if (f.getId() == id) {
           feat = f;
           break;
