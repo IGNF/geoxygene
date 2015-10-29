@@ -1,7 +1,9 @@
 package fr.ign.cogit.geoxygene.contrib.geometrie;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,8 +14,10 @@ import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 
@@ -133,6 +137,43 @@ public class OperateursTest {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  @Test
+  public void testCompileArcsColn() {
+    IDirectPositionList list1 = new DirectPositionList();
+    IDirectPositionList list2 = new DirectPositionList();
+    IDirectPositionList list3 = new DirectPositionList();
+    IDirectPositionList list4 = new DirectPositionList();
+    list1.add(new DirectPosition(0.0, 0.0));
+    list4.add(new DirectPosition(0.0, 0.0));
+    list1.add(new DirectPosition(2.0, 2.0));
+    list4.add(new DirectPosition(2.0, 2.0));
+    list1.add(new DirectPosition(4.0, 5.0));
+    list4.add(new DirectPosition(4.0, 5.0));
+
+    list2.add(new DirectPosition(4.0, 5.0));
+    list2.add(new DirectPosition(8.0, 7.0));
+    list4.add(new DirectPosition(8.0, 7.0));
+    list2.add(new DirectPosition(10.0, 10.0));
+    list4.add(new DirectPosition(10.0, 10.0));
+
+    list3.add(new DirectPosition(10.0, 10.0));
+    list3.add(new DirectPosition(15.0, 13.0));
+    list4.add(new DirectPosition(15.0, 13.0));
+    list3.add(new DirectPosition(20.0, 20.0));
+    list4.add(new DirectPosition(20.0, 20.0));
+
+    ILineString line1 = new GM_LineString(list1);
+    ILineString line2 = new GM_LineString(list2);
+    ILineString line3 = new GM_LineString(list3);
+    ILineString finalLine = new GM_LineString(list4);
+    Set<ILineString> linesToCompile = new HashSet<>();
+    linesToCompile.add(line3);
+    linesToCompile.add(line1);
+    linesToCompile.add(line2);
+    ILineString compiled = Operateurs.compileArcs(linesToCompile, 0.1);
+    Assert.assertEquals(finalLine, compiled);
   }
 
   @Test

@@ -22,8 +22,10 @@ package fr.ign.cogit.geoxygene.contrib.geometrie;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -773,6 +775,102 @@ public abstract class Operateurs {
       }
     }
     Operateurs.logger.debug("new line with " + finalPoints.size());
+    return new GM_LineString(finalPoints, false);
+  }
+
+  /**
+   * Compile connected lines into a single ILineString geometry given an
+   * unordered collection of lines.
+   * @param geometries
+   * @param tolerance
+   * @return
+   */
+  public static ILineString compileArcs(Collection<ILineString> geometries,
+      double tolerance) {
+    if (logger.isDebugEnabled()) {
+      Operateurs.logger.debug("compile geometries");
+      for (ILineString l : geometries) {
+        Operateurs.logger.debug("\t" + l);
+      }
+    }
+
+    IDirectPositionList finalPoints = new DirectPositionList();
+    if (geometries.isEmpty()) {
+      Operateurs.logger
+          .error("ATTENTION. Erreur à la compilation de lignes : aucune ligne en entrée");
+      return null;
+    }
+
+    Set<ILineString> remainingLines = new HashSet<>();
+    remainingLines.addAll(geometries);
+    ILineString first = geometries.iterator().next();
+    remainingLines.remove(first);
+    finalPoints.addAll(first.coord());
+    // get the lines that connect to start node
+    IDirectPosition startNode = first.startPoint();
+    while (true) {
+      boolean lineContinues = false;
+      ILineString continuingLine = null;
+      for (ILineString line : remainingLines) {
+        if (line.startPoint().equals2D(startNode, tolerance)) {
+          finalPoints.remove(0);
+          for (IDirectPosition pt : line.coord())
+            finalPoints.add(0, pt);
+          startNode = line.endPoint();
+          lineContinues = true;
+          continuingLine = line;
+          break;
+        }
+        if (line.endPoint().equals2D(startNode, tolerance)) {
+          finalPoints.remove(0);
+          for (IDirectPosition pt : line.coord().reverse())
+            finalPoints.add(0, pt);
+          startNode = line.startPoint();
+          lineContinues = true;
+          continuingLine = line;
+          break;
+        }
+      }
+      if (lineContinues) {
+        remainingLines.remove(continuingLine);
+        continue;
+      }
+      break;
+    }
+
+    // get the lines that connect to end node
+    IDirectPosition endNode = first.endPoint();
+    while (true) {
+      boolean lineContinues = false;
+      ILineString continuingLine = null;
+      for (ILineString line : remainingLines) {
+        if (line.startPoint().equals2D(endNode, tolerance)) {
+          finalPoints.remove(finalPoints.size() - 1);
+          for (IDirectPosition pt : line.coord())
+            finalPoints.add(pt);
+          endNode = line.endPoint();
+          lineContinues = true;
+          continuingLine = line;
+          break;
+        }
+        if (line.endPoint().equals2D(endNode, tolerance)) {
+          finalPoints.remove(finalPoints.size() - 1);
+          for (IDirectPosition pt : line.coord().reverse())
+            finalPoints.add(pt);
+          endNode = line.startPoint();
+          lineContinues = true;
+          continuingLine = line;
+          break;
+        }
+      }
+      if (lineContinues) {
+        remainingLines.remove(continuingLine);
+        continue;
+      }
+      break;
+    }
+    if (logger.isDebugEnabled())
+      Operateurs.logger.debug("new line with " + finalPoints.size());
     return new GM_LineString(finalPoints, false);
   }
 
