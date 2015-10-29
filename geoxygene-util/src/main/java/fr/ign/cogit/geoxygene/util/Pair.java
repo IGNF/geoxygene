@@ -32,104 +32,107 @@ package fr.ign.cogit.geoxygene.util;
  */
 public class Pair<U, V> {
 
-    private U u = null;
-    private V v = null;
+  private U u = null;
+  private V v = null;
 
-    /**
-     * Default Constructor
-     */
-    public Pair() {
-        // TODO Auto-generated constructor stub
-    }
+  /**
+   * Default Constructor
+   */
+  public Pair() {
+    // TODO Auto-generated constructor stub
+  }
 
-    /**
-     * Quick constructor
-     * 
-     * @param u
-     * @param v
-     */
-    public Pair(U u, V v) {
-        super();
-        this.u = u;
-        this.v = v;
-    }
+  /**
+   * Quick constructor
+   * 
+   * @param u
+   * @param v
+   */
+  public Pair(U u, V v) {
+    super();
+    this.u = u;
+    this.v = v;
+  }
 
-    /**
-     * @return the u
-     */
-    public U getU() {
-        return this.u;
-    }
+  /**
+   * @return the u
+   */
+  public U getU() {
+    return this.u;
+  }
 
-    /**
-     * @param u
-     *            the u to set
-     */
-    public void setU(U u) {
-        this.u = u;
-    }
+  /**
+   * @param u the u to set
+   */
+  public void setU(U u) {
+    this.u = u;
+  }
 
-    /**
-     * @return the v
-     */
-    public V getV() {
-        return this.v;
-    }
+  /**
+   * @return the v
+   */
+  public V getV() {
+    return this.v;
+  }
 
-    /**
-     * @param v
-     *            the v to set
-     */
-    public void setV(V v) {
-        this.v = v;
-    }
+  /**
+   * @param v the v to set
+   */
+  public void setV(V v) {
+    this.v = v;
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((this.u == null) ? 0 : this.u.hashCode());
-        result = prime * result + ((this.v == null) ? 0 : this.v.hashCode());
-        return result;
-    }
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((this.u == null) ? 0 : this.u.hashCode());
+    result = prime * result + ((this.v == null) ? 0 : this.v.hashCode());
+    return result;
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (this.getClass() != obj.getClass()) {
-            return false;
-        }
-        Pair other = (Pair) obj;
-        if (this.u == null) {
-            if (other.u != null) {
-                return false;
-            }
-        } else if (!this.u.equals(other.u)) {
-            return false;
-        }
-        if (this.v == null) {
-            if (other.v != null) {
-                return false;
-            }
-        } else if (!this.v.equals(other.v)) {
-            return false;
-        }
-        return true;
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
     }
+    if (obj == null) {
+      return false;
+    }
+    if (this.getClass() != obj.getClass()) {
+      return false;
+    }
+    Pair other = (Pair) obj;
+    if (this.u == null) {
+      if (other.u != null) {
+        return false;
+      }
+    } else if (!this.u.equals(other.u)) {
+      return false;
+    }
+    if (this.v == null) {
+      if (other.v != null) {
+        return false;
+      }
+    } else if (!this.v.equals(other.v)) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public String toString() {
+    return "(" + this.u.toString() + ", " + this.v.toString() + ")";
+  }
 
 }
