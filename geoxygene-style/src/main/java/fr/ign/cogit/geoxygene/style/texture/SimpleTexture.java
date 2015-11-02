@@ -26,7 +26,10 @@
  *******************************************************************************/
 package fr.ign.cogit.geoxygene.style.texture;
 
+import java.io.File;
 import java.net.URI;
+import java.net.URISyntaxException;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -41,7 +44,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "SimpleTexture")
 public class SimpleTexture extends Texture {
-
 
     /**
      * The Texture location. THis uri may be relative.
@@ -60,7 +62,6 @@ public class SimpleTexture extends Texture {
         super(drawingMode);
     }
 
-
     /*
      * (non-Javadoc)
      * 
@@ -70,8 +71,7 @@ public class SimpleTexture extends Texture {
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result
-                + ((this.tex_location == null) ? 0 : this.tex_location.hashCode());
+        result = prime * result + ((this.tex_location == null) ? 0 : this.tex_location.hashCode());
         return result;
     }
 
@@ -91,7 +91,7 @@ public class SimpleTexture extends Texture {
         if (this.getClass() != obj.getClass()) {
             return false;
         }
-        SimpleTexture tex=  (SimpleTexture) obj;
+        SimpleTexture tex = (SimpleTexture) obj;
         if (this.tex_location != tex.tex_location) {
             return false;
         }
@@ -115,19 +115,25 @@ public class SimpleTexture extends Texture {
     public void setURI(URI location) {
         this.tex_location = location;
     }
-    
-    public URI resolveAbsoluteURI(URI root_uri){
-        if(!this.tex_location.isAbsolute()) {
-            URI resolved = root_uri.resolve(this.tex_location);
-            if(resolved.isAbsolute())
-                 this.setAbsoluteURI(resolved);
-            else
-                this.setAbsoluteURI(null);
-        }else{
-            this.setAbsoluteURI(null);
+
+    public URI resolveAbsoluteURI(URI root_uri) throws URISyntaxException {
+        File f = new File(this.tex_location.toString());
+        if (!this.tex_location.isAbsolute()) {
+            if (!f.exists()) {
+                URI resolved = root_uri.resolve(this.tex_location);
+                if (resolved.isAbsolute())
+                    this.setAbsoluteURI(resolved);
+                else
+                    this.setAbsoluteURI(null);
+            } else {
+                URI abs_uri;
+                abs_uri = f.toURI();
+                this.setAbsoluteURI(abs_uri);
+            }
+        } else {
+            this.setAbsoluteURI(this.tex_location);
         }
         return this.getAbsoluteURI();
     }
-    
 
 }
