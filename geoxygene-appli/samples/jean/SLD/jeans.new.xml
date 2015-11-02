@@ -486,7 +486,7 @@
 											<OutOfRangeProbability>0.0</OutOfRangeProbability>
 										</Tile>
 										<Tile>
-											<url>../images/jean_1.png</url>
+											<URI>../images/jean_1.png</URI>
 											<ScaleFactor>0.1</ScaleFactor>
 											<MinDistance>3000.0</MinDistance>
 											<MaxDistance>INF</MaxDistance>

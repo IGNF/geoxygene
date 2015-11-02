@@ -1,7 +1,7 @@
 <RenderingMethod>
-    <Name>RenderSeams</Name>
-    <GeneralMethodReference>BezierStroke</GeneralMethodReference>
-    <ShaderList>
-        <Shader>subshader1d.jean.frag</Shader>
-    </ShaderList>  
+	<Name>RenderSeams</Name>
+	<GeneralMethodReference>BrushStroke</GeneralMethodReference>
+	<ShaderList>
+		<ShaderRef gltype="GL_FRAGMENT_SHADER">../shaders/subshader1d.jean.frag.glsl</ShaderRef>
+	</ShaderList>
 </RenderingMethod>
