@@ -23,10 +23,10 @@ struct DataPainting {
 	int brushEndWidth;      // end texture length in pixels for the brush
 	float brushScale;       // size in mm of one brush pixel
 	float paperScale;       // scaling factor for paper
-	float sharpness;        // brush-paper blending sharpness
+	float strokeSoftness;        // brush-paper blending strokeSoftness
 	
-	float paperDensity;     // paper height scale factor
-	float brushDensity;     // brush height scale factor
+	float paperRoughness;     // paper height scale factor
+	float brushRoughness;     // brush height scale factor
 	float strokePressure;   // stroke pressure
 	vec4 position;          // current point position in world coordinates
 	vec2 uv;                // UV coordinates texture (u in world coordinates, v between 0 and 1)
@@ -238,14 +238,14 @@ vec4 computeFragmentColor( in vec4 brushColor, in vec4 paperColor, in DataPainti
 	float brushHeightField = ( brushColor.r + brushColor.g + brushColor.b ) / 3.;
 //	vec3 brushHeightField = 1-brushColor.rgb;
 	
-//	float penetration = 1. / computeStrokePressure( fragmentData.uv.x, fragmentData.uMax ) - ( 1 - brushHeightField * fragmentData.brushDensity ) - ( paperHeightField * fragmentData.paperDensity);
-//vec3 penetration = vec3(1. / computeStrokePressure( fragmentData.uv.x, fragmentData.uMax )) - ( vec3(1.0) - brushHeightField * fragmentData.brushDensity ) - ( paperHeightField * fragmentData.paperDensity);
+//	float penetration = 1. / computeStrokePressure( fragmentData.uv.x, fragmentData.uMax ) - ( 1 - brushHeightField * fragmentData.brushRoughness ) - ( paperHeightField * fragmentData.paperRoughness);
+//vec3 penetration = vec3(1. / computeStrokePressure( fragmentData.uv.x, fragmentData.uMax )) - ( vec3(1.0) - brushHeightField * fragmentData.brushRoughness ) - ( paperHeightField * fragmentData.paperRoughness);
 	
 	
-	float bh = fragmentData.strokePressure * computeStrokePressure( fragmentData.uv.x, fragmentData.uMax ) * brushHeightField * fragmentData.brushDensity;
-	float ph = (0.5 + (paperHeightField.x-0.5) * fragmentData.paperDensity);
+	float bh = fragmentData.strokePressure * computeStrokePressure( fragmentData.uv.x, fragmentData.uMax ) * brushHeightField * fragmentData.brushRoughness;
+	float ph = (0.5 + (paperHeightField.x-0.5) * fragmentData.paperRoughness);
 	float penetration = clamp( ph - (1-bh), -1, 1);
-	float f = smoothstep( 0.0 - fragmentData.sharpness, 0.0 + fragmentData.sharpness,  penetration );
+	float f = smoothstep( 0.0 - fragmentData.strokeSoftness, 0.0 + fragmentData.strokeSoftness,  penetration );
 	
 	//return vec4(1,0,0,1);
 	return vec4( fragmentData.color.rgb + brushColor.rgb, fragmentData.color.a * ( 1-f ) );

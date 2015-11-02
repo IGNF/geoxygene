@@ -1,495 +1,520 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <StyledLayerDescriptor xmlns:ogc="http://www.opengis.net/ogc">
-    <NamedLayer>
-        <Name>mer_OCS_100</Name>
-        <UserStyle>
-            <Name>Style créé pour le layer mer_OCS_100</Name>
-            <IsDefault>false</IsDefault>
-            <FeatureTypeStyle>
-                <Rule>
-                    <LegendGraphic>
-                        <Graphic>
-                            <Mark>
-<WellKnownName>square</WellKnownName>
-<Fill>
-    <CssParameter name="fill">#bf3fd6</CssParameter>
-    <CssParameter name="fill-opacity">0.8</CssParameter>
-</Fill>
-<Stroke>
-    <CssParameter name="stroke">#852c95</CssParameter>
-    <CssParameter name="stroke-opacity">0.8</CssParameter>
-    <CssParameter name="stroke-width">1.0</CssParameter>
-</Stroke>
-                            </Mark>
-                            <opacity>1.0</opacity>
-                            <Size>6.0</Size>
-                            <Rotation>
-<Literal>0</Literal>
-                            </Rotation>
-                        </Graphic>
-                    </LegendGraphic>
-                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
-                        <Stroke>
-                            <CssParameter name="stroke">#852c95</CssParameter>
-                            <CssParameter name="stroke-opacity">0.0</CssParameter>
-                            <CssParameter name="stroke-width">0.5</CssParameter>
-                        </Stroke>
-                        <GeometryPropertyName>geom</GeometryPropertyName>
-                        <Fill>
-                            <CssParameter name="fill">#9ecae1</CssParameter>
-                            <CssParameter name="fill-opacity">0.8</CssParameter>
-                        </Fill>
-                    </PolygonSymbolizer>
-                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
-                        <Stroke>
-                            <CssParameter name="stroke">#FFFFFF</CssParameter>
-                            <CssParameter name="stroke-opacity">0.0</CssParameter>
-                            <CssParameter name="stroke-width">100.0</CssParameter>
-                            <ExpressiveStroke>
-<TransitionSize>10.0</TransitionSize>
-<PaperTexture>./src/main/resources/textures/papers/black-normalized.png</PaperTexture>
-<BrushTexture>./src/main/resources/textures/brushes/overlay.png</BrushTexture>
-<BrushStartLength>10</BrushStartLength>
-<BrushEndLength>10</BrushEndLength>
-<BrushAspectRatio>8.0</BrushAspectRatio>
-<PaperSizeInCm>4.0</PaperSizeInCm>
-<PaperReferenceMapScale>100000.0</PaperReferenceMapScale>
-<PaperRoughness>0.7</PaperRoughness>
-<BrushRoughness>1.9</BrushRoughness>
-<StrokePressure>2.64</StrokePressure>
-<StrokeSoftness>0.1</StrokeSoftness>
-<UserShader>
-    <File>./samples/aquarelle/shaders/subshader1d.strokeOverlay.glsl</File>
-</UserShader>
-                            </ExpressiveStroke>
-                        </Stroke>
-                        <GeometryPropertyName>geom</GeometryPropertyName>
-                        <BlendingMode>Overlay</BlendingMode>
-                        <Fill>
-                            <CssParameter name="fill">#c0e58c</CssParameter>
-                            <CssParameter name="fill-opacity">0.0</CssParameter>
-                        </Fill>
-                    </PolygonSymbolizer>
-                </Rule>
-            </FeatureTypeStyle>
-        </UserStyle>
-    </NamedLayer>
-    <NamedLayer>
-        <Name>sablehum_OCS_100</Name>
-        <UserStyle>
-            <Name>Style créé pour le layer sablehum_OCS_100</Name>
-            <IsDefault>false</IsDefault>
-            <FeatureTypeStyle>
-                <Rule>
-                    <LegendGraphic>
-                        <Graphic>
-                            <Mark>
-<WellKnownName>square</WellKnownName>
-<Fill>
-    <CssParameter name="fill">#478a5a</CssParameter>
-    <CssParameter name="fill-opacity">0.8</CssParameter>
-</Fill>
-<Stroke>
-    <CssParameter name="stroke">#31603e</CssParameter>
-    <CssParameter name="stroke-opacity">0.8</CssParameter>
-    <CssParameter name="stroke-width">1.0</CssParameter>
-</Stroke>
-                            </Mark>
-                            <opacity>1.0</opacity>
-                            <Size>6.0</Size>
-                            <Rotation>
-<Literal>0</Literal>
-                            </Rotation>
-                        </Graphic>
-                    </LegendGraphic>
-                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
-                        <Stroke>
-                            <CssParameter name="stroke">#31603e</CssParameter>
-                            <CssParameter name="stroke-opacity">0.8</CssParameter>
-                            <CssParameter name="stroke-width">0.0</CssParameter>
-                        </Stroke>
-                        <GeometryPropertyName>geom</GeometryPropertyName>
-                        <Fill>
-                            <CssParameter name="fill">#e0c805</CssParameter>
-                            <CssParameter name="fill-opacity">1.0</CssParameter>
-                        </Fill>
-                    </PolygonSymbolizer>
-                </Rule>
-            </FeatureTypeStyle>
-        </UserStyle>
-    </NamedLayer>
-    <NamedLayer>
-        <Name>rochy_OCS_100</Name>
-        <UserStyle>
-            <Name>Style créé pour le layer rochy_OCS_100</Name>
-            <IsDefault>false</IsDefault>
-            <FeatureTypeStyle>
-                <Rule>
-                    <LegendGraphic>
-                        <Graphic>
-                            <Mark>
-<WellKnownName>square</WellKnownName>
-<Fill>
-    <CssParameter name="fill">#4f61c3</CssParameter>
-    <CssParameter name="fill-opacity">0.8</CssParameter>
-</Fill>
-<Stroke>
-    <CssParameter name="stroke">#374388</CssParameter>
-    <CssParameter name="stroke-opacity">0.8</CssParameter>
-    <CssParameter name="stroke-width">1.0</CssParameter>
-</Stroke>
-                            </Mark>
-                            <opacity>1.0</opacity>
-                            <Size>6.0</Size>
-                            <Rotation>
-<Literal>0</Literal>
-                            </Rotation>
-                        </Graphic>
-                    </LegendGraphic>
-                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
-                        <Stroke>
-                            <CssParameter name="stroke">#374388</CssParameter>
-                            <CssParameter name="stroke-opacity">1.0</CssParameter>
-                            <CssParameter name="stroke-width">0.0</CssParameter>
-                        </Stroke>
-                        <GeometryPropertyName>geom</GeometryPropertyName>
-                        <Fill>
-                            <CssParameter name="fill">#d2a173</CssParameter>
-                            <CssParameter name="fill-opacity">1.0</CssParameter>
-                        </Fill>
-                    </PolygonSymbolizer>
-                </Rule>
-            </FeatureTypeStyle>
-        </UserStyle>
-    </NamedLayer>
-    <NamedLayer>
-        <Name>surface_eau_OCS_100</Name>
-        <UserStyle>
-            <Name>Style créé pour le layer surface_eau_OCS_100</Name>
-            <IsDefault>false</IsDefault>
-            <FeatureTypeStyle>
-                <Rule>
-                    <LegendGraphic>
-                        <Graphic>
-                            <Mark>
-<WellKnownName>square</WellKnownName>
-<Fill>
-    <CssParameter name="fill">#c9d4f0</CssParameter>
-    <CssParameter name="fill-opacity">0.8</CssParameter>
-</Fill>
-<Stroke>
-    <CssParameter name="stroke">#8c94a8</CssParameter>
-    <CssParameter name="stroke-opacity">0.8</CssParameter>
-    <CssParameter name="stroke-width">1.0</CssParameter>
-</Stroke>
-                            </Mark>
-                            <opacity>1.0</opacity>
-                            <Size>6.0</Size>
-                            <Rotation>
-<Literal>0</Literal>
-                            </Rotation>
-                        </Graphic>
-                    </LegendGraphic>
-                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
-                        <Stroke>
-                            <CssParameter name="stroke">#8c94a8</CssParameter>
-                            <CssParameter name="stroke-opacity">0.8</CssParameter>
-                            <CssParameter name="stroke-width">1.0</CssParameter>
-                        </Stroke>
-                        <GeometryPropertyName>geom</GeometryPropertyName>
-                        <Fill>
-                            <CssParameter name="fill">#c9d4f0</CssParameter>
-                            <CssParameter name="fill-opacity">0.8</CssParameter>
-                        </Fill>
-                    </PolygonSymbolizer>
-                </Rule>
-            </FeatureTypeStyle>
-        </UserStyle>
-    </NamedLayer>
-    <NamedLayer>
-        <Name>toponyme_droit_25_emprise_100K</Name>
-        <UserStyle>
-            <Name>Style créé pour le layer toponyme_droit_25_emprise_100K</Name>
-            <IsDefault>false</IsDefault>
-            <FeatureTypeStyle>
-                <Rule>
-                    <LegendGraphic>
-                        <Graphic>
-                            <Mark>
-<WellKnownName>square</WellKnownName>
-<Fill>
-    <CssParameter name="fill">#c60517</CssParameter>
-    <CssParameter name="fill-opacity">0.8</CssParameter>
-</Fill>
-<Stroke>
-    <CssParameter name="stroke">#8a0310</CssParameter>
-    <CssParameter name="stroke-opacity">0.8</CssParameter>
-    <CssParameter name="stroke-width">1.0</CssParameter>
-</Stroke>
-                            </Mark>
-                            <opacity>1.0</opacity>
-                            <Size>6.0</Size>
-                            <Rotation>
-<Literal>0</Literal>
-                            </Rotation>
-                        </Graphic>
-                    </LegendGraphic>
-                    <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
-                        <GeometryPropertyName>geom</GeometryPropertyName>
-                        <Graphic>
-                            <Mark>
-<WellKnownName>square</WellKnownName>
-<Fill>
-    <CssParameter name="fill">#c60517</CssParameter>
-    <CssParameter name="fill-opacity">0.8</CssParameter>
-</Fill>
-<Stroke>
-    <CssParameter name="stroke">#8a0310</CssParameter>
-    <CssParameter name="stroke-opacity">0.8</CssParameter>
-    <CssParameter name="stroke-width">1.0</CssParameter>
-</Stroke>
-                            </Mark>
-                            <opacity>1.0</opacity>
-                            <Size>6.0</Size>
-                            <Rotation>
-<Literal>0</Literal>
-                            </Rotation>
-                        </Graphic>
-                    </PointSymbolizer>
-                </Rule>
-            </FeatureTypeStyle>
-        </UserStyle>
-    </NamedLayer>
-    <NamedLayer>
-        <Name>vegetation_OCS_100</Name>
-        <UserStyle>
-            <Name>Style créé pour le layer vegetation_OCS_100</Name>
-            <IsDefault>false</IsDefault>
-            <FeatureTypeStyle>
-                <Rule>
-                    <LegendGraphic>
-                        <Graphic>
-                            <Mark>
-<WellKnownName>square</WellKnownName>
-<Fill>
-    <CssParameter name="fill">#fe5174</CssParameter>
-    <CssParameter name="fill-opacity">0.8</CssParameter>
-</Fill>
-<Stroke>
-    <CssParameter name="stroke">#b13851</CssParameter>
-    <CssParameter name="stroke-opacity">0.8</CssParameter>
-    <CssParameter name="stroke-width">1.0</CssParameter>
-</Stroke>
-                            </Mark>
-                            <opacity>1.0</opacity>
-                            <Size>6.0</Size>
-                            <Rotation>
-<Literal>0</Literal>
-                            </Rotation>
-                        </Graphic>
-                    </LegendGraphic>
-                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
-                        <Stroke>
-                            <CssParameter name="stroke">#4d9221</CssParameter>
-                            <CssParameter name="stroke-opacity">0.0</CssParameter>
-                            <CssParameter name="stroke-width">0.0</CssParameter>
-                        </Stroke>
-                        <GeometryPropertyName>geom</GeometryPropertyName>
-                        <Fill>
-                            <CssParameter name="fill">#c0e58c</CssParameter>
-                            <CssParameter name="fill-opacity">1.0</CssParameter>
-                        </Fill>
-                    </PolygonSymbolizer>
-                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
-                        <Stroke>
-                            <CssParameter name="stroke">#FFFFFF</CssParameter>
-                            <CssParameter name="stroke-opacity">0.0</CssParameter>
-                            <CssParameter name="stroke-width">100.0</CssParameter>
-                            <ExpressiveStroke>
-<TransitionSize>10.0</TransitionSize>
-<PaperTexture>./src/main/resources/textures/papers/black-normalized.png</PaperTexture>
-<BrushTexture>./src/main/resources/textures/brushes/overlay.png</BrushTexture>
-<BrushStartLength>10</BrushStartLength>
-<BrushEndLength>10</BrushEndLength>
-<BrushAspectRatio>8.0</BrushAspectRatio>
-<PaperSizeInCm>4.0</PaperSizeInCm>
-<PaperReferenceMapScale>100000.0</PaperReferenceMapScale>
-<PaperRoughness>0.7</PaperRoughness>
-<BrushRoughness>1.9</BrushRoughness>
-<StrokePressure>2.64</StrokePressure>
-<StrokeSoftness>0.1</StrokeSoftness>
-<UserShader>
-    <File>./samples/aquarelle/shaders/subshader1d.strokeOverlay.glsl</File>
-</UserShader>
-                            </ExpressiveStroke>
-                        </Stroke>
-                        <GeometryPropertyName>geom</GeometryPropertyName>
-                       <BlendingMode>Overlay</BlendingMode>
-                        <Fill>
-                            <CssParameter name="fill">#c0e58c</CssParameter>
-                            <CssParameter name="fill-opacity">0.0</CssParameter>
-                        </Fill>
-                    </PolygonSymbolizer>
-                </Rule>
-            </FeatureTypeStyle>
-        </UserStyle>
-    </NamedLayer>
-    <NamedLayer>
-        <Name>routes_100</Name>
-        <UserStyle>
-            <Name>Style créé pour le layer routes_100</Name>
-            <IsDefault>false</IsDefault>
-            <FeatureTypeStyle>
-                <Rule>
-                    <LegendGraphic>
-                        <Graphic>
-                            <Mark>
-<WellKnownName>square</WellKnownName>
-<Fill>
-    <CssParameter name="fill">#0b2a7f</CssParameter>
-    <CssParameter name="fill-opacity">0.8</CssParameter>
-</Fill>
-<Stroke>
-    <CssParameter name="stroke">#071d58</CssParameter>
-    <CssParameter name="stroke-opacity">0.8</CssParameter>
-    <CssParameter name="stroke-width">1.0</CssParameter>
-</Stroke>
-                            </Mark>
-                            <opacity>1.0</opacity>
-                            <Size>6.0</Size>
-                            <Rotation>
-<Literal>0</Literal>
-                            </Rotation>
-                        </Graphic>
-                    </LegendGraphic>
-                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
-                        <Stroke>
-                            <CssParameter name="stroke">#000000</CssParameter>
-                            <CssParameter name="stroke-opacity">1</CssParameter>
-                            <CssParameter name="stroke-width">60.0</CssParameter>
-                            <CssParameter name="stroke-linejoin">round</CssParameter>
-                            <CssParameter name="stroke-linecap">round</CssParameter>
-                        </Stroke>
-                        <GeometryPropertyName>geom</GeometryPropertyName>
-                        <PerpendicularOffset>0.0</PerpendicularOffset>
-                    </LineSymbolizer>
-                </Rule>
-            </FeatureTypeStyle>
-            <FeatureTypeStyle>
-                <Rule>
-                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
-                        <Stroke>
-                            <CssParameter name="stroke">#ffffff</CssParameter>
-                            <CssParameter name="stroke-opacity">1</CssParameter>
-                            <CssParameter name="stroke-width">30.0</CssParameter>
-                            <CssParameter name="stroke-linejoin">round</CssParameter>
-                            <CssParameter name="stroke-linecap">round</CssParameter>
-                        </Stroke>
-                        <GeometryPropertyName>geom</GeometryPropertyName>
-                        <PerpendicularOffset>0.0</PerpendicularOffset>
-                    </LineSymbolizer>
-                </Rule>
-            </FeatureTypeStyle>
-        </UserStyle>
-    </NamedLayer>
-    <NamedLayer>
-        <Name>hydro_100</Name>
-        <UserStyle>
-            <Name>Style créé pour le layer hydro_100</Name>
-            <IsDefault>false</IsDefault>
-            <FeatureTypeStyle>
-                <Rule>
-                    <LegendGraphic>
-                        <Graphic>
-                            <Mark>
-<WellKnownName>square</WellKnownName>
-<Fill>
-    <CssParameter name="fill">#738e64</CssParameter>
-    <CssParameter name="fill-opacity">0.8</CssParameter>
-</Fill>
-<Stroke>
-    <CssParameter name="stroke">#506346</CssParameter>
-    <CssParameter name="stroke-opacity">0.8</CssParameter>
-    <CssParameter name="stroke-width">1.0</CssParameter>
-</Stroke>
-                            </Mark>
-                            <opacity>1.0</opacity>
-                            <Size>6.0</Size>
-                            <Rotation>
-<Literal>0</Literal>
-                            </Rotation>
-                        </Graphic>
-                    </LegendGraphic>
-                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
-                        <Stroke>
-                            <CssParameter name="stroke">#506346</CssParameter>
-                            <CssParameter name="stroke-opacity">0.8</CssParameter>
-                            <CssParameter name="stroke-width">20.0</CssParameter>
-                            <CssParameter name="stroke-linejoin">round</CssParameter>
-                            <CssParameter name="stroke-linecap">round</CssParameter>
-                        </Stroke>
-                        <GeometryPropertyName>geom</GeometryPropertyName>
-                        <PerpendicularOffset>0.0</PerpendicularOffset>
-                    </LineSymbolizer>
-                </Rule>
-            </FeatureTypeStyle>
-        </UserStyle>
-    </NamedLayer>
-    <NamedLayer>
-        <Name>petite_emprise</Name>
-        <UserStyle>
-            <Name>Style créé pour le layer petite_emprise</Name>
-            <IsDefault>false</IsDefault>
-            <FeatureTypeStyle>
-                <Rule>
-                    <LegendGraphic>
-                        <Graphic>
-                            <Mark>
-<WellKnownName>square</WellKnownName>
-<Fill>
-    <CssParameter name="fill">#201141</CssParameter>
-    <CssParameter name="fill-opacity">0.8</CssParameter>
-</Fill>
-<Stroke>
-    <CssParameter name="stroke">#160b2d</CssParameter>
-    <CssParameter name="stroke-opacity">0.8</CssParameter>
-    <CssParameter name="stroke-width">1.0</CssParameter>
-</Stroke>
-                            </Mark>
-                            <opacity>1.0</opacity>
-                            <Size>6.0</Size>
-                            <Rotation>
-<Literal>0</Literal>
-                            </Rotation>
-                        </Graphic>
-                    </LegendGraphic>
-                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
-                        <Stroke>
-                            <CssParameter name="stroke">#160b2d</CssParameter>
-                            <CssParameter name="stroke-opacity">1</CssParameter>
-                            <CssParameter name="stroke-width">0.5</CssParameter>
-                        </Stroke>
-                        <GeometryPropertyName>geom</GeometryPropertyName>
-                        <BlendingMode>Overlay</BlendingMode>
-                        <Fill>
-                            <PerlinNoiseTexture xRepeat="false" yRepeat="false">
-<Displacement x="0.0" y="0.0"/>
-<ScaleFactor x="1.0" y="1.0"/>
-<Rotation angle="0.0"/>
-<Resolution>600.0</Resolution>
-<Scale>5.0</Scale>
-<Amount>0.5</Amount>
-<Angle>3.1415927</Angle>
-<Stretch>1.0</Stretch>
-<Color1>#ffffff</Color1>
-<Color2>#000000</Color2>
-                            </PerlinNoiseTexture>
-                            <CssParameter name="fill">#ffffff</CssParameter>
-                            <CssParameter name="fill-opacity">1.0</CssParameter>
-                        </Fill>
-                    </PolygonSymbolizer>
-                </Rule>
-            </FeatureTypeStyle>
-        </UserStyle>
-    </NamedLayer>
+	<NamedLayer>
+		<Name>mer_OCS_100</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer mer_OCS_100</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<LegendGraphic>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#bf3fd6</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#852c95</CssParameter>
+									<CssParameter name="stroke-opacity">0.8</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</LegendGraphic>
+					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#852c95</CssParameter>
+							<CssParameter name="stroke-opacity">0.0</CssParameter>
+							<CssParameter name="stroke-width">0.5</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<Fill>
+							<CssParameter name="fill">#9ecae1</CssParameter>
+							<CssParameter name="fill-opacity">0.8</CssParameter>
+						</Fill>
+					</PolygonSymbolizer>
+					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#FFFFFF</CssParameter>
+							<CssParameter name="stroke-opacity">0.0</CssParameter>
+							<CssParameter name="stroke-width">100.0</CssParameter>
+							<ExpressiveStroke>
+								<ExpressiveMethod>Aquarelle</ExpressiveMethod>
+								<ExpressiveParameter name="transitionSize">10</ExpressiveParameter>
+								<ExpressiveParameter name="paperReferenceMapScale">100000</ExpressiveParameter>
+								<ExpressiveParameter name="paperRoughness">0.7</ExpressiveParameter>
+								<ExpressiveParameter name="brushRoughness">2</ExpressiveParameter>
+								<ExpressiveParameter name="strokePressure">2.6</ExpressiveParameter>
+								<ExpressiveParameter name="strokeSoftness">0.1</ExpressiveParameter>
+								<ExpressiveParameter name="paperSizeInCm">4</ExpressiveParameter>
+								<ExpressiveParameter name="paperTexture">
+									<SimpleTexture XRepeat="false" YRepeat="false">
+										<Displacement x="0.0" y="0.0"></Displacement>
+										<ScaleFactor x="1.0" y="1.0"></ScaleFactor>
+										<Rotation Angle="0.0"></Rotation>
+										<URI>../images/black-normalized.png</URI>
+									</SimpleTexture>
+								</ExpressiveParameter>
+								<ExpressiveParameter name="brushTexture">
+									<SimpleTexture XRepeat="false" YRepeat="false">
+										<Displacement x="0.0" y="0.0"></Displacement>
+										<ScaleFactor x="1.0" y="1.0"></ScaleFactor>
+										<Rotation Angle="0.0"></Rotation>
+										<URI>../images/overlay.png</URI>
+									</SimpleTexture>
+								</ExpressiveParameter>
+							</ExpressiveStroke>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<BlendingMode>Overlay</BlendingMode>
+						<Fill>
+							<CssParameter name="fill">#c0e58c</CssParameter>
+							<CssParameter name="fill-opacity">0.0</CssParameter>
+						</Fill>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>sablehum_OCS_100</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer sablehum_OCS_100</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<LegendGraphic>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#478a5a</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#31603e</CssParameter>
+									<CssParameter name="stroke-opacity">0.8</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</LegendGraphic>
+					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#31603e</CssParameter>
+							<CssParameter name="stroke-opacity">0.8</CssParameter>
+							<CssParameter name="stroke-width">0.0</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<Fill>
+							<CssParameter name="fill">#e0c805</CssParameter>
+							<CssParameter name="fill-opacity">1.0</CssParameter>
+						</Fill>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>rochy_OCS_100</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer rochy_OCS_100</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<LegendGraphic>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#4f61c3</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#374388</CssParameter>
+									<CssParameter name="stroke-opacity">0.8</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</LegendGraphic>
+					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#374388</CssParameter>
+							<CssParameter name="stroke-opacity">1.0</CssParameter>
+							<CssParameter name="stroke-width">0.0</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<Fill>
+							<CssParameter name="fill">#d2a173</CssParameter>
+							<CssParameter name="fill-opacity">1.0</CssParameter>
+						</Fill>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>surface_eau_OCS_100</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer surface_eau_OCS_100</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<LegendGraphic>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#c9d4f0</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#8c94a8</CssParameter>
+									<CssParameter name="stroke-opacity">0.8</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</LegendGraphic>
+					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#8c94a8</CssParameter>
+							<CssParameter name="stroke-opacity">0.8</CssParameter>
+							<CssParameter name="stroke-width">1.0</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<Fill>
+							<CssParameter name="fill">#c9d4f0</CssParameter>
+							<CssParameter name="fill-opacity">0.8</CssParameter>
+						</Fill>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>toponyme_droit_25_emprise_100K</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer toponyme_droit_25_emprise_100K</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<LegendGraphic>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#c60517</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#8a0310</CssParameter>
+									<CssParameter name="stroke-opacity">0.8</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</LegendGraphic>
+					<PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#c60517</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#8a0310</CssParameter>
+									<CssParameter name="stroke-opacity">0.8</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</PointSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>vegetation_OCS_100</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer vegetation_OCS_100</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<LegendGraphic>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#fe5174</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#b13851</CssParameter>
+									<CssParameter name="stroke-opacity">0.8</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</LegendGraphic>
+					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#4d9221</CssParameter>
+							<CssParameter name="stroke-opacity">0.0</CssParameter>
+							<CssParameter name="stroke-width">0.0</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<Fill>
+							<CssParameter name="fill">#c0e58c</CssParameter>
+							<CssParameter name="fill-opacity">1.0</CssParameter>
+						</Fill>
+					</PolygonSymbolizer>
+					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#FFFFFF</CssParameter>
+							<CssParameter name="stroke-opacity">0.0</CssParameter>
+							<CssParameter name="stroke-width">100.0</CssParameter>
+							<ExpressiveStroke>
+								<ExpressiveMethod>Aquarelle</ExpressiveMethod>
+								<ExpressiveParameter name="transitionSize">10</ExpressiveParameter>
+								<ExpressiveParameter name="paperReferenceMapScale">100000</ExpressiveParameter>
+								<ExpressiveParameter name="brushStartWidth">10</ExpressiveParameter>
+								<ExpressiveParameter name="brushEndWidth">10</ExpressiveParameter>
+								<ExpressiveParameter name="paperRoughness">0.7</ExpressiveParameter>
+								<ExpressiveParameter name="brushRoughness">2</ExpressiveParameter>
+								<ExpressiveParameter name="strokePressure">2.6</ExpressiveParameter>
+								<ExpressiveParameter name="strokeSoftness">0.1</ExpressiveParameter>
+								<ExpressiveParameter name="paperSizeInCm">4</ExpressiveParameter>
+								<ExpressiveParameter name="paperTexture">
+									<SimpleTexture XRepeat="false" YRepeat="false">
+										<Displacement x="0.0" y="0.0"></Displacement>
+										<ScaleFactor x="1.0" y="1.0"></ScaleFactor>
+										<Rotation Angle="0.0"></Rotation>
+										<URI>../images/black-normalized.png</URI>
+									</SimpleTexture>
+								</ExpressiveParameter>
+								<ExpressiveParameter name="brushTexture">
+									<SimpleTexture XRepeat="false" YRepeat="false">
+										<Displacement x="0.0" y="0.0"></Displacement>
+										<ScaleFactor x="1.0" y="1.0"></ScaleFactor>
+										<Rotation Angle="0.0"></Rotation>
+										<URI>../images/overlay.png</URI>
+									</SimpleTexture>
+								</ExpressiveParameter>
+							</ExpressiveStroke>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<BlendingMode>Overlay</BlendingMode>
+						<Fill>
+							<CssParameter name="fill">#c0e58c</CssParameter>
+							<CssParameter name="fill-opacity">0.0</CssParameter>
+						</Fill>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>routes_100</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer routes_100</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<LegendGraphic>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#0b2a7f</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#071d58</CssParameter>
+									<CssParameter name="stroke-opacity">0.8</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</LegendGraphic>
+					<LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-opacity">1</CssParameter>
+							<CssParameter name="stroke-width">60.0</CssParameter>
+							<CssParameter name="stroke-linejoin">round</CssParameter>
+							<CssParameter name="stroke-linecap">round</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<PerpendicularOffset>0.0</PerpendicularOffset>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#ffffff</CssParameter>
+							<CssParameter name="stroke-opacity">1</CssParameter>
+							<CssParameter name="stroke-width">30.0</CssParameter>
+							<CssParameter name="stroke-linejoin">round</CssParameter>
+							<CssParameter name="stroke-linecap">round</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<PerpendicularOffset>0.0</PerpendicularOffset>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>hydro_100</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer hydro_100</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<LegendGraphic>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#738e64</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#506346</CssParameter>
+									<CssParameter name="stroke-opacity">0.8</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</LegendGraphic>
+					<LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#506346</CssParameter>
+							<CssParameter name="stroke-opacity">0.8</CssParameter>
+							<CssParameter name="stroke-width">20.0</CssParameter>
+							<CssParameter name="stroke-linejoin">round</CssParameter>
+							<CssParameter name="stroke-linecap">round</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<PerpendicularOffset>0.0</PerpendicularOffset>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>petite_emprise</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer petite_emprise</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<LegendGraphic>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#201141</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#160b2d</CssParameter>
+									<CssParameter name="stroke-opacity">0.8</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</LegendGraphic>
+					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#160b2d</CssParameter>
+							<CssParameter name="stroke-opacity">1</CssParameter>
+							<CssParameter name="stroke-width">0.5</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<BlendingMode>Overlay</BlendingMode>
+						<Fill>
+							<ExpressiveFill>
+								<ExpressiveMethod>TextureFill</ExpressiveMethod>
+								<ExpressiveParameter name="fill-texture">
+									<PerlinNoiseTexture xRepeat="false" yRepeat="false">
+										<Displacement x="0.0" y="0.0" />
+										<ScaleFactor x="1.0" y="1.0" />
+										<Rotation angle="0.0" />
+										<Resolution>600.0</Resolution>
+										<Scale>5.0</Scale>
+										<Amount>0.5</Amount>
+										<Angle>3.1415927</Angle>
+										<Stretch>1.0</Stretch>
+										<Color1>#ffffff</Color1>
+										<Color2>#000000</Color2>
+									</PerlinNoiseTexture>
+								</ExpressiveParameter>
+							</ExpressiveFill>
+							<CssParameter name="fill">#ffffff</CssParameter>
+							<CssParameter name="fill-opacity">1.0</CssParameter>
+						</Fill>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
 </StyledLayerDescriptor>

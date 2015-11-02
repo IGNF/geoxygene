@@ -1,0 +1,7 @@
+<RenderingMethod>
+    <Name>Aquarelle</Name>
+    <GeneralMethodReference>BrushStroke</GeneralMethodReference>
+    <ShaderList>
+        <ShaderRef gltype="GL_FRAGMENT_SHADER">../shaders/subshader1d.strokeOverlay.frag.glsl</ShaderRef>
+    </ShaderList>    
+</RenderingMethod>
