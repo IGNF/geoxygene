@@ -1,31 +1,32 @@
 
-#version 400
+#version 330
 
 /* Data structure sent to subshaders */
 struct DataPainting {
-	float screenWidth; 		// screen width in pixels 
-	float screenHeight;		// screen height in pixels
-	float mapScaleDiv1000;  // map scale divide by 1000 (e.g. 1:100000 maps, this value is 100)
-	int brushWidth; 	    // brush texture width in pixels
-	int brushHeight;        // brush texture height in pixels
-	int brushStartWidth;    // start texture length in pixels for the brush
-	int brushEndWidth;      // end texture length in pixels for the brush
-	float brushScale;       // size in mm of one brush pixel
-	float paperScale;       // scaling factor for paper
-	float sharpness;        // brush-paper blending sharpness
-	
-	float paperDensity;     // paper height scale factor
-	float brushDensity;     // brush height scale factor
-	float strokePressure;   // stroke pressure
-	vec4 position;          // current point position in world coordinates
-	vec2 uv;                // UV coordinates texture (u in world coordinates, v between 0 and 1)
-	vec4 color;             // point color
-	float thickness;        // line thickness in world coordinates
-	float uMax;             // maximum u coordinate in one polyline (in wolrd coordinates)
-	vec2 tan;               // tangent vector at the given point (in world coordinates)
-	float curvature;        // signed curvature estimation
-	
+    float screenWidth;      // screen width in pixels 
+    float screenHeight;     // screen height in pixels
+    float mapScaleDiv1000;  // map scale divide by 1000 (e.g. 1:100000 maps, this value is 100)
+    int brushWidth;         // brush texture width in pixels
+    int brushHeight;        // brush texture height in pixels
+    int brushStartWidth;    // start texture length in pixels for the brush
+    int brushEndWidth;      // end texture length in pixels for the brush
+    float brushScale;       // size in mm of one brush pixel
+    float paperScale;       // scaling factor for paper
+    float strokeSoftness;        // brush-paper blending strokeSoftness
+    
+    float paperRoughness;     // paper height scale factor
+    float brushRoughness;     // brush height scale factor
+    float strokePressure;   // stroke pressure
+    vec4 position;          // current point position in world coordinates
+    vec2 uv;                // UV coordinates texture (u in world coordinates, v between 0 and 1)
+    vec4 color;             // point color
+    float thickness;        // line thickness in world coordinates
+    float uMax;             // maximum u coordinate in one polyline (in wolrd coordinates)
+    vec2 tan;               // tangent vector at the given point (in world coordinates)
+    float curvature;        // signed curvature estimation
+    
 };
+
 
 uniform float strokeWidth;
 uniform float paperStrength;
@@ -63,7 +64,7 @@ vec2 computeBrushTextureCoordinates( DataPainting fragmentData ) {
 	float brushMiddleLength_w = (fragmentData.brushWidth - fragmentData.brushStartWidth - fragmentData.brushEndWidth) * fragmentData.brushScale;
 	
 	float brush0_tex = fragmentData.brushStartWidth / float(fragmentData.brushWidth);
-	float brush1_tex = 1f - fragmentData.brushEndWidth / float(fragmentData.brushWidth);
+	float brush1_tex = 1.0 - fragmentData.brushEndWidth / float(fragmentData.brushWidth);
 	if ( u_w <= brushStartLength_w ) {
 		u_tex = (u_w / brushStartLength_w) * brush0_tex;
 	} else if ( u_w >= fragmentData.uMax - brushEndLength_w ) {

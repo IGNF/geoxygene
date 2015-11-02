@@ -1,4 +1,4 @@
-#version 400
+#version 330
 
 /* Data structure sent to subshaders */
 struct DataPainting {

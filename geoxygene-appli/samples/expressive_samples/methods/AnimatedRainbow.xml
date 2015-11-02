@@ -1,0 +1,7 @@
+<RenderingMethod>
+    <Name>AnimatedSea</Name>
+    <GeneralMethodReference>RenderGradient</GeneralMethodReference>
+    <ShaderList>    
+        <ShaderRef gltype="GL_FRAGMENT_SHADER">../shaders/subshader2d.animatedsea_rainbow.frag.glsl</ShaderRef>
+    </ShaderList>
+</RenderingMethod>

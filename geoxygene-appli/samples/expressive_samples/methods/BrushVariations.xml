@@ -1,0 +1,39 @@
+<RenderingMethod>
+	<Name>BrushVariations</Name>
+	<GeneralMethodReference>BrushStroke</GeneralMethodReference>
+	<ShaderList>
+	       <ShaderRef gltype="GL_FRAGMENT_SHADER">../shaders/brush_random_variations.frag.glsl</ShaderRef>
+	</ShaderList>
+	<Parameters>
+		<Parameter>
+			<Name>StrokePressureVariationAmplitude</Name>
+			<Type>float</Type>
+			<UniformRef>pressureVariationAmplitude</UniformRef>
+		</Parameter>
+		<Parameter>
+			<Name>StrokePressureVariationWavelength</Name>
+			<Type>float</Type>
+			<UniformRef>pressureVariationWavelength</UniformRef>
+		</Parameter>
+		<Parameter>
+			<Name>StrokeShiftVariationAmplitude</Name>
+			<Type>float</Type>
+			<UniformRef>shiftVariationAmplitude</UniformRef>
+		</Parameter>
+		<Parameter>
+			<Name>StrokeShiftVariationWavelength</Name>
+			<Type>float</Type>
+			<UniformRef>shiftVariationWavelength</UniformRef>
+		</Parameter>
+		<Parameter>
+			<Name>StrokeThicknessVariationAmplitude</Name>
+			<Type>float</Type>
+			<UniformRef>thicknessVariationAmplitude</UniformRef>
+		</Parameter>
+		<Parameter>
+			<Name>StrokeThicknessVariationWavelength</Name>
+			<Type>float</Type>
+			<UniformRef>thicknessVariationWavelength</UniformRef>
+		</Parameter>
+	</Parameters>
+</RenderingMethod>

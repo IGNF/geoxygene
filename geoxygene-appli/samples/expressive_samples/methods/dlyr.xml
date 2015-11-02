@@ -1,0 +1,37 @@
+<RenderingMethod>
+	<Name>dlyr</Name>
+	<GeneralMethodReference>BrushStroke</GeneralMethodReference>
+	<ShaderList>
+		<ShaderRef gltype="GL_FRAGMENT_SHADER">../shaders/subshader1d.dlyr.frag.glsl</ShaderRef>
+	</ShaderList>
+	<Parameters>
+		<Parameter>
+			<Name>strokeWidth</Name>
+			<Type>float</Type>
+			<Restrictions>
+				<BoundRestriction min="0.0" max="1.0" />
+			</Restrictions>
+		</Parameter>
+		<Parameter>
+			<Name>paperStrength</Name>
+			<Type>float</Type>
+			<Restrictions>
+				<BoundRestriction min="0.0" max="1.0" />
+			</Restrictions>
+		</Parameter>
+		<Parameter>
+			<Name>brushStrength</Name>
+			<Type>float</Type>
+			<Restrictions>
+				<BoundRestriction min="0.0" max="2.0" />
+			</Restrictions>
+		</Parameter>
+		<Parameter>
+			<Name>brushSmoothness</Name>
+			<Type>float</Type>
+			<Restrictions>
+				<BoundRestriction min="0.01" max="0.49" />
+			</Restrictions>
+		</Parameter>
+	</Parameters>
+</RenderingMethod>
