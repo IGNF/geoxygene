@@ -22,6 +22,7 @@ package fr.ign.cogit.geoxygene.style;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
 
 /**
  * 
@@ -32,7 +33,7 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
 
     private static final String CR = System.getProperty("line.separator");
 
-    @XmlElement(name = "Fill")
+    @XmlElements({ @XmlElement(name = "Fill", type = Fill.class) })
     private Fill fill = null;
 
     @XmlElement(name = "CategorizedMap")
@@ -98,14 +99,9 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime
-                * result
-                + ((this.categorizedMap == null) ? 0 : this.categorizedMap
-                        .hashCode());
-        result = prime * result
-                + ((this.colorMap == null) ? 0 : this.colorMap.hashCode());
-        result = prime * result
-                + ((this.fill == null) ? 0 : this.fill.hashCode());
+        result = prime * result + ((this.categorizedMap == null) ? 0 : this.categorizedMap.hashCode());
+        result = prime * result + ((this.colorMap == null) ? 0 : this.colorMap.hashCode());
+        result = prime * result + ((this.fill == null) ? 0 : this.fill.hashCode());
         return result;
     }
 

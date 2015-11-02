@@ -34,11 +34,9 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
-import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor;
-import fr.ign.cogit.geoxygene.style.expressive.StrokeExpressiveRenderingDescriptor;
-import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.ExpressiveDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.ExpressiveDescriptorImpl;
 import fr.ign.cogit.geoxygene.style.gradient.GradientStroke;
-
 /**
  * @author Julien Perret
  */
@@ -57,12 +55,8 @@ public class Stroke {
             @XmlElement(name = "CssParameter", type = SvgParameter.class) })
     private List<SvgParameter> svgParameters = new ArrayList<SvgParameter>(0);
 
-    @XmlElements({
-            @XmlElement(name = "StrokeTextureExpressiveRendering", type = StrokeTextureExpressiveRenderingDescriptor.class),
-            @XmlElement(name = "BasicTextureExpressiveRendering", type = BasicTextureExpressiveRenderingDescriptor.class),
-            @XmlElement(name = "ExpressiveStroke", type = BasicTextureExpressiveRenderingDescriptor.class) })
-    public StrokeExpressiveRenderingDescriptor expressiveRendering = null;
-
+    @XmlElement(name = "ExpressiveStroke", type = ExpressiveDescriptorImpl.class)
+    protected ExpressiveDescriptorImpl expressive_stroke = null;
     /**
      * The raw color of the stroke, without opacity information.
      */
@@ -459,14 +453,6 @@ public class Stroke {
         return this.strokeDashOffset;
     }
 
-    public StrokeExpressiveRenderingDescriptor getExpressiveRendering() {
-        return this.expressiveRendering;
-    }
-
-    public void setExpressiveRendering(
-            StrokeExpressiveRenderingDescriptor expressiveRendering) {
-        this.expressiveRendering = expressiveRendering;
-    }
 
     /**
      * Affecte la valeur de l'attribut strokeDashOffset.
@@ -651,10 +637,6 @@ public class Stroke {
                         : this.colorPropertyName.hashCode());
         result = prime
                 * result
-                + ((this.expressiveRendering == null) ? 0
-                        : this.expressiveRendering.hashCode());
-        result = prime
-                * result
                 + ((this.graphicType == null) ? 0 : this.graphicType.hashCode());
         result = prime * result
                 + ((this.stroke == null) ? 0 : this.stroke.hashCode());
@@ -667,6 +649,10 @@ public class Stroke {
         result = prime
                 * result
                 + ((this.svgParameters == null) ? 0 : this.svgParameters
+                        .hashCode());
+        result = prime
+                * result
+                + ((this.expressive_stroke == null) ? 0 : this.expressive_stroke
                         .hashCode());
         return result;
     }
@@ -707,13 +693,6 @@ public class Stroke {
                 return false;
             }
         } else if (!this.colorPropertyName.equals(other.colorPropertyName)) {
-            return false;
-        }
-        if (this.expressiveRendering == null) {
-            if (other.expressiveRendering != null) {
-                return false;
-            }
-        } else if (!this.expressiveRendering.equals(other.expressiveRendering)) {
             return false;
         }
         if (this.graphicType == null) {
@@ -758,7 +737,18 @@ public class Stroke {
         } else if (!this.svgParameters.equals(other.svgParameters)) {
             return false;
         }
+        if (this.expressive_stroke == null) {
+            if (other.expressive_stroke != null) {
+                return false;
+            }
+        } else if (!this.expressive_stroke.equals(other.expressive_stroke)) {
+            return false;
+        }
         return true;
+    }
+
+    public ExpressiveDescriptor getExpressiveStroke() {
+        return this.expressive_stroke;
     }
 
 }

@@ -1,0 +1,7 @@
+<RenderingMethod>
+    <Name>RenderSeams</Name>
+    <GeneralMethodReference>BezierStroke</GeneralMethodReference>
+    <ShaderList>
+        <Shader>subshader1d.jean.frag</Shader>
+    </ShaderList>  
+</RenderingMethod>

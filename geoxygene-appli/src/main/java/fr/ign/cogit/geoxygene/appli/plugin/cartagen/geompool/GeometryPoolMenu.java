@@ -56,6 +56,7 @@ import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.util.ColorEditor;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.util.ColorRenderer;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.util.DisplayLayerTableModel;
+import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
@@ -188,7 +189,7 @@ public class GeometryPoolMenu extends JMenu {
     public void actionPerformed(ActionEvent arg0) {
       if (CartAGenDoc.getInstance().getCurrentDataset() == null) {
         if (geometryPool == null)
-          geometryPool = new GeometryPool(geomPoolLayer.getSld().getDataSet(),
+          geometryPool = new GeometryPool(DataSet.getInstance(),
               CartAGenPlugin.getInstance().getApplication().getMainFrame()
                   .getSelectedProjectFrame().getSld());
         for (IFeature feat : CartAGenPlugin.getInstance().getApplication()
@@ -694,7 +695,7 @@ public class GeometryPoolMenu extends JMenu {
     private void displayGeoms() {
       if (CartAGenDoc.getInstance().getCurrentDataset() == null) {
         if (geometryPool == null)
-          geometryPool = new GeometryPool(geomPoolLayer.getSld().getDataSet(),
+          geometryPool = new GeometryPool(DataSet.getInstance(),
               CartAGenPlugin.getInstance().getApplication().getMainFrame()
                   .getSelectedProjectFrame().getSld());
       } else {
@@ -753,7 +754,7 @@ public class GeometryPoolMenu extends JMenu {
         ProjectFrame frame = CartAGenPlugin.getInstance().getApplication()
             .getMainFrame().getSelectedProjectFrame();
         if (mGeomPoolVisible.isSelected()) {
-          if (geomPoolLayer.getSld().getDataSet()
+          if (DataSet.getInstance()
               .getPopulation(geomPoolLayer.getName()) == null) {
             geomPoolLayer
                 .getSld()

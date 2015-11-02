@@ -27,15 +27,15 @@
 
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
-import java.io.File;
-import java.net.URL;
-
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
 import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
-import fr.ign.cogit.geoxygene.style.texture.BasicTextureDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.SimpleTexture;
 import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 
 /**
@@ -44,30 +44,17 @@ import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
  */
 public class BasicTextureTask extends AbstractTextureTask<BasicTexture> {
 
-    // texture descriptor (from style)
-    private BasicTextureDescriptor textureDescriptor = null;
+    // The built texture
     private BasicTexture basicTexture = null;
+    private SimpleTexture tex_descriptor = null;
 
-    private static final Logger logger = Logger
-            .getLogger(BasicTextureTask.class.getName()); // logger
+    private static final Logger logger = Logger.getLogger(BasicTextureTask.class.getName()); // logger
 
-    /**
-     * @param texture
-     */
-    public BasicTextureTask(String name,
-            BasicTextureDescriptor textureDescriptor) {
-        super("Basic" + name);
-        this.textureDescriptor = textureDescriptor;
+    public BasicTextureTask(URI texture_identifier, SimpleTexture _tex_descriptor) {
+        super("Basic" + texture_identifier);
         this.basicTexture = new BasicTexture();
-    }
-
-    /**
-     * @param texture
-     */
-    public BasicTextureTask(String name, File file) {
-        super("Basic" + name);
-        this.textureDescriptor = null;
-        this.basicTexture = new BasicTexture(file.getAbsolutePath());
+        this.tex_descriptor = _tex_descriptor;
+        this.id = texture_identifier;
     }
 
     /*
@@ -111,25 +98,16 @@ public class BasicTextureTask extends AbstractTextureTask<BasicTexture> {
         this.setState(TaskState.INITIALIZING);
         this.setState(TaskState.RUNNING);
         try {
-            URL inputURL = null;
-            if (this.textureDescriptor != null) {
-                inputURL = new URL(this.textureDescriptor.getUrl());
-            } else if (this.basicTexture.getTextureFilename() != null) {
-                inputURL = new File(this.basicTexture.getTextureFilename())
-                        .toURI().toURL();
-            } else {
-                logger.error("No valid image description for basic texture: "
-                        + this.toString());
-            }
-            logger.debug("Reading file " + inputURL);
-            this.getTexture().setTextureImage(ImageIO.read(inputURL));
-            this.setNeedWriting(false);
+            this.basicTexture.setTextureURL(this.tex_descriptor.getAbsoluteURI().toURL());
+            this.getTexture().setTextureImage(ImageIO.read(this.tex_descriptor.getAbsoluteURI().toURL()));
+            this.setNeedCaching(false);
             this.setState(TaskState.FINISHED);
-        } catch (Exception e) {
-            this.setNeedWriting(false);
-            this.setError(e);
-            this.setState(TaskState.ERROR);
+        } catch (MalformedURLException e) {
             e.printStackTrace();
+            this.setState(TaskState.ERROR);
+        } catch (IOException e) {
+            e.printStackTrace();
+            this.setState(TaskState.ERROR);
         }
     }
 
@@ -155,9 +133,7 @@ public class BasicTextureTask extends AbstractTextureTask<BasicTexture> {
      */
     @Override
     public String toString() {
-        return "BasicTextureTask [textureDescriptor=" + this.textureDescriptor
-                + ", basicTexture=" + this.basicTexture + ", toString()="
-                + super.toString() + "]";
+        return "BasicTextureTask [Texture Identifier=" + this.getName() + ", basicTexture=" + this.basicTexture + ", toString()=" + super.toString() + "]";
     }
 
 }

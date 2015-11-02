@@ -45,27 +45,26 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
+import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
+
 /**
  * 
- * @author AMasse
- * This class is used to unify Categorize and Interpolate parts of RasterSymbolizer for RasterImage
+ * @author AMasse This class is used to unify Categorize and Interpolate parts
+ *         of RasterSymbolizer for RasterImage
  */
 
-public class ImageColormap {
+public class ImageColormap extends BasicTexture {
     // declarations
     @SuppressWarnings("unused")
-    private static int TYPE_INTERPOLATE = 1; 
+    private static int TYPE_INTERPOLATE = 1;
     @SuppressWarnings("unused")
     private static int TYPE_CATEGORIZE = 2;
-    
-    private int typeColormap=-1;
+
+    private int typeColormap = -1;
     private int nbPoints = 0;
     private float[] value = null;
     private int[][] color = null;
-    
-    private int colormapId = -1;
-    private int colormapSlot = GL13.GL_TEXTURE0;
-    
+
     // Constructors
     public ImageColormap(int typeColormap, int nbPoints) {
         this.typeColormap = typeColormap;
@@ -73,147 +72,141 @@ public class ImageColormap {
         value = new float[nbPoints];
         color = new int[nbPoints][4];
     }
-    
+
     // Accesssors
     // Getters
     public int getTypeColormap() {
         return typeColormap;
     }
-    
+
     public int getNbPoints() {
         return nbPoints;
     }
-    
+
     public float getValue(int iPoint) {
         return value[iPoint];
     }
-    
+
     public float[] getValue() {
         return value;
     }
-    
+
     public int getColor(int iPoint, int iBand) {
         return color[iPoint][iBand];
     }
-    
+
     public int[] getColor(int iPoint) {
         return color[iPoint];
     }
-    
+
     public int[][] getColor() {
         return color;
     }
-    
+
     // Setters
     public void setTypeColormap(int typeColormap) {
         this.typeColormap = typeColormap;
     }
-    
+
     public void setNbPoints(int nbPoints) {
         this.nbPoints = nbPoints;
     }
-    
+
     public void setValue(int iPoint, float value) {
         this.value[iPoint] = value;
     }
-    
+
     public void setValue(float[] values) {
         if (values.length != nbPoints) {
             // Not the same size of elements, reallocation
-//            value = new float[values.length];
-//            this.value = values;
+            // value = new float[values.length];
+            // this.value = values;
             System.err.println("Pb in setting Colormap values");
         } else {
             // Ok
             this.value = values;
         }
     }
-    
+
     public void setColor(int iPoint, int iBand, int color) {
         this.color[iPoint][iBand] = color;
     }
-        
+
     // Be aware that it is not a real rendering
     // We use a fake texture to send colormap information to the shaher
     // There is no magic here, sorry
-    public boolean initializeRendering(int programId) {
-        
-        // Enable GL texture
-        glEnable(GL_TEXTURE_2D);
-        
-        // Go find imageID and pass buffer of data to GPU
-        Integer imageIndex = this.getColormapId();
-        
-        // Very important, activate the texture Slot
-        GL13.glActiveTexture(this.colormapSlot+imageIndex);
-        
-        // Send the uniform to shader and bind it
-        glUniform1i(GL20.glGetUniformLocation(programId,"bufferColormap"),imageIndex);
-        glBindTexture(GL_TEXTURE_2D, imageIndex);
-        
-        return true;
-    }
-    
+//    public boolean initializeRendering(int programId) {
+//
+//        // Enable GL texture
+//        glEnable(GL_TEXTURE_2D);
+//        // Go find imageID and pass buffer of data to GPU
+//        Integer imageIndex = this.getTextureId();
+//        // Very important, activate the texture Slot
+//        GL13.glActiveTexture(this.getTextureId() + imageIndex);
+//        glBindTexture(GL_TEXTURE_2D, imageIndex);
+//
+//        return true;
+//    }
+
     /**
      * @return the generated texture id
      */
-    
-    protected final Integer getColormapId() {
-        if (this.colormapId < 0) {
+    @Override
+    public final Integer getTextureId() {
+        if (this.textureId < 0) {
             // Declaration and initialization
             int target = GL_TEXTURE_2D;
             int levels = 0; // MipMap disabled
-            
+
             // We generate a texture ID
-            this.colormapId = glGenTextures();
-            
+            this.textureId = glGenTextures();
+
             // We bind the texture
-            glBindTexture(target, this.colormapId);
-            
+            glBindTexture(target, this.textureId);
+
             // Give the buffer to the GPU
-            ByteBuffer bufferColormap = ByteBuffer.allocateDirect(nbPoints*2*4*4);                
-            bufferColormap.order(ByteOrder.nativeOrder());                
+            ByteBuffer bufferColormap = ByteBuffer.allocateDirect(nbPoints * 2 * 4 * 4);
+            bufferColormap.order(ByteOrder.nativeOrder());
 
             // In order, we send first colors and then associated values
-            for (int i=0;i<nbPoints;i++) {
-                for(int j=0;j<4;j++) {
+            for (int i = 0; i < nbPoints; i++) {
+                for (int j = 0; j < 4; j++) {
                     bufferColormap.putFloat((float) color[i][j]);
                 }
             }
-            for (int i=0;i<nbPoints;i++) {
-                for(int j=0;j<4;j++) {
+            for (int i = 0; i < nbPoints; i++) {
+                for (int j = 0; j < 4; j++) {
                     bufferColormap.putFloat((float) value[i]);
                 }
             }
             bufferColormap.rewind();
-            
-            glTexImage2D(target,levels, GL30.GL_RGBA32F,nbPoints, 2, 0,
-                    GL11.GL_RGBA, GL11.GL_FLOAT ,bufferColormap);
-            
+
+            glTexImage2D(target, levels, GL30.GL_RGBA32F, nbPoints, 2, 0, GL11.GL_RGBA, GL11.GL_FLOAT, bufferColormap);
+
             // TODO : useful ?
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-                                  
+
             // TODO : unload buffer, is it working ?
             bufferColormap.clear();
 
         }
-        
+
         // Return the texture ID so we can bind it later again
-        return this.colormapId;
+        return this.textureId;
     }
-    
+
     // Cemetery
-//  public void setColor(int[][] color) {
-//  if (color.length != nbPoints*4) {
-//      // Not the same size of elements, reallocation
-////      value = new float[values.length];
-////      this.value = values;
-//      System.err.println("Pb in setting Colormap colors");
-//  } else {
-//      // Ok
-//      this.color = color;
-//  }
-//}
-    
+    // public void setColor(int[][] color) {
+    // if (color.length != nbPoints*4) {
+    // // Not the same size of elements, reallocation
+    // // value = new float[values.length];
+    // // this.value = values;
+    // System.err.println("Pb in setting Colormap colors");
+    // } else {
+    // // Ok
+    // this.color = color;
+    // }
+    // }
+
 }

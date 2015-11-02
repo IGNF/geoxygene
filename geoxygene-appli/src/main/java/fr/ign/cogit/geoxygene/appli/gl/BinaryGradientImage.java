@@ -52,6 +52,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
+import fr.ign.cogit.geoxygene.util.gl.GLTexture;
 import fr.ign.cogit.geoxygene.util.gl.Sample;
 
 /**
@@ -59,7 +60,7 @@ import fr.ign.cogit.geoxygene.util.gl.Sample;
  *         and linear parameterization informations. each pixel contains texture
  *         coordinates and some temporary information
  */
-public class BinaryGradientImage {
+public class BinaryGradientImage{
 
     public static class GradientPixel {
         public double uTexture = 0;
@@ -134,23 +135,6 @@ public class BinaryGradientImage {
     public Double dMin = null;
     public Double dMax = null;
 
-    // /**
-    // * constructor
-    // *
-    // */
-    // public GradientTextureImage() {
-    // }
-
-    // /**
-    // * Copy constructor
-    // */
-    // public GradientTextureImage(final GradientTextureImage src) {
-    // this.setDimension(src.width, src.height);
-    // for (int l = 0; l < src.size; l++) {
-    // this.pixels[l] = new TexturePixel(src.getPixels()[l]);
-    // }
-    //
-    // }
 
     /**
      * constructor
@@ -481,19 +465,6 @@ public class BinaryGradientImage {
             // draw the outer frontier
             drawFrontier(gradientImage, polygon.getExterior(), 1,
                     pixelRenderer, params);
-            // double minX = Double.MAX_VALUE;
-            // double minY = Double.MAX_VALUE;
-            // double maxX = -Double.MAX_VALUE;
-            // double maxY = -Double.MAX_VALUE;
-            // for (IDirectPosition pos : polygon.getExterior().coord()) {
-            // minX = Math.min(minX, pos.getX());
-            // minY = Math.min(minY, pos.getY());
-            // maxX = Math.max(maxX, pos.getX());
-            // maxY = Math.max(maxY, pos.getY());
-            // }
-            // System.err.println("exterior frontier " + minX + "x" + minY +
-            // "  "
-            // + maxX + "x" + maxY);
             // draw all inner frontiers
             for (int innerFrontierIndex = 0; innerFrontierIndex < polygon
                     .getInterior().size(); innerFrontierIndex++) {

@@ -1,3 +1,5 @@
+package fr.ign.cogit.geoxygene.appli.gl;
+
 /*******************************************************************************
  * This file is part of the GeOxygene project source files.
  * 
@@ -25,7 +27,6 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.appli.gl;
 
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
@@ -46,12 +47,10 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-import fr.ign.cogit.geoxygene.appli.render.texture.StrokeTextureExpressiveRendering;
 import fr.ign.cogit.geoxygene.util.gl.AbstractGLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLInput;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLRenderingCapability;
-import fr.ign.cogit.geoxygene.util.gl.GLTexture;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
 
 /**
@@ -76,9 +75,6 @@ public class GLPaintingComplex extends AbstractGLComplex<GLPaintingVertex> {
     private int vboVerticesId = -1; // VBO Vertices index
     private int vboIndicesId = -1; // VBO Indices index
     private GLPaintingRenderingCapability[] renderingCapabilities = null;
-    private StrokeTextureExpressiveRendering expressiveRendering = null;
-    private GLTexture brushTexture = null;
-    private GLTexture paperTexture = null;
 
     public enum GLPaintingRenderingCapability implements GLRenderingCapability {
         EXPRESSIVE_STROKE_TEXTURE
@@ -129,81 +125,6 @@ public class GLPaintingComplex extends AbstractGLComplex<GLPaintingVertex> {
         // for (GLSimpleVertex vertex : this.vertices) {
         // vertex.setAlpha(1.f);
         // }
-    }
-
-    /**
-     * @return the brushTexture
-     */
-    public GLTexture getBrushTexture() {
-        if (this.brushTexture == null) {
-            this.brushTexture = GLTextureManager.getInstance().getTexture(
-                    this.getExpressiveRendering().getBrushTextureFilename());
-            this.brushTexture.setMipmap(false);
-        }
-        return this.brushTexture;
-    }
-
-    /**
-     * @param brushTexture
-     *            the brushTexture to set
-     */
-    public void setBrushTexture(GLTexture brushTexture) {
-        this.brushTexture = brushTexture;
-    }
-
-    /**
-     * invalidate lazy getter
-     */
-    public void invalidateBrushTexture() {
-        this.brushTexture = null;
-    }
-
-    /**
-     * @return the paperTexture
-     */
-    public GLTexture getPaperTexture() {
-        if (this.paperTexture == null) {
-            if (this.getExpressiveRendering() == null) {
-                logger.error("try to get paper texture filename from a GL primitive that has no expressive rendering class set...");
-                logger.error("primitive ID = " + this.getId());
-                return null;
-            }
-            this.paperTexture = GLTextureManager.getInstance().getTexture(
-                    this.getExpressiveRendering().getPaperTextureFilename());
-            this.paperTexture.setMipmap(false);
-        }
-        return this.paperTexture;
-    }
-
-    /**
-     * @param paperTexture
-     *            the paperTexture to set
-     */
-    public void setPaperTexture(GLTexture paperTexture) {
-        this.paperTexture = paperTexture;
-    }
-
-    /**
-     * invalidate lazy getter
-     */
-    public void invalidatePaperTexture() {
-        this.paperTexture = null;
-    }
-
-    /**
-     * @return the expressiveRendering
-     */
-    public StrokeTextureExpressiveRendering getExpressiveRendering() {
-        return this.expressiveRendering;
-    }
-
-    /**
-     * @param expressiveRendering
-     *            the expressiveRendering to set
-     */
-    public void setExpressiveRendering(
-            StrokeTextureExpressiveRendering expressiveRendering) {
-        this.expressiveRendering = expressiveRendering;
     }
 
     @Override

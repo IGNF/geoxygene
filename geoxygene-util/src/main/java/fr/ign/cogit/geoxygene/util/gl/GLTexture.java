@@ -24,149 +24,62 @@
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  *******************************************************************************/
-
 package fr.ign.cogit.geoxygene.util.gl;
 
-import java.awt.image.BufferedImage;
-
-import org.apache.log4j.Logger;
-
 /**
- * @author JeT Basic texture returns the coordinates equal to the provided
- *         point. It manages a texture by its filename and is a good base class
- *         for inheritance
+ * Texture management. This class returns texture coordinates depending on the
+ * kind of texture type It maps 2D points to 2D texture coordinates
+ * 
+ * paint method: texture.initializeRendering(), texture.finalizeRendering()
+ * 
+ * shader usage: uniform sampler2D colorTexture1; in vec2 fragmentTextureCoord;
+ * vec4 tcolor = texture(colorTexture1, fragmentTextureCoord);
+ * 
+ * @author JeT
+ * 
  */
-public class GLTexture {
-
-    private static final Logger logger = Logger.getLogger(GLTexture.class
-            .getName()); // logger
-
-    private int textureId = -1;
-    private String textureFilename = null;
-    private BufferedImage textureImage = null;
-    private boolean mipmap = false;
-
-    // private double minX = 0; // range of point coordinates in world space
-    // private double maxX = 1; // range of point coordinates in world space
-    // private double minY = 0; // range of point coordinates in world space
-    // private double maxY = 1; // range of point coordinates in world space
+public interface GLTexture {
 
     /**
-     * Constructor
-     */
-    public GLTexture() {
-    }
-
-    /**
-     * @return the mipmap
-     */
-    public boolean isMipmap() {
-        return this.mipmap;
-    }
-
-    /**
-     * @param mipmap
-     *            the mipmap to set
-     */
-    public void setMipmap(boolean mipmap) {
-        this.mipmap = mipmap;
-    }
-
-    /**
-     * Constructor with an image to read
+     * Texture initialization. This method must be called before
+     * vertexCoordinates() method calls It can use the current GLSL program Id
+     * (to set uniforms)
      * 
-     * @param textureFilename
+     * @return true if texture is valid
      */
-    public GLTexture(final String textureFilename) {
-        this();
-        this.setTextureFilename(textureFilename);
-    }
+    boolean initializeRendering(int programId);
 
     /**
-     * Constructor with an image in memory
-     * 
-     * @param textureImage
+     * Finalize rendering. After this call, vertexCoordinates() method calls
+     * returns unpredictive results
      */
-    public GLTexture(BufferedImage textureImage) {
-        this();
-        this.textureImage = textureImage;
-    }
-
-    /**
-     * @return the generated texture id
-     */
-    public final Integer getTextureId() {
-        if (this.textureId < 0) {
-            BufferedImage textureImage = this.getTextureImage();
-            if (textureImage != null) {
-                this.textureId = GLTools.loadOrRetrieveTexture(textureImage,
-                        this.mipmap);
-            }
-        }
-        return this.textureId;
-    }
-
-    /**
-     * @return the textureFilename
-     */
-    public final String getTextureFilename() {
-        return this.textureFilename;
-    }
-
-    /**
-     * @return the textureImage
-     */
-    public final BufferedImage getTextureImage() {
-        if (this.textureImage == null && this.textureFilename != null) {
-            // if the texture image is not set, try to read it from a file
-            try {
-                this.textureImage = GLTools.loadImage(this.textureFilename);
-            } catch (Exception e) {
-                logger.error("Cannot read file '" + this.getTextureFilename()
-                        + "'");
-                e.printStackTrace();
-            }
-        }
-        return this.textureImage;
-    }
+    void finalizeRendering();
 
     /**
      * @return the texture image width (in pixels)
      */
-    public final int getTextureWidth() {
-        BufferedImage img = this.getTextureImage();
-        if (img == null) {
-            return 0;
-        }
-        return img.getWidth();
-    }
+    int getTextureWidth();
 
     /**
      * @return the texture image height (in pixels)
      */
-    public final int getTextureHeight() {
-        BufferedImage img = this.getTextureImage();
-        if (img == null) {
-            return 0;
-        }
-        return img.getHeight();
-    }
+    int getTextureHeight();
 
     /**
-     * @param textureFilename
-     *            the textureFilename to set
+     * @return the texture image width (in pixels)
      */
-    public final void setTextureFilename(final String textureFilename) {
-        this.textureFilename = textureFilename;
-        this.textureId = -1;
-        this.textureImage = null;
-    }
+    double getScaleX();
 
-    public void setTextureImage(BufferedImage textureImage) {
-        this.textureImage = textureImage;
-        this.textureId = -1;
-        // this.textureId = GLTools.loadTexture(this.textureImage);
+    /**
+     * @return the texture image height (in pixels)
+     */
+    double getScaleY();
 
-    }
+    /**
+     * Assign a GL texture slot to this texture.
+     * @param name
+     * @param i
+     */
+    void setTextureSlot(String name, int i);
 
 }

@@ -33,14 +33,14 @@ import java.util.Date;
 
 import org.jfree.util.Log;
 
-import fr.ign.cogit.geoxygene.appli.render.GeoxComplexRenderer;
+import fr.ign.cogit.geoxygene.appli.render.GeoxygeneGLRenderer;
 
 /**
  * @author JeT
  * 
  */
 public class RendererStatistics {
-    private GeoxComplexRenderer renderer = null;
+    private GeoxygeneGLRenderer renderer = null;
     private long startTime = 0;
     private long endTime = 0;
     private int nbActivate = 0;
@@ -56,7 +56,7 @@ public class RendererStatistics {
     /**
      * @param renderer
      */
-    public RendererStatistics(GeoxComplexRenderer renderer) {
+    public RendererStatistics(GeoxygeneGLRenderer renderer) {
         super();
         this.renderer = renderer;
     }
@@ -118,7 +118,6 @@ public class RendererStatistics {
         pos.println("Statistics for renderer "
                 + this.renderer.getClass().getSimpleName() + " ("
                 + this.renderer.toString() + ")");
-        pos.println("\tSymbolizer : " + this.renderer.getSymbolizer());
         pos.println("\tRender count = " + this.nbRender);
         pos.println("\tActivate/Switch block count = "
                 + this.nbActivate

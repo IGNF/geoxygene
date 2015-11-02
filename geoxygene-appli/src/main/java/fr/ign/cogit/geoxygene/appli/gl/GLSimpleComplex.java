@@ -45,7 +45,6 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-import fr.ign.cogit.geoxygene.appli.render.texture.ExpressiveRendering;
 import fr.ign.cogit.geoxygene.util.gl.AbstractGLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLInput;
@@ -53,7 +52,6 @@ import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLRenderingCapability;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
-import fr.ign.cogit.geoxygene.util.gl.Texture;
 
 /**
  * GL Primitive is a representation of a 2D Object with 2D coordinates, Texture
@@ -69,25 +67,18 @@ public class GLSimpleComplex extends AbstractGLComplex<GLSimpleVertex>
 
     private static final Logger logger = Logger.getLogger(GLSimpleComplex.class
             .getName()); // logger
+    //Vertex Buffer Object constructed from vertices.
+    private FloatBuffer verticesBuffer = null;
+    //Index buffer constructed from vertices constructed from flattened
+    // indicesPerType.  
+    private IntBuffer indicesBuffer = null;
 
-    // private static final Integer[] IntegerConversionObject = new Integer[]
-    // {}; // static object for list to array conversion
-    private FloatBuffer verticesBuffer = null; // Vertex buffer (VBO array)
-                                               // constructed from vertices
-    private IntBuffer indicesBuffer = null; // Index Buffer (VBO indices)
-                                            // constructed from flattened
-                                            // indicesPerType
-    private Texture texture = null;
-    
-    // RasterImage, used to read and send Raster stuff to the shader
-    private RasterImage rasterImage = null;
 
     private int vaoId = -1; // VAO index
     private int vboVerticesId = -1; // VBO Vertices index
     private int vboIndicesId = -1; // VBO Indices index
     private double overallOpacity = 1.;
     private GLSimpleRenderingCapability[] renderingCapabilities = null;
-    private ExpressiveRendering expressiveRendering = null;
     int stride = -1;
 
     public enum GLSimpleRenderingCapability implements GLRenderingCapability {
@@ -99,11 +90,11 @@ public class GLSimpleComplex extends AbstractGLComplex<GLSimpleVertex>
      */
     public GLSimpleComplex(String id, double minX, double minY) {
         super(id, minX, minY);
-        this.addInput(GLSimpleVertex.vertexPositionVariableName,
+        this.addInput(GLSimpleVertex.VertexPositionVarName,
                 GLSimpleVertex.vertexPostionLocation, GL11.GL_FLOAT, 3, false);
-        this.addInput(GLSimpleVertex.vertexUVVariableName,
+        this.addInput(GLSimpleVertex.VertexUVVarName,
                 GLSimpleVertex.vertexUVLocation, GL11.GL_FLOAT, 2, false);
-        this.addInput(GLSimpleVertex.vertexColorVariableName,
+        this.addInput(GLSimpleVertex.VertexColorVarName ,
                 GLSimpleVertex.vertexColorLocation, GL11.GL_FLOAT, 4, false);
     }
 
@@ -113,21 +104,6 @@ public class GLSimpleComplex extends AbstractGLComplex<GLSimpleVertex>
     @Override
     public double getOverallOpacity() {
         return this.overallOpacity;
-    }
-
-    /**
-     * @param expressiveRendering
-     *            the expressiveRendering to set
-     */
-    public void setExpressiveRendering(ExpressiveRendering expressiveRendering) {
-        this.expressiveRendering = expressiveRendering;
-    }
-
-    /**
-     * @return the expressiveRendering
-     */
-    public ExpressiveRendering getExpressiveRendering() {
-        return this.expressiveRendering;
     }
 
     /**
@@ -148,49 +124,18 @@ public class GLSimpleComplex extends AbstractGLComplex<GLSimpleVertex>
     @Override
     public GLSimpleRenderingCapability[] getRenderingCapabilities() {
         if (this.renderingCapabilities == null) {
-            if (this.getTexture() != null) {
-                this.renderingCapabilities = new GLSimpleRenderingCapability[] {
-                        GLSimpleRenderingCapability.COLOR,
-                        GLSimpleRenderingCapability.TEXTURE };
-            } else {
+//            if (this.getTexture() != null) {
+//                this.renderingCapabilities = new GLSimpleRenderingCapability[] {
+//                        GLSimpleRenderingCapability.COLOR,
+//                        GLSimpleRenderingCapability.TEXTURE };
+//            } else {
                 this.renderingCapabilities = new GLSimpleRenderingCapability[] { GLSimpleRenderingCapability.COLOR };
-            }
+//            }
         }
         return this.renderingCapabilities;
     }
 
-    /**
-     * @return the texture
-     */
-    public Texture getTexture() {
-        return this.texture;
-    }
-    
-    /**
-     * @return the rasterImage
-     */
-    public RasterImage getRasterImage() {
-        return this.rasterImage;
-    }
 
-    /**
-     * @param texture
-     *            the texture to set
-     */
-    public void setTexture(Texture texture) {
-        this.texture = texture;
-        this.renderingCapabilities = null;
-
-    }
-    
-    /**
-     * @param rasterImage
-     *            the rasterImage to set
-     */
-    public void setRasterImage(RasterImage rasterImage) {
-        this.rasterImage = rasterImage;
-
-    }
 
     /**
      * Set the color of all vertices contained in this complex
@@ -328,42 +273,14 @@ public class GLSimpleComplex extends AbstractGLComplex<GLSimpleVertex>
             GL20.glVertexAttribPointer(input.getLocation(),
                     input.getComponentCount(), input.getGlType(),
                     input.isNormalized(), this.getStride(), byteShift);
-            // System.err.println("loc = " + input.getLocation() + " "
-            // + input.getComponentCount() + " " + input.getGlType()
-            // + " stride = " + this.getStride() + " shift = " + byteShift
-            // + " name = " + input.getName() + " "
-            // + this.getClass().getSimpleName());
             byteShift += input.getComponentCount()
                     * GLTools.sizeInBytes(input.getGlType());
             glEnableVertexAttribArray(input.getLocation());
 
         }
-        // System.err.println("previous");
-        // for (int nAttrib = 0; nAttrib < GLSimpleVertex.ATTRIBUTES_COUNT;
-        // nAttrib++)
-        // {
-        // GL20.glVertexAttribPointer(GLSimpleVertex.ATTRIBUTES_ID[nAttrib],
-        // GLSimpleVertex.ATTRIBUTES_COMPONENT_NUMBER[nAttrib],
-        // GLSimpleVertex.ATTRIBUTES_TYPE[nAttrib],
-        // false, GLSimpleVertex.VERTEX_BYTESIZE,
-        // GLSimpleVertex.ATTRIBUTES_BYTEOFFSET[nAttrib]);
-        // System.err.println("loc = " + GLSimpleVertex.ATTRIBUTES_ID[nAttrib] +
-        // " " +
-        // GLSimpleVertex.ATTRIBUTES_COMPONENT_NUMBER[nAttrib] + " "
-        // + GLSimpleVertex.ATTRIBUTES_TYPE[nAttrib] + " stride = " +
-        // GLSimpleVertex.VERTEX_BYTESIZE + " shift = " +
-        // GLSimpleVertex.ATTRIBUTES_BYTEOFFSET[nAttrib]);
-        // glEnableVertexAttribArray(GLSimpleVertex.ATTRIBUTES_ID[nAttrib]);
-        //
-        // }
 
         glBufferData(GL_ARRAY_BUFFER, this.getFlippedVerticesBuffer(),
                 GL_STATIC_DRAW);
-
-        // displayBuffer(this.getFlippedVerticesBuffer());
-
-        // glBindBuffer(GL_ARRAY_BUFFER, 0);
-
         // create the index VBO
         this.vboIndicesId = glGenBuffers();
         if (this.vboIndicesId <= 0) {
@@ -373,8 +290,6 @@ public class GLSimpleComplex extends AbstractGLComplex<GLSimpleVertex>
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.vboIndicesId);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, this.getFlippedIndicesBuffer(),
                 GL_STATIC_DRAW);
-
-        // displayBuffer(this.getFlippedIndicesBuffer());
 
         glBindVertexArray(0);
 
@@ -418,43 +333,5 @@ public class GLSimpleComplex extends AbstractGLComplex<GLSimpleVertex>
         }
         return this.vboIndicesId;
     }
-
-    // /**
-    // * Add all meshes from a gl complex
-    // *
-    // * @param subComplex
-    // */
-    // @Override
-    // public void addGLComplex(GLComplex subComplex) {
-    //
-    // if (subComplex instanceof GLSimpleComplex) {
-    // GLSimpleComplex subComplex = (GLSimpleComplex) subComplex;
-    //
-    // }
-    // // map between old indices and new ones
-    // HashMap<Integer, Integer> indicesLUT = new HashMap<Integer, Integer>();
-    //
-    // if (subComplex == null) {
-    // return;
-    // }
-    // if (subComplex.mayOverlap()) {
-    // this.setMayOverlap(true);
-    // }
-    // // add all vertices
-    // int vertexOldIndex = 0;
-    // for (GLSimpleVertex vertex : subComplex.getVertices()) {
-    // int vertexNewIndex = this.addVertex(vertex);
-    // indicesLUT.put(vertexOldIndex, vertexNewIndex);
-    // vertexOldIndex++;
-    // }
-    // // add a copy of all meshes (map indices with computed LUT)
-    // for (GLMesh oldMesh : subComplex.getMeshes()) {
-    // GLMesh newMesh = this.addGLMesh(oldMesh.getGlType());
-    // for (int oldIndex : oldMesh.getIndices()) {
-    // newMesh.addIndex(indicesLUT.get(oldIndex));
-    // }
-    // }
-    // this.invalidateBuffers();
-    // }
 
 }

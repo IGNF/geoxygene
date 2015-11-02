@@ -422,32 +422,7 @@ public class TaskManager implements TaskListener<Task> {
 
     }
 
-    // /**
-    // * Wait for task termination. We should use a wait/notify method to avoid
-    // * time consuming wait
-    // *
-    // * @param task
-    // * task to wait for
-    // * @param maxWaitTime
-    // * max time to wait for termination (0 = infinite)
-    // * @return true if max time has not been reached
-    // */
-    // public static boolean wait(Task task, long maxWaitTime) {
-    // boolean[] finished = { false };
-    // TaskListener taskWaiter = new TaskWaiter(finished);
-    // long startTime = new Date().getTime();
-    // task.addTaskListener(taskWaiter);
-    // while (finished[0] == false && (maxWaitTime <= 0 || new Date().getTime()
-    // - startTime < maxWaitTime)) {
-    // try {
-    // Thread.sleep(100);
-    // } catch (InterruptedException e) {
-    // // no matter
-    // }
-    // }
-    // task.removeTaskListener(taskWaiter);
-    // return finished[0];
-    // }
+
     private static class TaskTerminationWaiter implements TaskListener<Task> {
         private Task task = null;
 
@@ -468,20 +443,3 @@ public class TaskManager implements TaskListener<Task> {
 
     }
 }
-
-// class TaskWaiter implements TaskListener {
-// private final boolean[] finished;
-//
-// public TaskWaiter(boolean[] finished) {
-// this.finished = finished;
-// this.finished[0] = false;
-// }
-//
-// @Override
-// public void onStateChange(Task task, TaskState oldState) {
-// if (task.getState().isFinished()) {
-// this.finished[0] = true;
-// }
-// }
-//
-// }

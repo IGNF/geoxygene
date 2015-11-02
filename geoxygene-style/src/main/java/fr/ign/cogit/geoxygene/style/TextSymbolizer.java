@@ -40,7 +40,7 @@ public class TextSymbolizer extends AbstractSymbolizer {
     @XmlElement(name = "Halo")
     private Halo halo;
 
-    @XmlElement(name = "Fill")
+    @XmlElement(name = "Fill", type=Fill.class)
     private Fill fill;
 
     @Override

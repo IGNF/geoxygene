@@ -46,6 +46,7 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.appli.GeoxygeneConstants;
 import fr.ign.cogit.geoxygene.appli.render.texture.ExpressiveRendering;
 import fr.ign.cogit.geoxygene.util.gl.AbstractGLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
@@ -54,11 +55,11 @@ import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLRenderingCapability;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
-import fr.ign.cogit.geoxygene.util.gl.Texture;
+import fr.ign.cogit.geoxygene.util.gl.GLTexture;
 
 /**
  * GL Primitive is a representation of a 2D Object with 2D coordinates, Texture
- * coordinates and Color components It is composed of primitives types which are
+ * coordinates and Color components. It is composed of primitives types which are
  * themselves composed of index lists so it can mix different type of
  * primitives, but the insertion order is not kept
  * 
@@ -71,14 +72,12 @@ public class GLTextComplex extends AbstractGLComplex<GLSimpleVertex> implements
     private static final Logger logger = Logger.getLogger(GLTextComplex.class
             .getName()); // logger
 
-    // private static final Integer[] IntegerConversionObject = new Integer[]
-    // {}; // static object for list to array conversion
     private FloatBuffer verticesBuffer = null; // Vertex buffer (VBO array)
                                                // constructed from vertices
     private IntBuffer indicesBuffer = null; // Index Buffer (VBO indices)
                                             // constructed from flattened
                                             // indicesPerType
-    private Texture texture = null;
+    private GLTexture texture = null;
 
     private int vaoId = -1; // VAO index
     private int vboVerticesId = -1; // VBO Vertices index
@@ -96,24 +95,17 @@ public class GLTextComplex extends AbstractGLComplex<GLSimpleVertex> implements
     /**
      * Default constructor
      */
-    public GLTextComplex(String id, IFeature feature, double minX, double minY) {
+    public GLTextComplex(String id, double minX, double minY, IFeature f) {
         super(id, minX, minY);
-        this.feature = feature;
-        this.addInput(GLSimpleVertex.vertexPositionVariableName,
+        this.addInput(GLSimpleVertex.VertexPositionVarName,
                 GLSimpleVertex.vertexPostionLocation, GL11.GL_FLOAT, 3, false);
-        this.addInput(GLSimpleVertex.vertexUVVariableName,
+        this.addInput(GLSimpleVertex.VertexUVVarName,
                 GLSimpleVertex.vertexUVLocation, GL11.GL_FLOAT, 2, false);
-        this.addInput(GLSimpleVertex.vertexColorVariableName,
+        this.addInput(GLSimpleVertex.VertexColorVarName,
                 GLSimpleVertex.vertexColorLocation, GL11.GL_FLOAT, 4, false);
-
+        this.feature = f;
     }
 
-    /**
-     * @return the feature
-     */
-    public IFeature getFeature() {
-        return this.feature;
-    }
 
     /**
      * @return the opacity for that entire complex
@@ -145,9 +137,6 @@ public class GLTextComplex extends AbstractGLComplex<GLSimpleVertex> implements
      */
     public void setOverallOpacity(double overallOpacity) {
         this.overallOpacity = overallOpacity;
-        // for (GLSimpleVertex vertex : this.vertices) {
-        // vertex.setAlpha(1.f);
-        // }
     }
 
     /**
@@ -170,7 +159,7 @@ public class GLTextComplex extends AbstractGLComplex<GLSimpleVertex> implements
     /**
      * @return the texture
      */
-    public Texture getTexture() {
+    public GLTexture getTexture() {
         return this.texture;
     }
 
@@ -178,7 +167,7 @@ public class GLTextComplex extends AbstractGLComplex<GLSimpleVertex> implements
      * @param texture
      *            the texture to set
      */
-    public void setTexture(Texture texture) {
+    public void setTexture(GLTexture texture) {
         this.texture = texture;
         this.renderingCapabilities = null;
 
@@ -217,6 +206,13 @@ public class GLTextComplex extends AbstractGLComplex<GLSimpleVertex> implements
             GL30.glDeleteVertexArrays(this.vaoId);
             this.vaoId = -1;
         }
+    }
+
+    /**
+     * @return the feature
+     */
+    public IFeature getFeature() {
+        return this.feature;
     }
 
     /*

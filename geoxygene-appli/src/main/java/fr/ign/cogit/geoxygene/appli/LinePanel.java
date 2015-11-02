@@ -2,7 +2,6 @@ package fr.ign.cogit.geoxygene.appli;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -15,11 +14,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Vector;
-
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -29,14 +24,12 @@ import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
-import javax.swing.ListCellRenderer;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
@@ -44,20 +37,13 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
 import fr.ign.cogit.geoxygene.appli.panel.COGITColorChooserPanel;
-import fr.ign.cogit.geoxygene.appli.ui.ExpressiveRenderingUIFactory;
-import fr.ign.cogit.geoxygene.appli.ui.GenericParameterUI;
-import fr.ign.cogit.geoxygene.style.AbstractSymbolizer;
 import fr.ign.cogit.geoxygene.style.CategorizedMap;
 import fr.ign.cogit.geoxygene.style.ColorMap;
-import fr.ign.cogit.geoxygene.style.Fill2DDescriptor;
 import fr.ign.cogit.geoxygene.style.Interpolate;
 import fr.ign.cogit.geoxygene.style.InterpolationPoint;
 import fr.ign.cogit.geoxygene.style.Layer;
@@ -65,15 +51,18 @@ import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 import fr.ign.cogit.geoxygene.style.Mark;
 import fr.ign.cogit.geoxygene.style.PointSymbolizer;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
-import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
-import fr.ign.cogit.geoxygene.style.expressive.StrokeExpressiveRenderingDescriptor;
 
 public class LinePanel extends JDialog implements ActionListener,
 MouseListener, ChangeListener, ItemListener {
     
     
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 4375291250998865321L;
+
     private boolean exsist=false;
     
     private JPanel strokePanel;
@@ -196,7 +185,7 @@ public LinePanel(StyleEditionFrame styleEditionFrame ,LineSymbolizer LineSymboli
     this.addCategorizedMapButton.addActionListener(this);
     this.strokePanel.add(this.addColorMapButton);
     this.strokePanel.add(this.addCategorizedMapButton);
-    this.strokePanel.add(this.getExpressiveStrokeComboBox());
+//    this.strokePanel.add(this.getExpressiveStrokeComboBox());
     this.strokePanel.setAlignmentX(LEFT_ALIGNMENT);
 
 }
@@ -260,7 +249,7 @@ public void addStrokePanel(StyleEditionFrame styleEditionFrame ,int key){
    this.addCategorizedMapButton.addActionListener(this);
    this.strokePanel.add(this.addColorMapButton);
    this.strokePanel.add(this.addCategorizedMapButton);
-   this.strokePanel.add(this.getExpressiveStrokeComboBox());
+//   this.strokePanel.add(this.getExpressiveStrokeComboBox());
     
 }
 
@@ -322,7 +311,7 @@ public void addStrokePanel(StyleEditionFrame styleEditionFrame ,int key){
         this.addCategorizedMapButton.addActionListener(this);
         this.strokePanel.add(this.addColorMapButton);
         this.strokePanel.add(this.addCategorizedMapButton);
-        this.strokePanel.add(this.getExpressiveStrokeComboBox());
+//        this.strokePanel.add(this.getExpressiveStrokeComboBox()); //TODO new UI for expressive methods
         this.strokePanel.setAlignmentX(LEFT_ALIGNMENT);
     }
 
@@ -381,7 +370,7 @@ public void addStrokePanel(StyleEditionFrame styleEditionFrame ,int key){
        this.addCategorizedMapButton.addActionListener(this);
        this.strokePanel.add(this.addColorMapButton);
        this.strokePanel.add(this.addCategorizedMapButton);
-       this.strokePanel.add(this.getExpressiveStrokeComboBox());
+//       this.strokePanel.add(this.getExpressiveStrokeComboBox());
        this.updateLayer();
         
     }
@@ -444,140 +433,142 @@ public LinePanel(PointPanel pointPanel,
 }
 
 //***************************
-private JComboBox getExpressiveStrokeComboBox() {
-    if (this.expressiveStrokeComboBox == null) {
-        Vector<XmlElement> descriptors = new Vector<XmlElement>();
-        final String fieldName = "expressiveRendering";
-        Class<Stroke> strokeClass = Stroke.class;
-        XmlElement currentSelectedObject = null;
-        try {
-            // Check field class type
-            Field field = strokeClass.getField(fieldName);
-            if (!field.getType().equals(
-                    StrokeExpressiveRenderingDescriptor.class)) {
-                logger.error(fieldName
-                        + " field from "
-                        + strokeClass.getSimpleName()
-                        + " is intended to be of type 'StrokeExpressiveRenderingDescriptor' not "
-                        + field.getType().getSimpleName());
-                this.expressiveStrokeComboBox = new JComboBox();
-                return this.expressiveStrokeComboBox;
-            }
-            StrokeExpressiveRenderingDescriptor currentStroke = ((AbstractSymbolizer) this.layer
-                    .getStyles().get(this.key).getSymbolizer()).getStroke()
-                    .getExpressiveRendering();
-            Class<?> currentExpressiveStrokeClass = currentStroke == null ? null
-                    : currentStroke.getClass();
-            // get XmlElements annotations
-            for (Annotation annotation : field.getDeclaredAnnotations()) {
-                if (annotation instanceof XmlElements) {
-                    XmlElements elts = (XmlElements) annotation;
-                    for (XmlElement elt : elts.value()) {
-                        descriptors.add(elt);
-                        if (elt.type().equals(currentExpressiveStrokeClass)) {
-                            currentSelectedObject = elt;
-                        }
-                    }
-                } else {
-                    logger.warn(fieldName
-                            + " field from "
-                            + strokeClass.getSimpleName()
-                            + " is intended to have only '@XmlElements' annotation. Ignore '@"
-                            + annotation.annotationType().getSimpleName()
-                            + "' annotation");
-                }
-
-            }
-        } catch (NoSuchFieldException e) {
-            logger.error("Field '" + fieldName
-                    + "' does not exist in class " + strokeClass.getName());
-        } catch (SecurityException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        descriptors.add(null);
-        this.expressiveStrokeComboBox = new JComboBox(descriptors);
-        this.expressiveStrokeComboBox
-                .setSelectedItem(currentSelectedObject);
-        this.expressiveStrokeComboBox
-                .setRenderer(new ListCellRenderer<XmlElement>() {
-                    private final JLabel label = new JLabel();
-
-                    @Override
-                    public Component getListCellRendererComponent(
-                            JList<? extends XmlElement> list,
-                            XmlElement value, int index,
-                            boolean isSelected, boolean cellHasFocus) {
-
-                        this.label
-                                .setText(value == null ? NO_EXPRESSIVE_TAG
-                                        : value.name());
-                        return this.label;
-                    }
-                });
-        this.expressiveStrokeComboBox
-                .addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        XmlElement elt = (XmlElement) LinePanel.this.expressiveStrokeComboBox
-                                .getSelectedItem();
-                        StrokeExpressiveRenderingDescriptor expressiveStroke;
-                        try {
-                            expressiveStroke = elt == null ? null
-                                    : (StrokeExpressiveRenderingDescriptor) elt
-                                            .type().newInstance();
-                            // Updating the layer style
-                            AbstractSymbolizer abstractSymbolizer = (AbstractSymbolizer) LinePanel.this.layer
-                                    .getStyles().get(LinePanel.this.key).getSymbolizer();
-                            abstractSymbolizer.getStroke()
-                                    .setExpressiveRendering(
-                                            expressiveStroke);
-                            LinePanel.this.updateExpressivePanel();
-                        } catch (InstantiationException e1) {
-                            e1.printStackTrace();
-                        } catch (IllegalAccessException e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-
-                });
-    }
-    return this.expressiveStrokeComboBox;
-}
+//private JComboBox getExpressiveStrokeComboBox() {
+//    if (this.expressiveStrokeComboBox == null) {
+//        Vector<XmlElement> descriptors = new Vector<XmlElement>();
+//        final String fieldName = "expressiveRendering";
+//        Class<Stroke> strokeClass = Stroke.class;
+//        XmlElement currentSelectedObject = null;
+//        try {
+//            // Check field class type
+//            Field field = strokeClass.getField(fieldName);
+//            if (!field.getType().equals(
+//                    StrokeExpressiveRenderingDescriptor.class)) {
+//                logger.error(fieldName
+//                        + " field from "
+//                        + strokeClass.getSimpleName()
+//                        + " is intended to be of type 'StrokeExpressiveRenderingDescriptor' not "
+//                        + field.getType().getSimpleName());
+//                this.expressiveStrokeComboBox = new JComboBox();
+//                return this.expressiveStrokeComboBox;
+//            }
+//            StrokeExpressiveRenderingDescriptor currentStroke = ((AbstractSymbolizer) this.layer
+//                    .getStyles().get(this.key).getSymbolizer()).getStroke()
+//                    .getExpressiveRendering();
+//            Class<?> currentExpressiveStrokeClass = currentStroke == null ? null
+//                    : currentStroke.getClass();
+//            // get XmlElements annotations
+//            for (Annotation annotation : field.getDeclaredAnnotations()) {
+//                if (annotation instanceof XmlElements) {
+//                    XmlElements elts = (XmlElements) annotation;
+//                    for (XmlElement elt : elts.value()) {
+//                        descriptors.add(elt);
+//                        if (elt.type().equals(currentExpressiveStrokeClass)) {
+//                            currentSelectedObject = elt;
+//                        }
+//                    }
+//                } else {
+//                    logger.warn(fieldName
+//                            + " field from "
+//                            + strokeClass.getSimpleName()
+//                            + " is intended to have only '@XmlElements' annotation. Ignore '@"
+//                            + annotation.annotationType().getSimpleName()
+//                            + "' annotation");
+//                }
+//
+//            }
+//        } catch (NoSuchFieldException e) {
+//            logger.error("Field '" + fieldName
+//                    + "' does not exist in class " + strokeClass.getName());
+//        } catch (SecurityException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//        descriptors.add(null);
+//        this.expressiveStrokeComboBox = new JComboBox(descriptors);
+//        this.expressiveStrokeComboBox
+//                .setSelectedItem(currentSelectedObject);
+//        this.expressiveStrokeComboBox
+//                .setRenderer(new ListCellRenderer<XmlElement>() {
+//                    private final JLabel label = new JLabel();
+//
+//                    @Override
+//                    public Component getListCellRendererComponent(
+//                            JList<? extends XmlElement> list,
+//                            XmlElement value, int index,
+//                            boolean isSelected, boolean cellHasFocus) {
+//
+//                        this.label
+//                                .setText(value == null ? NO_EXPRESSIVE_TAG
+//                                        : value.name());
+//                        return this.label;
+//                    }
+//                });
+//        this.expressiveStrokeComboBox
+//                .addActionListener(new ActionListener() {
+//
+//                    @Override
+//                    public void actionPerformed(ActionEvent e) {
+//                        XmlElement elt = (XmlElement) LinePanel.this.expressiveStrokeComboBox
+//                                .getSelectedItem();
+//                        StrokeExpressiveRenderingDescriptor expressiveStroke;
+//                        try {
+//                            expressiveStroke = elt == null ? null
+//                                    : (StrokeExpressiveRenderingDescriptor) elt
+//                                            .type().newInstance();
+//                            // Updating the layer style
+//                            AbstractSymbolizer abstractSymbolizer = (AbstractSymbolizer) LinePanel.this.layer
+//                                    .getStyles().get(LinePanel.this.key).getSymbolizer();
+//                            
+//                            //TODO REPLACE WITH THE EXPRESSIVE PARAMETERS
+////                            abstractSymbolizer.getStroke()
+////                                    .setExpressiveRendering(
+////                                            expressiveStroke);
+//                            LinePanel.this.updateExpressivePanel();
+//                        } catch (InstantiationException e1) {
+//                            e1.printStackTrace();
+//                        } catch (IllegalAccessException e1) {
+//                            e1.printStackTrace();
+//                        }
+//                    }
+//
+//                });
+//    }
+//    return this.expressiveStrokeComboBox;
+//}
 
 public void updateExpressivePanel() {
-    this.addOrReplaceExpressiveRenderingUI();
+//    this.addOrReplaceExpressiveRenderingUI();
 }
 
 
-private void addOrReplaceExpressiveRenderingUI() {
-    if (this.styleEditionFrame.getTabPane() == null) {
-        throw new IllegalStateException(
-                "this method can only be called after tabPane creation");
-    }
-    String tabTooltip = "";
-    this.styleEditionFrame.getTabPane().remove(this.styleEditionFrame.getFillExpressiveScrollPane());
-    this.styleEditionFrame.getTabPane().remove(this.styleEditionFrame.getStrokeExpressiveScrollPane());
-    // Stroke Expressive UI
-    GenericParameterUI ui = null;
-    if (((AbstractSymbolizer) this.layer.getStyles().get(this.key).getSymbolizer()).getStroke() != null) {
-        StrokeExpressiveRenderingDescriptor expressiveStroke = ((AbstractSymbolizer) (this.layer
-                .getStyles().get(this.key).getSymbolizer())).getStroke().getExpressiveRendering();
-        if (expressiveStroke != null) {
-            ui = ExpressiveRenderingUIFactory
-                    .getExpressiveRenderingUI(expressiveStroke,
-                            this.styleEditionFrame.getLayerViewPanel().getProjectFrame());
-            tabTooltip = expressiveStroke.getClass().getSimpleName();
-        }
-    }
-    if (ui != null) {
-        this.styleEditionFrame.getStrokeExpressiveScrollPane().setViewportView(ui.getGui());
-        this.styleEditionFrame.getTabPane().addTab("Expressive Stroke", null,
-                this.styleEditionFrame.getStrokeExpressiveScrollPane(), tabTooltip);
-    }
-
-}
+//private void addOrReplaceExpressiveRenderingUI() {
+//    if (this.styleEditionFrame.getTabPane() == null) {
+//        throw new IllegalStateException(
+//                "this method can only be called after tabPane creation");
+//    }
+//    String tabTooltip = "";
+//    this.styleEditionFrame.getTabPane().remove(this.styleEditionFrame.getFillExpressiveScrollPane());
+//    this.styleEditionFrame.getTabPane().remove(this.styleEditionFrame.getStrokeExpressiveScrollPane());
+//    // Stroke Expressive UI
+//    GenericParameterUI ui = null;
+//    if (((AbstractSymbolizer) this.layer.getStyles().get(this.key).getSymbolizer()).getStroke() != null) {
+//        StrokeExpressiveRenderingDescriptor expressiveStroke = ((AbstractSymbolizer) (this.layer
+//                .getStyles().get(this.key).getSymbolizer())).getStroke().getExpressiveRendering();
+//        if (expressiveStroke != null) {
+//            ui = ExpressiveRenderingUIFactory
+//                    .getExpressiveRenderingUI(expressiveStroke,
+//                            this.styleEditionFrame.getLayerViewPanel().getProjectFrame());
+//            tabTooltip = expressiveStroke.getClass().getSimpleName();
+//        }
+//    }
+//    if (ui != null) {
+//        this.styleEditionFrame.getStrokeExpressiveScrollPane().setViewportView(ui.getGui());
+//        this.styleEditionFrame.getTabPane().addTab("Expressive Stroke", null,
+//                this.styleEditionFrame.getStrokeExpressiveScrollPane(), tabTooltip);
+//    }
+//
+//}
 
 
 /**

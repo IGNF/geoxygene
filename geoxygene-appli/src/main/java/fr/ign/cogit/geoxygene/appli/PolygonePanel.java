@@ -1,6 +1,5 @@
 package fr.ign.cogit.geoxygene.appli;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -21,7 +20,6 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -34,11 +32,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
-import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
-import javax.swing.SpinnerModel;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
@@ -52,24 +47,17 @@ import org.apache.log4j.Logger;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
 import fr.ign.cogit.geoxygene.appli.panel.COGITColorChooserPanel;
-import fr.ign.cogit.geoxygene.appli.ui.ExpressiveRenderingUIFactory;
 import fr.ign.cogit.geoxygene.appli.ui.GenericParameterUI;
-import fr.ign.cogit.geoxygene.style.AbstractSymbolizer;
 import fr.ign.cogit.geoxygene.style.CategorizedMap;
 import fr.ign.cogit.geoxygene.style.ColorMap;
 import fr.ign.cogit.geoxygene.style.Fill;
-import fr.ign.cogit.geoxygene.style.Fill2DDescriptor;
 import fr.ign.cogit.geoxygene.style.Interpolate;
 import fr.ign.cogit.geoxygene.style.InterpolationPoint;
-import fr.ign.cogit.geoxygene.style.Layer;
-import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 import fr.ign.cogit.geoxygene.style.Mark;
 import fr.ign.cogit.geoxygene.style.PointSymbolizer;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
-import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
-import fr.ign.cogit.geoxygene.style.expressive.StrokeExpressiveRenderingDescriptor;
 
 public class PolygonePanel  extends JDialog implements ActionListener,
 MouseListener, ChangeListener, ItemListener{
@@ -152,7 +140,7 @@ MouseListener, ChangeListener, ItemListener{
         this.addCategorizedMapButton.addActionListener(this);
         this.fillPanel.add(this.addCategorizedMapButton);
         
-        this.fillPanel.add(this.getExpressiveFillComboBox());
+//        this.fillPanel.add(this.getExpressiveFillComboBox()); //TODO add new expressive methods
         this.fillPanel.setAlignmentX(LEFT_ALIGNMENT);
         
        
@@ -279,101 +267,100 @@ public PolygonePanel(PointPanel pointPanel,StyleEditionFrame styleEditionFrame ,
     }
 
     private JComboBox getExpressiveFillComboBox() {
-        //System.out.println("getExpressiveFillComboBox");
-        if (this.expressiveFillComboBox == null) {
-            Vector<XmlElement> descriptors = new Vector<XmlElement>();
-            final String fieldName = "fill2dDescriptor";
-            Class<Fill> fillClass = Fill.class;
-            XmlElement currentSelectedObject = null;
-            try {
-                // Check field class type
-                Field field = fillClass.getField(fieldName);
-                if (!field.getType().equals(Fill2DDescriptor.class)) {
-                    logger.error(fieldName
-                            + " field from "
-                            + fillClass.getSimpleName()
-                            + " is intended to be of type 'Fill2DDescriptor' not "
-                            + field.getType().getSimpleName());
-                    this.expressiveFillComboBox = new JComboBox();
-                    return this.expressiveFillComboBox;
-                }
-                Fill2DDescriptor currentFill = ((PolygonSymbolizer) this.styleEditionFrame.getLayer()
-                        .getStyles().get(this.key).getSymbolizer()).getFill()
-                        .getFill2DDescriptor();
-                Class<?> currentExpressiveFillClass = currentFill == null ? null
-                        : currentFill.getClass();
-                // get XmlElements annotations
-                for (Annotation annotation : field.getDeclaredAnnotations()) {
-                    if (annotation instanceof XmlElements) {
-                        XmlElements elts = (XmlElements) annotation;
-                        for (XmlElement elt : elts.value()) {
-                            descriptors.add(elt);
-                            if (elt.type().equals(currentExpressiveFillClass)) {
-                                currentSelectedObject = elt;
-                            }
-                        }
-                    } else {
-                        logger.warn(fieldName
-                                + " field from "
-                                + fillClass.getSimpleName()
-                                + " is intended to have only '@XmlElements' annotation. Ignore '@"
-                                + annotation.annotationType().getSimpleName()
-                                + "' annotation");
-                    }
-
-                }
-            } catch (NoSuchFieldException e) {
-                logger.error("Field '" + fieldName
-                        + "' does not exist in class " + fillClass.getName());
-            } catch (SecurityException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            descriptors.add(null);
-            this.expressiveFillComboBox = new JComboBox(descriptors);
-            this.expressiveFillComboBox.setSelectedItem(currentSelectedObject);
-            this.expressiveFillComboBox
-                    .setRenderer(new ListCellRenderer<XmlElement>() {
-                        private final JLabel label = new JLabel();
-
-                        @Override
-                        public Component getListCellRendererComponent(
-                                JList<? extends XmlElement> list,
-                                XmlElement value, int index,
-                                boolean isSelected, boolean cellHasFocus) {
-
-                            this.label
-                                    .setText(value == null ? NO_EXPRESSIVE_TAG
-                                            : value.name());
-                            return this.label;
-                        }
-                    });
-            this.expressiveFillComboBox.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    XmlElement elt = (XmlElement) PolygonePanel.this.expressiveFillComboBox
-                            .getSelectedItem();
-                    Fill2DDescriptor expressiveFill;
-                    try {
-                        expressiveFill = elt == null ? null
-                                : (Fill2DDescriptor) elt.type().newInstance();
-                        // Updating the layer style
-                        PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) PolygonePanel.this.styleEditionFrame.getLayer()
-                                .getStyles().get(PolygonePanel.this.key).getSymbolizer();
-                        polygonSymbolizer.getFill().setFill2DDescriptor(
-                                expressiveFill);
-                        PolygonePanel.this.updateExpressivePanel();
-                    } catch (InstantiationException e1) {
-                        e1.printStackTrace();
-                    } catch (IllegalAccessException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-
-            });
-        }
-        return this.expressiveFillComboBox;
+        return null;
+//        if (this.expressiveFillComboBox == null) {
+//            Vector<XmlElement> descriptors = new Vector<XmlElement>();
+//            final String fieldName = "fill2dDescriptor";
+//            Class<Fill> fillClass = Fill.class;
+//            XmlElement currentSelectedObject = null;
+//            try {
+//                // Check field class type
+//                Field field = fillClass.getField(fieldName);
+//                if (!field.getType().equals(Fill2DDescriptor.class)) {
+//                    logger.error(fieldName
+//                            + " field from "
+//                            + fillClass.getSimpleName()
+//                            + " is intended to be of type 'Fill2DDescriptor' not "
+//                            + field.getType().getSimpleName());
+//                    this.expressiveFillComboBox = new JComboBox();
+//                    return this.expressiveFillComboBox;
+//                }
+//                Fill currentFill = ((PolygonSymbolizer) this.styleEditionFrame.getLayer()
+//                        .getStyles().get(this.key).getSymbolizer()).getFill();
+//                Class<?> currentExpressiveFillClass = currentFill == null ? null
+//                        : currentFill.getClass();
+//                // get XmlElements annotations
+//                for (Annotation annotation : field.getDeclaredAnnotations()) {
+//                    if (annotation instanceof XmlElements) {
+//                        XmlElements elts = (XmlElements) annotation;
+//                        for (XmlElement elt : elts.value()) {
+//                            descriptors.add(elt);
+//                            if (elt.type().equals(currentExpressiveFillClass)) {
+//                                currentSelectedObject = elt;
+//                            }
+//                        }
+//                    } else {
+//                        logger.warn(fieldName
+//                                + " field from "
+//                                + fillClass.getSimpleName()
+//                                + " is intended to have only '@XmlElements' annotation. Ignore '@"
+//                                + annotation.annotationType().getSimpleName()
+//                                + "' annotation");
+//                    }
+//
+//                }
+//            } catch (NoSuchFieldException e) {
+//                logger.error("Field '" + fieldName
+//                        + "' does not exist in class " + fillClass.getName());
+//            } catch (SecurityException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
+//            descriptors.add(null);
+//            this.expressiveFillComboBox = new JComboBox(descriptors);
+//            this.expressiveFillComboBox.setSelectedItem(currentSelectedObject);
+//            this.expressiveFillComboBox
+//                    .setRenderer(new ListCellRenderer<XmlElement>() {
+//                        private final JLabel label = new JLabel();
+//
+//                        @Override
+//                        public Component getListCellRendererComponent(
+//                                JList<? extends XmlElement> list,
+//                                XmlElement value, int index,
+//                                boolean isSelected, boolean cellHasFocus) {
+//
+//                            this.label
+//                                    .setText(value == null ? NO_EXPRESSIVE_TAG
+//                                            : value.name());
+//                            return this.label;
+//                        }
+//                    });
+//            this.expressiveFillComboBox.addActionListener(new ActionListener() {
+//
+//                @Override
+//                public void actionPerformed(ActionEvent e) {
+//                    XmlElement elt = (XmlElement) PolygonePanel.this.expressiveFillComboBox
+//                            .getSelectedItem();
+//                    Fill2DDescriptor expressiveFill;
+//                    try {
+//                        expressiveFill = elt == null ? null
+//                                : (Fill2DDescriptor) elt.type().newInstance();
+//                        // Updating the layer style
+//                        PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) PolygonePanel.this.styleEditionFrame.getLayer()
+//                                .getStyles().get(PolygonePanel.this.key).getSymbolizer();
+////                        polygonSymbolizer.getFill().setFill2DDescriptor(
+////                                expressiveFill);
+//                        PolygonePanel.this.updateExpressivePanel();
+//                    } catch (InstantiationException e1) {
+//                        e1.printStackTrace();
+//                    } catch (IllegalAccessException e1) {
+//                        e1.printStackTrace();
+//                    }
+//                }
+//
+//            });
+//        }
+//        return this.expressiveFillComboBox;
     }
     public void updateExpressivePanel() {
         this.addOrReplaceExpressiveRenderingUI();
@@ -390,20 +377,20 @@ public PolygonePanel(PointPanel pointPanel,StyleEditionFrame styleEditionFrame ,
 
         GenericParameterUI ui = null;      
         // Fill expressive UI
-        if ( this.styleEditionFrame.getLayer().getStyles().get(this.key).getSymbolizer().isPolygonSymbolizer()
-                && ((PolygonSymbolizer)this.styleEditionFrame.getLayer().getStyles().get(this.key).getSymbolizer()).getFill() !=null
-                && ((PolygonSymbolizer) (this.styleEditionFrame.getLayer().getStyles().get(this.key).getSymbolizer())).getFill()
-                        .getFill2DDescriptor() != null) {
-            PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) this.styleEditionFrame.getLayer().getStyles().get(this.key)
-                    .getSymbolizer();
-            Fill2DDescriptor expressiveFill = polygonSymbolizer.getFill()
-                    .getFill2DDescriptor();
-            if (expressiveFill != null) {
-                ui = ExpressiveRenderingUIFactory.getExpressiveRenderingUI(
-                        expressiveFill, this.styleEditionFrame.getLayerViewPanel().getProjectFrame());
-                tabTooltip = expressiveFill.getClass().getSimpleName();
-            }
-        }
+//        if ( this.styleEditionFrame.getLayer().getStyles().get(this.key).getSymbolizer().isPolygonSymbolizer()
+//                && ((PolygonSymbolizer)this.styleEditionFrame.getLayer().getStyles().get(this.key).getSymbolizer()).getFill() !=null
+//                && ((PolygonSymbolizer) (this.styleEditionFrame.getLayer().getStyles().get(this.key).getSymbolizer())).getFill()
+//                        .getFill2DDescriptor() != null) {
+//            PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) this.styleEditionFrame.getLayer().getStyles().get(this.key)
+//                    .getSymbolizer();
+//            Fill2DDescriptor expressiveFill = polygonSymbolizer.getFill()
+//                    .getFill2DDescriptor();
+//            if (expressiveFill != null) {
+//                ui = ExpressiveRenderingUIFactory.getExpressiveRenderingUI(
+//                        expressiveFill, this.styleEditionFrame.getLayerViewPanel().getProjectFrame());
+//                tabTooltip = expressiveFill.getClass().getSimpleName();
+//            }
+//        }
         if (ui != null) {
             this.styleEditionFrame.getFillExpressiveScrollPane().setViewportView(ui.getGui());
             this.styleEditionFrame.getTabPane().addTab("Expressive Fill", null,

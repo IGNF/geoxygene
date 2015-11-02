@@ -35,7 +35,8 @@ public class ThematicClass {
   @XmlElements(@XmlElement(name = "PropertyName", type = PropertyName.class))
   @XmlElementWrapper(name = "ClassValue")
   private Expression[] classValue = null;
-  @XmlElement(required = true, name = "Fill")
+  
+  @XmlElement(name = "Fill", type=Fill.class, required=true)
   private Fill fill = null;
 
   public String getClassLabel() {

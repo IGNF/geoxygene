@@ -194,7 +194,7 @@ public class LegendPaintListener implements PaintListener {
         g2.fill(markShape);
       }
       if (mark.getStroke() != null) {
-        g2.setStroke(mark.getStroke().toAwtStroke());
+        g2.setStroke(mark.getStroke().toAwtStroke(1.0f));
         g2.setColor(mark.getStroke().getColor());
         g2.draw(markShape);
       }

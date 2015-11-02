@@ -57,7 +57,9 @@ import fr.ign.cogit.geoxygene.style.Mark;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.Shadow;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
-import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTextureDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.ExpressiveDescriptorImpl;
+import fr.ign.cogit.geoxygene.style.expressive.ExpressiveParameter;
+import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTexture;
 
 /**
  * Test .
@@ -469,9 +471,13 @@ public class SLDDemoApplication extends AbstractGeOxygeneApplicationPlugin {
         PolygonSymbolizer symbolizer = (PolygonSymbolizer) layer
                 .getSymbolizer();
 
-        PerlinNoiseTextureDescriptor texture = new PerlinNoiseTextureDescriptor();
+        PerlinNoiseTexture texture = new PerlinNoiseTexture();
         texture.setTextureResolution(6000);
-        symbolizer.getFill().setFill2DDescriptor(texture);
+        ExpressiveDescriptorImpl efill = new ExpressiveDescriptorImpl();
+        ExpressiveParameter texparam = new ExpressiveParameter();
+        texparam.setValue(texture);
+        efill.addExpressiveParameter(texparam);
+        symbolizer.getFill().setExpressiveFill(efill);
 
         Population<DefaultFeature> pop = new Population<DefaultFeature>(
                 "Texture"); //$NON-NLS-1$
@@ -529,7 +535,7 @@ public class SLDDemoApplication extends AbstractGeOxygeneApplicationPlugin {
       try {
           
         StyledLayerDescriptor new_sld = StyledLayerDescriptor.unmarshall(
-            sldFile.getAbsolutePath(), this.projectFrame.getDataSet());
+            sldFile.getAbsolutePath());
           
         this.projectFrame.getLayerViewPanel().setViewBackground(new_sld.getBackground());
         this.projectFrame.getSld().setBackground(new_sld.getBackground());

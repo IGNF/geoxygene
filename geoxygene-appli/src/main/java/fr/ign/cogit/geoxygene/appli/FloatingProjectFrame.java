@@ -29,10 +29,13 @@ import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenuBar;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.appli.api.MainFrame;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.mode.GeometryToolBar;
+import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 
@@ -42,14 +45,16 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
  * @author Julien Perret
  */
 public class FloatingProjectFrame extends AbstractProjectFrame implements ActionListener {
-
+    private static Logger logger = Logger.getLogger(FloatingProjectFrame.class
+            .getName()); // logger
+    
     private GeometryToolBar geometryToolBar = null;
 
     /** The default frame width. */
-    private static final int DEFAULT_WIDTH = 600;
+    private static final int DEFAULT_WIDTH = 640;
 
     /** The default frame height. */
-    private static final int DEFAULT_HEIGHT = 400;
+    private static final int DEFAULT_HEIGHT = 480;
 
     /** internal frame. */
     private JInternalFrame internalFrame = null;
@@ -118,14 +123,16 @@ public class FloatingProjectFrame extends AbstractProjectFrame implements Action
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getID() == 2) {
+            double startmem = Runtime.getRuntime().totalMemory() / 1024.;
+
             // Modified by JeT: rendering should only be done in the EDT
-            // loading finished
-            //            IPopulation<?> p = (IPopulation<?>) e.getSource();
-            //            Layer l = this.getLayer(p.getNom());
             this.getLayerViewPanel().repaint();
-            //          .getRenderingManager()
-            //          .render(this.getLayerViewPanel().getRenderingManager().getRenderer(l));
-            //      this.getLayerViewPanel().superRepaint();
+            if (Runtime.getRuntime().totalMemory() / 1024. - startmem > 0) {
+                logger.debug("FloatingProjectFrame new memory allocated= "
+                        + (Runtime.getRuntime().totalMemory() / 1024. - startmem)
+                        + "");
+
+            }
         }
     }
 

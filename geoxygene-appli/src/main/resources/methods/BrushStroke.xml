@@ -1,0 +1,59 @@
+<RenderingMethod>
+	<Name>BrushStroke</Name>
+	<GeneralMethodReference>WorldToScreenSpace</GeneralMethodReference>
+	<SetterClassName>BrushStrokeSetter</SetterClassName>
+	<ShaderList>
+		<ShaderRef gltype="GL_VERTEX_SHADER">bezier.vert.glsl</ShaderRef>
+		<ShaderRef gltype="GL_FRAGMENT_SHADER">bezier.frag.glsl</ShaderRef>
+	</ShaderList>
+	<Parameters>
+	       <Parameter required="true">
+            <Name>brushStartWidth</Name> <!-- aligned -->
+            <Type>Texture</Type>
+        </Parameter>
+        <Parameter required="true">
+            <Name>brushEndWidth</Name> <!-- aligned -->
+            <Type>Texture</Type>
+        </Parameter>
+		<Parameter required="true">
+			<Name>paperTexture</Name> <!-- aligned -->
+			<Type>Texture</Type>
+		</Parameter>
+		<Parameter required="true">
+			<Name>brushTexture</Name> <!-- aligned -->
+			<Type>Texture</Type>
+		</Parameter>
+		<Parameter required="true">
+			<Name>brushRoughness</Name> <!-- aligned -->
+			<Type>Float</Type>
+		</Parameter>
+		<Parameter required="true">
+			<Name>paperRoughness</Name> <!-- aligned -->
+			<Type>Float</Type>
+		</Parameter>
+		<Parameter required="true">
+			<Name>paperReferenceMapScale</Name> <!-- aligned -->
+			<Type>Float</Type>
+		</Parameter>
+		<Parameter required="true">
+			<Name>paperSizeInCm</Name> <!-- aligned -->
+			<Type>Float</Type>
+		</Parameter>
+		<Parameter required="true">
+			<Name>strokePressure</Name> <!-- aligned -->
+			<Type>Float</Type>
+		</Parameter>
+		<Parameter required="true">
+			<Name>strokeSoftness</Name> <!-- aligned -->
+			<Type>Float</Type>
+		</Parameter>
+		<Parameter required="true">
+			<Name>transitionSize</Name>
+			<Type>Float</Type>
+		</Parameter>
+		<Parameter required="true">
+            <Name>stroke-width</Name>
+            <Type>Float</Type>
+        </Parameter>
+	</Parameters>
+</RenderingMethod>

@@ -27,50 +27,42 @@
 
 package fr.ign.cogit.geoxygene.appli.ui;
 
-import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
-import fr.ign.cogit.geoxygene.style.expressive.DefaultFill2DShaderDescriptor;
-import fr.ign.cogit.geoxygene.style.expressive.DefaultLineShaderDescriptor;
-import fr.ign.cogit.geoxygene.style.expressive.RandomVariationShaderDescriptor;
-import fr.ign.cogit.geoxygene.style.expressive.ShaderDescriptor;
-import fr.ign.cogit.geoxygene.style.expressive.UserFill2DShaderDescriptor;
-import fr.ign.cogit.geoxygene.style.expressive.UserLineShaderDescriptor;
-import fr.ign.cogit.geoxygene.style.expressive.UserShaderDescriptor;
-
 /**
  * @author JeT
  * 
  */
 public class ShaderUIFactory {
 
-    public static GenericParameterUI getShaderUI(
-            ShaderDescriptor descriptor, ProjectFrame projectFrame) {
-        if (descriptor instanceof RandomVariationShaderDescriptor) {
-            return new RandomVariationShaderUI(
-                    ((RandomVariationShaderDescriptor) descriptor),
-                    projectFrame);
-
-        }
-        if (descriptor instanceof DefaultLineShaderDescriptor) {
-            return new DefaultLineShaderUI(
-                    (DefaultLineShaderDescriptor) (descriptor), projectFrame);
-
-        }
-        if (descriptor instanceof UserLineShaderDescriptor) {
-            return new UserLineShaderUI(
-                    (UserShaderDescriptor) (descriptor), projectFrame);
-
-        }
-        if (descriptor instanceof DefaultFill2DShaderDescriptor) {
-            return new DefaultFill2DShaderUI(
-                    (DefaultFill2DShaderDescriptor) (descriptor), projectFrame);
-
-        }
-        if (descriptor instanceof UserFill2DShaderDescriptor) {
-            return new UserFill2DShaderUI(
-                    (UserFill2DShaderDescriptor) (descriptor), projectFrame);
-
-        }
-        return new NoShaderUI(descriptor, projectFrame);
+    public static GenericParameterUI getShaderUI(){
+            return null;
+//            ShaderDescriptor descriptor, ProjectFrame projectFrame) {
+//        if (descriptor instanceof RandomVariationShaderDescriptor) {
+//            return new RandomVariationShaderUI(
+//                    ((RandomVariationShaderDescriptor) descriptor),
+//                    projectFrame);
+//
+//        }
+//        if (descriptor instanceof DefaultLineShaderDescriptor) {
+//            return new DefaultLineShaderUI(
+//                    (DefaultLineShaderDescriptor) (descriptor), projectFrame);
+//
+//        }
+//        if (descriptor instanceof UserLineShaderDescriptor) {
+//            return new UserLineShaderUI(
+//                    (UserShaderDescriptor) (descriptor), projectFrame);
+//
+//        }
+//        if (descriptor instanceof DefaultFill2DShaderDescriptor) {
+//            return new DefaultFill2DShaderUI(
+//                    (DefaultFill2DShaderDescriptor) (descriptor), projectFrame);
+//
+//        }
+//        if (descriptor instanceof UserFill2DShaderDescriptor) {
+//            return new UserFill2DShaderUI(
+//                    (UserFill2DShaderDescriptor) (descriptor), projectFrame);
+//
+//        }
+//        return new NoShaderUI(descriptor, projectFrame);
     }
 
 }

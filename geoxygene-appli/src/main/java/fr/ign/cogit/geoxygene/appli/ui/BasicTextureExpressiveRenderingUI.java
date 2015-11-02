@@ -52,20 +52,21 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
-import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.SimpleTexture;
 import fr.ign.util.ui.JRecentFileChooser;
 import fr.ign.util.ui.SliderWithSpinner;
 import fr.ign.util.ui.SliderWithSpinner.SliderWithSpinnerModel;
 
 /**
  * @author JeT
- * 
+ *General TODO : make it generic for any rendering method. 
  */
+
 public class BasicTextureExpressiveRenderingUI implements GenericParameterUI {
 
     private static final int FILE_LENGTH_DISPLAY = 50;
     private JPanel main = null;
-    private BasicTextureExpressiveRenderingDescriptor strtex = null;
+    private SimpleTexture strtex = null;
 
     private final Preferences prefs = Preferences.userRoot();
     private ProjectFrame parentProjectFrame = null;
@@ -94,7 +95,7 @@ public class BasicTextureExpressiveRenderingUI implements GenericParameterUI {
      * Constructor
      */
     public BasicTextureExpressiveRenderingUI(
-            BasicTextureExpressiveRenderingDescriptor strtex,
+            SimpleTexture strtex,
             ProjectFrame projectFrame) {
         this.parentProjectFrame = projectFrame;
         this.main = null;
@@ -108,7 +109,7 @@ public class BasicTextureExpressiveRenderingUI implements GenericParameterUI {
      * @param strtex
      */
     private void setBasicTextureExpressiveRendering(
-            BasicTextureExpressiveRenderingDescriptor strtex) {
+            SimpleTexture strtex) {
         this.strtex = strtex;
         this.setValuesFromObject();
     }
@@ -118,23 +119,24 @@ public class BasicTextureExpressiveRenderingUI implements GenericParameterUI {
      */
     @Override
     public void setValuesFromObject() {
-        this.transitionSize = this.strtex.getTransitionSize();
-        this.paperSizeInCm = this.strtex.getPaperSizeInCm();
-        this.paperDensity = this.strtex.getPaperDensity();
-        this.brushDensity = this.strtex.getBrushDensity();
-        this.strokePressure = this.strtex.getStrokePressure();
-        this.sharpness = this.strtex.getSharpness();
-        this.paperTextureFilename = this.strtex.getPaperTextureFilename();
-        this.brushTextureFilename = this.strtex.getBrushTextureFilename();
-        this.brushStartLength = this.strtex.getBrushStartLength();
-        this.brushEndLength = this.strtex.getBrushEndLength();
-        this.getShaderUI().setValuesFromObject();
+        //TODO make it generic
+//        this.transitionSize = this.strtex.getTransitionSize();
+//        this.paperSizeInCm = this.strtex.getPaperSizeInCm();
+//        this.paperDensity = this.strtex.getPaperDensity();
+//        this.brushDensity = this.strtex.getBrushDensity();
+//        this.strokePressure = this.strtex.getStrokePressure();
+//        this.sharpness = this.strtex.getSharpness();
+//        this.paperTextureFilename = this.strtex.getPaperTextureFilename();
+//        this.brushTextureFilename = this.strtex.getBrushTextureFilename();
+//        this.brushStartLength = this.strtex.getBrushStartLength();
+//        this.brushEndLength = this.strtex.getBrushEndLength();
+//        this.getShaderUI().setValuesFromObject();
     }
 
     private GenericParameterUI getShaderUI() {
         if (this.shaderUI == null) {
-            this.shaderUI = ShaderUIFactory.getShaderUI(
-                    this.strtex.getShaderDescriptor(), this.parentProjectFrame);
+//            this.shaderUI = ShaderUIFactory.getShaderUI(
+//                    this.strtex.getShaderDescriptor(), this.parentProjectFrame);
         }
         return this.shaderUI;
     }
@@ -144,16 +146,16 @@ public class BasicTextureExpressiveRenderingUI implements GenericParameterUI {
      */
     @Override
     public void setValuesToObject() {
-        this.strtex.setTransitionSize(this.transitionSize);
-        this.strtex.setPaperSizeInCm(this.paperSizeInCm);
-        this.strtex.setPaperDensity(this.paperDensity);
-        this.strtex.setBrushDensity(this.brushDensity);
-        this.strtex.setStrokePressure(this.strokePressure);
-        this.strtex.setSharpness(this.sharpness);
-        this.strtex.setPaperTextureFilename(this.paperTextureFilename);
-        this.strtex.setBrushTextureFilename(this.brushTextureFilename);
-        this.strtex.setBrushStartLength(this.brushStartLength);
-        this.strtex.setBrushEndLength(this.brushEndLength);
+//        this.strtex.setTransitionSize(this.transitionSize);
+//        this.strtex.setPaperSizeInCm(this.paperSizeInCm);
+//        this.strtex.setPaperDensity(this.paperDensity);
+//        this.strtex.setBrushDensity(this.brushDensity);
+//        this.strtex.setStrokePressure(this.strokePressure);
+//        this.strtex.setSharpness(this.sharpness);
+//        this.strtex.setPaperTextureFilename(this.paperTextureFilename);
+//        this.strtex.setBrushTextureFilename(this.brushTextureFilename);
+//        this.strtex.setBrushStartLength(this.brushStartLength);
+//        this.strtex.setBrushEndLength(this.brushEndLength);
         this.shaderUI.setValuesToObject();
     }
 

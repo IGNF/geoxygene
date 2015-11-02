@@ -53,7 +53,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
 
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
-import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.ExpressiveDescriptorImpl;
 import fr.ign.util.ui.JRecentFileChooser;
 import fr.ign.util.ui.SliderWithSpinner;
 import fr.ign.util.ui.SliderWithSpinner.SliderWithSpinnerModel;
@@ -66,7 +66,7 @@ public class StrokeTextureExpressiveRenderingUI implements GenericParameterUI {
 
   private static final int FILE_LENGTH_DISPLAY = 50;
   private JPanel main = null;
-  private StrokeTextureExpressiveRenderingDescriptor strtex = null;
+  private ExpressiveDescriptorImpl strtex = null;
 
   private final Preferences prefs = Preferences.userRoot();
   private ProjectFrame parentProjectFrame = null;
@@ -93,7 +93,7 @@ public class StrokeTextureExpressiveRenderingUI implements GenericParameterUI {
    * Constructor
    */
   public StrokeTextureExpressiveRenderingUI(
-      StrokeTextureExpressiveRenderingDescriptor strtex,
+          ExpressiveDescriptorImpl strtex,
       ProjectFrame projectFrame) {
     this.parentProjectFrame = projectFrame;
     this.main = null;
@@ -107,7 +107,7 @@ public class StrokeTextureExpressiveRenderingUI implements GenericParameterUI {
    * @param strtex
    */
   private void setStrokeTextureExpressiveRendering(
-      StrokeTextureExpressiveRenderingDescriptor strtex) {
+          ExpressiveDescriptorImpl strtex) {
     this.strtex = strtex;
     this.setValuesFromObject();
   }
@@ -117,22 +117,22 @@ public class StrokeTextureExpressiveRenderingUI implements GenericParameterUI {
    */
   @Override
   public void setValuesFromObject() {
-    this.paperDensity = this.strtex.getPaperDensity();
-    this.brushDensity = this.strtex.getBrushDensity();
-    this.strokePressure = this.strtex.getStrokePressure();
-    this.sharpness = this.strtex.getSharpness();
-    this.paperTextureFilename = this.strtex.getPaperTextureFilename();
-    this.brushTextureFilename = this.strtex.getBrushTextureFilename();
-    this.brushStartLength = this.strtex.getBrushStartLength();
-    this.brushEndLength = this.strtex.getBrushEndLength();
+//    this.paperDensity = this.strtex.getPaperDensity();
+//    this.brushDensity = this.strtex.getBrushDensity();
+//    this.strokePressure = this.strtex.getStrokePressure();
+//    this.sharpness = this.strtex.getSharpness();
+//    this.paperTextureFilename = this.strtex.getPaperTextureFilename();
+//    this.brushTextureFilename = this.strtex.getBrushTextureFilename();
+//    this.brushStartLength = this.strtex.getBrushStartLength();
+//    this.brushEndLength = this.strtex.getBrushEndLength();
     this.getShaderUI().setValuesFromObject();
   }
 
   private GenericParameterUI getShaderUI() {
-    if (this.shaderUI == null) {
-      this.shaderUI = ShaderUIFactory.getShaderUI(
-          this.strtex.getShaderDescriptor(), this.parentProjectFrame);
-    }
+//    if (this.shaderUI == null) {
+//      this.shaderUI = ShaderUIFactory.getShaderUI(
+//          this.strtex.getShaderDescriptor(), this.parentProjectFrame);
+//    }
     return this.shaderUI;
   }
 
@@ -141,14 +141,14 @@ public class StrokeTextureExpressiveRenderingUI implements GenericParameterUI {
    */
   @Override
   public void setValuesToObject() {
-    this.strtex.setPaperDensity(this.paperDensity);
-    this.strtex.setBrushDensity(this.brushDensity);
-    this.strtex.setStrokePressure(this.strokePressure);
-    this.strtex.setSharpness(this.sharpness);
-    this.strtex.setPaperTextureFilename(this.paperTextureFilename);
-    this.strtex.setBrushTextureFilename(this.brushTextureFilename);
-    this.strtex.setBrushStartLength(this.brushStartLength);
-    this.strtex.setBrushEndLength(this.brushEndLength);
+//    this.strtex.setPaperDensity(this.paperDensity);
+//    this.strtex.setBrushDensity(this.brushDensity);
+//    this.strtex.setStrokePressure(this.strokePressure);
+//    this.strtex.setSharpness(this.sharpness);
+//    this.strtex.setPaperTextureFilename(this.paperTextureFilename);
+//    this.strtex.setBrushTextureFilename(this.brushTextureFilename);
+//    this.strtex.setBrushStartLength(this.brushStartLength);
+//    this.strtex.setBrushEndLength(this.brushEndLength);
     this.shaderUI.setValuesToObject();
   }
 

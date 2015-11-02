@@ -16,6 +16,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JSplitPane;
 import javax.xml.bind.JAXBException;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -25,26 +26,27 @@ import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.appli.api.MainFrame;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.gl.ResourcesManager;
 import fr.ign.cogit.geoxygene.appli.layer.LayerFactory;
 import fr.ign.cogit.geoxygene.appli.layer.LayerFactory.LayerType;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory;
-import fr.ign.cogit.geoxygene.appli.validation.SymbolizerValidator;
-import fr.ign.cogit.geoxygene.appli.validation.SymbolizerValidator.InvalidSymbolizerException;
-import fr.ign.cogit.geoxygene.appli.validation.SymbolizerValidatorFactory;
+import fr.ign.cogit.geoxygene.appli.render.methods.RenderingMethodBuilder;
+import fr.ign.cogit.geoxygene.appli.render.methods.RenderingMethodDescriptor;
+import fr.ign.cogit.geoxygene.appli.validation.SLDXMLValidator;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
 import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.Rule;
 import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.UserLayerFactory;
-import fr.ign.cogit.geoxygene.style.interpolation.InterpolationSymbolizerInterface;
 import fr.ign.cogit.geoxygene.util.conversion.GPSTextfileReader;
 import fr.ign.cogit.geoxygene.util.conversion.RoadNetworkTextfileReader;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
@@ -59,8 +61,7 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
 public abstract class AbstractProjectFrame implements ProjectFrame {
 
     /** Logger of the application. */
-    private static Logger logger = Logger.getLogger(AbstractProjectFrame.class
-            .getName());
+    private static Logger logger = Logger.getLogger(AbstractProjectFrame.class.getName());
     private MainFrame mainFrame = null;
     private final Map<IFeature, BufferedImage> featureToImageMap = new HashMap<IFeature, BufferedImage>();
     private LayerLegendPanel layerLegendPanel = null; // The layer legend panel
@@ -74,14 +75,12 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     private static int PFID = 1; // Frame id counter
     private String title = "untitled"; // tab title
     private final Object sldLock = new Object();
-
-    // descriptor
+    private final boolean sld_validation = true;
 
     /**
      * Constructor
      */
-    public AbstractProjectFrame(final MainFrame frame,
-            final LayerViewPanel layerViewPanel, final ImageIcon iconImage) {
+    public AbstractProjectFrame(final MainFrame frame, final LayerViewPanel layerViewPanel, final ImageIcon iconImage) {
         super();
         this.setIconImage(iconImage);
         this.setMainFrame(frame);
@@ -90,30 +89,11 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
         if (layerViewPanel instanceof LayerViewGLPanel) {
             this.title += " (GL)";
         }
-        this.sld = new StyledLayerDescriptor(new DataSet());
-
-        // this.layerViewPanel.setModel(this.sld);
-        // this.layerLegendPanel.setModel(this.sld);
-
+        this.sld = new StyledLayerDescriptor();
         this.sld.addSldListener(this.getLayerViewPanel());
         this.sld.addSldListener(this.getLayerLegendPanel());
+        ResourcesManager.Root().registerResource(GeoxygeneConstants.GEOX_Const_CurrentStyleRootURIName, this.getClass().getClassLoader().getResource("/images/"), true);
     }
-
-    // /**
-    // * Constructor
-    // */
-    // public AbstractProjectFrame(final MainFrame frame, final ImageIcon
-    // iconImage) {
-    // super();
-    // this.setIconImage(iconImage);
-    // this.setMainFrame(frame);
-    // this.title = "Project #" + AbstractProjectFrame.PFID++;
-    // this.sld = new StyledLayerDescriptor(new DataSet());
-    // // this.layerViewPanel.setModel(this.sld);
-    // // this.layerLegendPanel.setModel(this.sld);
-    // this.sld.addSldListener(this.getLayerViewPanel());
-    // this.sld.addSldListener(this.getLayerLegendPanel());
-    // }
 
     @Override
     public final void setTitle(final String string) {
@@ -211,8 +191,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      * @param layerLegendPanel
      *            the layerLegendPanel to set
      */
-    public final void setLayerLegendPanel(
-            final LayerLegendPanel layerLegendPanel) {
+    public final void setLayerLegendPanel(final LayerLegendPanel layerLegendPanel) {
         this.layerLegendPanel = layerLegendPanel;
     }
 
@@ -281,31 +260,30 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     public final void addLayer(final File file) {
         if (file != null) {
             String fileName = file.getAbsolutePath();
-            String extention = fileName
-                    .substring(fileName.lastIndexOf('.') + 1);
-            LayerFactory factory = new LayerFactory(this.getSld());
+            String ext = FilenameUtils.getExtension(fileName);
+            LayerFactory factory = new LayerFactory(this.sld);
             Layer l = null;
-            if (extention.equalsIgnoreCase("shp")) { //$NON-NLS-1$
-                l = factory.createLayer(fileName, LayerType.SHAPEFILE);
-            } else if (extention.equalsIgnoreCase("tif")) { //$NON-NLS-1$
-                // For the moment, we stay with GEOTIFF, will be replaced by RASTER
-                l = factory.createLayer(fileName, LayerType.GEOTIFF);
-            } else if (extention.equalsIgnoreCase("asc")) { //$NON-NLS-1$
-                l = factory.createLayer(fileName, LayerType.ASC);
-            } else if (extention.equalsIgnoreCase("txt")) { //$NON-NLS-1$
-                l = factory.createLayer(fileName, LayerType.TXT);
-            } else if (extention.equalsIgnoreCase("png")) {
+
+            DataSet dataset = DataSet.getInstance();
+            if (ext.equalsIgnoreCase("shp")) { //$NON-NLS-1$
+                l = factory.createLayer(fileName, LayerType.SHAPEFILE, dataset);
+            } else if (ext.equalsIgnoreCase("tif")) { //$NON-NLS-1$
+                l = factory.createLayer(fileName, LayerType.GEOTIFF, dataset);
+            } else if (ext.equalsIgnoreCase("asc")) { //$NON-NLS-1$
+                l = factory.createLayer(fileName, LayerType.ASC, dataset);
+            } else if (ext.equalsIgnoreCase("txt")) { //$NON-NLS-1$
+                l = factory.createLayer(fileName, LayerType.TXT, dataset);
+            } else if (ext.equalsIgnoreCase("png")) {
                 // A new one, PNG Raster Images
                 l = factory.createLayer(fileName, LayerType.RASTER);
-            } else if (extention.equalsIgnoreCase("jpg")) {
+            } else if (ext.equalsIgnoreCase("jpg")) {
                 // A new one, JPG Raster Images
                 l = factory.createLayer(fileName, LayerType.RASTER);
             }
             if (l != null) {
-                synchronized (this.sldLock) {
-                    this.getSld().add(l);
-                }
+                this.sld.add(l);
             }
+
             return;
         }
     }
@@ -317,8 +295,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      */
     @Override
     public final void askAndAddNewLayer() {
-        File[] files = MainFrameMenuBar.fc.getFiles(this.getMainFrame()
-                .getGui());
+        File[] files = MainFrameMenuBar.fc.getFiles(this.getMainFrame().getGui());
         this.addLayerFromFileOrDirectory(files);
     }
 
@@ -328,15 +305,13 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
         }
         for (File file : files) {
             if (file.isDirectory()) {
-                this.addLayerFromFileOrDirectory(file
-                        .listFiles(new FileFilter() {
+                this.addLayerFromFileOrDirectory(file.listFiles(new FileFilter() {
 
-                            @Override
-                            public boolean accept(File pathname) {
-                                return MainFrameMenuBar.fc.getFileChooser()
-                                        .getFileFilter().accept(pathname);
-                            }
-                        }));
+                    @Override
+                    public boolean accept(File pathname) {
+                        return MainFrameMenuBar.fc.getFileChooser().getFileFilter().accept(pathname);
+                    }
+                }));
             } else {
                 this.addLayer(file);
             }
@@ -353,19 +328,16 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     @Override
     public final void addGpsTxtLayer(final String fileName) {
         int lastIndexOfSeparator = fileName.lastIndexOf(File.separatorChar);
-        String populationName = fileName.substring(lastIndexOfSeparator + 1,
-                fileName.lastIndexOf(".")); //$NON-NLS-1$
+        String populationName = fileName.substring(lastIndexOfSeparator + 1, fileName.lastIndexOf(".")); //$NON-NLS-1$
         logger.info(populationName);
-        Population<DefaultFeature> population = GPSTextfileReader.read(
-                fileName, populationName, this.getDataSet(), true);
+        Population<DefaultFeature> population = GPSTextfileReader.read(fileName, populationName, this.getDataSet(), true);
         logger.info(population.size());
 
         if (population != null) {
             this.addFeatureCollection(population, population.getNom());
             if (this.getLayers().size() == 1) {
                 try {
-                    this.getLayerViewPanel().getViewport()
-                            .zoom(population.envelope());
+                    this.getLayerViewPanel().getViewport().zoom(population.envelope());
                 } catch (NoninvertibleTransformException e1) {
                     e1.printStackTrace();
                 }
@@ -383,19 +355,16 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     @Override
     public final void addRoadNetworkTxtLayer(final String fileName) {
         int lastIndexOfSeparator = fileName.lastIndexOf(File.separatorChar);
-        String populationName = fileName.substring(lastIndexOfSeparator + 1,
-                fileName.lastIndexOf(".")); //$NON-NLS-1$
+        String populationName = fileName.substring(lastIndexOfSeparator + 1, fileName.lastIndexOf(".")); //$NON-NLS-1$
         logger.info(populationName);
-        Population<DefaultFeature> population = RoadNetworkTextfileReader.read(
-                fileName, populationName, this.getDataSet(), true);
+        Population<DefaultFeature> population = RoadNetworkTextfileReader.read(fileName, populationName, this.getDataSet(), true);
         logger.info(population.size());
 
         if (population != null) {
             this.addFeatureCollection(population, population.getNom());
             if (this.getLayers().size() == 1) {
                 try {
-                    this.getLayerViewPanel().getViewport()
-                            .zoom(population.envelope());
+                    this.getLayerViewPanel().getViewport().zoom(population.envelope());
                 } catch (NoninvertibleTransformException e1) {
                     e1.printStackTrace();
                 }
@@ -412,14 +381,13 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      * org.opengis.referencing.crs.CoordinateReferenceSystem)
      */
     @Override
-    public final Layer addFeatureCollection(
-            final IPopulation<? extends IFeature> population,
-            final String name, final CoordinateReferenceSystem crs) {
-        LayerFactory factory = new LayerFactory(this.getSld());
-        Layer layer = factory.createLayer(name, population.getFeatureType()
-                .getGeometryType());
+    public final Layer addFeatureCollection(final IPopulation<? extends IFeature> population, final String name, final CoordinateReferenceSystem crs) {
+        if (!DataSet.getInstance().getPopulations().contains(population)) {
+            DataSet.getInstance().addPopulation(population);
+        }
+        LayerFactory factory = new LayerFactory(this.sld);
+        Layer layer = factory.createLayer(name, population.getFeatureType().getGeometryType());
         layer.setCRS(crs);
-
         synchronized (this.sldLock) {
             this.getSld().add(layer);
         }
@@ -435,9 +403,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      * org.opengis.referencing.crs.CoordinateReferenceSystem)
      */
     @Override
-    public final Layer addUserLayer(
-            final IFeatureCollection<? extends IFeature> collection,
-            final String name, final CoordinateReferenceSystem crs) {
+    public final Layer addUserLayer(final IFeatureCollection<? extends IFeature> collection, final String name, final CoordinateReferenceSystem crs) {
         UserLayerFactory factory = new UserLayerFactory();
         factory.setModel(this.getSld());
         factory.setName(name);
@@ -459,8 +425,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      */
     @Override
     @Deprecated
-    public final Layer addFeatureCollection(final IPopulation<?> population,
-            final String name) {
+    public final Layer addFeatureCollection(final IPopulation<?> population, final String name) {
         return this.addFeatureCollection(population, name, null);
     }
 
@@ -505,8 +470,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     @Override
     public void clearSelection() {
         this.getLayerViewPanel().getSelectedFeatures().clear();
-        this.getLayerViewPanel().getRenderingManager().getSelectionRenderer()
-                .clearImageCache();
+        this.getLayerViewPanel().getRenderingManager().getSelectionRenderer().clearImageCache();
         this.getLayerViewPanel().superRepaint();
     }
 
@@ -558,12 +522,10 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
                 this.sld.removeSldListener(this.getLayerLegendPanel());
             }
             this.sld = sld;
-            System.err.println("Set Canvas background from SLD background = "
-                    + sld);
+            System.err.println("Set Canvas background from SLD background = " + sld);
             if (this.getLayerViewPanel() != null) {
                 if (this.sld != null) {
-                    this.getLayerViewPanel().setViewBackground(
-                            sld.getBackground());
+                    this.getLayerViewPanel().setViewBackground(sld.getBackground());
                     this.sld.addSldListener(this.getLayerViewPanel());
                     this.sld.addSldListener(this.getLayerLegendPanel());
 
@@ -589,16 +551,13 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      * java.awt.image.BufferedImage, double[][])
      */
     @Override
-    public void addImage(final String name, final BufferedImage image,
-            final double[][] range) {
-        DefaultFeature feature = new DefaultFeature(new GM_Envelope(
-                range[0][0], range[0][1], range[1][0], range[1][1]).getGeom());
+    public void addImage(final String name, final BufferedImage image, final double[][] range) {
+        DefaultFeature feature = new DefaultFeature(new GM_Envelope(range[0][0], range[0][1], range[1][0], range[1][1]).getGeom());
         this.featureToImageMap.put(feature, image);
-        Population<DefaultFeature> population = new Population<DefaultFeature>(
-                name);
+        Population<DefaultFeature> population = new Population<DefaultFeature>(name);
         population.add(feature);
         this.getDataSet().addPopulation(population);
-        LayerFactory factory = new LayerFactory(this.getSld());
+        LayerFactory factory = new LayerFactory(this.sld);
         Layer layer = factory.createLayer(name);
         synchronized (this.sldLock) {
             this.getSld().add(layer);
@@ -647,8 +606,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
         try {
             // do we have to add ".shp" extension ?
             // (FileUtil.changeExtension(fileName, "shp"))
-            ShapefileWriter.write(layer.getFeatureCollection(), fileName,
-                    layer.getCRS());
+            ShapefileWriter.write(layer.getFeatureCollection(), fileName, layer.getCRS());
         } catch (Exception e) {
             logger.error("Shapefile export failed! See stack trace below : "); //$NON-NLS-1$
             e.printStackTrace();
@@ -678,7 +636,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      * @throws JAXBException
      * @throws FileNotFoundException
      */
-     
+
     @Override
     public void loadSLD(File file) throws FileNotFoundException, JAXBException {
 
@@ -686,27 +644,30 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
                 || file.getAbsolutePath().endsWith(".XML"))) //$NON-NLS-1$
         {
 
-            StyledLayerDescriptor new_sld;
-
             synchronized (this.getSld().lock) {
-                new_sld = StyledLayerDescriptor.unmarshall(
-                        file.getAbsolutePath(), this.getDataSet());
-                this.loadSLD(new_sld, true);
+                StyledLayerDescriptor new_sld = StyledLayerDescriptor.unmarshall(file.getAbsolutePath());
+                this.loadSLD(new_sld, this.sld_validation);
             }
         } else {
             if (!(file.getAbsolutePath().endsWith(".xml") //$NON-NLS-1$
             || file.getAbsolutePath().endsWith(".XML"))) {
-                logger.warn("SLD file must finish with '.xml' or '.XML' extension. Skip loading SLD '"
-                        + file.getAbsolutePath() + "'");
+                logger.warn("SLD file must finish with '.xml' or '.XML' extension. The SLD will not be loaded.'" + file.getAbsolutePath() + "'");
             } else if (!file.isFile()) {
-                logger.warn("SLD filename '" + file.getAbsolutePath()
-                        + "' is not a file. Skip loading SLD.");
+                logger.warn("SLD filename '" + file.getAbsolutePath() + "' is not a file. Skip loading SLD.");
             } else {
-                logger.warn("SLD filename '"
-                        + file.getAbsolutePath()
-                        + "' is not valid for an undetermined reason. Skip loading SLD.");
+                logger.warn("SLD filename '" + file.getAbsolutePath() + "' is not valid for an undetermined reason. Skip loading SLD.");
             }
         }
+    }
+
+    /**
+     * @author Bertrand Duménieu Validate the content of a SLD.
+     * @param sld
+     * @return
+     */
+    public boolean validateSLDNew(StyledLayerDescriptor sld) {
+        SLDXMLValidator validator = new SLDXMLValidator(sld, StyledLayerDescriptor.class);
+        return validator.validate();
     }
 
     /**
@@ -715,71 +676,100 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      *        are validated
      * @param sld
      */
-    private void validateSLD(StyledLayerDescriptor sld) {
-        for (Layer layer : sld.getLayers()) {
-            for (Style style : layer.getStyles()) {
-                for (FeatureTypeStyle fts : style.getFeatureTypeStyles()) {
-                    for (Rule rule : fts.getRules()) {
-                        for (Symbolizer symbolizer : rule.getSymbolizers()){                        
-                            if (symbolizer instanceof InterpolationSymbolizerInterface){
-                              InterpolationSymbolizerInterface interSymbolizer = (InterpolationSymbolizerInterface)symbolizer;
-                              SymbolizerValidator validator = SymbolizerValidatorFactory
-                                  .getOrCreateValidator(interSymbolizer);
-                              if (validator != null)
-                                try {
-                                  validator.validate(interSymbolizer);
-                                } catch (InvalidSymbolizerException e) {
-                                  logger.error(e.getStackTrace().toString());
-                                }
-                            }
-                        }
+    // private void validateSLD(StyledLayerDescriptor sld) {
+    // for (Layer layer : sld.getLayers()) {
+    // for (Style style : layer.getStyles()) {
+    // for (FeatureTypeStyle fts : style.getFeatureTypeStyles()) {
+    // for (Rule rule : fts.getRules()) {
+    // for (Symbolizer symbolizer : rule.getSymbolizers()) {
+    // if (symbolizer instanceof InterpolationSymbolizerInterface) {
+    // InterpolationSymbolizerInterface interSymbolizer =
+    // (InterpolationSymbolizerInterface) symbolizer;
+    // SymbolizerValidator validator =
+    // SymbolizerValidatorFactory.getOrCreateValidator(interSymbolizer);
+    // if (validator != null)
+    // try {
+    // validator.validate(interSymbolizer);
+    // } catch (InvalidSymbolizerException e) {
+    // logger.error(e.getStackTrace().toString());
+    // }
+    // }
+    // }
+    // }
+    // }
+    // }
+    // }
+    // }
+
+    @Override
+    public void loadSLD(StyledLayerDescriptor sld, boolean validate) {
+
+        if (sld != null) {
+            if (validate) {
+                // this.validateSLD(new_sld);
+                if (!validateSLDNew(sld)) {
+                    logger.info("SLD " + sld + " is invalid");
+                    try {
+                        throw new Exception("INVALID SLD");
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+                    return;
+                } else {
+                    System.out.println("THE SLD IS VALID");
+                    this.sld.setSource(sld.getSource());
+                    ResourcesManager.Root().registerResource(GeoxygeneConstants.GEOX_Const_CurrentStyleRootURIName, this.sld.getSource(), true);
                 }
             }
-        }
-    }
-
-    /**
-     * @param new_sld
-     */
-    @Override
-    public void loadSLD(StyledLayerDescriptor new_sld, boolean validate) {
-        if (new_sld != null) {
-            if (validate) {
-                this.validateSLD(new_sld);
-            }
-
-            this.getLayerViewPanel().setViewBackground(new_sld.getBackground());
-            this.getSld().setBackground(new_sld.getBackground());
+            this.getLayerViewPanel().setViewBackground(sld.getBackground());
+            this.getSld().setBackground(sld.getBackground());
 
             for (int i = 0; i < this.getLayers().size(); i++) {
                 String name = this.getLayers().get(i).getName();
-                // logger.debug(name);
                 // vérifier que le layer est décrit dans le SLD
-                if (new_sld.getLayer(name) != null) {
-                    if (new_sld.getLayer(name).getStyles() != null) {
-                        // logger.debug(new_sld.getLayer(name).getStyles());
-                        this.getLayers().get(i)
-                                .setStyles(new_sld.getLayer(name).getStyles());
-
+                if (sld.getLayer(name) != null) {
+                    if (sld.getLayer(name).getStyles() != null) {
+                        this.getLayers().get(i).setStyles(sld.getLayer(name).getStyles());
+                        // Load the rendering methods associated with the styles
+                        this.loadSLDRenderingMethods(sld, sld.getLayer(name).getStyles());
                     } else {
-                        logger.warn("Le layer " + name
-                                + " n'a pas de style défini dans le SLD");
+                        logger.warn("Le layer " + name + " n'a pas de style défini dans le SLD");
                     }
                 } else {
-                    logger.warn("Le layer " + name
-                            + " n'est pas décrit dans le SLD");
-                    this.getLayers().get(i)
-                            .setStyles(this.sld.getLayer(name).getStyles());
+                    logger.warn("Le layer " + name + " n'est pas décrit dans le SLD");
+                    this.getLayers().get(i).setStyles(this.sld.getLayer(name).getStyles());
                 }
             }
-
-            this.layerLegendPanel.repaint();
             this.layerViewPanel.repaint();
 
             /**
              * // loading finished
              */
+        }
+    }
+
+    private void loadSLDRenderingMethods(StyledLayerDescriptor _sld, List<Style> styles) {
+        for (Style s : styles) {
+            for (FeatureTypeStyle fts : s.getFeatureTypeStyles()) {
+                for (Rule r : fts.getRules()) {
+                    for (Symbolizer sym : r.getSymbolizers()) {
+                        String method = null;
+                        if (sym.getStroke() != null && sym.getStroke().getExpressiveStroke() != null) {
+                            method = sym.getStroke().getExpressiveStroke().getRenderingMethod();
+                        } else if (sym instanceof PolygonSymbolizer && ((PolygonSymbolizer) sym).getFill().getExpressiveFill() != null) {
+                            method = ((PolygonSymbolizer) sym).getFill().getExpressiveFill().getRenderingMethod();
+                        }
+                        if (method != null && RenderingMethodDescriptor.retrieveMethod(method)==null) {
+                            RenderingMethodDescriptor rdesc = RenderingMethodBuilder.build(sld.getSource().resolve("../methods/"), method + ".xml");
+                            if (rdesc == null) {
+                                logger.error("Failed to load the expressive rendering method " + method);
+                            } else {
+                                ResourcesManager.Root().getSubManager(GeoxygeneConstants.GEOX_Const_RenderingMethodsManagerName).registerResource(method, rdesc, true);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -794,8 +784,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
         synchronized (this.sldLock) {
             this.getSld().remove(toRemove);
             for (Layer layer : toRemove) {
-                this.getLayerViewPanel().getRenderingManager()
-                        .removeLayer(layer);
+                this.getLayerViewPanel().getRenderingManager().removeLayer(layer);
             }
         }
     }
@@ -807,9 +796,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      */
     @Override
     public final DataSet getDataSet() {
-        synchronized (this.sldLock) {
-            return this.getSld().getDataSet();
-        }
+        return DataSet.getInstance();
     }
 
     /**
@@ -817,7 +804,6 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      */
     @Override
     public void repaint() {
-        // repaint the current view
         this.getLayerViewPanel().repaint();
     }
 

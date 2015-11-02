@@ -36,7 +36,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
-import fr.ign.cogit.geoxygene.style.expressive.DefaultLineShaderDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.ExpressiveDescriptorImpl;
 
 /**
  * @author JeT
@@ -46,12 +46,12 @@ public class DefaultLineShaderUI implements GenericParameterUI {
 
     private JPanel main = null;
     private ProjectFrame parentProjectFrame = null;
-    private DefaultLineShaderDescriptor strtex = null;
+    private ExpressiveDescriptorImpl strtex = null;
 
     /**
      * Constructor
      */
-    public DefaultLineShaderUI(DefaultLineShaderDescriptor shaderDescriptor,
+    public DefaultLineShaderUI(ExpressiveDescriptorImpl shaderDescriptor,
             ProjectFrame projectFrame) {
         this.parentProjectFrame = projectFrame;
         this.strtex = shaderDescriptor;

@@ -1,0 +1,9 @@
+<!-- WorldToScreenSpace is the root method for all rendering methods. It 
+	contains the vertex shader that warp vertices coorinates from worldspace 
+	to screenspace -->
+<RenderingMethod>
+	<Name>WorldToScreenSpace</Name>
+	<ShaderList>
+		<ShaderRef gltype="GL_VERTEX_SHADER">world2screenspace.vert.glsl</ShaderRef>
+	</ShaderList>
+</RenderingMethod>

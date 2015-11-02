@@ -47,6 +47,7 @@ import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
  * 
  */
 public interface ProjectFrame {
+    
 
     /**
      * get the main GUI component of this Project Frame

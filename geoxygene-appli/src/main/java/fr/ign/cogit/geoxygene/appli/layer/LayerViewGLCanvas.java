@@ -137,4 +137,10 @@ public abstract class LayerViewGLCanvas extends AWTGLCanvas implements
 
     public abstract GLContext getGlContext() throws GLException;
 
+    //TODO  this method should also check if FBO are available!    
+    public abstract boolean isFBOActivated();
+
+    public abstract void setFBO(boolean selected);
+
+
 }

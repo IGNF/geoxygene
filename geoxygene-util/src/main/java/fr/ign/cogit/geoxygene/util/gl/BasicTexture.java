@@ -36,6 +36,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URL;
 
 import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
@@ -46,29 +47,26 @@ import org.lwjgl.opengl.GL13;
  *         point. It manages a texture by its filename and is a good base class
  *         for inheritance
  */
-public class BasicTexture implements Texture {
+public class BasicTexture implements GLTexture {
 
-    private static final Logger logger = Logger.getLogger(BasicTexture.class
-            .getName()); // logger
+    private static final Logger logger = Logger.getLogger(BasicTexture.class.getName()); // logger
 
     private static final int CHECKERBOARDSIZE = 20;
 
-    private static final Color[] CHECKERBOARDCOLOR = {
-            new Color(0.f, 0.f, 0.f, 0.25f), new Color(1.f, 1.f, 1.f, 0.25f) };
+    private static final Color[] CHECKERBOARDCOLOR = { new Color(0.f, 0.f, 0.f, 0.25f), new Color(1.f, 1.f, 1.f, 0.25f) };
 
-    private int textureId = -1;
-    private int textureSlot = GL13.GL_TEXTURE0;
-    private String textureFilename = null;
+    protected int textureId = -1;
+    protected int textureSlot = GL13.GL_TEXTURE0;
+    private URL tex_location = null;
     private BufferedImage textureImage = null;
     private double scaleX, scaleY;
 
     private String uniformVarName;
 
-    // private double minX = 0; // range of point coordinates in world space
-    // private double maxX = 1; // range of point coordinates in world space
-    // private double minY = 0; // range of point coordinates in world space
-    // private double maxY = 1; // range of point coordinates in world space
-
+    
+    public URL getTextureURL(){
+        return this.tex_location;
+    }
     /**
      * Constructor
      */
@@ -80,21 +78,12 @@ public class BasicTexture implements Texture {
     /**
      * Constructor with an image to read
      * 
-     * @param textureFilename
+     * @param tex_location : the real location of the texture.
      */
-    public BasicTexture(final String textureFilename) {
+    public BasicTexture(final URL tex_location) {
         this();
-        this.setTextureFilename(textureFilename);
+        this.setTextureURL(tex_location);
     }
-
-    // /**
-    // * Constructor with image dimension
-    // *
-    // */
-    // public BasicTexture(final int width, final int height) {
-    // this();
-    // this.createTextureImage(width, height);
-    // }
 
     /**
      * @param width
@@ -103,8 +92,7 @@ public class BasicTexture implements Texture {
      */
     public final void createTextureImage(final int width, final int height) {
         if (width * height == 0) {
-            throw new IllegalArgumentException(
-                    "Basic texture request with null size");
+            throw new IllegalArgumentException("Basic texture request with null size");
         }
         BufferedImage img = null;
         try {
@@ -113,11 +101,9 @@ public class BasicTexture implements Texture {
             }
             // logger.debug("********************************************************************** Create a Buffered Texture Image "
             // + width + "x" + height);
-            img = new BufferedImage(width, height,
-                    BufferedImage.TYPE_4BYTE_ABGR);
+            img = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
         } catch (Throwable e) {
-            logger.error("An error ocurred creating RGBA image size " + width
-                    + "x" + height);
+            logger.error("An error ocurred creating RGBA image size " + width + "x" + height);
             e.printStackTrace();
             return;
         }
@@ -127,8 +113,7 @@ public class BasicTexture implements Texture {
         g2.setComposite(AlphaComposite.Src);
         for (int y = 0; y < height; y += CHECKERBOARDSIZE) {
             for (int x = 0; x < width; x += CHECKERBOARDSIZE) {
-                g2.setPaint(CHECKERBOARDCOLOR[(x / CHECKERBOARDSIZE + y
-                        / CHECKERBOARDSIZE) % 2]);
+                g2.setPaint(CHECKERBOARDCOLOR[(x / CHECKERBOARDSIZE + y / CHECKERBOARDSIZE) % 2]);
                 g2.fillRect(x, y, CHECKERBOARDSIZE, CHECKERBOARDSIZE);
             }
         }
@@ -204,43 +189,27 @@ public class BasicTexture implements Texture {
     /**
      * @return the generated texture id
      */
-    protected final Integer getTextureId() {
+    public Integer getTextureId() {
         if (this.textureId < 0) {
             GL13.glActiveTexture(this.textureSlot);
             BufferedImage textureImage = this.getTextureImage();
             if (textureImage != null) {
-                this.textureId = GLTools.loadOrRetrieveTexture(textureImage,
-                        false);
-                // try {
-                // ImageIO.write(textureImage, "PNG", new File("basicTexture-" +
-                // this.textureId + ".png"));
-                // } catch (IOException e) {
-                // e.printStackTrace();
-                // }
-
+                this.textureId = GLTools.loadOrRetrieveTexture(textureImage, false);
             }
         }
         return this.textureId;
     }
 
     /**
-     * @return the textureFilename
-     */
-    public final String getTextureFilename() {
-        return this.textureFilename;
-    }
-
-    /**
      * @return the textureImage
      */
     public final BufferedImage getTextureImage() {
-        if (this.textureImage == null && this.textureFilename != null) {
+        if (this.textureImage == null && this.tex_location != null) {
             // if the texture image is not set, try to read it from a file
             try {
-                this.textureImage = GLTools.loadImage(this.textureFilename);
+                this.textureImage = GLTools.loadImage(tex_location);
             } catch (IOException e) {
-                logger.error("Cannot read file '" + this.getTextureFilename()
-                        + "'");
+                logger.error("Cannot read file '" + tex_location + "'");
                 e.printStackTrace();
             }
         }
@@ -270,11 +239,11 @@ public class BasicTexture implements Texture {
     }
 
     /**
-     * @param textureFilename
-     *            the textureFilename to set
+     * @param _tex_url
+     *            the texture url
      */
-    public final void setTextureFilename(final String textureFilename) {
-        this.textureFilename = textureFilename;
+    public final void setTextureURL(final URL _tex_url) {
+        this.tex_location = _tex_url;
         this.textureId = -1;
         this.textureImage = null;
     }
@@ -285,7 +254,7 @@ public class BasicTexture implements Texture {
     @Override
     public boolean initializeRendering(int programId) {
         Integer texIndex = this.getTextureId();
-        if (texIndex == null) {
+        if (texIndex == null || texIndex ==-1) {
             GL11.glDisable(GL_TEXTURE_2D);
             return false;
         }
@@ -294,33 +263,6 @@ public class BasicTexture implements Texture {
         glBindTexture(GL_TEXTURE_2D, texIndex);
         return true;
     }
-
-    // /*
-    // * (non-Javadoc)
-    // *
-    // * @see
-    // * fr.ign.cogit.geoxygene.appli.gl.Texture#vertexCoordinates(javax.vecmath
-    // * .Point2d)
-    // */
-    // @Override
-    // public Point2d vertexCoordinates(final Point2d p) {
-    // return this.vertexCoordinates(p.x, p.y);
-    // }
-    //
-    // /*
-    // * (non-Javadoc)
-    // *
-    // * @see fr.ign.cogit.geoxygene.appli.gl.Texture#vertexCoordinates(double,
-    // * double)
-    // */
-    // @Override
-    // public Point2d vertexCoordinates(final double x, final double y) {
-    // Point2d p = new Point2d((x - this.minX) / (this.maxX - this.minX), (y -
-    // this.minY) / (this.maxY - this.minY));
-    // System.err.println("return vertex coordinate(" + x + "," + y + ") = " +
-    // p);
-    // return p;
-    // }
 
     /*
      * (non-Javadoc)
@@ -331,47 +273,6 @@ public class BasicTexture implements Texture {
     public void finalizeRendering() {
 
     }
-
-    // @Override
-    // public void setRange(final double xmin, final double ymin, final double
-    // xmax, final double ymax) {
-    // this.minX = xmin;
-    // this.maxX = xmax;
-    // this.minY = ymin;
-    // this.maxY = ymax;
-    // }
-    //
-    // /**
-    // * @return the minX
-    // */
-    // @Override
-    // public double getMinX() {
-    // return this.minX;
-    // }
-    //
-    // /**
-    // * @return the maxX
-    // */
-    // @Override
-    // public double getMaxX() {
-    // return this.maxX;
-    // }
-    //
-    // /**
-    // * @return the minY
-    // */
-    // @Override
-    // public double getMinY() {
-    // return this.minY;
-    // }
-    //
-    // /**
-    // * @return the maxY
-    // */
-    // @Override
-    // public double getMaxY() {
-    // return this.maxY;
-    // }
 
     public void setTextureImage(BufferedImage textureImage) {
         this.textureImage = textureImage;

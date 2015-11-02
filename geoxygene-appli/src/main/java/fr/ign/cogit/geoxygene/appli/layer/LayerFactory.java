@@ -41,6 +41,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.I18N;
+import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.FT_Coverage;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
@@ -75,7 +76,7 @@ import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 
 /**
- * Convenience factory for creating GeOxygene layers. In order to manage new layertypes please use LayerTypes.
+ * Convenience factory for creating GeOxygene layers.
  * 
  * @see Layer
  * @see GeoTiffReader
@@ -94,38 +95,43 @@ public class LayerFactory {
 
     private StyledLayerDescriptor model;
 
-    public LayerFactory(StyledLayerDescriptor sld) {
-        this.model = sld;
+    public LayerFactory(StyledLayerDescriptor _model) {
+        this.model= _model;
     }
+    
 
     public void registerReaderListener(ActionListener listener) {
         ShapefileReader.addActionListener(listener);
     }
 
-    public Layer createLayer(String filename, LayerType layertype, String styleName) {
-        Layer layer = createLayer(filename, layertype);
-        layer.setStyles(this.model.getLayer(styleName).getStyles());
-        return layer;
-    }
 
     public Layer createLayer(String filename, LayerType layertype) {
+        return createLayer(filename, layertype, null);
+    }
+    
+    public Layer createLayer(String filename, LayerType layertype, DataSet target_dataset) {
         File f = new File(filename);
+        Layer l = null;
         try {
             if (f.exists()) {
                 switch (layertype) {
                 case SHAPEFILE:
-                    return this.createShapeLayer(f);
+                     l = this.createShapeLayer(f, target_dataset);
+                     break;
                 case GEOTIFF:
-                    return this.createTiffLayer(f);
+                    l = this.createTiffLayer(f,target_dataset);
+                    break;
                 case ASC:
-                    return this.createAscLayer(f);
+                    l =  this.createAscLayer(f,target_dataset);
+                    break;
                 case RASTER:
-                    return this.createRasterLayer(f);
+                    l =  this.createRasterLayer(f,target_dataset);
+                    break;
                 default:
                     return null;
                 }
             }
-            return null;
+            return l;
         } catch (IOException e) {
             logger.error("IO exception, cannot create the layer!"); //$NON-NLS-1$
             e.printStackTrace();
@@ -137,9 +143,9 @@ public class LayerFactory {
         }
     }
 
-    private synchronized Layer createShapeLayer(File file) {
+    private synchronized Layer createShapeLayer(File file, DataSet target_dataset) {
         String populationName = popNameFromFile(file.getPath());
-        ShapefileReader shapefileReader = new ShapefileReader(file.getPath(), populationName, this.model.getDataSet(), true);
+        ShapefileReader shapefileReader = new ShapefileReader(file.getPath(), populationName, target_dataset,true);
         shapefileReader.read();
         Layer layer = this.createLayer(populationName, shapefileReader.getPopulation().getFeatureType().getGeometryType());
         if (layer != null)
@@ -147,7 +153,7 @@ public class LayerFactory {
         return layer;
     }
 
-    private Layer createTiffLayer(File file) throws IOException {
+    private Layer createTiffLayer(File file, DataSet target_dataset) throws IOException {
         String populationName = popNameFromFile(file.getPath());
 
         GeoTiffReader reader = new GeoTiffReader(file);
@@ -160,12 +166,12 @@ public class LayerFactory {
                 .getCoordinate()[0], envelope.getLowerCorner().getCoordinate()[1], envelope.getUpperCorner()
                 .getCoordinate()[1]));
         population.add(new FT_Coverage(coverage));
-        this.model.getDataSet().addPopulation(population);
+        target_dataset.addPopulation(population);
         Layer layer = this.createLayer(populationName);
         return layer;
     }
     
-    private Layer createRasterLayer(File file) throws IOException {
+    private Layer createRasterLayer(File file, DataSet target_dataset) throws IOException {
         // declaration & initialization
         Layer layer = null;
         AbstractGridCoverage2DReader reader;
@@ -201,8 +207,7 @@ public class LayerFactory {
         // add the data to the population
         population.add(new FT_Coverage(coverage));
 
-        // give the population to the dataset of the StyledLayerDescriptor a.k.a. SLD
-        this.model.getDataSet().addPopulation(population);
+        target_dataset.addPopulation(population);
 
         // create a layer 
         layer = this.createLayer(populationName);
@@ -210,7 +215,7 @@ public class LayerFactory {
         return layer;
     }
 
-    private Layer createAscLayer(File file) throws IllegalArgumentException, IOException {
+    private Layer createAscLayer(File file, DataSet target_dataset) throws IllegalArgumentException, IOException {
         String populationName = popNameFromFile(file.getPath());
         //    double[][] range = new double[2][2];
         // BufferedImage grid = ArcGridReader.loadAsc(file.getPath(), range);
@@ -221,7 +226,7 @@ public class LayerFactory {
         // new GM_Envelope(range[0][0], range[0][1], range[1][0], range[1][1]).getGeom());
         Population<FT_Coverage> population = new Population<FT_Coverage>(populationName);
         population.add(feature);
-        this.model.getDataSet().addPopulation(population);
+        target_dataset.addPopulation(population);
         Layer layer = this.createLayer(populationName);
         RasterSymbolizer symbolizer = (RasterSymbolizer) layer.getSymbolizer();
         symbolizer.setShadedRelief(new ShadedRelief());
@@ -296,7 +301,18 @@ public class LayerFactory {
         return newPop;
     }
 
+    /**
+     * For backward compatibility only. User {@link #createPopulationAndLayer(String, Class, DataSet)}
+     * @deprecated
+     * @param layerName
+     * @param geometryType
+     * @return
+     */
     public Layer createPopulationAndLayer(String layerName, Class<? extends IGeometry> geometryType) {
+        return this.createPopulationAndLayer(layerName, geometryType);
+        
+    }
+    public Layer createPopulationAndLayer(String layerName, Class<? extends IGeometry> geometryType, DataSet target_dataset) {
         if (layerName.isEmpty()) {
             layerName = this.generateNewLayerName();
         } else {
@@ -304,11 +320,11 @@ public class LayerFactory {
         }
         // Initialisation de la nouvelle population
         IPopulation<IFeature> newPop = this.generateNewPopulation(layerName, geometryType);
-        LayerFactory factory = new LayerFactory(this.model);
-        Layer newLayer = factory.createLayer(layerName, geometryType);
+        Layer newLayer = this.createLayer(layerName, geometryType);
         FeatureType featureType = new FeatureType();
         featureType.setGeometryType(geometryType);
-        this.model.getDataSet().addPopulation(newPop);
+        if(target_dataset != null)
+            target_dataset.addPopulation(newPop);
         newLayer.getFeatureCollection().setFeatureType(featureType);
         this.model.add(newLayer);
         return newLayer;

@@ -28,6 +28,7 @@
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
 import java.awt.image.BufferedImage;
+import java.net.URI;
 
 import org.apache.log4j.Logger;
 
@@ -39,7 +40,7 @@ import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
-import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTextureDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTexture;
 import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 
 /**
@@ -56,22 +57,24 @@ public class PerlinNoiseTextureTask extends AbstractTextureTask<BasicTexture> {
     private int width = 0;
     private int height = 0;
 
-    private PerlinNoiseTextureDescriptor textureDescriptor = null;
+    private PerlinNoiseTexture textureDescriptor = null;
     private BasicTexture basicTexture = null;
 
     /**
      * @param texture
      */
-    public PerlinNoiseTextureTask(String name,
-            PerlinNoiseTextureDescriptor descriptor,
-            IFeatureCollection<IFeature> featureCollection, Viewport viewport) {
-        super("PerlinNoise" + name);
+    public PerlinNoiseTextureTask(URI identifier,
+            PerlinNoiseTexture descriptor,
+            IFeatureCollection<IFeature> featureCollection) {
+        super("PerlinNoise" + identifier);
         this.textureDescriptor = descriptor;
         this.basicTexture = new BasicTexture();
-        this.setViewport(viewport);
+//        this.setViewport(viewport);
         this.setFeatureCollection(featureCollection);
-        this.computeTextureDimension(featureCollection.envelope(), viewport,
+        this.computeTextureDimension(featureCollection.envelope(),
                 this.getTextureDescriptor().getTextureResolution());
+        this.setNeedCaching(true);
+        this.id = identifier;
     }
 
     /**
@@ -92,7 +95,7 @@ public class PerlinNoiseTextureTask extends AbstractTextureTask<BasicTexture> {
     /**
      * @return the textureDescriptor
      */
-    public PerlinNoiseTextureDescriptor getTextureDescriptor() {
+    public PerlinNoiseTexture getTextureDescriptor() {
         return this.textureDescriptor;
     }
 
@@ -181,7 +184,7 @@ public class PerlinNoiseTextureTask extends AbstractTextureTask<BasicTexture> {
      * 
      * @return
      */
-    private void computeTextureDimension(IEnvelope envelope, Viewport viewport,
+    private void computeTextureDimension(IEnvelope envelope,
             double dpiResolution) {
         if (envelope == null) {
             throw new IllegalArgumentException("envelope is not set");
@@ -203,6 +206,12 @@ public class PerlinNoiseTextureTask extends AbstractTextureTask<BasicTexture> {
     @Override
     public BasicTexture getTexture() {
         return this.basicTexture;
+    }
+
+    @Override
+    public void setID(URI identifier) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

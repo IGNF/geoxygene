@@ -41,32 +41,15 @@ public final class GLSimpleVertex implements GLVertex {
     private final float[] uv = new float[2];
     private final float[] rgba = new float[4];
     public static final int NumberOfFloatValues = 9;
-
     public static final int vertexPostionLocation = 0;
     public static final int vertexUVLocation = 1;
     public static final int vertexColorLocation = 2;
-    public static final String vertexPositionVariableName = "vertexPosition";
-    public static final String vertexUVVariableName = "vertexUV";
-    public static final String vertexColorVariableName = "vertexColor";
+    
+    public static final String VertexPositionVarName = "vertexPosition";
+    public static final String VertexUVVarName = "vertexUV";
+    public static final String VertexColorVarName = "vertexColor";
+    
 
-    // public static final int ATTRIBUTES_COUNT = 3;
-    // private static final int POSITION_ATTRIBUTE_LOCATION = 0;
-    // private static final int UV_ATTRIBUTE_LOCATION = 1;
-    // private static final int COLOR_ATTRIBUTE_LOCATION = 2;
-    // public static final int VERTEX_BYTESIZE = Float.SIZE / 8
-    // * NumberOfFloatValues;
-    // public static final int[] ATTRIBUTES_ID = { POSITION_ATTRIBUTE_LOCATION,
-    // UV_ATTRIBUTE_LOCATION, COLOR_ATTRIBUTE_LOCATION };
-    // public static final int[] ATTRIBUTES_COMPONENT_NUMBER = { 3, 2, 4 };
-    // public static final int[] ATTRIBUTES_TYPE = { GL11.GL_FLOAT,
-    // GL11.GL_FLOAT,
-    // GL11.GL_FLOAT };
-    // public static final int[] ATTRIBUTES_BYTEOFFSET = { 0, Float.SIZE / 8 *
-    // 3,
-    // Float.SIZE / 8 * 5 };
-
-    // public static final String[] ELEMENTS_NAME = { "inPosition",
-    // "inTextureCoord", "inColor" };
 
     /**
      * Default constructor

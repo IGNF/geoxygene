@@ -28,6 +28,8 @@
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +52,7 @@ import fr.ign.cogit.geoxygene.style.texture.BinaryGradientImageDescriptor;
  *         it into a gradient image with false colors as GradientTextureTask
  *         does
  */
-public class BinaryGradientImageTask extends AbstractTask {
+public class BinaryGradientImageTask extends AbstractTask{
 
     private static final Logger logger = Logger
             .getLogger(BinaryGradientImageTask.class.getName()); // logger
@@ -58,7 +60,7 @@ public class BinaryGradientImageTask extends AbstractTask {
     private BinaryGradientImageDescriptor binaryGradientImageDescriptor = null;
     private BinaryGradientImage binaryGradientImage = null;
     private IFeatureCollection<IFeature> featureCollection = null;
-    private File binaryGradientImageFile = null;
+    private URI binaryGradientImageURI = null;
     private boolean needWriting = false; // set to true after generation (not
                                          // when read)
     public static final double CM_PER_INCH = 2.540005;
@@ -76,7 +78,7 @@ public class BinaryGradientImageTask extends AbstractTask {
         super("Gradient-" + name);
         this.binaryGradientImageDescriptor = textureDescriptor;
         this.featureCollection = featureCollection;
-        this.binaryGradientImageFile = null;
+        this.binaryGradientImageURI = null;
         this.needWriting = true;
     }
 
@@ -86,11 +88,11 @@ public class BinaryGradientImageTask extends AbstractTask {
      * 
      * @param texture
      */
-    public BinaryGradientImageTask(String name, File file) {
+    public BinaryGradientImageTask(String name, URI location) {
         super("Gradient-" + name);
         this.binaryGradientImageDescriptor = null;
         this.featureCollection = null;
-        this.binaryGradientImageFile = file;
+        this.binaryGradientImageURI = location;
         this.needWriting = false;
     }
 
@@ -109,12 +111,17 @@ public class BinaryGradientImageTask extends AbstractTask {
      * 
      * @return
      */
-    public File getBinaryGradientImageFile() {
-        if (this.binaryGradientImageFile != null) {
-            return this.binaryGradientImageFile;
+    public URI getBinaryGradientImageURI() {
+        if (this.binaryGradientImageURI != null) {
+            return this.binaryGradientImageURI;
         }
-        return TextureManager.generateBinaryGradientImageUniqueFile(
-                this.binaryGradientImageDescriptor, this.featureCollection);
+        try {
+            return TextureManager.createTexID(
+                    this.binaryGradientImageDescriptor, this.featureCollection);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
@@ -164,7 +171,7 @@ public class BinaryGradientImageTask extends AbstractTask {
      */
     @Override
     public void run() {
-        if (this.binaryGradientImageFile != null) {
+        if (this.binaryGradientImageURI != null) {
             this.readBinaryGradientImageFile();
         } else {
             this.generateBinaryGradientImage();
@@ -242,7 +249,7 @@ public class BinaryGradientImageTask extends AbstractTask {
         try {
 
             this.binaryGradientImage = BinaryGradientImage
-                    .readBinaryGradientImage(this.binaryGradientImageFile);
+                    .readBinaryGradientImage(new File(this.binaryGradientImageURI));
             if (this.binaryGradientImage == null) {
                 this.setError(new IllegalStateException(
                         "GradientTextureImage returned a null texture"));
@@ -252,7 +259,7 @@ public class BinaryGradientImageTask extends AbstractTask {
             this.setState(TaskState.FINISHED);
         } catch (Exception e) {
             logger.error("An error occurred reading binary gradient image '"
-                    + this.binaryGradientImageFile.getAbsolutePath() + "'");
+                    + new File(this.binaryGradientImageURI).getAbsolutePath() + "'");
             this.setError(e);
             this.setState(TaskState.ERROR);
         }

@@ -29,17 +29,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
 
-import fr.ign.cogit.geoxygene.style.expressive.GradientSubshaderDescriptor;
-import fr.ign.cogit.geoxygene.style.texture.BasicTextureDescriptor;
-import fr.ign.cogit.geoxygene.style.texture.BinaryGradientImageDescriptor;
-import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTextureDescriptor;
-import fr.ign.cogit.geoxygene.style.texture.TileDistributionTextureDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.ExpressiveDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.ExpressiveDescriptorImpl;
 
-/**
- * @author Julien Perret
- */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Fill {
+public class Fill{
     public enum LineJoin {
         MITRE, ROUND, BEVEL
     }
@@ -49,7 +43,10 @@ public class Fill {
     }
 
     @XmlElement(name = "GraphicFill")
-    private GraphicFill graphicFill = null;
+    protected GraphicFill graphicFill = null;
+    
+    @XmlElement(name = "ExpressiveFill", type = ExpressiveDescriptorImpl.class)
+    protected ExpressiveDescriptorImpl expressive_fill = null;
 
     /**
      * Renvoie la valeur de l'attribut graphicFill.
@@ -70,39 +67,11 @@ public class Fill {
         this.graphicFill = graphicFill;
     }
 
-    // this field is set as public intentionally. It is due to reflection search
-    // in tags that
-    @XmlElements({
-            @XmlElement(name = "PerlinNoiseTexture", type = PerlinNoiseTextureDescriptor.class),
-            @XmlElement(name = "BasicTexture", type = BasicTextureDescriptor.class),
-            @XmlElement(name = "GradientTexture", type = BinaryGradientImageDescriptor.class),
-            @XmlElement(name = "ExpressiveGradient", type = GradientSubshaderDescriptor.class),
-            @XmlElement(name = "TileDistributionTexture", type = TileDistributionTextureDescriptor.class) })
-    public Fill2DDescriptor fill2dDescriptor = null;
-
-    /**
-     * Renvoie la texture.
-     * 
-     * @return la texture.
-     */
-    public Fill2DDescriptor getFill2DDescriptor() {
-        return this.fill2dDescriptor;
-    }
-
-    /**
-     * Affecte la texture.
-     * 
-     * @param texture
-     *            la texture.
-     */
-    public void setFill2DDescriptor(Fill2DDescriptor d) {
-        this.fill2dDescriptor = d;
-    }
 
     @XmlElements({
             @XmlElement(name = "SvgParameter", type = SvgParameter.class),
             @XmlElement(name = "CssParameter", type = SvgParameter.class) })
-    private List<SvgParameter> svgParameters = new ArrayList<SvgParameter>();
+    protected List<SvgParameter> svgParameters = new ArrayList<SvgParameter>();
 
     /**
      * Renvoie la valeur de l'attribut cssParameters.
@@ -140,7 +109,7 @@ public class Fill {
     }
 
     @XmlTransient
-    private Color fill = Color.gray;
+    protected Color fill = Color.gray;
 
     /**
      * Renvoie la valeur de l'attribut fill.
@@ -185,7 +154,7 @@ public class Fill {
     }
 
     @XmlTransient
-    private float fillOpacity = 1.0f;
+    protected float fillOpacity = 1.0f;
 
     /**
      * Renvoie la valeur de l'attribut fillOpacity.
@@ -222,7 +191,7 @@ public class Fill {
     }
 
     @XmlTransient
-    private Color color = null;
+    protected Color color = null;
 
     public synchronized Color getColor() {
         if (this.color == null) {
@@ -274,8 +243,7 @@ public class Fill {
                         .hashCode());
         result = prime
                 * result
-                + ((this.fill2dDescriptor == null) ? 0 : this.fill2dDescriptor
-                        .hashCode());
+                + ((this.expressive_fill == null) ? 0 : this.expressive_fill.hashCode());
         return result;
     }
 
@@ -328,14 +296,16 @@ public class Fill {
         } else if (!this.svgParameters.equals(other.svgParameters)) {
             return false;
         }
-        if (this.fill2dDescriptor == null) {
-            if (other.fill2dDescriptor != null) {
-                return false;
-            }
-        } else if (!this.fill2dDescriptor.equals(other.fill2dDescriptor)) {
-            return false;
-        }
+
         return true;
+    }
+
+    public ExpressiveDescriptor getExpressiveFill() {
+        return this.expressive_fill;
+    }
+
+    public void setExpressiveFill(ExpressiveDescriptorImpl efill) {
+        this.expressive_fill = efill;
     }
 
 }

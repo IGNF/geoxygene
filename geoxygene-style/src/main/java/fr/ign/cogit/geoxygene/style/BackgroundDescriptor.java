@@ -21,25 +21,27 @@ package fr.ign.cogit.geoxygene.style;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.image.BufferedImage;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
+import fr.ign.cogit.geoxygene.style.texture.SimpleTexture;
+import fr.ign.cogit.geoxygene.style.texture.Texture;
 
 /**
  * @author JeT
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class BackgroundDescriptor {
-    @XmlElement(name = "url")
-    private String url = null;
+
+    
+    @XmlElement(name="SimpleTexture")
+    SimpleTexture tex = null;
 
     @XmlTransient
     private int width, height; // image texture dimension (in pixels)
-    @XmlTransient
-    private BufferedImage textureImage = null;
+
     @XmlElement(name = "PaperHeightInCm")
     private double paperHeightInCm = 4;
     @XmlElement(name = "PaperReferenceMapScale")
@@ -64,12 +66,12 @@ public class BackgroundDescriptor {
     /**
      * constructor
      * 
-     * @param url
-     *            url to the texture image location
+     * @param _tex
+     *            the texture used to render the background
      */
-    public BackgroundDescriptor(String url) {
+    public BackgroundDescriptor(SimpleTexture _tex) {
         this();
-        this.url = url;
+        this.tex = _tex;
     }
 
     /**
@@ -107,20 +109,10 @@ public class BackgroundDescriptor {
         return this.color;
     }
 
-    /**
-     * @return the url
-     */
-    public String getUrl() {
-        return this.url;
+    public Texture getTexture() {
+        return this.tex;
     }
 
-    /**
-     * @param url
-     *            the url to set
-     */
-    public void setUrl(String url) {
-        this.url = url;
-    }
 
     /**
      * @return the paperScaleFactor
@@ -152,42 +144,43 @@ public class BackgroundDescriptor {
         this.paperReferenceMapScale = paperReferenceMapScale;
     }
 
-    /**
-     * invalidate the precomputed image texture and force recomputation. For
-     * async generation this method should be overridden to stop potential
-     * in-progress generation
-     */
-    public void invalidateTexture() {
-        this.setTextureImage(null);
-    }
+    // /**
+    // * invalidate the precomputed image texture and force recomputation. For
+    // * async generation this method should be overridden to stop potential
+    // * in-progress generation
+    // */
+    // public void invalidateTexture() {
+    // this.setTextureImage(null);
+    // }
 
-    /**
-     * This set method breaks the object encapsulation paradigm. It is due to
-     * geoxygene Style module independence. Textures have to be declared into
-     * "Style" module but the implementation of how texture are generated and
-     * visualized must not be in style (they can have dependencies to appli or
-     * other modules). The generation has to be external and use this set method
-     * (carefully)
-     * 
-     * @param textureImage
-     *            the Texture Image to set
-     */
-    synchronized public void setTextureImage(BufferedImage textureImage) {
-        this.textureImage = textureImage;
-        if (this.textureImage != null) {
-            this.setTextureDimension(this.textureImage.getWidth(),
-                    this.textureImage.getHeight());
-        }
-    }
-
-    /**
-     * get the image texture
-     * 
-     * @return the image or null
-     */
-    public BufferedImage getTextureImage() {
-        return this.textureImage;
-    }
+    // /**
+    // * This set method breaks the object encapsulation paradigm. It is due to
+    // * geoxygene Style module independence. Textures have to be declared into
+    // * "Style" module but the implementation of how texture are generated and
+    // * visualized must not be in style (they can have dependencies to appli or
+    // * other modules). The generation has to be external and use this set
+    // method
+    // * (carefully)
+    // *
+    // * @param textureImage
+    // * the Texture Image to set
+    // */
+    // synchronized public void setTextureImage(BufferedImage textureImage) {
+    // this.textureImage = textureImage;
+    // if (this.textureImage != null) {
+    // this.setTextureDimension(this.textureImage.getWidth(),
+    // this.textureImage.getHeight());
+    // }
+    // }
+    //
+    // /**
+    // * get the image texture
+    // *
+    // * @return the image or null
+    // */
+    // public BufferedImage getTextureImage() {
+    // return this.textureImage;
+    // }
 
     /**
      * Set the texture image size in pixels. Shortcut to setWidth()/setHeight()
@@ -244,17 +237,13 @@ public class BackgroundDescriptor {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime
-                * result
-                + ((this.colorDescriptor == null) ? 0 : this.colorDescriptor
-                        .hashCode());
+        result = prime * result + ((this.colorDescriptor == null) ? 0 : this.colorDescriptor.hashCode());
         long temp;
         temp = Double.doubleToLongBits(this.paperReferenceMapScale);
         result = prime * result + (int) (temp ^ (temp >>> 32));
         temp = Double.doubleToLongBits(this.paperHeightInCm);
         result = prime * result + (int) (temp ^ (temp >>> 32));
-        result = prime * result
-                + ((this.url == null) ? 0 : this.url.hashCode());
+        result = prime * result + ((this.tex == null) ? 0 : this.tex.hashCode());
         return result;
     }
 
@@ -282,19 +271,17 @@ public class BackgroundDescriptor {
         } else if (!this.colorDescriptor.equals(other.colorDescriptor)) {
             return false;
         }
-        if (Double.doubleToLongBits(this.paperReferenceMapScale) != Double
-                .doubleToLongBits(other.paperReferenceMapScale)) {
+        if (Double.doubleToLongBits(this.paperReferenceMapScale) != Double.doubleToLongBits(other.paperReferenceMapScale)) {
             return false;
         }
-        if (Double.doubleToLongBits(this.paperHeightInCm) != Double
-                .doubleToLongBits(other.paperHeightInCm)) {
+        if (Double.doubleToLongBits(this.paperHeightInCm) != Double.doubleToLongBits(other.paperHeightInCm)) {
             return false;
         }
-        if (this.url == null) {
-            if (other.url != null) {
+        if (this.tex == null) {
+            if (other.tex != null) {
                 return false;
             }
-        } else if (!this.url.equals(other.url)) {
+        } else if (!this.tex.equals(other.tex)) {
             return false;
         }
         return true;

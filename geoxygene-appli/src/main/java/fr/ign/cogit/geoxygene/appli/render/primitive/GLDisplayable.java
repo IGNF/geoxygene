@@ -29,7 +29,6 @@ package fr.ign.cogit.geoxygene.appli.render.primitive;
 
 import java.util.Collection;
 import java.util.Date;
-
 import fr.ign.cogit.geoxygene.appli.task.Task;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 
@@ -64,4 +63,10 @@ public interface GLDisplayable extends Task {
      * change to know when this method will return a non null value
      */
     public Collection<GLComplex> getFullRepresentation();
+
+    /**
+     * Cleanup the GLDisplayable and make it ready for garbage collection.
+     */
+    public void dispose();
+
 }

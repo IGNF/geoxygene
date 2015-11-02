@@ -8,6 +8,7 @@ public interface GLComplex {
 
     public abstract String getId();
 
+
     /**
      * stride is the size in bytes of one data chunk (GLVertex)
      * 
@@ -98,14 +99,5 @@ public interface GLComplex {
 
     public abstract double getOverallOpacity();
 
-    // /**
-    // * Add all meshes from a gl complex
-    // *
-    // * @param subComplex
-    // */
-    // public abstract void addGLComplex(GLComplex subComplex);
 
-    public abstract void setRenderer(GLComplexRenderer renderer);
-
-    public abstract GLComplexRenderer getRenderer();
 }

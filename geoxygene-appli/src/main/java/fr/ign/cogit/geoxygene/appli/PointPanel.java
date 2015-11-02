@@ -1,41 +1,27 @@
 package fr.ign.cogit.geoxygene.appli;
-import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Vector;
-
 import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
-import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
@@ -44,34 +30,15 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
-import fr.ign.cogit.geoxygene.appli.PointPanel.ComboBoxRenderer;
-import fr.ign.cogit.geoxygene.appli.panel.COGITColorChooserPanel;
-import fr.ign.cogit.geoxygene.appli.ui.ExpressiveRenderingUIFactory;
-import fr.ign.cogit.geoxygene.appli.ui.GenericParameterUI;
-import fr.ign.cogit.geoxygene.style.AbstractSymbolizer;
-import fr.ign.cogit.geoxygene.style.CategorizedMap;
-import fr.ign.cogit.geoxygene.style.ColorMap;
-import fr.ign.cogit.geoxygene.style.Fill2DDescriptor;
-import fr.ign.cogit.geoxygene.style.Interpolate;
-import fr.ign.cogit.geoxygene.style.InterpolationPoint;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.LinePlacement;
-import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 import fr.ign.cogit.geoxygene.style.Mark;
 import fr.ign.cogit.geoxygene.style.PointPlacement;
 import fr.ign.cogit.geoxygene.style.PointSymbolizer;
-import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
-import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
-import fr.ign.cogit.geoxygene.style.expressive.StrokeExpressiveRenderingDescriptor;
 
 public class PointPanel extends JDialog implements ActionListener,
 MouseListener, ChangeListener, ItemListener {

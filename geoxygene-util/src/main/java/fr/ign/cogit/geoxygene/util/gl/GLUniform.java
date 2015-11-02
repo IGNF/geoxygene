@@ -34,37 +34,26 @@ import org.lwjgl.opengl.GL11;
  * 
  */
 public class GLUniform {
-    private int location = 0;
     private String name = "unnamed";
-    private int componentCount = 1;
     private int glType = GL11.GL_FLOAT;
     private boolean normalized = false;
     private int stride = 0; // distance between 2 same elements in bytes
 
     /**
-     * @param location
      * @param name
-     * @param componentCount
      * @param glType
      * @param normalized
      * @param stride
      */
-    public GLUniform(int location, String name, int componentCount, int glType, boolean normalized, int stride) {
+    public GLUniform(String name, int glType, boolean normalized, int stride) {
         super();
-        this.location = location;
         this.name = name;
-        this.componentCount = componentCount;
         this.glType = glType;
         this.normalized = normalized;
         this.stride = stride;
     }
 
-    /**
-     * @return the location
-     */
-    public int getLocation() {
-        return this.location;
-    }
+
 
     /**
      * @return the name
@@ -73,12 +62,6 @@ public class GLUniform {
         return this.name;
     }
 
-    /**
-     * @return the componentCount
-     */
-    public int getComponentCount() {
-        return this.componentCount;
-    }
 
     /**
      * @return the glType
@@ -100,5 +83,10 @@ public class GLUniform {
     public int getStride() {
         return this.stride;
     }
+    
+    public String toString(){
+        return this.getName()+":"+this.getGlType();
+    }
+    
 
 }

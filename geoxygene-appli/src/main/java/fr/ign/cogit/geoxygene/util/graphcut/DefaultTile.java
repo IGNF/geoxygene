@@ -177,25 +177,22 @@ public class DefaultTile implements Tile {
 
     /**
      * read an image as tile
-     * 
-     * @param filename
-     *            file to read
      * @return a newly created tile
      * @throws IOException
      *             on IO Error
      */
-    public static Tile read(URL url, double scaleFactor) throws IOException {
+    public static Tile read(URL tile_url, double scaleFactor) throws IOException {
         DefaultTile tile = new DefaultTile();
         try {
-            BufferedImage img = ImageUtil.convert(ImageIO.read(url),
+            BufferedImage img = ImageUtil.convert(ImageIO.read(tile_url),
                     BufferedImage.TYPE_4BYTE_ABGR);
             tile.setImage(scaleImage(img, (int) (img.getWidth() * scaleFactor),
                     (int) (img.getHeight() * scaleFactor)));
         } catch (IOException e) {
-            logger.error("Cannot read url '" + url + "'");
+            logger.error("Cannot read url '" + tile_url + "'");
             throw e;
         } catch (Exception e) {
-            logger.error("Error reading url '" + url + "'");
+            logger.error("Error reading url '" + tile_url + "'");
             e.printStackTrace();
         }
         return tile;

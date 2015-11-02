@@ -1,0 +1,8 @@
+<RenderingMethod>
+    <Name>Degraded</Name>
+    <GeneralMethodReference>WorldToScreenSpace</GeneralMethodReference>    
+    <ShaderList>
+        <ShaderRef gltype="GL_VERTEX_SHADER">identity.vert.glsl</ShaderRef>
+        <ShaderRef gltype="GL_FRAGMENT_SHADER">polygon.color.frag.glsl</ShaderRef>
+    </ShaderList>
+</RenderingMethod>

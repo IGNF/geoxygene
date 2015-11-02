@@ -22,6 +22,7 @@ package fr.ign.cogit.geoxygene.appli;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -36,9 +37,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.CharArrayReader;
-import java.io.CharArrayWriter;
-import java.io.Reader;
+import java.util.Collection;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -64,8 +63,7 @@ import javax.swing.text.JTextComponent;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-import javax.xml.bind.JAXBException;
-
+import javax.xml.bind.ValidationEvent;
 import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
@@ -75,6 +73,8 @@ import org.fife.ui.rtextarea.SearchEngine;
 
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
+import fr.ign.cogit.geoxygene.appli.validation.SLDValidationEvent;
+import fr.ign.cogit.geoxygene.appli.validation.SLDXMLValidator;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.NamedLayer;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
@@ -220,39 +220,21 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
     }
   }
 
-  /**
-   * @return The initial SLD styles before modifications
-   */
-  public StyledLayerDescriptor getInitialSLD() {
-    return this.initialSLD;
-  }
-
-  /**
-   * @param sldToCopy The initial SLD styles before modifications
-   */
-  public void copyInitialSLD(StyledLayerDescriptor sldToCopy) {
-    if (sldToCopy == null) {
-      return;
+    /**
+     * @param sldToCopy
+     *            The initial SLD styles before modifications
+     */
+    public void copyInitialSLD(StyledLayerDescriptor sldToCopy) {
+        if (sldToCopy == null) {
+            return;
+        }
+        ByteArrayOutputStream writer = new ByteArrayOutputStream();
+        sldToCopy.marshall(writer);
+        this.initialSLD = sldToCopy;
+        this.getEditor().setText(writer.toString());
+        this.getEditor().setEditable(true);
+        this.getEditor().setEnabled(true);
     }
-    CharArrayWriter writer = new CharArrayWriter();
-    sldToCopy.marshall(writer);
-    Reader reader = new CharArrayReader(writer.toCharArray());
-    try {
-      this.initialSLD = StyledLayerDescriptor.unmarshall(reader);
-    } catch (JAXBException e) {
-      e.printStackTrace();
-    }
-    this.getInitialSLD().setDataSet(sldToCopy.getDataSet());
-
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    if (this.initialSLD != null) {
-      this.initialSLD.marshall(baos);
-    }
-    this.getEditor().setText(baos.toString());
-    this.getEditor().setEditable(true);
-    this.getEditor().setEnabled(true);
-
-  }
 
   @Override
   public void setVisible(boolean visible) {
@@ -311,6 +293,7 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
 
     this.getEditor().setCaretPosition(caret);
   }
+
 
   private void initializeGui(boolean forceEdition) {
 
@@ -381,15 +364,14 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
       JPanel cmdPanel = new JPanel(new BorderLayout());
       cmdPanel.add(this.getToolsPanel(), BorderLayout.SOUTH);
       this.getContentPane().add(cmdPanel, BorderLayout.SOUTH);
-
       this.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowClosed(WindowEvent e) {
-          StyleEditionExpertFrame.this.layerLegendPanel.getLayerViewPanel()
-              .getProjectFrame()
-              .releaseSldEditionLock(StyleEditionExpertFrame.this);
-        }
-      });
+          @Override
+          public void windowClosed(WindowEvent e) {
+            StyleEditionExpertFrame.this.layerLegendPanel.getLayerViewPanel()
+                .getProjectFrame()
+                .releaseSldEditionLock(StyleEditionExpertFrame.this);
+          }
+    });
       this.layerLegendPanel.getLayerViewPanel().getProjectFrame()
           .addSldEditionLock(this);
     }
@@ -399,7 +381,6 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
         ((JDialog) e.getSource()).dispose();
       }
     });
-
     this.setTitle(I18N.getString("StyleEditionFrame.StyleEdition")); //$NON-NLS-1$
     this.pack();
     this.setSize(650, 750);
@@ -407,7 +388,7 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
     this.setAlwaysOnTop(false);
 
   }
-
+  
   private StyledDocument getResultDocument() {
     return this.getDisplayTextPane().getStyledDocument();
   }
@@ -501,16 +482,17 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
     return this.toolsPanel;
   }
 
-  private JPanel getDisplayPanel() {
-    if (this.displayPanel == null) {
-      this.displayPanel = new JPanel(new BorderLayout());
-      this.displayPanel.setBorder(border);
-      this.displayPanel.add(new JScrollPane(this.getDisplayTextPane(),
-          ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-          ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED),
-          BorderLayout.CENTER);
-    }
-    return this.displayPanel;
+    private JPanel getDisplayPanel() {
+        if (this.displayPanel == null) {
+            this.displayPanel = new JPanel(new BorderLayout());
+            this.displayPanel.setBorder(border);
+            this.displayPanel.add(new JScrollPane(this.getDisplayTextPane(),
+                    ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                    ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED),
+                    BorderLayout.CENTER);
+        }
+        this.displayPanel.setMinimumSize(new Dimension(1,150));
+        return this.displayPanel;
   }
 
   private JTextPane getDisplayTextPane() {
@@ -555,17 +537,35 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
 
   public void applySld() {
     try {
-
-      ByteArrayInputStream in = new ByteArrayInputStream(this.getEditor()
-          .getText().getBytes("UTF-8"));
-      StyledLayerDescriptor new_sld = StyledLayerDescriptor.unmarshall(in);
-      this.layerViewPanel.getProjectFrame().loadSLD(new_sld, true);
-    } catch (Exception e) {
-      e.printStackTrace();
-      this.error(e.getClass().getName(), null);
-      this.error("Error found in SLD file", e);
+            this.displayTextPane.setText("");
+            ByteArrayInputStream in = new ByteArrayInputStream(this.getEditor()
+                    .getText().getBytes("UTF-8"));
+            SLDXMLValidator validator = new SLDXMLValidator(in, StyledLayerDescriptor.class);
+            if(!validator.validate()){
+                Collection<ValidationEvent> events = validator.getEvents();
+                for(ValidationEvent e : events){
+                    if( e instanceof SLDValidationEvent){
+                        SLDValidationEvent slde = (SLDValidationEvent) e;
+                        this.error(slde.getLocation().getLineNumber()+":"+slde.getLocation().getColumnNumber()+" "+slde.getMessage(), null);
+                        Object o = this.editor.addLineHighlight(40, this.errorForeground);
+                        System.out.println(o);
+                    }
+                }
+            }else{
+                displayTextPane.setText("THis SLD is valid.");
+                if(!validator.getContent().equals(this.initialSLD)){
+                    StyledLayerDescriptor new_sld = validator.getContent();
+                    new_sld.setSource(this.initialSLD.getSource());
+                    this.layerViewPanel.getProjectFrame().loadSLD(new_sld, false);
+                }
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            this.error(e.getClass().getName(), null);
+            this.error("Error found in the SLD file", e);
+        }
     }
-  }
 
   @Override
   public void actionPerformed(ActionEvent e) {
@@ -603,14 +603,13 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
       this.layerViewPanel.repaint();
     }
 
-    // When the user cancel style modifications in the main interface
-    if (e.getSource() == this.getCancelButton()) {
-      this.layerViewPanel.getProjectFrame().loadSLD(this.getInitialSLD(), true);
-      this.layerLegendPanel.repaint();
-      this.layerViewPanel.repaint();
-      this.layerLegendPanel.removeSelectionChangeListener(this);
-      StyleEditionExpertFrame.this.dispose();
-    }
+        // When the user cancel style modifications in the main interface
+        if (e.getSource() == this.getCancelButton()) {
+            this.layerLegendPanel.repaint();
+            this.layerViewPanel.repaint();
+            this.layerLegendPanel.removeSelectionChangeListener(this);
+            StyleEditionExpertFrame.this.dispose();
+        }
 
     // When the user validate style modifications
     if (e.getSource() == this.getValidButton()) {

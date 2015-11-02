@@ -50,7 +50,7 @@ public class Halo {
         this.radius = radius;
     }
 
-    @XmlElement(name = "Fill")
+    @XmlElement(name = "Fill", type=Fill.class)
     private Fill fill = null;
 
     /**

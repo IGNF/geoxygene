@@ -21,6 +21,7 @@ package fr.ign.cogit.geoxygene.style;
 
 import java.awt.Color;
 import java.io.CharArrayWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -28,6 +29,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -87,7 +89,9 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
 
     @XmlTransient
     public final Object lock = new Object(); // mutex used when changing SLD
-                                             // content (dataSet or layers)
+                                             // layers
+    @XmlTransient
+    private URI source = null;
 
     @XmlElement(name = "Name")
     protected String name;
@@ -220,6 +224,10 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
             }
         }
         return null;
+    }
+    
+    public URI getSource() {
+        return this.source;
     }
 
     /**
@@ -358,15 +366,9 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
      * @throws FileNotFoundException
      * @throws JAXBException
      */
-    public static StyledLayerDescriptor unmarshall(String fileName)
-            throws FileNotFoundException, JAXBException {
-        return StyledLayerDescriptor.unmarshall(new FileInputStream(fileName));
-    }
-
-    public static StyledLayerDescriptor unmarshall(String fileName,
-            DataSet dataset) throws FileNotFoundException, JAXBException {
-        StyledLayerDescriptor sld = unmarshall(fileName);
-        sld.dataSet = dataset;
+    public static StyledLayerDescriptor unmarshall(String fileName) throws FileNotFoundException, JAXBException {
+        StyledLayerDescriptor sld = StyledLayerDescriptor.unmarshall(new FileInputStream(fileName));
+        sld.source = new File(fileName).toURI();
         return sld;
     }
 
@@ -965,5 +967,12 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
         }
         return true;
     }
+
+
+    public void setSource(URI _src) {
+        this.source = _src;
+    }
+
+
 
 }

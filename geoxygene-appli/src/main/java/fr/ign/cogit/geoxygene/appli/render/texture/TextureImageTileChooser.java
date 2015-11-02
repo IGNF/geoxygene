@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Random;
 
 import utils.Pair;
-import fr.ign.cogit.geoxygene.style.texture.TileDistributionTextureDescriptor.DistributionManagementType;
+import fr.ign.cogit.geoxygene.style.texture.TileDistributionTexture.DistributionManagementType;
 import fr.ign.cogit.geoxygene.util.gl.Sample;
 import fr.ign.cogit.geoxygene.util.gl.Tile;
 
@@ -89,12 +89,6 @@ public class TextureImageTileChooser implements TileChooser {
         int n = 0;
         while (n < this.tilesToBeApplied.size()) {
             if (randomValue < weightSum[n]) {
-                // System.err.println("probabilities: " +
-                // Arrays.toString(sumProbabilities) + " random value = " +
-                // randomValue + " => index = " + n + "["
-                // + sumProbabilities[n] + "]");
-                // System.err.println("sample " + sample + " => tile " +
-                // this.tilesToBeApplied.get(n).second());
                 return this.tilesToBeApplied.get(n).second();
             }
             n++;

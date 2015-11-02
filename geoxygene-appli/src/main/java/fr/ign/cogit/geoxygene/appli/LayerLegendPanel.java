@@ -104,11 +104,6 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     private static Logger LOGGER = Logger.getLogger(LayerLegendPanel.class
             .getName());
 
-    /**
-     * Model for the layerlegendpanel
-     */
-
-    // private StyledLayerDescriptor sldmodel;
 
     /**
      * parent component
@@ -127,11 +122,11 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     /**
      *
      */
-    DefaultTableModel tablemodel = null;
+    private DefaultTableModel tablemodel = null;
     /**
      *
      */
-    JTable layersTable = null;
+    private JTable layersTable = null;
     JButton addLayerButton = new JButton(new ImageIcon(this.getClass()
             .getResource("/images/icons/16x16/page_white_add.png"))); //$NON-NLS-1$
     JButton addPostgisButton = new JButton(new ImageIcon(this.getClass()
@@ -154,7 +149,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
             .getResource("/images/icons/16x16/delete.png"))); //$NON-NLS-1$
     JButton attributeButton = new JButton(new ImageIcon(this.getClass()
             .getResource("/images/icons/16x16/table.png"))); //$NON-NLS-1$
-
+    
     JPopupMenu popupMenu = new JPopupMenu();
     JMenuItem newLayerMenuItem = new JMenuItem(
             I18N.getString("LayerLegendPanel.CreateLayer")); //$NON-NLS-1$
@@ -206,6 +201,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
                                     + n + ".png")); //$NON-NLS-1$
             this.images[n] = image;
         }
+        
         ImageIcon image = new ImageIcon(
                 LayerLegendPanel.class
                         .getResource("/images/icons/32x32/munsellcolorwheel.png")); //$NON-NLS-1$
@@ -584,6 +580,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     public void removeSelectionChangeListener(ListSelectionListener listener) {
         this.layersTable.getSelectionModel().removeListSelectionListener(
                 listener);
+        
     }
 
     /**
@@ -760,7 +757,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
             StyledLayerDescriptor new_sld;
             try {
                 new_sld = StyledLayerDescriptor.unmarshall(
-                        file.getAbsolutePath(), this.parent.getDataSet());
+                        file.getAbsolutePath());
 
                 StyledLayerDescriptor mixSLD = SLDMixer.mix(
                         this.parent.getSld(), new_sld);
@@ -1189,13 +1186,12 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
             LayerRenderer renderer = (LayerRenderer) e.getSource();
             int n = e.getModifiers() * 2 / 10;
             renderer.getLayer().setIcon(this.images[n]);
-            // this.tablemodel.fireTableDataChanged();
+
             this.update();
         }
         if (e.getID() == 5) { // rendering finished
             LayerRenderer renderer = (LayerRenderer) e.getSource();
             renderer.getLayer().setIcon(this.images[20]);
-            // this.tablemodel.fireTableDataChanged();
             this.update();
         }
     }
@@ -1294,11 +1290,10 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
         }
     }
 
-    // public void setModel(StyledLayerDescriptor sld) {
-    // this.sldmodel = sld;
-    // this.sldmodel.addSldListener(this);
-    // }
-
+    /**
+     * @deprecated This should not be used. 
+     * @return
+     */
     public StyledLayerDescriptor getModel() {
         return this.parent.getSld();
     }

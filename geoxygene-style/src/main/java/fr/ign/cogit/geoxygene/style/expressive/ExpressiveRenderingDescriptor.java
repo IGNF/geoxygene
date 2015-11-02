@@ -27,16 +27,29 @@
 
 package fr.ign.cogit.geoxygene.style.expressive;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
+import java.util.Collection;
 
-/**
- * Expressive Rendering Descriptor is the base class for SLD extensions found in
- * 'FILL' and 'STROKE' tags
- * 
- * @author JeT
- */
-@XmlAccessorType(XmlAccessType.NONE)
+import org.apache.log4j.Logger;
+
+
 public abstract class ExpressiveRenderingDescriptor {
+
+    Logger logger = Logger.getLogger(ExpressiveRenderingDescriptor.class);
+    public abstract  String getExpressiveMethod();
+
+    public abstract Collection<String> getUserShaders();
+
+    public Object lookupAttribute(String attribute_name) {
+        try {
+            this.getClass().getDeclaredMethod("get"+attribute_name, (Class<?>[]) null);
+        } catch (NoSuchMethodException e ) {
+            logger.error("Attribute lookup failed! No method get"+attribute_name+"() was found");
+            e.printStackTrace();
+        }catch (SecurityException e2) {
+            e2.printStackTrace();
+        }
+        return null;
+    }
+    
 
 }

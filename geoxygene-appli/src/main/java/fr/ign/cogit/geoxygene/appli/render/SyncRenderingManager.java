@@ -125,36 +125,28 @@ public class SyncRenderingManager implements RenderingManager {
             return;
         }
         synchronized (this.getLayerViewPanel().getProjectFrame().getSld().lock) {
-
             // render all layers
             for (Layer layer : this.getLayerViewPanel().getProjectFrame()
                     .getSld().getLayers()) {
                 if (layer.isVisible()) {
                     synchronized (this.rendererMap) {
-
                         LwjglLayerRenderer renderer = this.rendererMap
                                 .get(layer);
                         if (renderer == null) {
                             renderer = new LwjglLayerRenderer(layer,
                                     this.layerViewPanel);
-                            // logger.debug("No renderer associated with layer "
-                            // + layer.getName());
-                            // logger.debug("List of all associations: ");
-                            // for (Entry<Layer, LwjglLayerRenderer> r :
-                            // this.rendererMap
-                            // .entrySet()) {
-                            // logger.debug("\t" + r.getKey().getName()
-                            // + " associated with "
-                            // + r.getValue().hashCode());
-                            // }
                             this.rendererMap.put(layer, renderer);
                         }
+
                         this.render(renderer);
                     }
                 }
             }
         }
-        this.render(this.selectionRenderer);
+        if (!this.getLayerViewPanel().getProjectFrame().getSld().getLayers()
+                .isEmpty()) {
+            this.render(this.selectionRenderer);
+        }
     }
 
     /*
@@ -181,11 +173,6 @@ public class SyncRenderingManager implements RenderingManager {
                     return;
                 }
                 this.rendererMap.put(layer, renderer);
-                // System.err.println("SyncRenderingManager associates layer "
-                // + layer.getName() + " with renderer type "
-                // + renderer.getClass().getSimpleName());
-                // Adding the layer legend panel to the listeners of the
-                // renderer
                 renderer.addActionListener(this.getLayerViewPanel()
                         .getProjectFrame().getLayerLegendPanel());
             }
@@ -209,7 +196,6 @@ public class SyncRenderingManager implements RenderingManager {
         }
     }
 
-    private static int n = 0;
 
     /*
      * (non-Javadoc)
@@ -232,8 +218,6 @@ public class SyncRenderingManager implements RenderingManager {
         try {
             // initialize rendering
             renderer.initializeRendering();
-
-            // create a new runnable for the rendering
             Runnable runnable = renderer.createRunnable();
             if (runnable != null) {
                 try {
@@ -371,4 +355,5 @@ public class SyncRenderingManager implements RenderingManager {
     public void setHandlingDeletion(boolean handlingDeletion) {
         this.handlingDeletion = handlingDeletion;
     }
+
 }

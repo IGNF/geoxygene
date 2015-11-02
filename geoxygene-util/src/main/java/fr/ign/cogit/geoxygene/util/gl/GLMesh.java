@@ -47,9 +47,6 @@ public class GLMesh {
                                  // list (included)
     private int lastIndex = -1; // last index in the parent vertex indices list
                                 // (included)
-
-    // private final float[] color = new float[4];
-
     /**
      * Default constructor
      * 

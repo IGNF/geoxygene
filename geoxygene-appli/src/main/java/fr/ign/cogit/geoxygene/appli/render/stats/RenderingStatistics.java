@@ -39,7 +39,7 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.appli.render.GeoxComplexRenderer;
+import fr.ign.cogit.geoxygene.appli.render.GeoxygeneGLRenderer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
@@ -66,7 +66,7 @@ public class RenderingStatistics {
     private static int vertexCount = 0;
     private static int triangleCount = 0;
     private static String userMessage = "";
-    private static Map<GeoxComplexRenderer, RendererStatistics> renderers = new HashMap<GeoxComplexRenderer, RendererStatistics>();
+    private static Map<GeoxygeneGLRenderer, RendererStatistics> renderers = new HashMap<GeoxygeneGLRenderer, RendererStatistics>();
 
     private static int nbCoupleFeatureSymbolizer = 0;
     private static Set<IFeature> features = new HashSet<IFeature>();
@@ -95,7 +95,7 @@ public class RenderingStatistics {
      * @return
      */
     private static RendererStatistics getOrGenerateStatistics(
-            GeoxComplexRenderer renderer) {
+            GeoxygeneGLRenderer renderer) {
         RendererStatistics stats = renderers.get(renderer);
         if (stats == null) {
             stats = new RendererStatistics(renderer);
@@ -119,7 +119,7 @@ public class RenderingStatistics {
         RenderingStatistics.userMessage = userMessage;
     }
 
-    public static void doActivateRenderer(GeoxComplexRenderer renderer) {
+    public static void doActivateRenderer(GeoxygeneGLRenderer renderer) {
         if (!on) {
             return;
         }
@@ -127,7 +127,7 @@ public class RenderingStatistics {
         stats.doActivateRenderer();
     }
 
-    public static void doSwitchRenderer(GeoxComplexRenderer renderer) {
+    public static void doSwitchRenderer(GeoxygeneGLRenderer renderer) {
         if (!on) {
             return;
         }
@@ -135,7 +135,7 @@ public class RenderingStatistics {
         stats.doSwitchRenderer();
     }
 
-    public static void doInitializeRenderer(GeoxComplexRenderer renderer) {
+    public static void doInitializeRenderer(GeoxygeneGLRenderer renderer) {
         if (!on) {
             return;
         }
@@ -143,7 +143,7 @@ public class RenderingStatistics {
         stats.doInitializeRenderer();
     }
 
-    public static void doFinalizeRenderer(GeoxComplexRenderer renderer) {
+    public static void doFinalizeRenderer(GeoxygeneGLRenderer renderer) {
         if (!on) {
             return;
         }
@@ -151,7 +151,7 @@ public class RenderingStatistics {
         stats.doFinalizeRenderer();
     }
 
-    public static void doStartRendering(GeoxComplexRenderer renderer) {
+    public static void doStartRendering(GeoxygeneGLRenderer renderer) {
         if (!on) {
             return;
         }
@@ -159,7 +159,7 @@ public class RenderingStatistics {
         stats.doStartRendering();
     }
 
-    public static void doStopRendering(GeoxComplexRenderer renderer) {
+    public static void doStopRendering(GeoxygeneGLRenderer renderer) {
         if (!on) {
             return;
         }
@@ -167,7 +167,7 @@ public class RenderingStatistics {
         stats.doStopRendering();
     }
 
-    public static void doRender(GeoxComplexRenderer renderer) {
+    public static void doRender(GeoxygeneGLRenderer renderer) {
         RendererStatistics stats = getOrGenerateStatistics(renderer);
         stats.doRender();
     }
@@ -258,7 +258,7 @@ public class RenderingStatistics {
                 + nbCoupleFeatureSymbolizer);
         pos.println("nb different features = " + features.size());
         pos.println("nb different symbolizers = " + symbolizers.size());
-        for (Map.Entry<GeoxComplexRenderer, RendererStatistics> entry : renderers
+        for (Map.Entry<GeoxygeneGLRenderer, RendererStatistics> entry : renderers
                 .entrySet()) {
             // GeoxComplexRenderer renderer = entry.getKey();
             RendererStatistics stats = entry.getValue();

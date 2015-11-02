@@ -1,0 +1,891 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<StyledLayerDescriptor xmlns:ogc="http://www.opengis.net/ogc">
+	<Background>
+		<SimpleTexture XRepeat="false" YRepeat="false">
+			<Displacement x="0.0" y="0.0"></Displacement>
+			<ScaleFactor x="1.0" y="1.0"></ScaleFactor>
+			<Rotation Angle="0.0"></Rotation>
+			<URI>../images/canvas-bg.png</URI>
+		</SimpleTexture>
+		<PaperHeightInCm>4.0</PaperHeightInCm>
+		<PaperReferenceMapScale>100000.0</PaperReferenceMapScale>
+		<Color>#FFFFFF</Color>
+	</Background>
+	<NamedLayer>
+		<Name>petite_emprise</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer petite_emprise</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#ffffff</CssParameter>
+							<CssParameter name="stroke-opacity">0.0</CssParameter>
+							<CssParameter name="stroke-width">1.0</CssParameter>
+							<CssParameter name="stroke-linecap">round</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<Fill>
+							<ExpressiveFill>
+								<ExpressiveMethod>TextureFill</ExpressiveMethod>
+								<ExpressiveParameter name="fill-texture">
+									<SimpleTexture xRepeat="false" yRepeat="false">
+										<ScaleFactor x="0.3" y="0.3" />
+										<URI>../images/fond_de_carte.png</URI>
+									</SimpleTexture>
+								</ExpressiveParameter>
+							</ExpressiveFill>
+							<CssParameter name="fill">#ffffff</CssParameter>
+							<CssParameter name="fill-opacity">1.0</CssParameter>
+						</Fill>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>mer_OCS_100</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer mer_OCS_100</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#444444</CssParameter>
+							<CssParameter name="stroke-opacity">1.0</CssParameter>
+							<CssParameter name="stroke-width">0.0</CssParameter>
+							<CssParameter name="stroke-linecap">round</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<Fill>
+							<CssParameter name="fill">#ffffff</CssParameter>
+							<CssParameter name="fill-opacity">1.0</CssParameter>
+							<ExpressiveFill>
+								<ExpressiveMethod>TextureFill</ExpressiveMethod>
+								<ExpressiveParameter name="fill-texture">
+									<TileDistributionTexture xRepeat="false"
+										yRepeat="false">
+										<Displacement x="0.0" y="0.0" />
+										<ScaleFactor x="1.0" y="1.0" />
+										<Rotation angle="0.0" />
+										<MaxCoastlineLength>1000.0</MaxCoastlineLength>
+										<Tile>
+											<URI>../images/StJeanDeLuz/coast-1.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>0.0</MinDistance>
+											<MaxDistance>500.0</MaxDistance>
+											<InRangeProbability>10.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/StJeanDeLuz/coast-2.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>0.0</MinDistance>
+											<MaxDistance>500.0</MaxDistance>
+											<InRangeProbability>10.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/manche/manche-1-A.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>100.0</MinDistance>
+											<MaxDistance>1000.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/manche/manche-1-B.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>100.0</MinDistance>
+											<MaxDistance>1000.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/manche/manche-1-C.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>100.0</MinDistance>
+											<MaxDistance>1000.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/manche/manche-1-D.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>100.0</MinDistance>
+											<MaxDistance>1000.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/manche/manche-1-E.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>100.0</MinDistance>
+											<MaxDistance>1000.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/manche/manche-2-A.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>1000.0</MinDistance>
+											<MaxDistance>3000.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/manche/manche-2-B.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>1000.0</MinDistance>
+											<MaxDistance>3000.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/manche/manche-2-C.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>1000.0</MinDistance>
+											<MaxDistance>3000.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/manche/manche-2-D.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>1000.0</MinDistance>
+											<MaxDistance>3000.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/manche/manche-2-E.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>1000.0</MinDistance>
+											<MaxDistance>3000.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/manche/manche-3-A.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>3000.0</MinDistance>
+											<MaxDistance>4000.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/manche/manche-3-B.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>3000.0</MinDistance>
+											<MaxDistance>4000.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/manche/manche-3-C.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>3000.0</MinDistance>
+											<MaxDistance>4000.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/manche/manche-3-D.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>3000.0</MinDistance>
+											<MaxDistance>4000.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/manche/manche-3-E.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>3000.0</MinDistance>
+											<MaxDistance>4000.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/StJeanDeLuz/merIV-1.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>4000.0</MinDistance>
+											<MaxDistance>INF</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Resolution>300.0</Resolution>
+										<Blending>ALPHA</Blending>
+										<DistributionManagement>EXACT</DistributionManagement>
+										<BlurSize>2</BlurSize>
+									</TileDistributionTexture>
+								</ExpressiveParameter>
+							</ExpressiveFill>
+						</Fill>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+		<ContrastFilter>
+			<Contrast>2.0</Contrast>
+			<Brightness>-0.2</Brightness>
+			<Gamma>1.0</Gamma>
+		</ContrastFilter>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>hydro_100</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer hydro_100</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<LegendGraphic>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#333333</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#dddddd</CssParameter>
+									<CssParameter name="stroke-opacity">0.8</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</LegendGraphic>
+					<LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-opacity">0.8</CssParameter>
+							<CssParameter name="stroke-width">35.0</CssParameter>
+							<CssParameter name="stroke-linejoin">round</CssParameter>
+							<CssParameter name="stroke-linecap">round</CssParameter>
+							<ExpressiveStroke>
+								<ExpressiveMethod>CassiniRiverPainting</ExpressiveMethod>
+								<ExpressiveParameter name="transitionSize">10</ExpressiveParameter>
+								<ExpressiveParameter name="paperReferenceMapScale">100000</ExpressiveParameter>
+								<ExpressiveParameter name="paperRoughness">0.7</ExpressiveParameter>
+								<ExpressiveParameter name="brushRoughness">1.9</ExpressiveParameter>
+								<ExpressiveParameter name="strokePressure">2.6</ExpressiveParameter>
+								<ExpressiveParameter name="strokeSoftness">0.1</ExpressiveParameter>
+								<ExpressiveParameter name="paperSizeInCm">4</ExpressiveParameter>
+								<ExpressiveParameter name="extremitiesLength">6</ExpressiveParameter>
+								<ExpressiveParameter name="thickness">0.5</ExpressiveParameter>
+								<ExpressiveParameter name="hardness">0.5</ExpressiveParameter>
+								<ExpressiveParameter name="noiseWavelength">138</ExpressiveParameter>
+								<ExpressiveParameter name="paperTexture">
+									<SimpleTexture XRepeat="false" YRepeat="false">
+										<Displacement x="0.0" y="0.0"></Displacement>
+										<ScaleFactor x="1.0" y="1.0"></ScaleFactor>
+										<Rotation Angle="0.0"></Rotation>
+										<URI>../images/canvas-normalized.png</URI>
+									</SimpleTexture>
+								</ExpressiveParameter>
+								<ExpressiveParameter name="brushTexture">
+									<SimpleTexture XRepeat="false" YRepeat="false">
+										<Displacement x="0.0" y="0.0"></Displacement>
+										<ScaleFactor x="1.0" y="1.0"></ScaleFactor>
+										<Rotation Angle="0.0"></Rotation>
+										<URI>../images/chalk2-100-200.png</URI>
+									</SimpleTexture>
+								</ExpressiveParameter>
+							</ExpressiveStroke>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<PerpendicularOffset>0.0</PerpendicularOffset>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>rochy_OCS_100</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer rochy_OCS_100</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<LegendGraphic>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#ffffff</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#999999</CssParameter>
+									<CssParameter name="stroke-opacity">0.8</CssParameter>
+									<CssParameter name="stroke-width">0.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</LegendGraphic>
+					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-opacity">0.7</CssParameter>
+							<CssParameter name="stroke-width">0.0</CssParameter>
+							<CssParameter name="stroke-linecap">round</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<Fill>
+							<ExpressiveFill>
+								<ExpressiveMethod>TextureFill</ExpressiveMethod>
+								<ExpressiveParameter name="fill-texture">
+									<TileDistributionTexture xRepeat="false"
+										yRepeat="false">
+										<Displacement x="0.0" y="0.0" />
+										<ScaleFactor x="1.0" y="1.0" />
+										<Rotation angle="0.0" />
+										<MaxCoastlineLength>INF</MaxCoastlineLength>
+										<Tile>
+											<URI>../images/StJeanDeLuz/sandII-1.png</URI>
+											<ScaleFactor>0.5</ScaleFactor>
+											<MinDistance>100.0</MinDistance>
+											<MaxDistance>INF</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/StJeanDeLuz/sandII-1.png</URI>
+											<ScaleFactor>0.8</ScaleFactor>
+											<MinDistance>0.0</MinDistance>
+											<MaxDistance>100.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Resolution>300.0</Resolution>
+										<Blending>ALPHA</Blending>
+										<DistributionManagement>EXACT</DistributionManagement>
+										<BlurSize>0</BlurSize>
+									</TileDistributionTexture>
+								</ExpressiveParameter>
+								<CssParameter name="fill">#d9d9d9</CssParameter>
+								<CssParameter name="fill-opacity">0.53</CssParameter>
+							</ExpressiveFill>
+						</Fill>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+		<ContrastFilter>
+			<Contrast>15.0</Contrast>
+			<Brightness>-0.3</Brightness>
+			<Gamma>1.2</Gamma>
+		</ContrastFilter>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>routes_100</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer routes_100</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>Nationale contour noir</Name>
+					<Description>Nationale contour noir</Description>
+					<Filter>
+						<PropertyIsEqualTo matchCase="true">
+							<PropertyName>type</PropertyName>
+							<Literal>rouge</Literal>
+						</PropertyIsEqualTo>
+					</Filter>
+					<LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-width">50.0</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<PerpendicularOffset>0.0</PerpendicularOffset>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>Nationale intérieur blanc</Name>
+					<Description>Nationale intérieur blanc</Description>
+					<Filter>
+						<PropertyIsEqualTo matchCase="true">
+							<PropertyName>type</PropertyName>
+							<Literal>rouge</Literal>
+						</PropertyIsEqualTo>
+					</Filter>
+					<LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#FDFAF8</CssParameter>
+							<CssParameter name="stroke-width">30.0</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<PerpendicularOffset>0.0</PerpendicularOffset>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<LegendGraphic>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#777777</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#555555</CssParameter>
+									<CssParameter name="stroke-opacity">0.8</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</LegendGraphic>
+					<Filter>
+						<PropertyIsEqualTo matchCase="true">
+							<PropertyName>type</PropertyName>
+							<Literal>autoroute</Literal>
+						</PropertyIsEqualTo>
+					</Filter>
+					<LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#555555</CssParameter>
+							<CssParameter name="stroke-opacity">1.0</CssParameter>
+							<CssParameter name="stroke-width">100.0</CssParameter>
+							<CssParameter name="stroke-linejoin">round</CssParameter>
+							<CssParameter name="stroke-linecap">round</CssParameter>
+							<ExpressiveStroke>
+								<ExpressiveMethod>CassiniRoadsPainting</ExpressiveMethod>
+								<ExpressiveParameter name="transitionSize">10</ExpressiveParameter>
+								<ExpressiveParameter name="paperReferenceMapScale">100000.0</ExpressiveParameter> <!-- Only used for tesselation -->
+								<ExpressiveParameter name="paperRoughness">2</ExpressiveParameter>
+								<ExpressiveParameter name="brushRoughness">4</ExpressiveParameter>
+								<ExpressiveParameter name="strokePressure">17</ExpressiveParameter>
+								<ExpressiveParameter name="strokeSoftness">0.2</ExpressiveParameter>
+								<ExpressiveParameter name="paperSizeInCm">4</ExpressiveParameter>
+								<ExpressiveParameter name="extremitiesLength">210.375</ExpressiveParameter>
+								<ExpressiveParameter name="paperTexture">
+									<SimpleTexture XRepeat="false" YRepeat="false">
+										<Displacement x="0.0" y="0.0"></Displacement>
+										<ScaleFactor x="1.0" y="1.0"></ScaleFactor>
+										<Rotation Angle="0.0"></Rotation>
+										<URI>../images/canvas-normalized.png</URI>
+									</SimpleTexture>
+								</ExpressiveParameter>
+								<ExpressiveParameter name="brushTexture">
+									<SimpleTexture XRepeat="false" YRepeat="false">
+										<Displacement x="0.0" y="0.0"></Displacement>
+										<ScaleFactor x="1.0" y="1.0"></ScaleFactor>
+										<Rotation Angle="0.0"></Rotation>
+										<URI>../images/StJeanDeLuz/route.png</URI>
+									</SimpleTexture>
+								</ExpressiveParameter>
+							</ExpressiveStroke>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<PerpendicularOffset>0.0</PerpendicularOffset>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>sablehum_OCS_100</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer sablehum_OCS_100</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<LegendGraphic>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#ffffff</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#bbbbbb</CssParameter>
+									<CssParameter name="stroke-opacity">0.8</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</LegendGraphic>
+					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#ffffff</CssParameter>
+							<CssParameter name="stroke-opacity">0.8</CssParameter>
+							<CssParameter name="stroke-width">1.0</CssParameter>
+							<CssParameter name="stroke-linecap">round</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<Fill>
+							<CssParameter name="fill">#ffffff</CssParameter>
+							<CssParameter name="fill-opacity">1.0</CssParameter>
+							<ExpressiveFill>
+								<ExpressiveMethod>TextureFill</ExpressiveMethod>
+								<ExpressiveParameter name="fill-texture">
+									<TileDistributionTexture xRepeat="false"
+										yRepeat="false">
+										<Displacement x="0.0" y="0.0" />
+										<ScaleFactor x="1.0" y="1.0" />
+										<Rotation angle="0.0" />
+										<MaxCoastlineLength>INF</MaxCoastlineLength>
+										<Tile>
+											<URI>../images/StJeanDeLuz/coast-4.png</URI>
+											<ScaleFactor>0.5</ScaleFactor>
+											<MinDistance>100.0</MinDistance>
+											<MaxDistance>INF</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/StJeanDeLuz/coast-5.png</URI>
+											<ScaleFactor>0.8</ScaleFactor>
+											<MinDistance>0.0</MinDistance>
+											<MaxDistance>100.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Resolution>300.0</Resolution>
+										<Blending>ALPHA</Blending>
+										<DistributionManagement>EXACT</DistributionManagement>
+										<BlurSize>0</BlurSize>
+									</TileDistributionTexture>
+								</ExpressiveParameter>
+							</ExpressiveFill>
+						</Fill>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+		<ContrastFilter>
+			<Contrast>5.0</Contrast>
+			<Brightness>-0.3</Brightness>
+			<Gamma>1.2</Gamma>
+		</ContrastFilter>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>surface_eau_OCS_100</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer surface_eau_OCS_100</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<LegendGraphic>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#777777</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#BBBBBB</CssParameter>
+									<CssParameter name="stroke-opacity">0.8</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</LegendGraphic>
+					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-opacity">0.69</CssParameter>
+							<CssParameter name="stroke-width">15.0</CssParameter>
+							<CssParameter name="stroke-linecap">round</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<Fill>
+							<CssParameter name="fill">#969696</CssParameter>
+							<CssParameter name="fill-opacity">0.76</CssParameter>
+						</Fill>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>vegetation_OCS_100</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer vegetation_OCS_100</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<LegendGraphic>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#999999</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#222</CssParameter>
+									<CssParameter name="stroke-opacity">0.8</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</LegendGraphic>
+					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#ffffff</CssParameter>
+							<CssParameter name="stroke-opacity">0.0</CssParameter>
+							<CssParameter name="stroke-width">23.0</CssParameter>
+							<CssParameter name="stroke-linecap">round</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<Fill>
+							<CssParameter name="fill">#ffffff</CssParameter>
+							<CssParameter name="fill-opacity">1.0</CssParameter>
+							<ExpressiveFill>
+								<ExpressiveMethod>TextureFill</ExpressiveMethod>
+								<ExpressiveParameter name="fill-texture">
+									<TileDistributionTexture xRepeat="false"
+										yRepeat="false">
+										<Displacement x="0.0" y="0.0" />
+										<ScaleFactor x="1.0" y="1.0" />
+										<Rotation angle="0.0" />
+										<MaxCoastlineLength>1000.0</MaxCoastlineLength>
+										<Tile>
+											<URI>../images/manche/forest-1-A.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>0.0</MinDistance>
+											<MaxDistance>100.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/manche/forest-1-B.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>0.0</MinDistance>
+											<MaxDistance>100.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/manche/forest-1-C.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>0.0</MinDistance>
+											<MaxDistance>100.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/manche/forest-2-A.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>100.0</MinDistance>
+											<MaxDistance>INF</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/manche/forest-2-B.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>100.0</MinDistance>
+											<MaxDistance>INF</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/manche/forest-2-C.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>100.0</MinDistance>
+											<MaxDistance>INF</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/manche/forest-2-D.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>100.0</MinDistance>
+											<MaxDistance>INF</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/manche/forest-2-E.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>100.0</MinDistance>
+											<MaxDistance>INF</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Resolution>300.0</Resolution>
+										<Blending>ALPHA</Blending>
+										<DistributionManagement>EXACT</DistributionManagement>
+										<BlurSize>2</BlurSize>
+									</TileDistributionTexture>
+								</ExpressiveParameter>
+							</ExpressiveFill>
+						</Fill>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+		<ContrastFilter>
+			<Contrast>2.0</Contrast>
+			<Brightness>-0.2</Brightness>
+			<Gamma>1.0</Gamma>
+		</ContrastFilter>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>lit_hydro_100</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer lit_hydro_100</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<LegendGraphic>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#dddddd</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#666666</CssParameter>
+									<CssParameter name="stroke-opacity">0.8</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</LegendGraphic>
+					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#d9d9d9</CssParameter>
+							<CssParameter name="stroke-opacity">0.2</CssParameter>
+							<CssParameter name="stroke-width">1.0</CssParameter>
+							<CssParameter name="stroke-linecap">round</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<Fill>
+							<CssParameter name="fill">#737373</CssParameter>
+							<CssParameter name="fill-opacity">0.8</CssParameter>
+							<ExpressiveFill>
+								<ExpressiveMethod>CassiniRiverbedPainting</ExpressiveMethod>
+								<ExpressiveParameter name="strokeDistance">20.0</ExpressiveParameter>
+								<ExpressiveParameter name="strokeThickness">4.4</ExpressiveParameter>
+								<ExpressiveParameter name="strokeLength">0.3</ExpressiveParameter>
+								<ExpressiveParameter name="strokeStartShift">0.01</ExpressiveParameter>
+								<ExpressiveParameter name="strokeStartLength">0.01</ExpressiveParameter>
+								<ExpressiveParameter name="strokeEndLength">0.01</ExpressiveParameter>
+								<ExpressiveParameter name="gradientTexture">
+									<GradientTexture>
+										<Resolution>72.0</Resolution>
+										<MapScale>100000.0</MapScale>
+										<MaxCoastlineLength>INF</MaxCoastlineLength>
+										<BlurSize>1</BlurSize>
+									</GradientTexture>
+								</ExpressiveParameter>
+							</ExpressiveFill>
+						</Fill>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+		<ContrastFilter>
+			<Contrast>10.0</Contrast>
+			<Brightness>0.0</Brightness>
+			<Gamma>1.2</Gamma>
+		</ContrastFilter>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>toponyme_droit_25_emprise_100K</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer toponyme_droit_25_emprise_100K</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#000000</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#407d8f</CssParameter>
+									<CssParameter name="stroke-opacity">0.8</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</PointSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+			<FeatureTypeStyle>
+				<Rule />
+			</FeatureTypeStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<TextSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<Label>
+							<PropertyName>ref_ecritu</PropertyName>
+						</Label>
+						<Font>
+							<CssParameter name="font-family">URW Chancery L</CssParameter>
+							<CssParameter name="font-style">normal</CssParameter>
+							<CssParameter name="font-weight">bold</CssParameter>
+							<CssParameter name="font-size">20.0</CssParameter>
+						</Font>
+						<LabelPlacement>
+							<PointPlacement>
+								<Rotation>0.0</Rotation>
+							</PointPlacement>
+						</LabelPlacement>
+						<Fill>
+							<CssParameter name="fill">#000000</CssParameter>
+						</Fill>
+					</TextSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+</StyledLayerDescriptor>

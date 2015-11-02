@@ -43,9 +43,10 @@ public interface GLComplexRenderer {
      * Render a GLComplex
      * 
      * @param complex
+     * @return 
      * @throws GLException
      */
-    void render(GLComplex complex, double opacity) throws RenderingException,
+    boolean render(GLComplex complex, double opacity) throws RenderingException,
             GLException;
 
     /**

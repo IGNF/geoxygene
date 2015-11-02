@@ -27,11 +27,10 @@
 
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,46 +41,42 @@ import org.apache.log4j.Logger;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
+import fr.ign.cogit.geoxygene.appli.GeoxygeneConstants;
 import fr.ign.cogit.geoxygene.appli.Viewport;
-import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage;
+import fr.ign.cogit.geoxygene.appli.gl.ResourcesManager;
 import fr.ign.cogit.geoxygene.appli.task.TaskListener;
+import fr.ign.cogit.geoxygene.appli.task.TaskManager;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
-import fr.ign.cogit.geoxygene.style.texture.BasicTextureDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.SimpleTexture;
 import fr.ign.cogit.geoxygene.style.texture.BinaryGradientImageDescriptor;
-import fr.ign.cogit.geoxygene.style.texture.TextureDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.Texture;
+import fr.ign.cogit.geoxygene.style.texture.TileDistributionTexture;
 import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
+import fr.ign.cogit.geoxygene.util.gl.GLTexture;
 
 /**
  * @author JeT texture manager
  */
 public class TextureManager {
 
-    private static final Logger logger = Logger.getLogger(TextureManager.class
-            .getName()); // logger
-
-    private static final Map<TextureDescriptor, TextureTask<BasicTexture>> tasksMap = new HashMap<TextureDescriptor, TextureTask<BasicTexture>>();
-    private static final Map<File, TextureTask<BasicTexture>> readersMap = new HashMap<File, TextureTask<BasicTexture>>();
-
-    private static final Map<BinaryGradientImageDescriptor, BinaryGradientImageTask> gradientTasksMap = new HashMap<BinaryGradientImageDescriptor, BinaryGradientImageTask>();
-    private static final Map<File, BinaryGradientImageTask> gradientReadersMap = new HashMap<File, BinaryGradientImageTask>();
+    private static final Logger logger = Logger.getLogger(TextureManager.class.getName()); // logger
+    private static final Map<URI, TextureTask<? extends GLTexture>> tasksMap = new HashMap<URI, TextureTask<? extends GLTexture>>();
+    private static final Map<URI, GLTexture> textureMap = new HashMap<URI, GLTexture>();
 
     private final static TextureManager instance = new TextureManager();
 
     public static String DIRECTORY_CACHE_NAME = "cache";
 
     private BasicTextureTaskListener basicListener = null;
-    // 2 different readers for reading or generating binary gradient image
-    private BinaryGradientImageTaskListener gradientListener = null;
 
     /**
      * private singleton constructor
      */
     private TextureManager() {
         this.basicListener = new BasicTextureTaskListener(this);
-        this.gradientListener = new BinaryGradientImageTaskListener(this);
     }
 
     /**
@@ -91,183 +86,163 @@ public class TextureManager {
         return instance;
     }
 
-    /**
-     * return the texture image if it has finished being computed or launch the
-     * texture image computation. the task is automatically started To be
-     * alerted about texture computation completion use getTextureTask()
-     * 
-     * @param texture
-     * @param iFeatureCollection
-     * @param viewport
-     * @return
-     */
-    public BufferedImage getTextureImage(String name,
-            TextureDescriptor textureDescriptor,
-            IFeatureCollection<IFeature> iFeatureCollection, Viewport viewport) {
-        TextureTask<BasicTexture> textureTask = this.getTextureTask(name,
-                textureDescriptor, iFeatureCollection, viewport);
-        BasicTexture texture = textureTask.getTexture();
-        if (texture != null) {
-            BufferedImage textureImage = texture.getTextureImage();
-            if (textureImage != null) {
-                return textureImage;
+    
+    public static TextureTask<? extends GLTexture> getTextureTask(URI texture_uri){
+        return TextureManager.tasksMap.get(texture_uri);
+    }
+    
+    
+    public static GLTexture retrieveTexture(Texture desc, int feature_collection_hashcode) {
+        try {
+            if (desc instanceof SimpleTexture) {
+                return TextureManager.textureMap.get(createTexID(desc));
             }
+            return TextureManager.textureMap.get(createTexID(desc, feature_collection_hashcode));
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
         }
-        textureTask.start();
-        return textureTask.getTexture().getTextureImage();
+        return null;
     }
 
     /**
-     * Create or return a texture task. The task is NOT automatically started
-     * when completed Task.getTextureImage() won't be null
+     * Retrieve a texture with its ID. If the texture is not built, return null.
+     */
+    public static GLTexture retrieveTexture(URI tex_id) {
+        return TextureManager.textureMap.get(tex_id);
+    }
+
+    public static GLTexture getTexture(URI path) {
+        GLTexture t = textureMap.get(path);
+        if (t == null) {
+            TextureTask<? extends GLTexture> task = TextureManager.buildTexture(path);
+            try {
+                TaskManager.waitForCompletion(task);
+                t = textureMap.get(path);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return t;
+    }
+
+    /**
+     * Retrieve or create a simple texture. <br/>
+     * This method is <b> synchrone</b> and wait for the texture task to finish. <br/>
+     * To make asynchrone calls, use the methods {@link #buildTexture(...)}
      * 
-     * @param texture
-     * @param featureCollection
-     * @param viewport
+     * @param tex_descriptor
+     *            : the simple texture descriptor.
+     * @return a Basic
+     */
+    public static GLTexture getTexture(SimpleTexture tex_descriptor) {
+        return TextureManager.getTexture(tex_descriptor, null, null);
+    }
+
+    public static GLTexture getTexture(Texture tex_descriptor, IFeatureCollection<IFeature> textured_objects, Viewport p) {
+        if (tex_descriptor != null) {
+            try {
+                URI tex_uri = (tex_descriptor instanceof SimpleTexture) ? TextureManager.createTexID(tex_descriptor) : TextureManager.createTexID(tex_descriptor, textured_objects);
+                if (TextureManager.textureMap.get(tex_uri) == null) {
+                    TextureTask<? extends GLTexture> task = TextureManager.tasksMap.get(tex_uri);
+                    if (task != null) {
+                        TaskManager.waitForCompletion(task);
+                        return task.getTexture();
+                    }
+                } else {
+                    return TextureManager.textureMap.get(tex_uri);
+                }
+                TextureTask<? extends GLTexture> task;
+                if (tex_descriptor instanceof SimpleTexture) {
+                    task = TextureManager.buildTexture((SimpleTexture) tex_descriptor);
+                } else {
+                    task = TextureManager.buildTexture(tex_descriptor, textured_objects, p);
+                }
+                task.start();
+                TaskManager.waitForCompletion(task);
+                return task.getTexture();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Basic method that build a texture from an absolute uri 
+     * @param uri
      * @return
      */
-    public TextureTask<BasicTexture> getTextureTask(String name,
-            TextureDescriptor textureDescriptor,
-            IFeatureCollection<IFeature> featureCollection, Viewport viewport) {
-        if (textureDescriptor == null) {
+    public static TextureTask<? extends GLTexture> buildTexture(URI path) {
+        if(!path.isAbsolute()){
+            logger.error("TextureManager.buildTexture ERROR : URI is not absolute :"+ path);
             return null;
         }
-        TextureTask<BasicTexture> textureTask = null;
-        // create a task to generate texture image
-        synchronized (tasksMap) {
-            textureTask = tasksMap.get(textureDescriptor);
-            // look for texture in memory
-            if (textureTask != null) {
-                return textureTask;
-            }
-            // look for texture on cache disk
-            File file = TextureManager.generateTextureUniqueFile(
-                    textureDescriptor, featureCollection);
-            // logger.debug("Look for file '" + file.getAbsolutePath() + "'");
-            // logger.debug(textureDescriptor.toString());
-            if (file.isFile()) {
-                // logger.info("reading disk-cached texture '"
-                // + file.getAbsolutePath() + "'");
-                textureTask = this.getTextureReaderTask(file);
-                textureTask.addTaskListener(this.basicListener);
-                textureTask.start();
-                return textureTask;
-            }
-            // generate texture
-            textureTask = TextureTaskFactory.createTextureTask(name,
-                    textureDescriptor, featureCollection, viewport);
-            if (textureTask == null) {
-                logger.error("Unable to create texture task for texture "
-                        + textureDescriptor.getClass().getSimpleName());
-                return null;
-            }
-            textureTask.setID(TextureManager.generateTextureUniqueFilename(
-                    textureDescriptor, featureCollection));
-
-            tasksMap.put(textureDescriptor, textureTask);
+        if (tasksMap.get(path) == null) {
+            TextureTask<BasicTexture> tt = TextureTaskFactory.createTextureTask(path, path);
+            tt.addTaskListener(TextureManager.getInstance().basicListener);
+            tasksMap.put(path, tt);
+            return tt;
         }
-
-        // do not add texture task to the task manager, they may not be
-        // launched and geometry is waiting for them (to be verified)
-        // GeOxygeneEventManager.getInstance().getApplication()
-        // .getTaskManager().addTask(textureTask);
-        textureTask.addTaskListener(this.basicListener);
-        textureTask.start();
-        return textureTask;
+        return tasksMap.get(path);
     }
 
     /**
-     * Create or return a Gradient Image task. The task is NOT automatically
-     * started when completed Task.getTextureImage() won't be null. Gradient
-     * Image is a float image containing gradient values for a given feature
-     * collection. This image is not directly displayable
+     * @param tex_descriptor
+     * @return
+     */
+    public static TextureTask<? extends GLTexture> buildTexture(SimpleTexture tex_descriptor) {
+        return TextureManager.buildTexture(tex_descriptor, null, null);
+    }
+
+    /**
+     * Build texture tasks. The tasks are not started automatically.
      * 
-     * @param name
-     *            task name
-     * @param gradientTextureDescriptor
-     *            gradient texture descriptor described in the SLD
-     * @param featureCollection
-     *            feature collection to generate gradient image
-     * @param viewport
-     *            display viewport
-     * @return a non started GradientTexture task
-     */
-    public BinaryGradientImageTask getGradientTextureTask(String name,
-            BinaryGradientImageDescriptor gradientTextureDescriptor,
-            IFeatureCollection<IFeature> featureCollection, Viewport viewport) {
-        if (gradientTextureDescriptor == null) {
-            return null;
-        }
-        BinaryGradientImageTask textureTask = null;
-        // create a task to generate texture image
-        synchronized (gradientTasksMap) {
-            textureTask = gradientTasksMap.get(gradientTextureDescriptor);
-            // look for texture in memory
-            if (textureTask != null) {
-                return textureTask;
-            }
-            // look for texture on cache disk
-            File file = TextureManager.generateBinaryGradientImageUniqueFile(
-                    gradientTextureDescriptor, featureCollection);
-            // logger.debug("Look for file '" + file.getAbsolutePath() + "'");
-            // logger.debug(textureDescriptor.toString());
-            if (file.isFile()) {
-                // logger.info("reading disk-cached texture '"
-                // + file.getAbsolutePath() + "'");
-                textureTask = this.getGradientImageReaderTask(file);
-                textureTask.addTaskListener(this.gradientListener);
-                textureTask.start();
-                return textureTask;
-            }
-            // generate texture
-            textureTask = new BinaryGradientImageTask(name,
-                    gradientTextureDescriptor, featureCollection);
-            // if (textureTask == null) {
-            // logger.error("Unable to create texture task for texture "
-            // + gradientTextureDescriptor.getClass().getSimpleName());
-            // return null;
-            // }
-            gradientTasksMap.put(gradientTextureDescriptor, textureTask);
-        }
-
-        // do not add texture task to the task manager, they may not be
-        // launched and geometry is waiting for them (to be verified)
-        // GeOxygeneEventManager.getInstance().getApplication()
-        // .getTaskManager().addTask(textureTask);
-        textureTask.addTaskListener(this.gradientListener);
-        textureTask.start();
-        return textureTask;
-    }
-
-    /**
-     * @param file
+     * @param tex_uri
+     * @param tex_descriptor
+     * @param tex_url
      * @return
      */
-    private TextureTask<BasicTexture> getTextureReaderTask(File file) {
-        TextureTask<BasicTexture> textureTask = readersMap.get(file);
-        if (textureTask != null) {
-            return textureTask;
-        }
-        textureTask = TextureTaskFactory.createBasicTextureTask(
-                "reading texture " + file.getName(), file);
-        readersMap.put(file, textureTask);
-        textureTask.addTaskListener(this.basicListener);
-        return textureTask;
-    }
+    public static TextureTask<? extends GLTexture> buildTexture(Texture tex_descriptor, IFeatureCollection<IFeature> textured_objects, Viewport p) {
+        try {
+            URI tex_uri = (tex_descriptor instanceof SimpleTexture) ? TextureManager.createTexID(tex_descriptor) : TextureManager.createTexID(tex_descriptor, textured_objects);
+            // Check if a task already exists
+            synchronized (tasksMap) {
+                TextureTask<? extends GLTexture> tt = TextureManager.tasksMap.get(tex_uri);
+                if (tt == null) {
+                    // Check if the texture is cached on the disk
+                    String ext = (tex_descriptor instanceof BinaryGradientImageDescriptor)? "bgi" : "png";
+                    File file = TextureManager.getCachedTextureFile(tex_uri, ext);
+                    if (file.isFile() && file.exists()) {
+                        tt = TextureTaskFactory.createTextureTask(tex_uri, file.getAbsoluteFile().toURI());
+                        tt.addTaskListener(TextureManager.getInstance().basicListener);
+                        tasksMap.put(tex_uri, tt);
+                    } else {
+                        // Create a new texture task and resolve the texture resource.
+                        URI root_uri = (URI) ResourcesManager.Root().getResourceByName(GeoxygeneConstants.GEOX_Const_CurrentStyleRootURIName);
+                        if(tex_descriptor instanceof SimpleTexture){
+                            ((SimpleTexture)tex_descriptor).resolveAbsoluteURI(root_uri);
+                        }
+                        if(tex_descriptor instanceof TileDistributionTexture){
+                            ((TileDistributionTexture)tex_descriptor).resolveTilesAbsoluteURIs(root_uri);
+                        }
+                        
+                        tt = TextureTaskFactory.createTextureTask(tex_uri, tex_descriptor, textured_objects, p);
+                        tt.addTaskListener(TextureManager.getInstance().basicListener);
+                        tasksMap.put(tex_uri, tt);
+                    }
 
-    /**
-     * @param file
-     * @return
-     */
-    private BinaryGradientImageTask getGradientImageReaderTask(File file) {
-        BinaryGradientImageTask textureTask = gradientReadersMap.get(file);
-        if (textureTask != null) {
-            return textureTask;
+                } else {
+                    System.out.println("Texture task already exists and its state is " + tt.getState());
+                }
+                return tt;
+            }
+        } catch (URISyntaxException e) {
+            logger.error("Failed to generate an URI for the texture " + tex_descriptor);
+            e.printStackTrace();
         }
-        textureTask = new BinaryGradientImageTask("reading gradient texture "
-                + file.getName(), file);
-        gradientReadersMap.put(file, textureTask);
-        return textureTask;
+        return null;
     }
 
     /**
@@ -277,8 +252,8 @@ public class TextureManager {
      * @param texture
      *            texture to remove from cache
      */
-    public boolean uncacheTexture(BasicTextureDescriptor textureDescriptor) {
-        TextureTask<BasicTexture> textureTask = null;
+    public boolean uncacheTexture(SimpleTexture textureDescriptor) {
+        TextureTask<? extends GLTexture> textureTask = null;
         synchronized (tasksMap) {
             textureTask = tasksMap.get(textureDescriptor);
             if (textureTask == null) {
@@ -291,8 +266,7 @@ public class TextureManager {
         return true;
     }
 
-    private class BasicTextureTaskListener implements
-            TaskListener<TextureTask<BasicTexture>> {
+    private class BasicTextureTaskListener implements TaskListener<TextureTask<BasicTexture>> {
         private TextureManager manager = null;
 
         /**
@@ -304,26 +278,22 @@ public class TextureManager {
         }
 
         @Override
-        public void onStateChange(TextureTask<BasicTexture> task,
-                TaskState oldState) {
+        public void onStateChange(TextureTask<BasicTexture> task, TaskState oldState) {
             switch (task.getState()) {
             case FINISHED:
-                if (task.getTexture().getTextureFilename() != null) {
-                    synchronized (readersMap) {
-                        readersMap.remove(task.getTexture()
-                                .getTextureFilename());
-                    }
-
-                }
                 synchronized (tasksMap) {
-                    tasksMap.remove(task.getTexture());
+                    tasksMap.remove(task.getID());
                 }
                 task.removeTaskListener(this);
                 if (task.getTexture().getTextureImage() == null) {
-                    logger.error("TextureTask has finished with no error but a null texture (its role IS to fill texture.getTextureImage() method)");
+                    logger.error("TextureTask has finished with no error but the resulting texture has no image data.");
+                }
+                // Save the texture in the map
+                synchronized (textureMap) {
+                    textureMap.put(task.getID(), task.getTexture());
                 }
                 // save texture on disk
-                if (task.needWriting()) {
+                if (task.needCaching()) {
                     this.manager.saveTexture(task);
                 }
                 GeOxygeneEventManager.refreshApplicationGui();
@@ -339,59 +309,6 @@ public class TextureManager {
                 // do nothing special;
             }
         }
-    }
-
-    private class BinaryGradientImageTaskListener implements
-            TaskListener<BinaryGradientImageTask> {
-        private TextureManager manager = null;
-
-        /**
-         * @param manager
-         */
-        public BinaryGradientImageTaskListener(TextureManager manager) {
-            super();
-            this.manager = manager;
-        }
-
-        @Override
-        public void onStateChange(BinaryGradientImageTask task,
-                TaskState oldState) {
-            switch (task.getState()) {
-            case FINISHED:
-                BinaryGradientImage binaryGradientImage = task
-                        .getBinaryGradientImage();
-                if (binaryGradientImage != null) {
-                    synchronized (gradientReadersMap) {
-                        gradientReadersMap.remove(task
-                                .getBinaryGradientImageFile());
-                    }
-
-                }
-                synchronized (gradientTasksMap) {
-                    gradientTasksMap.remove(task);
-                }
-                task.removeTaskListener(this);
-                if (binaryGradientImage == null) {
-                    logger.error("TextureTask has finished with no error but a null texture (its role IS to fill texture.getTextureImage() method)");
-                }
-                // save texture on disk if it has been generated
-                if (task.needWriting()) {
-                    this.manager.saveBinaryGradientImage(task);
-                }
-                GeOxygeneEventManager.refreshApplicationGui();
-                break;
-            case ERROR:
-            case STOPPED:
-                synchronized (gradientTasksMap) {
-                    gradientTasksMap.remove(task);
-                }
-                task.removeTaskListener(this);
-                break;
-            default:
-                // do nothing special;
-            }
-        }
-
     }
 
     /**
@@ -414,26 +331,20 @@ public class TextureManager {
                     logger.error("Asked to save texture that has no generated image");
                     return;
                 }
-                logger.debug("save image task id " + task.getID()
-                        + " task name = " + task.getName());
-                File file = new File(DIRECTORY_CACHE_NAME + File.separator
-                        + task.getID() + ".png");
+                logger.debug("save image task id " + task.getID() + " task name = " + task.getName());
+                File file = new File(DIRECTORY_CACHE_NAME + File.separator + task.getID() + ".png");
                 File directory = file.getParentFile();
                 if (!directory.exists() && !directory.mkdirs()) {
-                    logger.error("Cannot create directory '"
-                            + directory.getAbsolutePath() + "'");
-                    logger.error("texture '" + file.getAbsolutePath()
-                            + "' won't be saved on disk");
+                    logger.error("Cannot create directory '" + directory.getAbsolutePath() + "'");
+                    logger.error("texture '" + file.getAbsolutePath() + "' won't be saved on disk");
                     return;
                 }
 
                 try {
-                    logger.info("save texture on disk '"
-                            + file.getAbsolutePath() + "'");
+                    logger.info("save texture on disk '" + file.getAbsolutePath() + "'");
                     ImageIO.write(texture.getTextureImage(), "PNG", file);
                 } catch (IOException e) {
-                    logger.error("Cannot write texture "
-                            + file.getAbsolutePath() + " on disk");
+                    logger.error("Cannot write texture " + file.getAbsolutePath() + " on disk");
                     e.printStackTrace();
                 }
 
@@ -442,126 +353,37 @@ public class TextureManager {
         }, "save texture on disk").start();
     }
 
-    private void saveBinaryGradientImage(final BinaryGradientImageTask task) {
-        if (task == null) {
-            throw new IllegalArgumentException("Cannot save null task");
-        }
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                BinaryGradientImage binaryGradientImage = task.getBinaryGradientImage();
-                if (binaryGradientImage == null) {
-                    logger.error("Asked to save gradient image that has no generated content");
-                    return;
-                }
-                File file = task.getBinaryGradientImageFile();
-                File directory = file.getParentFile();
-                if (!directory.exists() && !directory.mkdirs()) {
-                    logger.error("Cannot create directory '"
-                            + directory.getAbsolutePath() + "'");
-                    logger.error("texture '" + file.getAbsolutePath()
-                            + "' won't be saved on disk");
-                    return;
-                }
-
-                try {
-                    // use a temp file to avoid writing and reading at the same
-                    // time
-                    File tmpFile = File.createTempFile("gradientBinaryImage",
-                            ".tmp", directory);
-                    logger.info("save gradient image on disk '"
-                            + file.getAbsolutePath() + "' tmp file = '"
-                            + tmpFile.getAbsolutePath() + "'");
-                    BinaryGradientImage.writeBinaryGradientImage(tmpFile,
-                            binaryGradientImage);
-                    // move temp file to regular file
-                    Files.move(tmpFile.toPath(), file.toPath(),
-                            StandardCopyOption.REPLACE_EXISTING,
-                            StandardCopyOption.ATOMIC_MOVE);
-                } catch (IOException e) {
-                    logger.error("Cannot write gradient image "
-                            + file.getAbsolutePath() + " on disk");
-                    e.printStackTrace();
-                }
-
-            }
-
-        }, "save texture on disk").start();
+    private static File getCachedTextureFile(URI id,String extension) {
+        return new File(DIRECTORY_CACHE_NAME + File.separator + id + "."+extension);
 
     }
 
-    /**
-     * Generate a unique filename for a texture decriptor and a feature
-     * collection
-     * 
-     * @param textureDescriptor
-     * @param featureCollection
-     * @return
-     */
-    public static String generateTextureUniqueFilename(
-            TextureDescriptor textureDescriptor,
-            IFeatureCollection<IFeature> featureCollection) {
-        return textureDescriptor.hashCode() + "-"
-                + generateHashCode(featureCollection);
-    }
-
-    /**
-     * Generate a unique file for a texture descriptor and a feature collection.
-     * It uses the texture filename
-     * 
-     * @param textureDescriptor
-     * @param featureCollection
-     * @return
-     */
-    public static File generateTextureUniqueFile(
-            TextureDescriptor textureDescriptor,
-            IFeatureCollection<IFeature> featureCollection) {
-        return new File(DIRECTORY_CACHE_NAME
-                + File.separator
-                + generateTextureUniqueFilename(textureDescriptor,
-                        featureCollection) + ".png");
-    }
-
-    /**
-     * Generate a unique file for a binary gradient image decriptor and a
-     * feature collection. It uses the gradientImage filename
-     * 
-     * @param descriptor
-     * @param featureCollection
-     * @return
-     */
-    public static File generateBinaryGradientImageUniqueFile(
-            BinaryGradientImageDescriptor descriptor,
-            IFeatureCollection<IFeature> featureCollection) {
-        return new File(DIRECTORY_CACHE_NAME
-                + File.separator
-                + generateBinaryGradientImageUniqueFilename(descriptor,
-                        featureCollection) + ".bgi");
-    }
-
-    /**
-     * Generate a unique filename for a binary gradient image decriptor and a
-     * feature collection
-     * 
-     * @param descriptor
-     * @param featureCollection
-     * @return
-     */
-    public static String generateBinaryGradientImageUniqueFilename(
-            BinaryGradientImageDescriptor descriptor,
-            IFeatureCollection<IFeature> featureCollection) {
-        return descriptor.hashCode() + "-"
-                + generateHashCode(featureCollection);
-    }
-
-    private static int generateHashCode(
-            IFeatureCollection<IFeature> featureCollection) {
+    public synchronized static int generateFtColHashCode(IFeatureCollection<? extends IFeature> iFeatureCollection) {
+        if (iFeatureCollection == null || iFeatureCollection.isEmpty())
+            return -1;
         int result = 0;
-        for (IFeature feature : featureCollection) {
-            result = 31 * result + feature.getId();
+        synchronized (iFeatureCollection) {
+            for (IFeature feature : iFeatureCollection) {
+                result = 31 * result + feature.getId();
+            }
         }
         return result;
+    }
+
+    public static URI createTexID(Texture tex_desc, IFeatureCollection<? extends IFeature> iFeatureCollection) throws URISyntaxException {
+        if (iFeatureCollection == null) {
+            return createTexID(tex_desc);
+        }
+        return createTexID(tex_desc, generateFtColHashCode(iFeatureCollection));
+    }
+
+    private static URI createTexID(Texture tex_desc, int displayable_id) throws URISyntaxException {
+        return new URI(tex_desc.getClass().getSimpleName() + "-" + tex_desc.hashCode() + "-" + displayable_id);
+
+    }
+
+    private static URI createTexID(Texture tex_desc) throws URISyntaxException {
+        return new URI(tex_desc.getClass().getSimpleName() + "-" + tex_desc.hashCode());
     }
 
     /**
@@ -584,6 +406,14 @@ public class TextureManager {
             tasksMap.clear();
         }
 
+    }
+
+    public static void addTexture(URI id, BasicTexture rasterImage) {
+        if (!textureMap.containsKey(id)) {
+            textureMap.put(id, rasterImage);
+            return;
+        }
+        logger.info("Texture " + id + " was not added to the TextureManager since a texture with the same URI is already registered.");
     }
 
 }

@@ -71,10 +71,6 @@ public abstract class AbstractLayer implements Layer {
         this.description = d;
     }
 
-    // @XmlElement(name = "Description")
-    // protected Description description;
-    // @XmlElement(name = "LayerFeatureConstraints")
-    // protected LayerFeatureConstraints layerFeatureConstraints;
 
     @XmlElements({ @XmlElement(name = "UserStyle", type = UserStyle.class),
             @XmlElement(name = "NamedStyle", type = NamedStyle.class) })
@@ -259,4 +255,7 @@ public abstract class AbstractLayer implements Layer {
         this.opacity = opacity;
     }
 
+    public LayerFilter getFilter(){
+        return this.filter;
+    }
 }

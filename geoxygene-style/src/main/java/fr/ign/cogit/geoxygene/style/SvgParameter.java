@@ -36,6 +36,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlMixed;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
 
@@ -46,7 +47,7 @@ import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class SvgParameter {
+public class SvgParameter implements StylingParameter {
 
   @SuppressWarnings("unused")
   static private Logger LOGGER = Logger.getLogger(SvgParameter.class.getName());

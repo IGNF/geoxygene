@@ -28,9 +28,12 @@ import javax.swing.JComponent;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.mode.GeometryToolBar;
+import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 
@@ -40,7 +43,8 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
  * @author Julien Perret
  */
 public class TabbedProjectFrame extends AbstractProjectFrame implements ActionListener {
-
+    private static Logger logger = Logger.getLogger(TabbedProjectFrame.class
+            .getName()); // logger
     private GeometryToolBar geometryToolBar = null;
     /** The default frame width. */
     private static final int DEFAULT_WIDTH = 600;
@@ -119,7 +123,6 @@ public class TabbedProjectFrame extends AbstractProjectFrame implements ActionLi
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getID() == 2) {
-
             // loading finished
             IPopulation<?> p = (IPopulation<?>) e.getSource();
             Layer l = this.getLayer(p.getNom());

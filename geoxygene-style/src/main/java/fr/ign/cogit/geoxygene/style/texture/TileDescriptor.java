@@ -27,17 +27,22 @@
 package fr.ign.cogit.geoxygene.style.texture;
 
 import java.awt.image.BufferedImage;
+import java.net.URI;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public abstract class TileDescriptor {
 
-    @XmlElement(name = "url")
-    private String url = null;
+    @XmlElement(name = "URI")
+    private URI uri = null;
 
+    @XmlTransient
+    private URI absolute_uri = null;
+    
     @XmlElement(name = "ScaleFactor")
     private double scaleFactor = 1.;
 
@@ -49,19 +54,13 @@ public abstract class TileDescriptor {
     public TileDescriptor() {
     }
 
-    /**
-     * @return the url
-     */
-    public String getUrl() {
-        return this.url;
+    public URI getURI() {
+        return this.uri;
     }
 
-    /**
-     * @param url
-     *            the url to set
-     */
-    public void setUrl(String url) {
-        this.url = url;
+    
+    public void setURI(URI uri) {
+        this.uri = uri;
     }
 
     /**
@@ -107,7 +106,7 @@ public abstract class TileDescriptor {
         temp = Double.doubleToLongBits(this.scaleFactor);
         result = prime * result + (int) (temp ^ (temp >>> 32));
         result = prime * result
-                + ((this.url == null) ? 0 : this.url.hashCode());
+                + ((this.uri == null) ? 0 : this.uri.hashCode());
         return result;
     }
 
@@ -132,11 +131,11 @@ public abstract class TileDescriptor {
                 .doubleToLongBits(other.scaleFactor)) {
             return false;
         }
-        if (this.url == null) {
-            if (other.url != null) {
+        if (this.uri == null) {
+            if (other.uri != null) {
                 return false;
             }
-        } else if (!this.url.equals(other.url)) {
+        } else if (!this.uri.equals(other.uri)) {
             return false;
         }
         return true;
@@ -149,8 +148,29 @@ public abstract class TileDescriptor {
      */
     @Override
     public String toString() {
-        return "TileDescriptor [url=" + this.url + ", scaleFactor="
+        return "TileDescriptor [url=" + this.uri + ", scaleFactor="
                 + this.scaleFactor + "]";
+    }
+    
+    public URI resolveAbsoluteURI(URI root_uri){
+        if(!this.uri.isAbsolute()) {
+            URI resolved = root_uri.resolve(this.uri);
+            if(resolved.isAbsolute())
+                 this.setAbsoluteURI(resolved);
+            else
+                this.setAbsoluteURI(null);
+        }else{
+            this.setAbsoluteURI(null);
+        }
+        return this.getAbsoluteURI();
+    }
+
+    void setAbsoluteURI(URI _absolute_uri) {
+        this.absolute_uri = _absolute_uri;
+    }
+    
+    public URI getAbsoluteURI(){
+        return this.absolute_uri;
     }
 
 }

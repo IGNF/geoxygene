@@ -39,10 +39,10 @@ public class Mark {
     @XmlElement(name = "WellKnownName")
     private String wellKnownName = "square"; //$NON-NLS-1$
 
-    @XmlElement(name = "Fill")
+    @XmlElement(name = "Fill", type=Fill.class)
     private Fill fill = null;
 
-    @XmlElement(name = "Stroke")
+    @XmlElement(name = "Stroke", type=Stroke.class)
     private Stroke stroke = null;
 
     private static Shape square = new Rectangle2D.Float(-0.5f, -0.5f, 1.0f, 1.0f);

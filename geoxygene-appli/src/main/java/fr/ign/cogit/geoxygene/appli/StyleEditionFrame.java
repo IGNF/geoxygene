@@ -80,15 +80,11 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.panel.COGITColorChooserPanel;
-import fr.ign.cogit.geoxygene.appli.render.texture.TextureManager;
-import fr.ign.cogit.geoxygene.appli.ui.ExpressiveRenderingUIFactory;
 import fr.ign.cogit.geoxygene.appli.ui.GenericParameterUI;
 import fr.ign.cogit.geoxygene.appli.ui.StyleInterpolationUI;
 import fr.ign.cogit.geoxygene.feature.DataSet;
-import fr.ign.cogit.geoxygene.style.AbstractSymbolizer;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
 import fr.ign.cogit.geoxygene.style.Fill;
-import fr.ign.cogit.geoxygene.style.Fill2DDescriptor;
 import fr.ign.cogit.geoxygene.style.LabelPlacement;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.LinePlacement;
@@ -102,9 +98,6 @@ import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.TextSymbolizer;
-import fr.ign.cogit.geoxygene.style.expressive.GradientSubshaderDescriptor;
-import fr.ign.cogit.geoxygene.style.expressive.StrokeExpressiveRenderingDescriptor;
-import fr.ign.cogit.geoxygene.style.texture.TextureDescriptor;
 
 /**
  * Style Edition Main Frame.
@@ -165,7 +158,6 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
     } catch (JAXBException e) {
       e.printStackTrace();
     }
-    this.getInitialSLD().setDataSet(sldToCopy.getDataSet());
   }
 
   // Main Dialog Elements
@@ -502,7 +494,7 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
       // fin modif
 
       // this.add(this.tabPane);
-      this.addOrReplaceExpressiveRenderingUI();
+//      this.addOrReplaceExpressiveRenderingUI(); //TODO RESET 
       this.addOrReplaceStyleInterpolationUI();
 
       this.addWindowListener(new WindowAdapter() {
@@ -598,19 +590,19 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
     if (this.layer.getSymbolizer().isPolygonSymbolizer()) {
       PolygonSymbolizer pol = ((PolygonSymbolizer) (this.layer.getSymbolizer()));
 
-      Fill2DDescriptor fill2dDescriptor = pol.getFill().getFill2DDescriptor();
-      if (fill2dDescriptor instanceof TextureDescriptor) {
-        TextureDescriptor textureDescriptor = (TextureDescriptor) fill2dDescriptor;
-        String textureUID = TextureManager.generateTextureUniqueFilename(
-            textureDescriptor, collection);
-        str.append("texture filename : '" + textureUID + "'" + CR);
-
-      }
-      if (fill2dDescriptor instanceof GradientSubshaderDescriptor) {
-        GradientSubshaderDescriptor gradientDescriptor = (GradientSubshaderDescriptor) fill2dDescriptor;
-        // str.append("texture filename : '" + textureUID + "'" + CR);
-
-      }
+//      Fill2DDescriptor fill2dDescriptor = pol.getFill().getFill2DDescriptor();
+//      if (fill2dDescriptor instanceof Texture) {
+//        Texture textureDescriptor = (Texture) fill2dDescriptor;
+//        String textureUID = TextureManager.generateTextureUniqueFilename(
+//            textureDescriptor, collection);
+//        str.append("texture filename : '" + textureUID + "'" + CR);
+//
+//      }
+//      if (fill2dDescriptor instanceof GradientSubshaderDescriptor) {
+//        GradientSubshaderDescriptor gradientDescriptor = (GradientSubshaderDescriptor) fill2dDescriptor;
+//        // str.append("texture filename : '" + textureUID + "'" + CR);
+//
+//      }
     }
     this.infoTextArea.setText(str.toString());
   }
@@ -637,51 +629,51 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
 
   }
 
-  private void addOrReplaceExpressiveRenderingUI() {
-    if (this.tabPane == null) {
-      throw new IllegalStateException(
-          "this method can only be called after tabPane creation");
-    }
-    String tabTooltip = "";
-    this.tabPane.remove(this.fillExpressiveScrollPane);
-    this.tabPane.remove(this.strokeExpressiveScrollPane);
-    // Stroke Expressive UI
-    GenericParameterUI ui = null;
-    if (((AbstractSymbolizer) this.layer.getSymbolizer()).getStroke() != null) {
-      StrokeExpressiveRenderingDescriptor expressiveStroke = ((AbstractSymbolizer) (this.layer
-          .getSymbolizer())).getStroke().getExpressiveRendering();
-      if (expressiveStroke != null) {
-        ui = ExpressiveRenderingUIFactory.getExpressiveRenderingUI(
-            expressiveStroke, this.layerViewPanel.getProjectFrame());
-        tabTooltip = expressiveStroke.getClass().getSimpleName();
-      }
-    }
-    if (ui != null) {
-      this.strokeExpressiveScrollPane.setViewportView(ui.getGui());
-      this.tabPane.addTab("Expressive Stroke", null,
-          this.strokeExpressiveScrollPane, tabTooltip);
-    }
-    // Fill expressive UI
-    ui = null;
-    if (this.layer.getSymbolizer().isPolygonSymbolizer()
-        && ((PolygonSymbolizer) (this.layer.getSymbolizer())).getFill()
-            .getFill2DDescriptor() != null) {
-      PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) this.layer
-          .getSymbolizer();
-      Fill2DDescriptor expressiveFill = polygonSymbolizer.getFill()
-          .getFill2DDescriptor();
-      if (expressiveFill != null) {
-        ui = ExpressiveRenderingUIFactory.getExpressiveRenderingUI(
-            expressiveFill, this.layerViewPanel.getProjectFrame());
-        tabTooltip = expressiveFill.getClass().getSimpleName();
-      }
-    }
-    if (ui != null) {
-      this.fillExpressiveScrollPane.setViewportView(ui.getGui());
-      this.tabPane.addTab("Expressive Fill", null,
-          this.fillExpressiveScrollPane, tabTooltip);
-    }
-  }
+//  private void addOrReplaceExpressiveRenderingUI() {
+//    if (this.tabPane == null) {
+//      throw new IllegalStateException(
+//          "this method can only be called after tabPane creation");
+//    }
+//    String tabTooltip = "";
+//    this.tabPane.remove(this.fillExpressiveScrollPane);
+//    this.tabPane.remove(this.strokeExpressiveScrollPane);
+//    // Stroke Expressive UI
+//    GenericParameterUI ui = null;
+//    if (((AbstractSymbolizer) this.layer.getSymbolizer()).getStroke() != null) {
+//      StrokeExpressiveRenderingDescriptor expressiveStroke = ((AbstractSymbolizer) (this.layer
+//          .getSymbolizer())).getStroke().getExpressiveRendering();
+//      if (expressiveStroke != null) {
+//        ui = ExpressiveRenderingUIFactory.getExpressiveRenderingUI(
+//            expressiveStroke, this.layerViewPanel.getProjectFrame());
+//        tabTooltip = expressiveStroke.getClass().getSimpleName();
+//      }
+//    }
+//    if (ui != null) {
+//      this.strokeExpressiveScrollPane.setViewportView(ui.getGui());
+//      this.tabPane.addTab("Expressive Stroke", null,
+//          this.strokeExpressiveScrollPane, tabTooltip);
+//    }
+//    // Fill expressive UI
+//    ui = null;
+//    if (this.layer.getSymbolizer().isPolygonSymbolizer()
+//        && ((PolygonSymbolizer) (this.layer.getSymbolizer())).getFill()
+//            .getFill2DDescriptor() != null) {
+//      PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) this.layer
+//          .getSymbolizer();
+//      Fill2DDescriptor expressiveFill = polygonSymbolizer.getFill()
+//          .getFill2DDescriptor();
+//      if (expressiveFill != null) {
+//        ui = ExpressiveRenderingUIFactory.getExpressiveRenderingUI(
+//            expressiveFill, this.layerViewPanel.getProjectFrame());
+//        tabTooltip = expressiveFill.getClass().getSimpleName();
+//      }
+//    }
+//    if (ui != null) {
+//      this.fillExpressiveScrollPane.setViewportView(ui.getGui());
+//      this.tabPane.addTab("Expressive Fill", null,
+//          this.fillExpressiveScrollPane, tabTooltip);
+//    }
+//  }
 
   public void initTextStylePanel() {
     // Initialisation du symboliser s'il y a lieu

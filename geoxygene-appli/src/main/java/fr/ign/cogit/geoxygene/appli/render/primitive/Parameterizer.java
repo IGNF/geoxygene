@@ -51,11 +51,5 @@ public interface Parameterizer {
      */
     Point2d getTextureCoordinates(double... vertex);
 
-    // /**
-    // * method called during parameterization process. It computes a 1D
-    // * parameterization
-    // * with (x,y) local-object coordinates
-    // */
-    // double getLinearParameter(double[] vertex);
 
 }

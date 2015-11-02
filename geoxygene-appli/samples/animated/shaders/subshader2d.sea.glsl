@@ -1,4 +1,4 @@
-#version 400
+#version 330
 
 struct DataGradient {
 	float screenWidth; 		// screen width in pixels 

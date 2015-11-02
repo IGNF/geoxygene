@@ -1,0 +1,25 @@
+<RenderingMethod>
+    <Name>CassiniRiverPainting</Name>
+    <GeneralMethodReference>BrushStroke</GeneralMethodReference>
+    <ShaderList>
+        <ShaderRef gltype="GL_FRAGMENT_SHADER">../shaders/subshader1d.hydro.frag.glsl</ShaderRef>
+    </ShaderList>
+    <Parameters>
+        <Parameter>
+            <Name>extremitiesLength</Name>
+            <Type>float</Type>
+        </Parameter>
+        <Parameter>
+            <Name>hardness</Name>
+            <Type>float</Type>
+        </Parameter>
+        <Parameter>
+            <Name>thickness</Name>
+            <Type>float</Type>
+        </Parameter>
+        <Parameter>
+            <Name>noiseWavelength</Name>
+            <Type>float</Type>
+        </Parameter>
+    </Parameters>    
+</RenderingMethod>

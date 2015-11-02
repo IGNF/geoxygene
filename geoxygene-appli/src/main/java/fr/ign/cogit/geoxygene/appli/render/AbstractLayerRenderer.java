@@ -201,8 +201,8 @@ public abstract class AbstractLayerRenderer implements LayerRenderer {
       }
     }
     // logger.info(numberOfFeatureTypeStyle + " fts");
-    this.fireActionPerformed(new ActionEvent(this, 3,
-        "Rendering start", numberOfFeatureTypeStyle * collection.size())); //$NON-NLS-1$
+//    this.fireActionPerformed(new ActionEvent(this, 3,
+//        "Rendering start", numberOfFeatureTypeStyle * collection.size())); //$NON-NLS-1$
     int featureRenderIndex = 0;
     for (Style style : activeStyles) {
       if (this.isCancelled()) {

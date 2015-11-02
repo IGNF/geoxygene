@@ -67,7 +67,7 @@ public class GLGradientComplex extends AbstractGLComplex<GLSimpleVertex>
     private IntBuffer indicesBuffer = null; // Index Buffer (VBO indices)
                                             // constructed from flattened
                                             // indicesPerType
-    private Texture texture = null;
+    private GLTexture texture = null;
 
     private int vaoId = -1; // VAO index
     private int vboVerticesId = -1; // VBO Vertices index
@@ -86,11 +86,11 @@ public class GLGradientComplex extends AbstractGLComplex<GLSimpleVertex>
      */
     public GLGradientComplex(String id, double minX, double minY) {
         super(id, minX, minY);
-        this.addInput(GLSimpleVertex.vertexPositionVariableName,
+        this.addInput(GLSimpleVertex.VertexPositionVarName,
                 GLSimpleVertex.vertexPostionLocation, GL11.GL_FLOAT, 3, false);
-        this.addInput(GLSimpleVertex.vertexUVVariableName,
+        this.addInput(GLSimpleVertex.VertexUVVarName,
                 GLSimpleVertex.vertexUVLocation, GL11.GL_FLOAT, 2, false);
-        this.addInput(GLSimpleVertex.vertexColorVariableName,
+        this.addInput(GLSimpleVertex.VertexColorVarName,
                 GLSimpleVertex.vertexColorLocation, GL11.GL_FLOAT, 4, false);
 
     }
@@ -135,7 +135,7 @@ public class GLGradientComplex extends AbstractGLComplex<GLSimpleVertex>
     /**
      * @return the texture
      */
-    public Texture getTexture() {
+    public GLTexture getTexture() {
         return this.texture;
     }
 
@@ -143,7 +143,7 @@ public class GLGradientComplex extends AbstractGLComplex<GLSimpleVertex>
      * @param texture
      *            the texture to set
      */
-    public void setTexture(Texture texture) {
+    public void setTexture(GLTexture texture) {
         this.texture = texture;
         this.renderingCapabilities = null;
 

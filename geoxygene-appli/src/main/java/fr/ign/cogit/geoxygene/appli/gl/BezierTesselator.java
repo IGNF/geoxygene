@@ -31,9 +31,7 @@ import static fr.ign.cogit.geoxygene.util.math.VectorUtil.length;
 import static fr.ign.cogit.geoxygene.util.math.VectorUtil.normalize;
 
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import javax.vecmath.Point2d;
 

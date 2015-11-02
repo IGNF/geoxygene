@@ -27,6 +27,9 @@
 
 package fr.ign.cogit.geoxygene.appli.render.primitive;
 
+import java.net.URI;
+import java.net.URL;
+
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -37,8 +40,6 @@ import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.Viewport;
-import fr.ign.cogit.geoxygene.appli.render.GeoxComplexRendererBasic;
-import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 
@@ -47,8 +48,7 @@ import fr.ign.cogit.geoxygene.style.Symbolizer;
  */
 public final class DisplayableFactory {
 
-    private static final Logger logger = Logger
-            .getLogger(DisplayableFactory.class.getName()); // logger
+    private static final Logger logger = Logger.getLogger(DisplayableFactory.class.getName()); // logger
 
     /**
      * private constructor for factory
@@ -65,49 +65,27 @@ public final class DisplayableFactory {
      * @param layerRenderer
      * @param viewport
      * @param layer
+     * @param textures_root_uri 
      * @param partialRenderer
      * @return
      */
-    public static GLDisplayable generateDisplayable(final IFeature feature,
-            final Symbolizer symbolizer, IGeometry geometry,
-            LwjglLayerRenderer layerRenderer, Viewport viewport, Layer layer) {
-        GeoxComplexRendererBasic partialRenderer = layerRenderer
-                .getPartialRenderer(feature);
+    public static GLDisplayable generateDisplayable(final IFeature feature, final Symbolizer symbolizer, IGeometry geometry, Viewport viewport, Layer layer, URI textures_root_uri) {
+        GLDisplayable disp = null;
         if (geometry.isPolygon()) {
-            DisplayableSurface displayablePolygon = new DisplayableSurface(
-                    layer.getName() + "-polygon #" + feature.getId(), viewport,
-                    (IPolygon) geometry, feature, symbolizer, layerRenderer,
-                    partialRenderer);
-            return displayablePolygon;
+            disp = new DisplayableSurface(layer.getName() + "-polygon #" + feature.getId(),(IPolygon) geometry, feature, symbolizer,viewport,textures_root_uri);
         } else if (geometry.isMultiSurface()) {
-            DisplayableSurface displayablePolygon = new DisplayableSurface(
-                    layer.getName() + "-multisurface #" + feature.getId(),
-                    viewport, (IMultiSurface<?>) geometry, feature, symbolizer,
-                    layerRenderer, partialRenderer);
-            return displayablePolygon;
+            disp = new DisplayableSurface(layer.getName() + "-multisurface #" + feature.getId(), (IMultiSurface<?>) geometry, feature, symbolizer,viewport,textures_root_uri);
         } else if (geometry.isMultiCurve()) {
-            DisplayableCurve displayableCurve = new DisplayableCurve(
-                    layer.getName() + "-multicurve #" + feature.getId(),
-                    viewport, (IMultiCurve<?>) geometry, feature, symbolizer,
-                    layerRenderer, partialRenderer);
-            return displayableCurve;
+            disp = new DisplayableCurve(layer.getName() + "-multicurve #" + feature.getId(),  (IMultiCurve<?>) geometry, feature, symbolizer,viewport,textures_root_uri);
         } else if (geometry.isLineString()) {
-            DisplayableCurve displayableLine = new DisplayableCurve(
-                    layer.getName() + "-linestring #" + feature.getId(),
-                    viewport, (ILineString) geometry, feature, symbolizer,
-                    layerRenderer, partialRenderer);
-            return displayableLine;
+            disp = new DisplayableCurve(layer.getName() + "-linestring #" + feature.getId(),  (ILineString) geometry, feature, symbolizer,viewport,textures_root_uri);
         } else if (geometry.isPoint() || (geometry instanceof IMultiPoint)) {
-            DisplayablePoint displayablePoint = new DisplayablePoint(
-                    layer.getName() + "-multipoint #" + feature.getId(),
-                    viewport, geometry, feature, symbolizer, layerRenderer,
-                    partialRenderer);
-            return displayablePoint;
+            disp = new DisplayablePoint(layer.getName() + "-multipoint #" + feature.getId(), geometry, feature, symbolizer,viewport,textures_root_uri);
+        } else {
+            logger.warn("LwjglLayerRenderer cannot handle geometry type " + geometry.getClass().getSimpleName());
+            return null;
         }
-
-        logger.warn("LwjglLayerRenderer cannot handle geometry type "
-                + geometry.getClass().getSimpleName());
-        return null;
+        return disp;
     }
 
 }

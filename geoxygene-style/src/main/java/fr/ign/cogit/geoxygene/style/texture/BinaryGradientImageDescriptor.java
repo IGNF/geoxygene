@@ -31,6 +31,7 @@ import java.awt.Color;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import fr.ign.cogit.geoxygene.style.colorimetry.ColorJaxbAdaptor;
@@ -41,8 +42,9 @@ import fr.ign.cogit.geoxygene.style.colorimetry.ColorJaxbAdaptor;
  * @author JeT
  * 
  */
-@XmlAccessorType(XmlAccessType.NONE)
-public class BinaryGradientImageDescriptor extends TextureDescriptor {
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name="GradientTexture")
+public class BinaryGradientImageDescriptor extends Texture {
 
     @XmlElement(name = "Resolution")
     private double textureResolution = 72; // texture resolution in DPI

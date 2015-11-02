@@ -1,0 +1,13 @@
+<RenderingMethod>
+	<Name>RenderGradient</Name>
+	<ShaderList>
+		<ShaderRef gltype="GL_VERTEX_SHADER">gradient.vert.glsl</ShaderRef>
+		<ShaderRef gltype="GL_FRAGMENT_SHADER">gradient.frag.glsl</ShaderRef>
+	</ShaderList>
+	<Parameters>
+		<Parameter required="true">
+			<Name>gradientTexture</Name>
+			<Type>Texture</Type>
+		</Parameter>
+	</Parameters>
+</RenderingMethod>

@@ -36,6 +36,7 @@ import static org.lwjgl.opengl.GL15.glGenBuffers;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
+import java.net.URI;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
@@ -46,13 +47,14 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-import fr.ign.cogit.geoxygene.appli.render.texture.BasicTextureExpressiveRendering;
+import fr.ign.cogit.geoxygene.appli.render.texture.TextureManager;
 import fr.ign.cogit.geoxygene.util.gl.AbstractGLComplex;
+import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 import fr.ign.cogit.geoxygene.util.gl.GLInput;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLRenderingCapability;
-import fr.ign.cogit.geoxygene.util.gl.GLTexture;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
+import fr.ign.cogit.geoxygene.util.gl.GLTexture;
 
 /**
  * @author JeT
@@ -64,8 +66,6 @@ public class GLBezierShadingComplex extends
     private static final Logger logger = Logger
             .getLogger(GLBezierShadingComplex.class.getName()); // logger
 
-    // private static final Integer[] IntegerConversionObject = new Integer[]
-    // {}; // static object for list to array conversion
     // raw list of all vertices
     private FloatBuffer verticesBuffer = null; // Vertex buffer (VBO
                                                // array)
@@ -77,12 +77,8 @@ public class GLBezierShadingComplex extends
     private int vboIndicesId = -1; // VBO Indices index
     private GLPaintingRenderingCapability[] renderingCapabilities = null;
 
-    private BasicTextureExpressiveRendering expressiveRendering;
-
     private double overallOpacity = 1.;
 
-    private GLTexture brushTexture = null;
-    private GLTexture paperTexture = null;
 
     public enum GLPaintingRenderingCapability implements GLRenderingCapability {
         POSITION, COLOR, TEXTURE
@@ -91,7 +87,7 @@ public class GLBezierShadingComplex extends
     /**
      * Default constructor
      */
-    public GLBezierShadingComplex(String id, double minX, double minY) {
+    public GLBezierShadingComplex(String id, double minX, double minY, GLTexture paperTexture) {
         super(id, minX, minY);
         this.addInput(GLBezierShadingVertex.vertexPositionVariableName,
                 GLBezierShadingVertex.vertexPositionLocation, GL11.GL_FLOAT, 2,
@@ -122,57 +118,6 @@ public class GLBezierShadingComplex extends
                 false);
     }
 
-    /**
-     * @return the paperTexture
-     */
-    public GLTexture getPaperTexture() {
-        if (this.paperTexture == null) {
-            if (this.getExpressiveRendering() == null) {
-                logger.error("try to get paper texture filename from a GL primitive that has no expressive rendering class set...");
-                logger.error("primitive ID = " + this.getId());
-                return null;
-            }
-            this.paperTexture = GLTextureManager.getInstance().getTexture(
-                    this.getExpressiveRendering().getPaperTextureFilename());
-            this.paperTexture.setMipmap(false);
-        }
-        return this.paperTexture;
-    }
-
-    /**
-     * @param paperTexture
-     *            the paperTexture to set
-     */
-    public void setPaperTexture(GLTexture paperTexture) {
-        this.paperTexture = paperTexture;
-    }
-
-    /**
-     * invalidate lazy getter
-     */
-    public void invalidatePaperTexture() {
-        this.paperTexture = null;
-    }
-
-    /**
-     * @return the brushTexture
-     */
-    public GLTexture getBrushTexture() {
-        if (this.brushTexture == null) {
-            this.brushTexture = GLTextureManager.getInstance().getTexture(
-                    this.getExpressiveRendering().getBrushTextureFilename());
-            this.brushTexture.setMipmap(false);
-        }
-        return this.brushTexture;
-    }
-
-    /**
-     * @param brushTexture
-     *            the brushTexture to set
-     */
-    public void setBrushTexture(GLTexture brushTexture) {
-        this.brushTexture = brushTexture;
-    }
 
     /**
      * @return the opacity for that entire complex
@@ -189,9 +134,6 @@ public class GLBezierShadingComplex extends
      */
     public void setOverallOpacity(double overallOpacity) {
         this.overallOpacity = overallOpacity;
-        // for (GLSimpleVertex vertex : this.vertices) {
-        // vertex.setAlpha(1.f);
-        // }
     }
 
     @Override
@@ -308,46 +250,17 @@ public class GLBezierShadingComplex extends
             glEnableVertexAttribArray(input.getLocation());
 
         }
-        // System.err.println("previous");
-        // for (int nAttrib = 0; nAttrib < GLSimpleVertex.ATTRIBUTES_COUNT;
-        // nAttrib++)
-        // {
-        // GL20.glVertexAttribPointer(GLSimpleVertex.ATTRIBUTES_ID[nAttrib],
-        // GLSimpleVertex.ATTRIBUTES_COMPONENT_NUMBER[nAttrib],
-        // GLSimpleVertex.ATTRIBUTES_TYPE[nAttrib],
-        // false, GLSimpleVertex.VERTEX_BYTESIZE,
-        // GLSimpleVertex.ATTRIBUTES_BYTEOFFSET[nAttrib]);
-        // System.err.println("loc = " + GLSimpleVertex.ATTRIBUTES_ID[nAttrib] +
-        // " " +
-        // GLSimpleVertex.ATTRIBUTES_COMPONENT_NUMBER[nAttrib] + " "
-        // + GLSimpleVertex.ATTRIBUTES_TYPE[nAttrib] + " stride = " +
-        // GLSimpleVertex.VERTEX_BYTESIZE + " shift = " +
-        // GLSimpleVertex.ATTRIBUTES_BYTEOFFSET[nAttrib]);
-        // glEnableVertexAttribArray(GLSimpleVertex.ATTRIBUTES_ID[nAttrib]);
-        //
-        // }
-
         glBufferData(GL_ARRAY_BUFFER, this.getFlippedVerticesBuffer(),
                 GL_STATIC_DRAW);
-
-        // displayBuffer(this.getFlippedVerticesBuffer());
-
-        // glBindBuffer(GL_ARRAY_BUFFER, 0);
-
         // create the index VBO
         this.vboIndicesId = glGenBuffers();
         if (this.vboIndicesId <= 0) {
             logger.error("VBO(Indices) ID is invalid " + this.vboIndicesId);
         }
-
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.vboIndicesId);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, this.getFlippedIndicesBuffer(),
                 GL_STATIC_DRAW);
-
-        // displayBuffer(this.getFlippedIndicesBuffer());
-
         glBindVertexArray(0);
-
     }
 
     /*
@@ -396,17 +309,4 @@ public class GLBezierShadingComplex extends
         }
         return this.renderingCapabilities;
     }
-
-    public void setExpressiveRendering(BasicTextureExpressiveRendering strtex) {
-        this.expressiveRendering = strtex;
-
-    }
-
-    /**
-     * @return the expressiveRendering
-     */
-    public BasicTextureExpressiveRendering getExpressiveRendering() {
-        return this.expressiveRendering;
-    }
-
 }

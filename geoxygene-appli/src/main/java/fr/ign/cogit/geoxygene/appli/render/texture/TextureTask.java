@@ -1,9 +1,13 @@
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
-import fr.ign.cogit.geoxygene.appli.task.Task;
-import fr.ign.cogit.geoxygene.util.gl.Texture;
+import java.net.URI;
+import java.net.URL;
 
-public interface TextureTask<TextureType extends Texture> extends Task {
+import fr.ign.cogit.geoxygene.appli.task.Task;
+import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
+import fr.ign.cogit.geoxygene.util.gl.GLTexture;
+
+public interface TextureTask<TextureType extends GLTexture> extends Task {
 
     /**
      * @return the texture
@@ -13,9 +17,9 @@ public interface TextureTask<TextureType extends Texture> extends Task {
     /**
      * @return task unique ID
      */
-    public String getID();
+    public abstract URI getID();
 
-    public abstract void setID(String id);
+    public abstract void setID(URI identifier);
 
     /**
      * @return the texture size once it will be generated
@@ -30,5 +34,8 @@ public interface TextureTask<TextureType extends Texture> extends Task {
     /**
      * @return true if the result of the task has to be stored in cache
      */
-    public abstract boolean needWriting();
+    public abstract boolean needCaching();
+
+
+    
 }

@@ -19,9 +19,6 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.AbstractProjectFrame;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
-import fr.ign.cogit.geoxygene.appli.validation.SymbolizerValidator;
-import fr.ign.cogit.geoxygene.appli.validation.SymbolizerValidatorFactory;
-import fr.ign.cogit.geoxygene.appli.validation.SymbolizerValidator.InvalidSymbolizerException;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Rule;
@@ -117,16 +114,17 @@ public class StyleInterpolationUI implements GenericParameterUI {
               alphaSpinner.addChangeListener(new ChangeListener() {  
                   @Override
                   public void stateChanged(ChangeEvent e) {
-                    symbolizer.setAlpha(alphaSpinner.getValue().floatValue());
-                    SymbolizerValidator validator = SymbolizerValidatorFactory
-                        .getOrCreateValidator(symbolizer);
-                    if (validator != null)
-                      try {
-                        validator.validate(symbolizer);
-                      } catch (InvalidSymbolizerException exception) {
-                        logger.error(exception.getStackTrace().toString());
-                      }
-                    StyleInterpolationUI.this.refresh();
+                      //TODO rework for the new Symbolizers.
+//                    symbolizer.setAlpha(alphaSpinner.getValue().floatValue());
+//                    SymbolizerValidator validator = SymbolizerValidatorFactory
+//                        .getOrCreateValidator(symbolizer);
+//                    if (validator != null)
+//                      try {
+//                        validator.validate(symbolizer);
+//                      } catch (InvalidSymbolizerException exception) {
+//                        logger.error(exception.getStackTrace().toString());
+//                      }
+//                    StyleInterpolationUI.this.refresh();
                   }
               });
               this.main.add(alphaSpinner);

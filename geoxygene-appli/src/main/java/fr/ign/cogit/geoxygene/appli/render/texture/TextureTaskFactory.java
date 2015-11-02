@@ -27,17 +27,19 @@
 
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
-import java.io.File;
+import java.net.URI;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.appli.Viewport;
-import fr.ign.cogit.geoxygene.style.texture.BasicTextureDescriptor;
+import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage;
+import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTexture;
+import fr.ign.cogit.geoxygene.style.texture.SimpleTexture;
 import fr.ign.cogit.geoxygene.style.texture.BinaryGradientImageDescriptor;
-import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTextureDescriptor;
-import fr.ign.cogit.geoxygene.style.texture.TextureDescriptor;
-import fr.ign.cogit.geoxygene.style.texture.TileDistributionTextureDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.Texture;
+import fr.ign.cogit.geoxygene.style.texture.TileDistributionTexture;
 import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
+import fr.ign.cogit.geoxygene.util.gl.GLTexture;
 
 /**
  * @author JeT
@@ -52,68 +54,69 @@ public class TextureTaskFactory {
         // factory class
     }
 
-    public static TextureTask<BasicTexture> createTextureTask(String name,
-            TextureDescriptor textureDescriptor,
-            IFeatureCollection<IFeature> featureCollection, Viewport viewport) {
-        if (textureDescriptor instanceof TileDistributionTextureDescriptor) {
-            return createTileDistributionTextureTask(name,
-                    (TileDistributionTextureDescriptor) textureDescriptor,
-                    featureCollection, viewport);
+    /**
+     * For generated textures
+     * 
+     * @param identifier
+     * @param textureDescriptor
+     * @param featureCollection
+     * @param p
+     * @return
+     */
+    public static TextureTask<? extends GLTexture> createTextureTask(URI identifier, Texture textureDescriptor, IFeatureCollection<IFeature> featureCollection, Viewport p) {
+        if (textureDescriptor instanceof TileDistributionTexture) {
+            return createTileDistributionTextureTask(identifier, (TileDistributionTexture) textureDescriptor, featureCollection, p);
 
         }
-        if (textureDescriptor instanceof PerlinNoiseTextureDescriptor) {
-            return createPerlinNoiseTextureTask(name,
-                    (PerlinNoiseTextureDescriptor) textureDescriptor,
-                    featureCollection, viewport);
+        if (textureDescriptor instanceof PerlinNoiseTexture) {
+            return createPerlinNoiseTextureTask(identifier, (PerlinNoiseTexture) textureDescriptor, featureCollection);
 
         }
-        if (textureDescriptor instanceof BasicTextureDescriptor) {
-            return createBasicTextureTask(name,
-                    (BasicTextureDescriptor) textureDescriptor,
-                    featureCollection, viewport);
+        if (textureDescriptor instanceof SimpleTexture) {
+            return createBasicTextureTask(identifier, (SimpleTexture) textureDescriptor);
 
         }
         if (textureDescriptor instanceof BinaryGradientImageDescriptor) {
-            return createGradientTextureTask(name,
-                    (BinaryGradientImageDescriptor) textureDescriptor,
-                    featureCollection, viewport);
+            return createGradientTextureTask(identifier, (BinaryGradientImageDescriptor) textureDescriptor, featureCollection);
 
         }
-        throw new UnsupportedOperationException("texture descriptor type "
-                + textureDescriptor.getClass().getSimpleName()
-                + " is not supported");
+        throw new UnsupportedOperationException("texture descriptor type " + textureDescriptor.getClass().getSimpleName() + " is not supported");
     }
 
-    public static BasicTextureTask createBasicTextureTask(String name,
-            BasicTextureDescriptor textureDescriptor,
-            IFeatureCollection<IFeature> featureCollection, Viewport viewport) {
-        return new BasicTextureTask(name, textureDescriptor);
+    public static BasicTextureTask createBasicTextureTask(URI identifier, SimpleTexture textureDescriptor) {
+        BasicTextureTask bt = new BasicTextureTask(identifier, textureDescriptor);
+        return bt;
     }
 
-    public static PerlinNoiseTextureTask createPerlinNoiseTextureTask(
-            String name, PerlinNoiseTextureDescriptor textureDescriptor,
-            IFeatureCollection<IFeature> featureCollection, Viewport viewport) {
-        return new PerlinNoiseTextureTask(name, textureDescriptor,
-                featureCollection, viewport);
+    public static PerlinNoiseTextureTask createPerlinNoiseTextureTask(URI identifier, PerlinNoiseTexture textureDescriptor, IFeatureCollection<IFeature> featureCollection) {
+        PerlinNoiseTextureTask t = new PerlinNoiseTextureTask(identifier, textureDescriptor, featureCollection);
+        return t;
     }
 
-    public static TileDistributionTextureTask createTileDistributionTextureTask(
-            String name, TileDistributionTextureDescriptor textureDescriptor,
-            IFeatureCollection<IFeature> featureCollection, Viewport viewport) {
-        return new TileDistributionTextureTask(name, textureDescriptor,
-                featureCollection, viewport);
+    public static TileDistributionTextureTask createTileDistributionTextureTask(URI identifier, TileDistributionTexture textureDescriptor, IFeatureCollection<IFeature> featureCollection, Viewport p) {
+        TileDistributionTextureTask t = new TileDistributionTextureTask(identifier, textureDescriptor, featureCollection, p);
+        return t;
     }
 
-    public static GradientTextureTask createGradientTextureTask(String name,
-            BinaryGradientImageDescriptor textureDescriptor,
-            IFeatureCollection<IFeature> featureCollection, Viewport viewport) {
-        return new GradientTextureTask(name, textureDescriptor,
-                featureCollection);
+    public static GradientTextureTask createGradientTextureTask(URI identifier, BinaryGradientImageDescriptor textureDescriptor, IFeatureCollection<IFeature> featureCollection) {
+        GradientTextureTask t = new GradientTextureTask(identifier, textureDescriptor, featureCollection);
+        return t;
     }
 
-    public static TextureTask<BasicTexture> createBasicTextureTask(String name,
-            File file) {
-        return new BasicTextureTask(name, file);
+    /**
+     * A very simple texture task that create a simple texture from an URL.
+     * 
+     * @param texture_uri
+     *            : the unique identifier of the texture to create.
+     * @param texture_location
+     *            : the adress of the texture image.
+     * @return a texture task
+     */
+    public static TextureTask<BasicTexture> createTextureTask(URI texture_uri, URI texture_location) {
+        SimpleTexture st = new SimpleTexture();
+        st.setURI(texture_location);
+        st.setAbsoluteURI(texture_location);
+        return new BasicTextureTask(texture_uri, st);
     }
 
 }

@@ -1,0 +1,60 @@
+<RenderingMethod>
+	<Name>CassiniRiverbedPainting</Name>
+	<GeneralMethodReference>RenderGradient</GeneralMethodReference>
+	<ShaderList>	
+		<ShaderRef gltype="GL_FRAGMENT_SHADER">../shaders/subshader2d.lit_hydro.frag.glsl</ShaderRef>
+	</ShaderList>
+	<Parameters>
+		<Parameter>
+			<Description>distance between strokes along the river side
+			</Description>
+			<Name>strokeDistance</Name>
+			<Type>float</Type>
+			<Restrictions>
+				<BoundsRestriction min="0.0" max="1000.0" />
+			</Restrictions>
+		</Parameter>
+		<Parameter>
+			<Description>strokes thickness (must be lower than strokeDistance)
+			</Description>
+			<Name>strokeThickness</Name>
+			<Type>float</Type>
+			<Restrictions>
+				<BoundsRestriction min="0.0" max="500.0" />
+			</Restrictions>
+		</Parameter>
+		<Parameter>
+			<Description>stroke length in local units (0..1 along V coordinate)
+			</Description>
+			<Name>strokeLength</Name>
+			<Type>float</Type>
+			<Restrictions>
+				<BoundsRestriction min="0.0" max="1.0" />
+			</Restrictions>
+		</Parameter>
+		<Parameter>
+			<Description>stroke smooth start shift in local units (0..1 along V
+				coordinate)
+			</Description>
+			<Name>strokeStartShift</Name>
+			<Type>float</Type>
+			<Restrictions>
+				<BoundsRestriction min="0.0" max="1.0" />
+			</Restrictions>
+		</Parameter>
+		<Parameter>
+			<Name>strokeStartLength</Name>
+			<Type>float</Type>
+			<Restrictions>
+				<BoundsRestriction min="0.0" max="1.0" />
+			</Restrictions>
+		</Parameter>
+		<Parameter>
+			<Name>strokeEndLength</Name>
+			<Type>float</Type>
+			<Restrictions>
+				<BoundsRestriction min="0.0" max="1.0" />
+			</Restrictions>
+		</Parameter>
+	</Parameters>
+</RenderingMethod>

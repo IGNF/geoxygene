@@ -32,6 +32,7 @@ import fr.ign.cogit.geoxygene.style.BlendingMode;
 import fr.ign.cogit.geoxygene.style.Shadow;
 import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
+import fr.ign.cogit.geoxygene.style.expressive.ExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.style.filter.LayerFilter;
 
 /**

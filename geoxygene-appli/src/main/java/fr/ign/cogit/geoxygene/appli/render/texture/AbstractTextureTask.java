@@ -27,16 +27,21 @@
 
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
+import java.net.URI;
+import java.net.URL;
+
 import fr.ign.cogit.geoxygene.appli.task.AbstractTask;
-import fr.ign.cogit.geoxygene.util.gl.Texture;
+import fr.ign.cogit.geoxygene.util.gl.GLTexture;
 
 /**
  * @author JeT Abstract task for async texture generation
  */
-public abstract class AbstractTextureTask<TextureType extends Texture> extends
+public abstract class AbstractTextureTask<TextureType extends GLTexture> extends
         AbstractTask implements TextureTask<TextureType> {
-    private String id = null;
-    private boolean needWriting = false;
+    URI id;
+
+    private boolean needCaching = false;
+
 
     /**
      * constructor
@@ -48,36 +53,35 @@ public abstract class AbstractTextureTask<TextureType extends Texture> extends
         super(name);
     }
 
-    /**
-     * @return the id
-     */
+
+    
     @Override
-    public final String getID() {
+    public URI getID() {
         return this.id;
     }
 
-    /**
-     * @param id
-     *            the id to set
-     */
+
+
     @Override
-    public void setID(String id) {
-        this.id = id;
+    public void setID(URI identifier) {
+        this.id = identifier;
+    }
+
+
+
+    /**
+     * @return the needCaching
+     */
+    public boolean needCaching() {
+        return this.needCaching;
     }
 
     /**
-     * @return the needWriting
+     * @param needCaching
+     *            the needCaching to set
      */
-    public boolean needWriting() {
-        return this.needWriting;
-    }
-
-    /**
-     * @param needWriting
-     *            the needWriting to set
-     */
-    public void setNeedWriting(boolean needWriting) {
-        this.needWriting = needWriting;
+    public void setNeedCaching(boolean needCaching) {
+        this.needCaching = needCaching;
     }
 
     /*
@@ -87,7 +91,7 @@ public abstract class AbstractTextureTask<TextureType extends Texture> extends
      */
     @Override
     public String toString() {
-        return "AbstractTextureTask [id=" + this.id + "]";
+        return "AbstractTextureTask [id=" + this.getID() + "]";
     }
 
 }

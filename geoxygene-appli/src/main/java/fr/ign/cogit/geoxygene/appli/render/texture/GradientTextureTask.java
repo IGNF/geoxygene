@@ -31,8 +31,12 @@ import java.awt.Color;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 
@@ -52,13 +56,13 @@ import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
  * @author JeT This Task generates a GradientImage and transform it into a
  *         gradient image with false colors
  */
-public class GradientTextureTask extends AbstractTextureTask<BasicTexture> {
+public class GradientTextureTask extends AbstractTextureTask<BinaryGradientTexture> {
 
     private static final Logger logger = Logger
             .getLogger(GradientTextureTask.class.getName()); // logger
     // texture descriptor (from style)
     private BinaryGradientImageDescriptor textureDescriptor = null;
-    private BasicTexture basicTexture = null;
+    private BinaryGradientTexture gradientTexture = null;
     private IFeatureCollection<IFeature> featureCollection = null;
 
     public static final double CM_PER_INCH = 2.540005;
@@ -67,13 +71,14 @@ public class GradientTextureTask extends AbstractTextureTask<BasicTexture> {
     /**
      * @param texture
      */
-    public GradientTextureTask(String name,
+    public GradientTextureTask(URI identifier,
             BinaryGradientImageDescriptor textureDescriptor,
             IFeatureCollection<IFeature> featureCollection) {
-        super("GradientTexture" + name);
+        super("GradientTexture" + identifier.toString());
         this.textureDescriptor = textureDescriptor;
-        this.basicTexture = new BasicTexture();
+        this.gradientTexture = new BinaryGradientTexture();
         this.featureCollection = featureCollection;
+        this.id = identifier;
     }
 
     /*
@@ -114,7 +119,6 @@ public class GradientTextureTask extends AbstractTextureTask<BasicTexture> {
     @Override
     public void run() {
         this.setState(TaskState.WAITING);
-        this.setNeedWriting(false);
         this.setState(TaskState.INITIALIZING);
         IEnvelope envelope = this.featureCollection.getEnvelope();
 
@@ -162,6 +166,7 @@ public class GradientTextureTask extends AbstractTextureTask<BasicTexture> {
                 this.setState(TaskState.ERROR);
                 return;
             }
+            this.gradientTexture.setTextureImage(texImage);
             // BufferedImage image = GradientTextureImage
             // .toBufferedImageDistanceStrip(texImage, 20);
             // BufferedImage image = GradientTextureImage
@@ -178,10 +183,7 @@ public class GradientTextureTask extends AbstractTextureTask<BasicTexture> {
             AffineTransformOp op = new AffineTransformOp(tx,
                     AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
             image = op.filter(image, null);
-
-            // ImageIO.write(image, "PNG", new File("gradient.png"));
             this.getTexture().setTextureImage(image);
-            this.setNeedWriting(true);
             this.setState(TaskState.FINISHED);
         } catch (Exception e) {
             this.setError(e);
@@ -201,8 +203,8 @@ public class GradientTextureTask extends AbstractTextureTask<BasicTexture> {
     }
 
     @Override
-    public BasicTexture getTexture() {
-        return this.basicTexture;
+    public BinaryGradientTexture getTexture() {
+        return this.gradientTexture;
     }
 
     /*
@@ -212,8 +214,8 @@ public class GradientTextureTask extends AbstractTextureTask<BasicTexture> {
      */
     @Override
     public String toString() {
-        return "BasicTextureTask [textureDescriptor=" + this.textureDescriptor
-                + ", basicTexture=" + this.basicTexture + ", toString()="
+        return "GradientTextureTask [textureDescriptor=" + this.textureDescriptor
+                + ", GradientTexture=" + this.gradientTexture + ", toString()="
                 + super.toString() + "]";
     }
 

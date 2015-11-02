@@ -50,10 +50,10 @@ import static org.lwjgl.opengl.GL20.glShaderSource;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -354,8 +354,8 @@ public final class GLTools {
         }
     }
 
-    public static BufferedImage loadImage(final String loc) throws IOException {
-        return ImageIO.read(new File(loc));
+    public static BufferedImage loadImage(final URL loc) throws IOException {
+        return ImageIO.read(loc);
     }
 
     public static void glDrawString(final String s, double x, double y) {

@@ -24,9 +24,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
-
 import org.apache.log4j.Logger;
-
 import fr.ign.cogit.geoxygene.style.filter.LayerFilter;
 import fr.ign.cogit.geoxygene.style.filter.LayerFilterContrast;
 import fr.ign.cogit.geoxygene.style.filter.LayerFilterIdentity;
@@ -35,11 +33,10 @@ import fr.ign.cogit.geoxygene.style.filter.LayerFilterIdentity;
  * @author Julien Perret
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class AbstractSymbolizer implements Symbolizer {
-    protected static Logger logger = Logger.getLogger(AbstractSymbolizer.class
-            .getName());
+public abstract class AbstractSymbolizer implements Symbolizer{
+    protected static Logger logger = Logger.getLogger(AbstractSymbolizer.class.getName());
 
-    @XmlElement(name = "Stroke")
+    @XmlElements({ @XmlElement(name = "Stroke", type = Stroke.class)})
     private Stroke stroke = null;
 
     @Override
@@ -136,12 +133,6 @@ public abstract class AbstractSymbolizer implements Symbolizer {
         this.shadow = shadow;
     }
 
-//    @XmlElements({
-//        @XmlElement(name = "NormalBlending", type = BlendingModeNormal.class),
-//        @XmlElement(name = "OverlayBlending", type = BlendingModeOverlay.class),
-//        @XmlElement(name = "HighToneBlending", type = BlendingModeHighTone.class),
-//        @XmlElement(name = "MultiplyBlending", type = BlendingModeMultiply.class)}
-//            )
     @XmlElement(name = "BlendingMode")
     private BlendingMode blendingMode = BlendingMode.Normal;
 
@@ -155,9 +146,7 @@ public abstract class AbstractSymbolizer implements Symbolizer {
         this.blendingMode = blendingMode;
     }
 
-    @XmlElements({
-        @XmlElement(name = "ContrastFilter", type = LayerFilterContrast.class),
-        @XmlElement(name = "NoFilter", type = LayerFilterIdentity.class) })
+    @XmlElements({ @XmlElement(name = "ContrastFilter", type = LayerFilterContrast.class), @XmlElement(name = "NoFilter", type = LayerFilterIdentity.class) })
     LayerFilter filter = null;
 
     /**
@@ -197,20 +186,11 @@ public abstract class AbstractSymbolizer implements Symbolizer {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime
-                * result
-                + ((this.blendingMode == null) ? 0 : this.blendingMode
-                        .hashCode());
-        result = prime
-                * result
-                + ((this.geometryPropertyName == null) ? 0
-                        : this.geometryPropertyName.hashCode());
-        result = prime * result
-                + ((this.shadow == null) ? 0 : this.shadow.hashCode());
-        result = prime * result
-                + ((this.stroke == null) ? 0 : this.stroke.hashCode());
-        result = prime * result
-                + ((this.uom == null) ? 0 : this.uom.hashCode());
+        result = prime * result + ((this.blendingMode == null) ? 0 : this.blendingMode.hashCode());
+        result = prime * result + ((this.geometryPropertyName == null) ? 0 : this.geometryPropertyName.hashCode());
+        result = prime * result + ((this.shadow == null) ? 0 : this.shadow.hashCode());
+        result = prime * result + ((this.stroke == null) ? 0 : this.stroke.hashCode());
+        result = prime * result + ((this.uom == null) ? 0 : this.uom.hashCode());
         return result;
     }
 
@@ -242,8 +222,7 @@ public abstract class AbstractSymbolizer implements Symbolizer {
             if (other.geometryPropertyName != null) {
                 return false;
             }
-        } else if (!this.geometryPropertyName
-                .equals(other.geometryPropertyName)) {
+        } else if (!this.geometryPropertyName.equals(other.geometryPropertyName)) {
             return false;
         }
         if (this.shadow == null) {
@@ -270,6 +249,22 @@ public abstract class AbstractSymbolizer implements Symbolizer {
         return true;
     }
 
+//    @Override
+//    public Object lookupAttribute(String attribute_name) {
+//        try {
+//            Field field = this.getClass().getDeclaredField(attribute_name);
+//            return field.get(this);
+//        } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
+//            String name = "get" + attribute_name.toUpperCase().charAt(0) + attribute_name.toLowerCase().substring(1);
+//            try {
+//                Method m = this.getClass().getDeclaredMethod(name, (Class<?>[]) null);
+//                return m.invoke(this);
+//            } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
+//                return null;
+//            }
+//        }
+//    }
+
     /*
      * (non-Javadoc)
      * 
@@ -277,10 +272,8 @@ public abstract class AbstractSymbolizer implements Symbolizer {
      */
     @Override
     public String toString() {
-        return "AbstractSymbolizer [stroke=" + this.stroke
-                + ", geometryPropertyName=" + this.geometryPropertyName
-                + ", uom=" + this.uom + ", shadow=" + this.shadow
-                + ", blendingMode=" + this.blendingMode + "]";
+        return "AbstractSymbolizer [stroke=" + this.stroke + ", geometryPropertyName=" + this.geometryPropertyName + ", uom=" + this.uom + ", shadow=" + this.shadow + ", blendingMode="
+                + this.blendingMode + "]";
     }
 
 }
