@@ -51,11 +51,11 @@ public class DisplayableSurfaceRenderer extends DisplayableRenderer<DisplayableS
         if (displayable.getSymbolizer() instanceof PolygonSymbolizer) {
             Stroke s = displayable.getSymbolizer().getStroke();
             Fill f = null;
-            if (s != null)
-                elements.add(s);
             f = ((PolygonSymbolizer) displayable.getSymbolizer()).getFill();
             if (f != null)
                 elements.add(f);
+            if (s != null)
+                elements.add(s);
         }
         // Special case if the Surface is the support for a Raster.
         if (displayable.getSymbolizer() instanceof RasterSymbolizer) {

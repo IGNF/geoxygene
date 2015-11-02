@@ -138,8 +138,8 @@ public class TileDistributionTextureTask extends AbstractTextureTask<BasicTextur
      */
     private final void initTiles() throws IOException {
         for (ProbabilistTileDescriptor tileDesc : this.getTextureDescriptor().getTiles()) {
-            URI complete_uri = tileDesc.getAbsoluteURI();
-            Tile tile = DefaultTile.read(complete_uri.toURL(), tileDesc.getScaleFactor());
+            URL abs_location = tileDesc.getAbsoluteLocation();
+            Tile tile = DefaultTile.read(abs_location, tileDesc.getScaleFactor());
             DistanceTileProbability p = new DistanceTileProbability(this.texImage, tileDesc.getMinDistance(), tileDesc.getMaxDistance(), tileDesc.getInRangeProbability(),
                     tileDesc.getOutOfRangeProbability());
             this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(p, tile));

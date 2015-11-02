@@ -26,14 +26,14 @@
  *******************************************************************************/
 package fr.ign.cogit.geoxygene.style.texture;
 
-import java.io.File;
 import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.URL;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Simple texture containing a single image
@@ -46,10 +46,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class SimpleTexture extends Texture {
 
     /**
-     * The Texture location. THis uri may be relative.
+     * The Texture location. This uri may be relative.
      */
     @XmlElement(name = "URI")
-    private URI tex_location = null;
+    private URI tex_input_location = null;
+    
+    @XmlTransient
+    private URL tex_absolute_location = null;
 
     /**
      * default constructor
@@ -71,7 +74,7 @@ public class SimpleTexture extends Texture {
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + ((this.tex_location == null) ? 0 : this.tex_location.hashCode());
+        result = prime * result + ((this.tex_input_location == null) ? 0 : this.tex_input_location.hashCode());
         return result;
     }
 
@@ -92,7 +95,7 @@ public class SimpleTexture extends Texture {
             return false;
         }
         SimpleTexture tex = (SimpleTexture) obj;
-        if (this.tex_location != tex.tex_location) {
+        if (this.tex_input_location != tex.tex_input_location) {
             return false;
         }
         return true;
@@ -105,35 +108,25 @@ public class SimpleTexture extends Texture {
      */
     @Override
     public String toString() {
-        return "BasicTextureDescriptor [uri=" + this.tex_location + ", toString()=" + super.toString() + "]";
+        return "BasicTextureDescriptor [uri=" + this.tex_input_location + " located at " +tex_absolute_location+", toString()=" + super.toString() + "]";
     }
 
-    public URI getURI() {
-        return tex_location;
+    public URI getInputLocation() {
+        return tex_input_location;
     }
 
-    public void setURI(URI location) {
-        this.tex_location = location;
+    public void setInputLocation(URI location) {
+        this.tex_input_location = location;
     }
 
-    public URI resolveAbsoluteURI(URI root_uri) throws URISyntaxException {
-        File f = new File(this.tex_location.toString());
-        if (!this.tex_location.isAbsolute()) {
-            if (!f.exists()) {
-                URI resolved = root_uri.resolve(this.tex_location);
-                if (resolved.isAbsolute())
-                    this.setAbsoluteURI(resolved);
-                else
-                    this.setAbsoluteURI(null);
-            } else {
-                URI abs_uri;
-                abs_uri = f.toURI();
-                this.setAbsoluteURI(abs_uri);
-            }
-        } else {
-            this.setAbsoluteURI(this.tex_location);
-        }
-        return this.getAbsoluteURI();
+    
+    public URL getAbsoluteLocation() {
+        return tex_absolute_location;
     }
+
+    public void setAbsoluteLocation(URL location) {
+        this.tex_absolute_location = location;
+    }
+
 
 }

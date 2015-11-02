@@ -40,10 +40,10 @@ import fr.ign.cogit.geoxygene.style.expressive.ExpressiveParameterValue;
 public abstract class Texture implements ExpressiveParameterValue {
 
     /**
-     * The absolute texture location.
+     * The identifier of this texture.
      */
     @XmlTransient
-    private URI absolute_uri = null;
+    private URI texture_uid = null;
 
     @XmlAttribute(name = "XRepeat")
     private boolean xRepeat = false;
@@ -247,12 +247,12 @@ public abstract class Texture implements ExpressiveParameterValue {
                 + ", scaleFactor=" + this.scaleFactor + ", rotation=" + this.rotation + "]";
     }
 
-    public void setAbsoluteURI(URI uri) {
-        this.absolute_uri = uri;
+    public void setTextureURI(URI uri) {
+        this.texture_uid = uri;
     }
 
-    public URI getAbsoluteURI() {
-        return this.absolute_uri;
+    public URI getTextureURI() {
+        return this.texture_uid;
     }
 
 }

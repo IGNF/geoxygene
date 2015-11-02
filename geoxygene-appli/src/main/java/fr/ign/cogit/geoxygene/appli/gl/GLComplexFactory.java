@@ -37,7 +37,6 @@ import java.awt.Color;
 import java.awt.Shape;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,8 +79,7 @@ import fr.ign.cogit.geoxygene.util.math.BernsteinPolynomial;
  */
 public class GLComplexFactory {
 
-    private static final Logger logger = Logger
-            .getLogger(GLComplexFactory.class.getName()); // logger
+    private static final Logger logger = Logger.getLogger(GLComplexFactory.class.getName()); // logger
     private static final int BEZIER_SAMPLE_COUNT = 20;
     private static final Point2d DEFAULT_UV = new Point2d(0, 0);
 
@@ -99,23 +97,19 @@ public class GLComplexFactory {
     /**
      * Create a gl primitive that is just drawn as lines
      */
-    public static GLSimpleComplex createQuickLine(String id,
-            List<? extends ICurve> curves, final Color color,
-            final Parameterizer parameterizer, double minX, double minY) {
+    public static GLSimpleComplex createQuickLine(String id, List<? extends ICurve> curves, final Color color, final Parameterizer parameterizer, double minX, double minY) {
         GLSimpleComplex primitive = new GLSimpleComplex(id, minX, minY);
         for (ICurve curve : curves) {
             createQuickLine(primitive, curve, color, parameterizer);
         }
-//        primitive.setRenderer(renderer);
+        // primitive.setRenderer(renderer);
         return primitive;
     }
 
     /**
      * Create a gl primitive that is just drawn as lines
      */
-    private static void createQuickLine(GLSimpleComplex primitive,
-            final ICurve curve, final Color color,
-            final Parameterizer parameterizer) {
+    private static void createQuickLine(GLSimpleComplex primitive, final ICurve curve, final Color color, final Parameterizer parameterizer) {
         double minX = primitive.getMinX();
         double minY = primitive.getMinY();
 
@@ -135,8 +129,7 @@ public class GLComplexFactory {
             GLSimpleVertex vertex = new GLSimpleVertex();
             vertex.setXYZ((float) p[0], (float) p[1], (float) p[2]);
             vertex.setUV((float) uv.x, (float) uv.y);
-            vertex.setRGBA(color.getRed() / 255f, color.getGreen() / 255f,
-                    color.getBlue() / 255f, color.getAlpha() / 255f);
+            vertex.setRGBA(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
             outlineMesh.addIndex(primitive.addVertex(vertex));
         }
     }
@@ -148,39 +141,33 @@ public class GLComplexFactory {
     /**
      * Create a gl primitive that is just polygons frontiers drawn as lines
      */
-    public static GLSimpleComplex createQuickPolygons(String id,
-            List<IPolygon> polygons, final Color color,
-            final Parameterizer parameterizer, double minX, double minY) {
+    public static GLSimpleComplex createQuickPolygons(String id, List<IPolygon> polygons, final Color color, final Parameterizer parameterizer, double minX, double minY) {
         GLSimpleComplex primitive = new GLSimpleComplex(id, minX, minY);
 
         for (IPolygon polygon : polygons) {
             createQuickPolygon(primitive, polygon, color, parameterizer);
         }
-//        primitive.setRenderer(renderer);
+        // primitive.setRenderer(renderer);
         return primitive;
     }
 
     /**
      * Create a gl primitive filled surface
      */
-    public static GLSimpleComplex createFilledPolygons(String id,
-            List<IPolygon> polygons, final Color color,
-            final Parameterizer parameterizer, double minX, double minY) {
+    public static GLSimpleComplex createFilledPolygons(String id, List<IPolygon> polygons, final Color color, final Parameterizer parameterizer, double minX, double minY) {
         GLSimpleComplex primitive = new GLSimpleComplex(id, minX, minY);
 
         for (IPolygon polygon : polygons) {
             createFilledPolygon(primitive, polygon, color, parameterizer);
         }
-//        primitive.setRenderer(renderer);
+        // primitive.setRenderer(renderer);
         return primitive;
     }
 
     /**
      * Tesselate an OGC IGeometry into a GLPrimitive
      */
-    private static void createQuickPolygon(GLSimpleComplex primitive,
-            final IPolygon polygon, final Color color,
-            final Parameterizer parameterizer) {
+    private static void createQuickPolygon(GLSimpleComplex primitive, final IPolygon polygon, final Color color, final Parameterizer parameterizer) {
         double minX = primitive.getMinX();
         double minY = primitive.getMinY();
         if (parameterizer != null) {
@@ -188,10 +175,8 @@ public class GLComplexFactory {
         }
 
         GLMesh outlineMesh = primitive.addGLMesh(GL11.GL_LINE_LOOP);
-        for (int outerFrontierPointIndex = 0; outerFrontierPointIndex < polygon
-                .exteriorCoord().size(); outerFrontierPointIndex++) {
-            IDirectPosition outerFrontierPoint = polygon.exteriorCoord().get(
-                    outerFrontierPointIndex);
+        for (int outerFrontierPointIndex = 0; outerFrontierPointIndex < polygon.exteriorCoord().size(); outerFrontierPointIndex++) {
+            IDirectPosition outerFrontierPoint = polygon.exteriorCoord().get(outerFrontierPointIndex);
             double p[] = new double[3];
             p[0] = outerFrontierPoint.getX() - minX;
             p[1] = outerFrontierPoint.getY() - minY;
@@ -204,20 +189,15 @@ public class GLComplexFactory {
             GLSimpleVertex vertex = new GLSimpleVertex();
             vertex.setXYZ((float) p[0], (float) p[1], (float) p[2]);
             vertex.setUV((float) uv.x, (float) uv.y);
-            vertex.setRGBA(color.getRed() / 255f, color.getGreen() / 255f,
-                    color.getBlue() / 255f, color.getAlpha() / 255f);
+            vertex.setRGBA(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
             int vertexId = primitive.addVertex(vertex);
             outlineMesh.addIndex(vertexId);
         }
-        for (int innerFrontierIndex = 0; innerFrontierIndex < polygon
-                .sizeInterior(); innerFrontierIndex++) {
+        for (int innerFrontierIndex = 0; innerFrontierIndex < polygon.sizeInterior(); innerFrontierIndex++) {
 
-            IDirectPositionList interiorCoord = polygon
-                    .interiorCoord(innerFrontierIndex);
-            for (int innerFrontierPointIndex = 0; innerFrontierPointIndex < interiorCoord
-                    .size(); innerFrontierPointIndex++) {
-                IDirectPosition innerFrontierPoint = interiorCoord
-                        .get(innerFrontierPointIndex);
+            IDirectPositionList interiorCoord = polygon.interiorCoord(innerFrontierIndex);
+            for (int innerFrontierPointIndex = 0; innerFrontierPointIndex < interiorCoord.size(); innerFrontierPointIndex++) {
+                IDirectPosition innerFrontierPoint = interiorCoord.get(innerFrontierPointIndex);
                 // Point2d innerFrontierTextureCoordinates =
                 // polygon.getInnerFrontierTextureCoordinates(innerFrontierIndex,
                 // innerFrontierPointIndex);
@@ -229,12 +209,11 @@ public class GLComplexFactory {
                 if (parameterizer != null) {
                     uv = parameterizer.getTextureCoordinates(p);
                 }
-  
+
                 GLSimpleVertex vertex = new GLSimpleVertex();
                 vertex.setXYZ((float) p[0], (float) p[1], (float) p[2]);
                 vertex.setUV((float) uv.x, (float) uv.y);
-                vertex.setRGBA(color.getRed() / 255f, color.getGreen() / 255f,
-                        color.getBlue() / 255f, color.getAlpha() / 255f);
+                vertex.setRGBA(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
                 int vertexId = primitive.addVertex(vertex);
                 outlineMesh.addIndex(vertexId);
             }
@@ -247,9 +226,7 @@ public class GLComplexFactory {
     /**
      * Tesselate a polygon into a GLPrimitive
      */
-    private static void createFilledPolygon(GLSimpleComplex primitive,
-            final IPolygon polygon, final Color color,
-            final Parameterizer parameterizer) {
+    private static void createFilledPolygon(GLSimpleComplex primitive, final IPolygon polygon, final Color color, final Parameterizer parameterizer) {
         double minX = primitive.getMinX();
         double minY = primitive.getMinY();
 
@@ -260,22 +237,18 @@ public class GLComplexFactory {
         GLUtessellator tesselator = gluNewTess();
 
         // Set callback functions
-        GLPrimitiveTessCallback callback = new GLPrimitiveTessCallback(
-                primitive);
+        GLPrimitiveTessCallback callback = new GLPrimitiveTessCallback(primitive);
         tesselator.gluTessCallback(GLU_TESS_VERTEX, callback);
         tesselator.gluTessCallback(GLU_TESS_BEGIN, callback);
         tesselator.gluTessCallback(GLU_TESS_END, callback);
         tesselator.gluTessCallback(GLU_TESS_COMBINE, callback);
-        tesselator.gluTessProperty(GLU.GLU_TESS_WINDING_RULE,
-                GLU.GLU_TESS_WINDING_POSITIVE);
+        tesselator.gluTessProperty(GLU.GLU_TESS_WINDING_RULE, GLU.GLU_TESS_WINDING_POSITIVE);
 
         tesselator.gluTessBeginPolygon(null);
         // outer frontier
         tesselator.gluTessBeginContour();
-        for (int outerFrontierPointIndex = 0; outerFrontierPointIndex < polygon
-                .exteriorCoord().size(); outerFrontierPointIndex++) {
-            IDirectPosition outerFrontierPoint = polygon.exteriorCoord().get(
-                    outerFrontierPointIndex);
+        for (int outerFrontierPointIndex = 0; outerFrontierPointIndex < polygon.exteriorCoord().size(); outerFrontierPointIndex++) {
+            IDirectPosition outerFrontierPoint = polygon.exteriorCoord().get(outerFrontierPointIndex);
             // Point2d outerFrontierTextureCoordinates =
             // polygon.getOuterFrontierTextureCoordinates(outerFrontierPointIndex);
             // point coordinates
@@ -292,11 +265,8 @@ public class GLComplexFactory {
                 // parameterizer.getClass().getSimpleName());
             }
 
-
-            float[] data = new float[] { (float) vertex[0], (float) vertex[1],
-                    (float) vertex[2], (float) uv.x, (float) uv.y,
-                    color.getRed() / 255f, color.getGreen() / 255f,
-                    color.getBlue() / 255f, color.getAlpha() / 255f };
+            float[] data = new float[] { (float) vertex[0], (float) vertex[1], (float) vertex[2], (float) uv.x, (float) uv.y, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f,
+                    color.getAlpha() / 255f };
             // System.err.println("tess input data = " + Arrays.toString(data));
             tesselator.gluTessVertex(vertex, 0, data);
             // System.err.println("set exterior #" + outerFrontierPointIndex +
@@ -305,18 +275,14 @@ public class GLComplexFactory {
         }
         tesselator.gluTessEndContour();
 
-        for (int innerFrontierIndex = 0; innerFrontierIndex < polygon
-                .sizeInterior(); innerFrontierIndex++) {
+        for (int innerFrontierIndex = 0; innerFrontierIndex < polygon.sizeInterior(); innerFrontierIndex++) {
 
             // IRing innerFrontier = polygon.getInterior(innerFrontierIndex);
             tesselator.gluTessBeginContour();
 
-            IDirectPositionList interiorCoord = polygon
-                    .interiorCoord(innerFrontierIndex);
-            for (int innerFrontierPointIndex = 0; innerFrontierPointIndex < interiorCoord
-                    .size(); innerFrontierPointIndex++) {
-                IDirectPosition innerFrontierPoint = interiorCoord
-                        .get(innerFrontierPointIndex);
+            IDirectPositionList interiorCoord = polygon.interiorCoord(innerFrontierIndex);
+            for (int innerFrontierPointIndex = 0; innerFrontierPointIndex < interiorCoord.size(); innerFrontierPointIndex++) {
+                IDirectPosition innerFrontierPoint = interiorCoord.get(innerFrontierPointIndex);
                 // Point2d innerFrontierTextureCoordinates =
                 // polygon.getInnerFrontierTextureCoordinates(innerFrontierIndex,
                 // innerFrontierPointIndex);
@@ -329,12 +295,9 @@ public class GLComplexFactory {
                 if (parameterizer != null) {
                     uv = parameterizer.getTextureCoordinates(vertex);
                 }
- 
-                float[] data = new float[] { (float) vertex[0],
-                        (float) vertex[1], (float) vertex[2], (float) uv.x,
-                        (float) uv.y, color.getRed() / 255f,
-                        color.getGreen() / 255f, color.getBlue() / 255f,
-                        color.getAlpha() / 255f };
+
+                float[] data = new float[] { (float) vertex[0], (float) vertex[1], (float) vertex[2], (float) uv.x, (float) uv.y, color.getRed() / 255f, color.getGreen() / 255f,
+                        color.getBlue() / 255f, color.getAlpha() / 255f };
                 tesselator.gluTessVertex(vertex, 0, data);
                 // System.err.println("set interior #" + innerFrontierIndex +
                 // " vertex " + vertex[0] + ", " + vertex[1] + ", " +
@@ -350,22 +313,17 @@ public class GLComplexFactory {
         }
     }
 
-    public static GLSimpleComplex createQuickPoints(String id,
-            List<IGeometry> geometries, final Color color,
-            final Parameterizer parameterizer, double minX, double minY) {
+    public static GLSimpleComplex createQuickPoints(String id, List<IGeometry> geometries, final Color color, final Parameterizer parameterizer, double minX, double minY) {
         GLSimpleComplex primitive = new GLSimpleComplex(id, minX, minY);
         GLMesh mesh = primitive.addGLMesh(GL11.GL_POINTS);
 
         for (IGeometry geometry : geometries) {
-            createQuickPoints(primitive, mesh, geometry, color,
-                    parameterizer);
+            createQuickPoints(primitive, mesh, geometry, color, parameterizer);
         }
         return primitive;
     }
 
-    private static void createQuickPoints(GLSimpleComplex primitive,
-            GLMesh mesh, IGeometry geometry, final Color color,
-            final Parameterizer parameterizer) {
+    private static void createQuickPoints(GLSimpleComplex primitive, GLMesh mesh, IGeometry geometry, final Color color, final Parameterizer parameterizer) {
         double minX = primitive.getMinX();
         double minY = primitive.getMinY();
         double p[] = new double[3];
@@ -379,17 +337,14 @@ public class GLComplexFactory {
         GLSimpleVertex vertex = new GLSimpleVertex();
         vertex.setXYZ((float) p[0], (float) p[1], (float) p[2]);
         vertex.setUV((float) uv.x, (float) uv.y);
-        vertex.setRGBA(color.getRed() / 255f, color.getGreen() / 255f,
-                color.getBlue() / 255f, color.getAlpha() / 255f);
+        vertex.setRGBA(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
         mesh.addIndex(primitive.addVertex(vertex));
     }
 
-    public static GLSimpleComplex createColorizedPoints(String id,
-            IGeometry geometry, final Colorizer colorizer,
-            final Parameterizer parameterizer, double minX, double minY,
+    public static GLSimpleComplex createColorizedPoints(String id, IGeometry geometry, final Colorizer colorizer, final Parameterizer parameterizer, double minX, double minY,
             GLComplexRenderer renderer) {
         GLSimpleComplex primitive = new GLSimpleComplex(id, minX, minY);
-//        primitive.setRenderer(renderer);
+        // primitive.setRenderer(renderer);
         return primitive;
     }
 
@@ -399,24 +354,21 @@ public class GLComplexFactory {
     /**
      * Tesselate a list of java shape2D into a GLPrimitive
      */
-    public static GLSimpleComplex toGLComplex(String id,
-            final List<? extends Shape> shapes, double minX, double minY,
-            GLComplexRenderer renderer) {
+    public static GLSimpleComplex toGLComplex(String id, final List<? extends Shape> shapes, double minX, double minY, GLComplexRenderer renderer) {
         GLSimpleComplex primitive = new GLSimpleComplex(id, minX, minY);
 
         for (Shape shape : shapes) {
             toGLComplex(primitive, shape);
         }
-//        primitive.setRenderer(renderer);
+        // primitive.setRenderer(renderer);
         return primitive;
     }
 
-    public static GLSimpleComplex toGLComplex(String id, Shape shape,
-            double minX, double minY) {
+    public static GLSimpleComplex toGLComplex(String id, Shape shape, double minX, double minY) {
         GLSimpleComplex primitive = new GLSimpleComplex(id, minX, minY);
 
         toGLComplex(primitive, shape);
-//        primitive.setRenderer(renderer);
+        // primitive.setRenderer(renderer);
         return primitive;
     }
 
@@ -430,8 +382,7 @@ public class GLComplexFactory {
         GLUtessellator tesselator = gluNewTess();
 
         // Set callback functions
-        GLPrimitiveTessCallback callback = new GLPrimitiveTessCallback(
-                primitive);
+        GLPrimitiveTessCallback callback = new GLPrimitiveTessCallback(primitive);
         tesselator.gluTessCallback(GLU_TESS_VERTEX, callback);
         tesselator.gluTessCallback(GLU_TESS_BEGIN, callback);
         tesselator.gluTessCallback(GLU_TESS_END, callback);
@@ -441,12 +392,10 @@ public class GLComplexFactory {
 
             switch (path.getWindingRule()) {
             case Path2D.WIND_EVEN_ODD:
-                tesselator.gluTessProperty(GLU.GLU_TESS_WINDING_RULE,
-                        GLU.GLU_TESS_WINDING_ODD);
+                tesselator.gluTessProperty(GLU.GLU_TESS_WINDING_RULE, GLU.GLU_TESS_WINDING_ODD);
                 break;
             case Path2D.WIND_NON_ZERO:
-                tesselator.gluTessProperty(GLU.GLU_TESS_WINDING_RULE,
-                        GLU.GLU_TESS_WINDING_NONZERO);
+                tesselator.gluTessProperty(GLU.GLU_TESS_WINDING_RULE, GLU.GLU_TESS_WINDING_NONZERO);
                 break;
             default:
                 logger.warn("unknown winding rule " + path.getWindingRule());
@@ -471,12 +420,10 @@ public class GLComplexFactory {
         int rule = iter.getWindingRule();
         switch (rule) {
         case PathIterator.WIND_EVEN_ODD:
-            tesselator.gluTessProperty(GLU.GLU_TESS_WINDING_RULE,
-                    GLU.GLU_TESS_WINDING_ODD);
+            tesselator.gluTessProperty(GLU.GLU_TESS_WINDING_RULE, GLU.GLU_TESS_WINDING_ODD);
             break;
         case PathIterator.WIND_NON_ZERO:
-            tesselator.gluTessProperty(GLU.GLU_TESS_WINDING_RULE,
-                    GLU.GLU_TESS_WINDING_NONZERO);
+            tesselator.gluTessProperty(GLU.GLU_TESS_WINDING_RULE, GLU.GLU_TESS_WINDING_NONZERO);
             break;
         }
         // System.err.println("----------------------------------------------------------------------------");
@@ -517,13 +464,10 @@ public class GLComplexFactory {
                 for (int i = 1; i <= BEZIER_SAMPLE_COUNT; i++) {
                     float t = i / (float) BEZIER_SAMPLE_COUNT;
 
-                    double px = BernsteinPolynomial.evalQuadratic(lastX,
-                            coords[0], coords[2], t);
-                    double py = BernsteinPolynomial.evalQuadratic(lastY,
-                            coords[1], coords[3], t);
+                    double px = BernsteinPolynomial.evalQuadratic(lastX, coords[0], coords[2], t);
+                    double py = BernsteinPolynomial.evalQuadratic(lastY, coords[1], coords[3], t);
                     vertex = new double[] { px, py, 0 };
-                    data = new float[] { (float) px, (float) py, 0, 0, 0, 0, 0,
-                            0, 0 };
+                    data = new float[] { (float) px, (float) py, 0, 0, 0, 0, 0, 0, 0 };
                     // System.err.println(" shape " + vertex[0] + " " +
                     // vertex[1]);
                     tesselator.gluTessVertex(vertex, 0, data);
@@ -538,13 +482,10 @@ public class GLComplexFactory {
                 for (int i = 1; i <= BEZIER_SAMPLE_COUNT; i++) {
                     float t = i / (float) BEZIER_SAMPLE_COUNT;
 
-                    double px = BernsteinPolynomial.evalCubic(lastX, coords[0],
-                            coords[2], coords[4], t);
-                    double py = BernsteinPolynomial.evalCubic(lastY, coords[1],
-                            coords[3], coords[5], t);
+                    double px = BernsteinPolynomial.evalCubic(lastX, coords[0], coords[2], coords[4], t);
+                    double py = BernsteinPolynomial.evalCubic(lastY, coords[1], coords[3], coords[5], t);
                     vertex = new double[] { px, py, 0 };
-                    data = new float[] { (float) px, (float) py, 0, 0, 0, 0, 0,
-                            0, 0 };
+                    data = new float[] { (float) px, (float) py, 0, 0, 0, 0, 0, 0, 0 };
                     tesselator.gluTessVertex(vertex, 0, data);
                     // System.err.println(" shape " + vertex[0] + " " +
                     // vertex[1]);
@@ -565,7 +506,6 @@ public class GLComplexFactory {
         tesselator.gluTessEndPolygon();
     }
 
-
     /**
      * Create a polygon outline with the given "stroke"
      * 
@@ -575,41 +515,39 @@ public class GLComplexFactory {
      * @param minY
      * @return
      */
-    public static GLComplex createPolygonOutlines(String id,
-            List<IPolygon> polygons, Stroke stroke, double minX, double minY) {
+    public static GLComplex createPolygonOutlines(String id, List<IPolygon> polygons, Stroke stroke, double minX, double minY) {
         boolean simpleRendering = stroke.getExpressiveStroke() == null;
-        if(!simpleRendering){
+        if (!simpleRendering) {
             String method = stroke.getExpressiveStroke().getRenderingMethod();
-            simpleRendering = method== null || method.isEmpty();
+            simpleRendering = method == null || method.isEmpty();
         }
-        
+
         if (simpleRendering) {
             GLSimpleComplex primitive = new GLSimpleComplex(id, minX, minY);
             for (IPolygon polygon : polygons) {
-                LineTesselator.createPolygonOutline(primitive, polygon, stroke,
-                        minX, minY);
+                LineTesselator.createPolygonOutline(primitive, polygon, stroke, minX, minY);
             }
             primitive.setColor(stroke.getColor());
             primitive.setOverallOpacity(stroke.getColor().getAlpha() / 255.);
             return primitive;
         }
         ExpressiveDescriptor expressive = stroke.getExpressiveStroke();
-        SimpleTexture paperTexture = (SimpleTexture)(expressive.getExpressiveParameter("paperTexture").getValue());
-        ExpressiveParameter paperHeightInCm = expressive.getExpressiveParameter("PaperSizeInCm"); 
-        ExpressiveParameter mapScale = expressive.getExpressiveParameter("PaperReferenceMapScale"); 
+        SimpleTexture paperTexture = (SimpleTexture) (expressive.getExpressiveParameter("paperTexture").getValue());
+        ExpressiveParameter paperHeightInCm = expressive.getExpressiveParameter("PaperSizeInCm");
+        ExpressiveParameter mapScale = expressive.getExpressiveParameter("PaperReferenceMapScale");
         ExpressiveParameter transitionSize = expressive.getExpressiveParameter("transitionSize");
-        if(paperTexture==null || paperHeightInCm==null|| mapScale==null || transitionSize==null){
-            logger.error("The ExpressiveStroke does not have the needed parameters to create an Expressive Stroke geometry" );
+        if (paperTexture == null || paperHeightInCm == null || mapScale == null || transitionSize == null) {
+            logger.error("The ExpressiveStroke does not have the needed parameters to create an Expressive Stroke geometry");
             return null;
         }
-        
-        //Build the paperTexture if needed
-        if(paperTexture.getURI() == null){
-            logger.error("There is no paper texture (URI is null)");
+
+        TextureManager.getInstance();
+        GLTexture glPaperTex = TextureManager.getTexture(paperTexture);
+
+        if (glPaperTex == null) {
+            logger.error("Cannot create the paper texture : the texture cannot be built");
             return null;
         }
-        GLTexture glPaperTex = TextureManager.getInstance().getTexture(paperTexture);
-       
         List<ILineString> curves = new ArrayList<ILineString>();
         for (IPolygon polygon : polygons) {
             curves.add(new GM_LineString(polygon.getExterior().coord()));
@@ -617,17 +555,15 @@ public class GLComplexFactory {
                 curves.add(new GM_LineString(interior.coord()));
             }
         }
-        GLBezierShadingComplex complex = createBezierThickCurves(id, stroke, minX, minY, curves, glPaperTex, (Double)paperHeightInCm.getValue(), (Double)mapScale.getValue(), (Double)transitionSize.getValue());
+        GLBezierShadingComplex complex = createBezierThickCurves(id, stroke, minX, minY, curves, glPaperTex, (Double) paperHeightInCm.getValue(), (Double) mapScale.getValue(),
+                (Double) transitionSize.getValue());
         return complex;
     }
 
-
-    public static GLBezierShadingComplex createBezierThickCurves(String id,
-            Stroke stroke, double minX, double minY,
-            List<ILineString> curves,GLTexture glPaperTex, double paperHeightInCm, double mapScale, double transitionSize) {
-        GLBezierShadingComplex complex = new GLBezierShadingComplex(id, minX,
-                minY,glPaperTex);
-        createBezierThickCurves(id, complex, stroke, minX, minY, curves, glPaperTex,paperHeightInCm, mapScale,transitionSize);
+    public static GLBezierShadingComplex createBezierThickCurves(String id, Stroke stroke, double minX, double minY, List<ILineString> curves, GLTexture glPaperTex, double paperHeightInCm,
+            double mapScale, double transitionSize) {
+        GLBezierShadingComplex complex = new GLBezierShadingComplex(id, minX, minY, glPaperTex);
+        createBezierThickCurves(id, complex, stroke, minX, minY, curves, glPaperTex, paperHeightInCm, mapScale, transitionSize);
         return complex;
     }
 
@@ -640,24 +576,15 @@ public class GLComplexFactory {
      * @param complex
      * @param curves
      */
-    private static void createPaintingThickCurves(String id,
-            GLPaintingComplex complex, double minX, double minY,
-            List<ILineString> curves, GLTexture paperTexture,int sampleSize, double paperHeightInCm, double mapScale, double strokewidth, Color strokecolor, double minAngle, int paperWidthInPixels, int paperHeightInPixels  ) {
-//        GLTexture paperTexture = GLTextureManager.getInstance().getTexture(
-//                strtex.getPaperTextureFilename());
-        Colorizer colorizer = new SolidColorizer(strokecolor); 
+    private static void createPaintingThickCurves(String id, GLPaintingComplex complex, double minX, double minY, List<ILineString> curves, GLTexture paperTexture, int sampleSize,
+            double paperHeightInCm, double mapScale, double strokewidth, Color strokecolor, double minAngle, int paperWidthInPixels, int paperHeightInPixels) {
+        // GLTexture paperTexture = GLTextureManager.getInstance().getTexture(
+        // strtex.getPaperTextureFilename());
+        Colorizer colorizer = new SolidColorizer(strokecolor);
         for (ILineString line : curves) {
             try {
-                Task tesselateThickLineTask = LinePaintingTesselator
-                        .tesselateThickLine(id, complex,
-                                line.getControlPoint(), new ConstantFunction(
-                                        strokewidth / 2.),
-                                        new ConstantFunction(0),
-                                        sampleSize, minAngle,
-                                        minX, minY,
-                                        colorizer,
-                                        paperWidthInPixels, paperHeightInPixels,
-                                        paperHeightInCm, mapScale);
+                Task tesselateThickLineTask = LinePaintingTesselator.tesselateThickLine(id, complex, line.getControlPoint(), new ConstantFunction(strokewidth / 2.), new ConstantFunction(0),
+                        sampleSize, minAngle, minX, minY, colorizer, paperWidthInPixels, paperHeightInPixels, paperHeightInCm, mapScale);
                 tesselateThickLineTask.start();
                 TaskManager.startAndWait(tesselateThickLineTask);
             } catch (FunctionEvaluationException e) {
@@ -668,23 +595,15 @@ public class GLComplexFactory {
         }
     }
 
-
-    private static void createBezierThickCurves(String id,
-            GLBezierShadingComplex complex, Stroke stroke, double minX,
-            double minY,List<ILineString> curves,GLTexture paperTexture, double paperHeightInCm, double mapScale, double transitionSize) {
+    private static void createBezierThickCurves(String id, GLBezierShadingComplex complex, Stroke stroke, double minX, double minY, List<ILineString> curves, GLTexture paperTexture,
+            double paperHeightInCm, double mapScale, double transitionSize) {
 
         int paperWidthInPixels = paperTexture.getTextureWidth();
         int paperHeightInPixels = paperTexture.getTextureHeight();
         for (ILineString line : curves) {
             try {
-                Task tesselateThickLineTask = BezierTesselator
-                        .tesselateThickLine(id, complex,
-                                line.getControlPoint(),
-                                stroke.getStrokeWidth(),
-                                transitionSize, minX, minY,
-                                new SolidColorizer(stroke.getColor()),
-                                paperWidthInPixels, paperHeightInPixels,
-                                paperHeightInCm, mapScale);
+                Task tesselateThickLineTask = BezierTesselator.tesselateThickLine(id, complex, line.getControlPoint(), stroke.getStrokeWidth(), transitionSize, minX, minY,
+                        new SolidColorizer(stroke.getColor()), paperWidthInPixels, paperHeightInPixels, paperHeightInCm, mapScale);
                 tesselateThickLineTask.start();
                 TaskManager.startAndWait(tesselateThickLineTask);
             } catch (FunctionEvaluationException e) {
@@ -705,11 +624,9 @@ public class GLComplexFactory {
      * @param minY
      * @return
      */
-    public static GLSimpleComplex createShapeOutline(String id, Shape shape,
-            Stroke stroke, double minX, double minY) {
-        GLSimpleComplex primitive = LineTesselator.createThickLine(id, shape,
-                stroke, minX, minY);
-//        primitive.setRenderer(renderer);
+    public static GLSimpleComplex createShapeOutline(String id, Shape shape, Stroke stroke, double minX, double minY) {
+        GLSimpleComplex primitive = LineTesselator.createThickLine(id, shape, stroke, minX, minY);
+        // primitive.setRenderer(renderer);
         return primitive;
     }
 

@@ -27,7 +27,9 @@
 
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -109,13 +111,13 @@ public class TextureTaskFactory {
      * @param texture_uri
      *            : the unique identifier of the texture to create.
      * @param texture_location
-     *            : the adress of the texture image.
+     *            : the absolute location of the texture.
      * @return a texture task
      */
-    public static TextureTask<BasicTexture> createTextureTask(URI texture_uri, URI texture_location) {
+    public static TextureTask<BasicTexture> createTextureTask(URI texture_uri, URL texture_location) {
         SimpleTexture st = new SimpleTexture();
-        st.setURI(texture_location);
-        st.setAbsoluteURI(texture_location);
+        st.setAbsoluteLocation(texture_location);
+        st.setTextureURI(texture_uri);
         return new BasicTextureTask(texture_uri, st);
     }
 

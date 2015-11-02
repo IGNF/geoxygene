@@ -28,6 +28,7 @@ package fr.ign.cogit.geoxygene.style.texture;
 
 import java.awt.image.BufferedImage;
 import java.net.URI;
+import java.net.URL;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -37,11 +38,15 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlAccessorType(XmlAccessType.NONE)
 public abstract class TileDescriptor {
 
+    /**
+     * The Texture location. This uri may be relative.
+     */
     @XmlElement(name = "URI")
-    private URI uri = null;
-
+    private URI tex_input_location = null;
+    
     @XmlTransient
-    private URI absolute_uri = null;
+    private URL tex_absolute_location = null;
+    
     
     @XmlElement(name = "ScaleFactor")
     private double scaleFactor = 1.;
@@ -52,15 +57,6 @@ public abstract class TileDescriptor {
      * default constructor
      */
     public TileDescriptor() {
-    }
-
-    public URI getURI() {
-        return this.uri;
-    }
-
-    
-    public void setURI(URI uri) {
-        this.uri = uri;
     }
 
     /**
@@ -106,7 +102,7 @@ public abstract class TileDescriptor {
         temp = Double.doubleToLongBits(this.scaleFactor);
         result = prime * result + (int) (temp ^ (temp >>> 32));
         result = prime * result
-                + ((this.uri == null) ? 0 : this.uri.hashCode());
+                + ((this.tex_input_location == null) ? 0 : this.tex_input_location.hashCode());
         return result;
     }
 
@@ -131,11 +127,11 @@ public abstract class TileDescriptor {
                 .doubleToLongBits(other.scaleFactor)) {
             return false;
         }
-        if (this.uri == null) {
-            if (other.uri != null) {
+        if (this.tex_input_location == null) {
+            if (other.tex_input_location != null) {
                 return false;
             }
-        } else if (!this.uri.equals(other.uri)) {
+        } else if (!this.tex_input_location.equals(other.tex_input_location)) {
             return false;
         }
         return true;
@@ -148,29 +144,25 @@ public abstract class TileDescriptor {
      */
     @Override
     public String toString() {
-        return "TileDescriptor [url=" + this.uri + ", scaleFactor="
+        return "TileDescriptor [url=" + this.tex_input_location + ", scaleFactor="
                 + this.scaleFactor + "]";
     }
-    
-    public URI resolveAbsoluteURI(URI root_uri){
-        if(!this.uri.isAbsolute()) {
-            URI resolved = root_uri.resolve(this.uri);
-            if(resolved.isAbsolute())
-                 this.setAbsoluteURI(resolved);
-            else
-                this.setAbsoluteURI(null);
-        }else{
-            this.setAbsoluteURI(null);
-        }
-        return this.getAbsoluteURI();
+    public URI getInputLocation() {
+        return tex_input_location;
     }
 
-    void setAbsoluteURI(URI _absolute_uri) {
-        this.absolute_uri = _absolute_uri;
+    public void setInputLocation(URI location) {
+        this.tex_input_location = location;
     }
+
     
-    public URI getAbsoluteURI(){
-        return this.absolute_uri;
+    public URL getAbsoluteLocation() {
+        return tex_absolute_location;
     }
+
+    public void setAbsoluteLocation(URL location) {
+        this.tex_absolute_location = location;
+    }
+
 
 }

@@ -49,7 +49,6 @@ import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.GLComplexFactory;
 import fr.ign.cogit.geoxygene.appli.gl.GLSimpleComplex;
 import fr.ign.cogit.geoxygene.appli.gl.GLTextComplex;
-import fr.ign.cogit.geoxygene.appli.gl.ImageColormap;
 import fr.ign.cogit.geoxygene.appli.gl.RasterImage;
 import fr.ign.cogit.geoxygene.appli.gl.ResourcesManager;
 import fr.ign.cogit.geoxygene.appli.render.methods.NamedRenderingParametersMap;

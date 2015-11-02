@@ -240,10 +240,5 @@ public class TileDistributionTexture extends Texture {
         return true;
     }
 
-    public void resolveTilesAbsoluteURIs(URI root_uri){
-        for(ProbabilistTileDescriptor t : this.tiles){
-            t.resolveAbsoluteURI(root_uri);
-        }
-    }
     
 }

@@ -29,8 +29,10 @@ package fr.ign.cogit.geoxygene.appli.render.texture;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,12 +46,14 @@ import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
 import fr.ign.cogit.geoxygene.appli.GeoxygeneConstants;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.ResourcesManager;
+import fr.ign.cogit.geoxygene.appli.resources.ResourceLocationResolver;
 import fr.ign.cogit.geoxygene.appli.task.TaskListener;
 import fr.ign.cogit.geoxygene.appli.task.TaskManager;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
+import fr.ign.cogit.geoxygene.style.texture.ProbabilistTileDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.SimpleTexture;
 import fr.ign.cogit.geoxygene.style.texture.BinaryGradientImageDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.Texture;
@@ -86,12 +90,10 @@ public class TextureManager {
         return instance;
     }
 
-    
-    public static TextureTask<? extends GLTexture> getTextureTask(URI texture_uri){
+    public static TextureTask<? extends GLTexture> getTextureTask(URI texture_uri) {
         return TextureManager.tasksMap.get(texture_uri);
     }
-    
-    
+
     public static GLTexture retrieveTexture(Texture desc, int feature_collection_hashcode) {
         try {
             if (desc instanceof SimpleTexture) {
@@ -113,14 +115,17 @@ public class TextureManager {
 
     public static GLTexture getTexture(URI path) {
         GLTexture t = textureMap.get(path);
-        if (t == null) {
-            TextureTask<? extends GLTexture> task = TextureManager.buildTexture(path);
-            try {
+        try {
+            if (t == null) {
+                TextureTask<? extends GLTexture> task;
+                task = TextureManager.buildTexture(path.toURL());
                 TaskManager.waitForCompletion(task);
                 t = textureMap.get(path);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
+        } catch (MalformedURLException | URISyntaxException e1) {
+            e1.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
         return t;
     }
@@ -170,19 +175,19 @@ public class TextureManager {
     }
 
     /**
-     * Basic method that build a texture from an absolute uri 
-     * @param uri
+     * Basic method that build a texture from a location
+     * 
+     * @param path
+     *            : the URl of the texture.
      * @return
+     * @throws URISyntaxException
      */
-    public static TextureTask<? extends GLTexture> buildTexture(URI path) {
-        if(!path.isAbsolute()){
-            logger.error("TextureManager.buildTexture ERROR : URI is not absolute :"+ path);
-            return null;
-        }
+    public static TextureTask<? extends GLTexture> buildTexture(URL path) throws URISyntaxException {
+
         if (tasksMap.get(path) == null) {
-            TextureTask<BasicTexture> tt = TextureTaskFactory.createTextureTask(path, path);
+            TextureTask<BasicTexture> tt = TextureTaskFactory.createTextureTask(path.toURI(), path);
             tt.addTaskListener(TextureManager.getInstance().basicListener);
-            tasksMap.put(path, tt);
+            tasksMap.put(path.toURI(), tt);
             return tt;
         }
         return tasksMap.get(path);
@@ -212,22 +217,36 @@ public class TextureManager {
                 TextureTask<? extends GLTexture> tt = TextureManager.tasksMap.get(tex_uri);
                 if (tt == null) {
                     // Check if the texture is cached on the disk
-                    String ext = (tex_descriptor instanceof BinaryGradientImageDescriptor)? "bgi" : "png";
+                    String ext = (tex_descriptor instanceof BinaryGradientImageDescriptor) ? "bgi" : "png";
                     File file = TextureManager.getCachedTextureFile(tex_uri, ext);
                     if (file.isFile() && file.exists()) {
-                        tt = TextureTaskFactory.createTextureTask(tex_uri, file.getAbsoluteFile().toURI());
+                        tt = TextureTaskFactory.createTextureTask(tex_uri, file.getAbsoluteFile().toURI().toURL());
                         tt.addTaskListener(TextureManager.getInstance().basicListener);
                         tasksMap.put(tex_uri, tt);
                     } else {
-                        // Create a new texture task and resolve the texture resource.
+                        // Create a new texture task and resolve the texture
+                        // resource.
                         URI root_uri = (URI) ResourcesManager.Root().getResourceByName(GeoxygeneConstants.GEOX_Const_CurrentStyleRootURIName);
-                        if(tex_descriptor instanceof SimpleTexture){
-                            ((SimpleTexture)tex_descriptor).resolveAbsoluteURI(root_uri);
+                        if (tex_descriptor instanceof SimpleTexture) {
+                            SimpleTexture st = (SimpleTexture) tex_descriptor;
+                            URL resolved_location = ResourceLocationResolver.resolve(st.getInputLocation(), root_uri);
+                            if (resolved_location == null) {
+                                logger.error("Failed to resolve the location of the texture " + st.getInputLocation() + ". The texture will not be loaded.");
+                                return null;
+                            }
+                            st.setAbsoluteLocation(resolved_location);
                         }
-                        if(tex_descriptor instanceof TileDistributionTexture){
-                            ((TileDistributionTexture)tex_descriptor).resolveTilesAbsoluteURIs(root_uri);
+                        if (tex_descriptor instanceof TileDistributionTexture) {
+                            TileDistributionTexture tdt = (TileDistributionTexture) tex_descriptor;
+                            for (ProbabilistTileDescriptor tile : tdt.getTiles()) {
+                                URL resolved_location = ResourceLocationResolver.resolve(tile.getInputLocation(), root_uri);
+                                if (resolved_location == null) {
+                                    logger.error("Failed to resolve the location of the Tile texture " + tile.getInputLocation() + ". This Tile will not be loaded.");
+                                    return null;
+                                }
+                                tile.setAbsoluteLocation(resolved_location);
+                            }
                         }
-                        
                         tt = TextureTaskFactory.createTextureTask(tex_uri, tex_descriptor, textured_objects, p);
                         tt.addTaskListener(TextureManager.getInstance().basicListener);
                         tasksMap.put(tex_uri, tt);
@@ -240,6 +259,8 @@ public class TextureManager {
             }
         } catch (URISyntaxException e) {
             logger.error("Failed to generate an URI for the texture " + tex_descriptor);
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
         return null;
@@ -353,8 +374,8 @@ public class TextureManager {
         }, "save texture on disk").start();
     }
 
-    private static File getCachedTextureFile(URI id,String extension) {
-        return new File(DIRECTORY_CACHE_NAME + File.separator + id + "."+extension);
+    private static File getCachedTextureFile(URI id, String extension) {
+        return new File(DIRECTORY_CACHE_NAME + File.separator + id + "." + extension);
 
     }
 

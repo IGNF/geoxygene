@@ -53,6 +53,8 @@ public abstract class GeoxygeneConstants {
     /*GEOXYGEN CONSTANTS*/
     public static final String GEOX_Const_RenderingMethodsManagerName = "RenderingMethods";
     public static final String GEOX_Const_CurrentStyleRootURIName = "CURRENT_ROOT_URI";
+    public static final String GEOX_Const_GeoxResourceScheme = "geox";
+    public static final String GEOX_Const_SLDLocalScheme = "sld";
 
     
 

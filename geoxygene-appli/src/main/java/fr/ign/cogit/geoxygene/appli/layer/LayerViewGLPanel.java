@@ -15,8 +15,6 @@ import java.awt.print.PageFormat;
 import java.awt.print.PrinterException;
 import java.io.File;
 import java.lang.reflect.Field;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -56,15 +54,12 @@ import fr.ign.cogit.geoxygene.appli.render.SyncRenderingManager;
 import fr.ign.cogit.geoxygene.appli.render.methods.RenderingMethodBuilder;
 import fr.ign.cogit.geoxygene.appli.render.methods.RenderingMethodDescriptor;
 import fr.ign.cogit.geoxygene.appli.render.stats.RenderingStatistics;
-import fr.ign.cogit.geoxygene.appli.render.texture.TextureManager;
-import fr.ign.cogit.geoxygene.appli.render.texture.TextureTask;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.util.ImageComparator;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
-import fr.ign.cogit.geoxygene.util.gl.GLTexture;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
 
 /**
@@ -129,14 +124,6 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
         }
         // The gl canvas listen for resizing events
         this.addComponentListener(this.glCanvas);
-
-        try {
-            URI uri = LayerViewGLPanel.SOMETHING_WENT_WRONG_TEXTURE.toURI();
-            TextureTask<? extends GLTexture> tt = TextureManager.buildTexture(uri);
-            tt.start();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
 
     }
 
