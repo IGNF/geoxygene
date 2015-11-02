@@ -30,8 +30,6 @@ struct DataGradient {
 vec4 computeColor( DataGradient fragmentData );
 
 void main(void) {
-
-
 	// get values in the binary gradient image
 	// .xy : uv coordinates in the distance field (scaled between 0..1)
 	// .zw : gradient of the distance field (scaled between 0..1)
@@ -43,11 +41,6 @@ void main(void) {
 	DataGradient fragmentOut = DataGradient( screenWidth, screenHeight, fragmentIn.color, fragmentIn.textureUV, worldUV, gradient, uvMinGradientTexture, uvRangeGradientTexture );
 	// call subshader 
 	vec4 color = computeColor( fragmentOut );
-	
 	// return computed color using object & global opacity
 	outColor = vec4( color.rgb, objectOpacity  * color.a);
-
-// DEBUG
-//outColor = vec4( fragmentOut.worldUV, 0.0 , 1.0 );	
-
 }

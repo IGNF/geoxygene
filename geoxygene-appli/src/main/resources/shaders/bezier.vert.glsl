@@ -18,13 +18,7 @@ uniform float screenHeight;
 uniform float fboWidth=5000.0;
 uniform float fboHeight=5000.0;
 uniform float mapScaleDiv1000 = 0.; // map scale
-uniform int brushWidth = 0; // brush texture width (pixels)
-uniform int brushHeight = 0; // brush texture height (pixels)
-uniform int brushStartWidth = 0; // brush texture width (pixels)
-uniform int brushEndWidth = 0; // brush texture height (pixels)
-uniform float brushScale = 0.0; // size in mm of one brush pixel
 
-layout(location = 0) in vec2 vertexPosition;
 layout(location = 1) in vec2 vertexUV;
 layout(location = 2) in vec4 vertexColor;
 layout(location = 3) in float lineWidth;
@@ -60,9 +54,9 @@ out VertexData {
 float screenRatio = fboWidth / screenWidth;
 
 // transform world coordinates to [-1.0 +1.0]
-vec2 worldToScreen( vec2 p ) {
-	return vec2( -1.0 + 2.0 * (p.x * m00 + m02) / (screenWidth + 1.0), 1.0 - 2.0 * ( p.y * m11 + m12 ) / ( screenHeight + 1.0 ) );
-}
+//vec2 worldToScreen( vec2 p ) {
+//	return vec2( -1.0 + 2.0 * (p.x * m00 + m02) / (screenWidth + 1.0), 1.0 - 2.0 * ( p.y * m11 + m12 ) / ( screenHeight + 1.0 ) );
+//}
 
 // transform point world coordinates to [0.0 1.0]
 vec2 worldToIdentity( vec2 p ) {
@@ -76,9 +70,8 @@ vec2 worldToIdentityVector( vec2 p ) {
 
 
 
-void main() {
-	//gl_Position = vec4 ( vertexPosition.x, vertexPosition.y , 0. , 1. );
-	gl_Position = vec4( worldToScreen( vertexPosition ), 0., 1.);
+void doStuff(vec4 screenPos) {
+	gl_Position = screenPos;
 	vertexOut.uv = vertexUV;
 	vertexOut.color = vertexColor;
 	vertexOut.lineWidth = lineWidth * m00 / 2.;

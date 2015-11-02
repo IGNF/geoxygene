@@ -36,10 +36,10 @@ struct DataPainting {
 	int brushEndWidth;      // end texture length in pixels for the brush
 	float brushScale;       // size in mm of one brush pixel
 	float paperScale;       // scaling factor for paper
-	float sharpness;        // brush-paper blending sharpness
+	float strokeSoftness;   // brush-paper blending strokeSoftness
 	
-	float paperDensity;     // paper height scale factor
-	float brushDensity;     // brush height scale factor
+	float paperRoughness;     // paper height scale factor
+	float brushRoughness;     // brush height scale factor
 	float strokePressure;   // stroke pressure
 	vec4 position;          // current point position in world coordinates
 	vec2 uv;                // UV coordinates texture (u in world coordinates, v between 0 and 1)
@@ -55,8 +55,8 @@ uniform float screenWidth;
 uniform float screenHeight;
 uniform float fboWidth;
 uniform float fboHeight;
-uniform sampler2D paperSampler;
-uniform sampler2D brushSampler;
+uniform sampler2D brushTexture;
+uniform sampler2D paperTexture;
 uniform float mapScaleDiv1000 = 0.; // map scale
 uniform int brushWidth = 0; // brush texture width (pixels)
 uniform int brushHeight = 0; // brush texture height (pixels)
@@ -64,10 +64,9 @@ uniform int brushStartWidth = 0; // brush texture width (pixels)
 uniform int brushEndWidth = 0; // brush texture height (pixels)
 uniform float brushScale = 0; // size in mm of one brush pixel
 uniform float paperScale = 0; // scaling factor for paper
-uniform float sharpness = 0; // brush-paper blending sharpness
-
-uniform float paperDensity = 0.3; // paper height scale factor
-uniform float brushDensity = 1.0; // brush height scale factor
+uniform float strokeSoftness = 0; // brush-paper blending strokeSoftness
+uniform float paperRoughness = 0.3; // paper height scale factor
+uniform float brushRoughness = 1.0; // brush height scale factor
 uniform float strokePressure = 1; // stroke pressure
 
 out vec4 outColor;
@@ -232,14 +231,13 @@ void main() {
 
 	
 	DataPainting fragmentData = DataPainting(screenWidth, screenHeight, mapScaleDiv1000, brushWidth, brushHeight,
-		brushStartWidth, brushEndWidth, brushScale, paperScale, sharpness, paperDensity, brushDensity, strokePressure,
+		brushStartWidth, brushEndWidth, brushScale, paperScale, strokeSoftness, paperRoughness, brushRoughness, strokePressure,
 		fragmentIn.position, uv, fragmentIn.color, fragmentIn.lineWidth, fragmentIn.uMax, tangent, curvature );
 	vec2 brushUV = computeBrushTextureCoordinates( fragmentData );
 	
-	vec4 brushColor = texture( brushSampler, brushUV );
-	vec4 paperColor = texture( paperSampler, fragmentIn.paperUV );
+	vec4 brushColor = texture( brushTexture, brushUV );
+	vec4 paperColor = texture( paperTexture, fragmentIn.paperUV );
 	
 	outColor = computeFragmentColor( brushColor, paperColor, fragmentData );
-	
-	//outColor = fragmentData.color;
+
 }

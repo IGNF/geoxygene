@@ -139,4 +139,5 @@ void main(void)
      
     // Opacity (multiplication)
     outColor.a = outColor.a*globalOpacity*objectOpacity;
+    //outColor = vec4(mod(time/4.0,10000),1.0,1.0,1.0);
 }

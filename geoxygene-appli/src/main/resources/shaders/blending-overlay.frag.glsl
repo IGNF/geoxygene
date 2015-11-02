@@ -25,17 +25,19 @@ vec3 overlay( vec3 A, vec3 B ) {
 }
 
 void main(void) {
- //   outColor = vec4( fragmentTextureCoord.xy, 1.0, 1.0 );
- //   return;
 
 	vec3 resultColor = vec3(0);
 	vec4 foregroundColor = colorFilter( texture( foregroundTexture, fragmentTextureCoord.xy ) );
 	vec4 backgroundColor = texture( backgroundTexture, fragmentTextureCoord.xy );
 	
+	
+	
 	float aA = foregroundColor.a * globalOpacity;
 	float aB = backgroundColor.a;
 	vec3 xA = foregroundColor.rgb;
 	vec3 xB = backgroundColor.rgb;
+
+	
 	vec3 xaA = aA * xA;
 	vec3 xaB = aB * xB;
 	

@@ -8,6 +8,5 @@ in vec2 fragmentTextureCoord;
 out vec4 outColor;
 
 void main(void) {
-	// outColor = vec4( fragmentColor.rgb, globalOpacity );
-	outColor = vec4( fragmentColor.rgb, fragmentColor.a * globalOpacity );
+	outColor = vec4(fragmentColor.rgb, fragmentColor.a * globalOpacity * objectOpacity );
 }

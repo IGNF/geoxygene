@@ -16,6 +16,7 @@ vec4 colorFilter( vec4 col );
 
 void main(void) {
     vec2 texCoord =  fragmentTextureCoord;
+
 	outColor = texture( colorTexture1, texCoord );
 //	outColor = vec4(texCoord,0,1);
     return;
