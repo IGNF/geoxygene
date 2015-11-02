@@ -60,7 +60,7 @@ public class ImageColormap extends BasicTexture {
     @SuppressWarnings("unused")
     private static int TYPE_CATEGORIZE = 2;
 
-    private int typeColormap = -1;
+    private int typeColormap = 0;
     private int nbPoints = 0;
     private float[] value = null;
     private int[][] color = null;

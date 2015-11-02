@@ -58,6 +58,8 @@ public class RasterSpecializedSetter implements UserDefinedGLProgramSetter {
             if (raster.getDefColormap()) {
                 program.setUniform("typeColormap", raster.getImageColorMap().getTypeColormap());
                 program.setUniform("nbPointsColormap", raster.getImageColorMap().getNbPoints());
+            }else{
+                program.setUniform("typeColormap", 0);
             }
         } catch (GLException e) {
             e.printStackTrace();

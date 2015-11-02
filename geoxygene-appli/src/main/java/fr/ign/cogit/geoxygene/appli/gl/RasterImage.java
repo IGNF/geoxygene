@@ -212,7 +212,7 @@ public class RasterImage extends BasicTexture {
     public boolean initializeRendering(int programId) {
 
         // Enable GL texture
-        glEnable(GL_TEXTURE_2D);
+//        glEnable(GL_TEXTURE_2D);
 
         // Go find imageID and pass buffer of data to GPU
         Integer imageIndex = this.getImageId(); 
@@ -244,6 +244,7 @@ public class RasterImage extends BasicTexture {
      * @param symbolizer
      */
     public void readImage(GridCoverage2D image, RasterSymbolizer symbolizer) {
+        System.out.println("READING THE RASTER");
         // To avoid multiple read
         if ((isRead == false) || (symbolizer.getChannelSelection() != null)) // &&(imageFilename
                                                                              // !=

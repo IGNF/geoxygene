@@ -122,7 +122,6 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements TaskLis
         super(layer_to_render);
         this.setLayerViewPanel(theLayerViewPanel);
         this.mDispRenderers = new WeakHashMap<Symbolizer, DisplayableRenderer<? extends GLDisplayable>>();
-        // this.textrenderer = new GeoxGLTextRenderer(this);
     }
 
     /**
@@ -305,7 +304,6 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements TaskLis
 
         GLDisplayable displayable = this.dispcache.get(feature) != null ? this.dispcache.get(feature).get(symbolizer) : null;
         if (displayable == null) {
-            System.out.println("Create new displayable");
             displayable = this.createNewDisplayable(symbolizer, feature);
             this.addDisplayable(feature, symbolizer, displayable);
         }
@@ -349,7 +347,6 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements TaskLis
 
     private DisplayableRenderer<? extends GLDisplayable> getRendererForDisplayable(Symbolizer s) {
         if (this.mDispRenderers.get(s) == null) {
-            System.out.println("Creating a new displayable renderer");
             if (s instanceof LineSymbolizer)
                 this.mDispRenderers.put(s, new DisplayableCurveRenderer(this.getLayerViewPanel().getViewport()));
             if (s instanceof PolygonSymbolizer || s instanceof RasterSymbolizer)
@@ -478,7 +475,6 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements TaskLis
                 // layer
                 this.drawInPingPongFBO();
                 this.clearFBOLayer();
-                System.out.println("FBO painting");
             }
         } catch (GLException e) {
             throw new RenderingException(e);

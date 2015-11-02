@@ -36,6 +36,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.geotools.coverage.grid.GridCoverage2D;
 import org.lwjgl.opengl.GL11;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -66,6 +67,7 @@ import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLComplexRenderer;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
+import fr.ign.cogit.geoxygene.util.gl.GLTexture;
 
 /**
  * @author JeT A displayable surface is a displayable containing GL geometries
@@ -217,28 +219,27 @@ public class DisplayableSurface extends AbstractDisplayable {
 
         // Create RasterImage and read it, once for all (the all shader life of
         // course)
-        RasterImage rasterImage = new RasterImage();
-        rasterImage.readImage(((FT_Coverage) featureCollection.get(0)).coverage(), rasterSymbolizer);
+        GridCoverage2D coverage = ((FT_Coverage) featureCollection.get(0)).coverage();
         try {
-            URI raster_uri = new URI("RasterImage-" + rasterImage.hashCode());
-            TextureManager.addTexture(raster_uri, rasterImage);
-            // this.symAccessor.getParameters(RasterSymbolizer.class).put("bufferImage",
-            // raster_uri);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        this.rasterImageRef = new WeakReference<RasterImage>(rasterImage);
-
-        // Colormap
-        rasterImage.readColormap(rasterSymbolizer);
-        ImageColormap colormap = rasterImage.getImageColorMap();
-        try {
-            if (colormap != null) {
-                URI raster_uri = new URI("ColorMap-" + rasterImage.hashCode());
-                // this.symAccessor.getParameters(RasterSymbolizer.class).put("bufferColormap",
-                // raster_uri);
-                TextureManager.addTexture(raster_uri, colormap);
+            //TODO : the name is not an unique identifier
+            URI rimguri = new URI("RasterImage-" + coverage.getName());
+            RasterImage raster = (RasterImage) TextureManager.retrieveTexture(rimguri);
+            if (raster == null) {
+                RasterImage rasterImage = new RasterImage();
+                rasterImage.readImage(((FT_Coverage) featureCollection.get(0)).coverage(), rasterSymbolizer);
+                TextureManager.addTexture(rimguri, rasterImage);
+                raster = rasterImage;
             }
+            this.rasterImageRef = new WeakReference<RasterImage>(raster);
+
+            // retrive the colormap
+            raster.readColormap(rasterSymbolizer);
+            URI colormap_uri = new URI("ColorMap-" + coverage.getName() + "-" + rasterSymbolizer.hashCode());
+            GLTexture colormap = TextureManager.retrieveTexture(colormap_uri);
+            if (colormap == null) {
+                TextureManager.addTexture(colormap_uri, raster.getImageColorMap());
+            }
+
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -448,12 +449,13 @@ public class DisplayableSurface extends AbstractDisplayable {
     public void setCustomRenderingParameters(NamedRenderingParametersMap p) {
         if (this.getSymbolizer().isRasterSymbolizer() && this.rasterImageRef.get() != null) {
             try {
+                GridCoverage2D coverage = ((FT_Coverage) this.getFeature().getFeatureCollection(0).get(0)).coverage();
+                URI rasteruri = new URI("RasterImage-" + coverage.getName());
+                URI colormapuri = new URI("ColorMap-" + coverage.getName() + "-" + this.getSymbolizer().hashCode());
                 RenderingMethodParameterDescriptor rasterParameter = new RenderingMethodParameterDescriptor("bufferImage");
-                p.put(rasterParameter, new URI("RasterImage-" + this.rasterImageRef.get().hashCode()));
-                if (this.rasterImageRef.get().getImageColorMap() != null) {
-                    RenderingMethodParameterDescriptor colorMapParameter = new RenderingMethodParameterDescriptor("bufferColormap");
-                    p.put(colorMapParameter, new URI("ColorMap-" + this.rasterImageRef.get().hashCode()));
-                }
+                p.put(rasterParameter, rasteruri);
+                RenderingMethodParameterDescriptor colorMapParameter = new RenderingMethodParameterDescriptor("bufferColormap");
+                p.put(colorMapParameter, colormapuri);
             } catch (URISyntaxException e) {
                 e.printStackTrace();
 
