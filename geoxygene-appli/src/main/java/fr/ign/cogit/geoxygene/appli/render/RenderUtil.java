@@ -1712,65 +1712,124 @@ public final class RenderUtil {
             }
 
             if (s.getDiagramType().equalsIgnoreCase("piechart")) { //$NON-NLS-1$
-
                 double startAngle = 0.0;
                 for (ThematicClass thematicClass : s.getThematicClass()) {
-                    double value = ((Number) thematicClass.getClassValue().evaluate(feature)).doubleValue();
+                    double value = ((Number) thematicClass.getClassValue().evaluate(
+                            feature)).doubleValue();
                     if (value == 0) {
                         continue;
                     }
                     double arcAngle = 3.6 * value;
-                    graphics.setColor(ColorUtil.getColorWithOpacity(thematicClass.getFill().getColor(), opacity));
-                    graphics.fillArc((int) (point.getX() - size), (int) (point.getY() - size), (int) (2 * size), (int) (2 * size), (int) startAngle, (int) arcAngle);
+                    graphics.setColor(ColorUtil.getColorWithOpacity(thematicClass
+                            .getFill().getColor(), opacity));
+                    graphics.fillArc((int) (point.getX() - size),
+                            (int) (point.getY() - size), (int) (2 * size), (int) (2 * size),
+                            (int) startAngle, (int) arcAngle);
                     graphics.setColor(Color.BLACK);
-                    graphics.drawArc((int) (point.getX() - size), (int) (point.getY() - size), (int) (2 * size), (int) (2 * size), (int) startAngle, (int) arcAngle);
+                    graphics.drawArc((int) (point.getX() - size),
+                            (int) (point.getY() - size), (int) (2 * size), (int) (2 * size),
+                            (int) startAngle, (int) arcAngle);
                     startAngle += arcAngle;
                 }
-
             } else if (s.getDiagramType().equalsIgnoreCase("barchart")) {
                 double part = 0.70;
                 graphics.setColor(Color.BLACK);
-                drawArrow(graphics, (int) (point.getX() - part * size), (int) (point.getY() + part * size), (int) (point.getX() - part * size), (int) (point.getY() - part * size));
-                drawArrow(graphics, (int) (point.getX() - part * size), (int) (point.getY() + part * size), (int) (point.getX() + part * size), (int) (point.getY() + part * size));
+                drawArrow(graphics, (int) (point.getX() - part * size),
+                        (int) (point.getY() + part * size), (int) (point.getX() - part * size), (int) (point.getY() - part * size));
+                drawArrow(graphics, (int) (point.getX() - part * size), (int) (point.getY() + part * size), (int) (point.getX() + part
+                        * size), (int) (point.getY() + part * size));
 
                 int width = (int) (2 * part * size / (3 * s.getThematicClass().size()));
                 int startX = width;
                 for (ThematicClass thematicClass : s.getThematicClass()) {
-                    double value = ((Number) thematicClass.getClassValue().evaluate(feature)).doubleValue();
+                    double value = ((Number) thematicClass.getClassValue().evaluate(
+                            feature)).doubleValue();
                     int hauteur = (int) (value * 2 * part * size / 100);
-                    graphics.setColor(ColorUtil.getColorWithOpacity(thematicClass.getFill().getColor(), opacity));
-                    graphics.fillRect((int) (point.getX() - part * size) + startX, (int) (point.getY() + part * size) - hauteur, 2 * width, hauteur);
+                    graphics.setColor(ColorUtil.getColorWithOpacity(thematicClass
+                            .getFill().getColor(), opacity));
+                    graphics.fillRect((int) (point.getX() - part * size) + startX,
+                            (int) (point.getY() + part * size) - hauteur, 2 * width, hauteur);
 
                     startX += 3 * width;
                 }
+            } else if (s.getDiagramType().equalsIgnoreCase("rosechart")) {
+                int nbPas = s.getThematicClass().size();
+                double part = 0.90;
+                size *= part;
+                double x0 = point.getX() - size;
+                double y0 = point.getY() - size;
+                // graphics.setColor(Color.WHITE);
+                // graphics.fillRect((int)(point.getX() - size), (int)(point.getY() - size), (int)(2 * size.doubleValue()), (int)(2* size.doubleValue()));
+                // graphics.setColor(Color.RED);
+                // graphics.drawString(".", (int)point.getX(), (int)point.getY());
+
+                // Portions
+                double max = 0;
+                for (ThematicClass thematicClass : s.getThematicClass()) {
+                    double value = ((Number) thematicClass.getClassValue().evaluate(feature)).doubleValue();
+                    if (value > max) max = value;
+                }
+                graphics.setColor(Color.ORANGE);
+                int pas = 180 / nbPas;
+                double angleDegre = 0;
+                for (ThematicClass thematicClass : s.getThematicClass()) {
+                    double value = ((Number) thematicClass.getClassValue().evaluate(feature)).doubleValue();
+                    if (value <= 0) {
+                        value = 1;
+                    } 
+                    int a1 = (int)angleDegre + 1;
+                    int a2 = pas - 2;
+                    int l = (int)(size - value * size / max);
+                    // graphics.setColor(Color.ORANGE);
+                    graphics.setColor(ColorUtil.getColorWithOpacity(thematicClass
+                            .getFill().getColor(), opacity));
+                    graphics.fillArc((int)(x0 + l), (int)(y0 + l), (int)(2*size - 2*l), (int)(2*size - 2*l), a1, a2);
+                    angleDegre = angleDegre + pas;
+                }
+
+                // Axes
+                graphics.setColor(Color.LIGHT_GRAY);
+                float dash1[] = {10.0f};
+                BasicStroke dashed = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
+                graphics.setStroke(dashed);
+                graphics.drawArc((int)(x0 + 1 * size / 4), (int)(y0 + 1 * size / 4), (int)(2 * size - 2 * size / 4), (int)(2 * size - 2 * size / 4), 0, 180);
+                graphics.drawArc((int)(x0 + 2 * size / 4), (int)(y0 + 2 * size / 4), (int)(2 * size - 4 * size / 4), (int)(2 * size - 4 * size / 4), 0, 180);
+                graphics.drawArc((int)(x0 + 3 * size / 4), (int)(y0 + 3 * size / 4), (int)(2 * size - 6 * size / 4), (int)(2 * size - 6 * size / 4), 0, 180);
+                // graphics.drawLine((int)(x0 + size), (int)(y0 + size), (int)(x0 + size), (int)(y0));
+                graphics.setColor(Color.BLACK);
+                graphics.setStroke(new BasicStroke(1.0f));
+                graphics.drawArc((int)(x0 + 0 * size / 4), (int)(y0 + 0 * size / 4), (int)(2 * size - 0 * size / 4), (int)(2 * size - 0 * size / 4), 0, 180);
+                graphics.drawLine((int)(x0), (int)(y0 + size), (int)(x0 + 2 * size), (int)(y0 + size));
+
 
             } else if (s.getDiagramType().equalsIgnoreCase("linechart")) {
 
                 double part = 0.70;
                 graphics.setColor(Color.BLACK);
-                drawArrow(graphics, (int) (point.getX() - part * size), (int) (point.getY() + part * size), (int) (point.getX() - part * size), (int) (point.getY() - part * size));
-                drawArrow(graphics, (int) (point.getX() - part * size), (int) (point.getY() + part * size), (int) (point.getX() + part * size), (int) (point.getY() + part * size));
+                drawArrow(graphics, (int) (point.getX() - part * size),
+                        (int) (point.getY() + part * size), (int) (point.getX() - part
+                                * size), (int) (point.getY() - part * size));
+                drawArrow(graphics, (int) (point.getX() - part * size),
+                        (int) (point.getY() + part * size), (int) (point.getX() + part
+                                * size), (int) (point.getY() + part * size));
 
                 /*
-                 * int width = (int) (2 * part * size /
-                 * s.getThematicClass().size()); int startX = 0; for
-                 * (ThematicClass thematicClass : s.getThematicClass()) { double
-                 * value = ((Number)
-                 * thematicClass.getClassValue().evaluate(feature
-                 * )).doubleValue(); int hauteur = (int) (value * 2 * part *
-                 * size / 100);
+                 * int width = (int) (2 * part * size / s.getThematicClass().size());
+                 * int startX = 0; for (ThematicClass thematicClass :
+                 * s.getThematicClass()) { double value = ((Number)
+                 * thematicClass.getClassValue().evaluate(feature)).doubleValue(); int
+                 * hauteur = (int) (value * 2 * part * size / 100);
                  * graphics.setColor(ColorUtil.getColorWithOpacity(thematicClass
                  * .getFill().getColor(), opacity));
                  * graphics.drawRect((int)(point.getX() - part*size) + startX,
                  * (int)(point.getY() + part*size) - hauteur, 5, 5); //
                  * graphics.fillRect((int)(point.getX() - part*size) + startX,
-                 * (int)(point.getY() + part*size) - hauteur, 2 * width,
-                 * hauteur);
+                 * (int)(point.getY() + part*size) - hauteur, 2 * width, hauteur);
                  * 
                  * startX += width; }
                  */
 
-            }
+            } 
         }
     }
 
