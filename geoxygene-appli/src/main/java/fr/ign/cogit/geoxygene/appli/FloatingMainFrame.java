@@ -298,6 +298,10 @@ public class FloatingMainFrame extends AbstractMainFrame implements
    */
   @Override
   public void organizeCurrentDesktop() {
+    organizeCurrentDesktop(2);
+  }
+  
+  public void organizeCurrentDesktop(int ncol) {
     JDesktopPane currentDesktop = this.getCurrentDesktop();
     if (currentDesktop == null) {
       return;
@@ -306,7 +310,7 @@ public class FloatingMainFrame extends AbstractMainFrame implements
     ProjectFrame[] projectFrames = this.getDesktopProjectFrames();
 
     currentDesktop.removeAll();
-    GridLayout layout = new GridLayout(0, 2);
+    GridLayout layout = new GridLayout(0, ncol);
     currentDesktop.setLayout(layout);
     for (ProjectFrame project : projectFrames) {
       currentDesktop.add(project.getGui());
