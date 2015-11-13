@@ -16,6 +16,7 @@ import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_FeatureType;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.Mammal;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.SchemaDefaultFeature;
@@ -123,6 +124,8 @@ public class PostgisManager {
   }
 
   /**
+   * Charge une table géométrique dans une collection à partir d'une connexion
+   * PostGIS et en fonction de paramètres de sélection
    * 
    * @param host
    * @param port
@@ -244,7 +247,7 @@ public class PostgisManager {
       schema.setAttLookup(attLookup);
 
       String requestSelect = "SELECT " + OP_ASEWKT + "(" + nomColonneGeom
-          + ") as asewkt,* FROM " + table;
+          + ") as asewkt, * FROM " + table;
 
       if (whereClause != "") {
 
@@ -252,6 +255,7 @@ public class PostgisManager {
 
       }
 
+      System.out.println(requestSelect);
       r2 = s.executeQuery(requestSelect);
 
       while (r2.next()) {
@@ -271,11 +275,13 @@ public class PostgisManager {
 
             // le shift sert à faire la correspondance entre l'index
             // de l'attribut et l'index du résultat de la requete
+            
             shift++;
             continue;
           } else if ((i == indColonGeom + shift) && colGeom) {
             // On arrive à la colonne géométrie, on passe
-            // (renseignée précédemment)
+            // (renseignée précédemment));
+            
             shift++;
             colGeom = false;
             continue;
@@ -304,6 +310,177 @@ public class PostgisManager {
   }
 
   /**
+   * Charge une table non géométrique dans une collection à partir d'une
+   * connexion PostGIS et en fonction de paramètres de sélection
+   * 
+   * @param host
+   * @param port
+   * @param database
+   * @param user
+   * @param pw
+   * @param table
+   * @param whereClause
+   * @return
+   * @throws Exception
+   */
+  public static IFeatureCollection<IFeature> loadNonGeometricTableWhereClause(
+      String host, String port, String database, String user, String pw,
+      String table, String whereClause) throws Exception {
+
+    // Liste des entités que l'on souhaite charger
+    FT_FeatureCollection<IFeature> fColl = new FT_FeatureCollection<IFeature>();
+    java.sql.Connection conn;
+
+    try {
+      // Création des paramètres de connexion
+      String url = "jdbc:postgresql://" + host + ":" + port + "/" + database;
+      PostgisManager.logger.info(Messages.getString("PostGIS.Try") + url);
+      conn = DriverManager.getConnection(url, user, pw);
+
+      // On prépare les requêtes SQL
+      Statement s = conn.createStatement();
+      Statement s1 = conn.createStatement();
+
+      // On cherche si la table comporte une colonne géométrique
+      ResultSet r = s.executeQuery("select " + PostgisManager.NAME_COLUMN
+          + ",type from " + PostgisManager.NAME_TABLE_SPATIALREF + " WHERE "
+          + PostgisManager.NAME_TABLE + "='" + table + "'");
+
+      String nomColonneGeom = "";
+      while (r.next()) {
+        nomColonneGeom = r.getString(1);
+      }
+
+      // Cas : présence d'une colonne géométrique dans la table
+      if (nomColonneGeom != "") {
+        s.close();
+        s1.close();
+        conn.close();
+
+        PostgisManager.logger.info(Messages.getString("La colonne '"
+            + nomColonneGeom
+            + "' contient de la géométrie. La valeur 'null' est renvoyée."));
+
+        return null;
+      }
+
+      // On récupère la liste des attributs et leurs types
+      ResultSet r1 = s
+          .executeQuery("SELECT column_name, data_type FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '"
+              + table + "'");
+
+      // On construit le FeatureType, le Schema et la Map
+      FeatureType fType = new FeatureType();
+      SchemaDefaultFeature schema = new SchemaDefaultFeature();
+      Map<Integer, String[]> attLookup = new HashMap<Integer, String[]>();
+
+      // On initialise différents indices
+      int compt = 0;
+
+      // On récupère l'ensemble des données de la table
+      String sql = "SELECT * FROM " + table;
+      PostgisManager.logger.debug("Récupération données : " + sql);
+
+      ResultSet r2 = s1.executeQuery(sql);
+
+      // On ne récupère pas la première colonne
+      // On commenece donc à 1
+      int shiftIni = 1;
+
+      while (r1.next()) {
+
+        String nomField = r1.getString(1);
+        AttributeType type = new AttributeType();
+        String memberName = nomField;
+
+        // On récupère le type et on le convertit le type SQL en type Java
+        String valueType = PostgisManager.fromSQLTypeToJava(r2.getMetaData()
+            .getColumnType(compt + shiftIni));
+
+        // On complète FeatureType
+        type.setNomField(nomField);
+        type.setMemberName(memberName);
+        type.setValueType(valueType);
+
+        fType.addFeatureAttribute(type);
+
+        attLookup
+            .put(new Integer(compt), new String[] { nomField, memberName });
+
+        compt++;
+
+      }
+
+      // On renseigne les informations pour chaque ligne de la table
+      int nbAttribut = fType.getFeatureAttributes().size();
+      System.out.println("nb att : " + nbAttribut);
+      schema.setFeatureType(fType);
+      fType.setSchema(schema);
+      schema.setAttLookup(attLookup);
+
+      String requestSelect = "SELECT * FROM " + table;
+
+      if (whereClause != "") {
+
+        requestSelect = requestSelect + " where " + whereClause;
+
+      }
+
+      System.out.println(requestSelect + "\n");
+      r2 = s.executeQuery(requestSelect);
+
+      while (r2.next()) {
+
+        // On crée l'entité et on lui associé ses métadonnées
+        DefaultFeature deF = new DefaultFeature();
+        deF.setSchema(schema);
+        deF.setFeatureType(fType);
+        deF.setAttributes(new Object[nbAttribut]);
+
+        int shift = 1;
+
+        // Pour chaque attribut (l'index des row commence à 1)
+        for (int i = 1; i <= nbAttribut + shiftIni; i++) {
+          
+          System.out.println("valeur de i : " + i);
+          
+          if (i <= nbAttribut){
+            // On renseigne l'attribut
+            deF.setAttribute(i - shift, r2.getString(i));
+            
+            System.out.println(r2.getString(i));
+            System.out.println("val i : " + i);
+            System.out.println("val shift : " + shift);
+            System.out.println("val i-shift : " + (i - shift) + "\n");
+            shift++;
+          }
+
+        }
+
+        // On ajoute à la collection
+        fColl.add(deF);
+
+      }
+
+      // On ferme les connexions
+      PostgisManager.logger.info(Messages.getString("PostGIS.End"));
+      s1.close();
+      s.close();
+      conn.close();
+
+    } catch (Exception e) {
+
+      throw e;
+
+    }
+    System.out.println("Taille fColl : " + fColl.size());
+    System.out.println("Contenu fColl : " + fColl.get(0));
+    
+    return fColl;
+
+  }
+
+  /**
    * Charge une table géométrique dans une collection à partir d'un connexion
    * PostGIS
    * 
@@ -322,6 +499,27 @@ public class PostgisManager {
 
     return loadGeometricTableWhereClause(host, port, database, user, pw, table,
         "");
+
+  }
+
+  /**
+   * Charge une table non géométrique dans une collection à partir d'un
+   * connexion PostGIS
+   * 
+   * @param host hote (localhost accepté)
+   * @param port port d'écoute
+   * @param database nom de la pase de données
+   * @param user utilisateur
+   * @param pw mot de passe
+   * @param table le nom de la table que l'on souhaite charger
+   * @return les entités de la table avec les attributs renseignés.
+   */
+  public static IFeatureCollection<IFeature> loadNonGeometricTable(String host,
+      String port, String database, String user, String pw, String table)
+      throws Exception {
+
+    return loadNonGeometricTableWhereClause(host, port, database, user, pw,
+        table, "");
 
   }
 
@@ -345,7 +543,6 @@ public class PostgisManager {
       IFeatureCollection<? extends IFeature> featColl,
       boolean adapteListToAttribute) throws Exception {
 
-
     // Liste des entités que l'on souhaite charger
     java.sql.Connection conn;
 
@@ -367,10 +564,10 @@ public class PostgisManager {
       for (int i = 0; i < nbElem; i++) {
 
         IFeature featTemp = featColl.get(i);
-        if(adapteListToAttribute){
+        if (adapteListToAttribute) {
           lAtt = getAttributeList(featTemp);
         }
-        
+
         // On ajoute la géométrie
         String geom = WktGeOxygene.makeWkt(featTemp.getGeom());
 
@@ -444,7 +641,8 @@ public class PostgisManager {
   public static boolean insertInGeometricTable(String host, String port,
       String database, String user, String pw, String table,
       IFeatureCollection<? extends IFeature> featColl) throws Exception {
-    return insertInGeometricTable(host,port,database,user,pw,table,featColl, false);
+    return insertInGeometricTable(host, port, database, user, pw, table,
+        featColl, false);
   }
 
   private static List<GF_AttributeType> getAttributeList(IFeature feat) {
@@ -488,27 +686,27 @@ public class PostgisManager {
       Statement s = conn.createStatement();
 
       IFeature feat = featColl.get(0);
-      
+
       GF_FeatureType fType = feat.getFeatureType();
 
       int nbAttribut = 0;
-      
+
       List<GF_AttributeType> lAtt = null;
-      
+
       if (fType != null && fType.getFeatureAttributes() != null) {
-        
+
         lAtt = fType.getFeatureAttributes();
         nbAttribut = lAtt.size();
         System.out.println("Attributs pris en charge : " + lAtt);
         System.out.println("Nombre d'attributs : " + nbAttribut);
-      
+
       }
 
       // On ajoute les éléments
       int nbElem = featColl.size();
-      
+
       for (int i = 0; i < nbElem; i++) {
-        
+
         IFeature featTemp = featColl.get(i);
 
         String columns = " (";
@@ -518,126 +716,127 @@ public class PostgisManager {
           for (int k = 0; k < lAtt.size(); k++) {
 
             for (GF_AttributeType nomAtt : lAtt) {
-              
+
               if (k == (lAtt.size() - 1)) {
-                
+
                 columns = columns + nomAtt.getMemberName();
-              
+
               } else {
-                
+
                 columns = columns + nomAtt.getMemberName() + " , ";
-              
+
               }
-              
+
               k++;
             }
 
           }
 
         }
-        
+
         columns = columns + ")";
 
         String sql_insert = "insert into " + table + columns + " VALUES(";
 
         if (lAtt != null) {
-          
+
           for (int j = 0; j < nbAttribut; j++) {
-            
+
             GF_AttributeType att = lAtt.get(j);
-            
+
             // Si format string ou inconnu
             if (att.getValueType().equals(PostgisManager.GE_STRING)
                 || att.getValueType().equals(PostgisManager.GE_OTHER)) {
-              
+
               // Cas : il n'y a qu'une colonne à compléter
-              if (nbAttribut == 1){
-                
+              if (nbAttribut == 1) {
+
                 sql_insert = sql_insert + "'"
                     + featTemp.getAttribute(att.getMemberName()) + "'";
                 System.out.println("Un seul attribut à ajouter");
-              
-              // Cas : il y a plusieurs colonnes à compléter
-              }else{
-                
+
+                // Cas : il y a plusieurs colonnes à compléter
+              } else {
+
                 // Cas : dernier attribut
                 if (j == (nbAttribut - 1)) {
-                  
+
                   sql_insert = sql_insert + ", '"
                       + featTemp.getAttribute(att.getMemberName()) + "'";
-                
-                // Cas : Attributs autres que le dernier
-                }else{
-                  
+
+                  // Cas : Attributs autres que le dernier
+                } else {
+
                   // Cas : premier attribut
-                  if (j ==0){
-                    
+                  if (j == 0) {
+
                     sql_insert = sql_insert + "'"
                         + featTemp.getAttribute(att.getMemberName()) + "'";
-                  
-                  // Cas : Attributs autres que premier et dernier
-                  }else{
-                  
+
+                    // Cas : Attributs autres que premier et dernier
+                  } else {
+
                     sql_insert = sql_insert + ", '"
                         + featTemp.getAttribute(att.getMemberName()) + "'";
-                
+
                   }
-              
+
                 }
-            
+
               }
-            
-            // Si format autre que string mais connu
+
+              // Si format autre que string mais connu
             } else {
-              
+
               // Cas : il n'y a qu'une colonne à compléter
-              if (nbAttribut == 1){
-                
+              if (nbAttribut == 1) {
+
                 sql_insert = sql_insert
                     + featTemp.getAttribute(att.getMemberName());
                 System.out.println("Un seul attribut à ajouter");
-              
-              // Cas : il y a plusieurs colonnes à compléter
-              } else{
-                
+
+                // Cas : il y a plusieurs colonnes à compléter
+              } else {
+
                 // Cas : dernier attribut
                 if (j == (nbAttribut - 1)) {
-                  
-                  sql_insert = sql_insert
-                      + ", " + featTemp.getAttribute(att.getMemberName());
 
-                // Cas : Attributs autres que le dernier
+                  sql_insert = sql_insert + ", "
+                      + featTemp.getAttribute(att.getMemberName());
+
+                  // Cas : Attributs autres que le dernier
                 } else {
-                  
+
                   // Cas : premier attribut
                   if (j == 0) {
-                    
-                    sql_insert = sql_insert + featTemp.getAttribute(att.getMemberName());
-                  
-                  // Cas : Attributs autres que le premier ou le dernier
-                  }else{
-                    
+
+                    sql_insert = sql_insert
+                        + featTemp.getAttribute(att.getMemberName());
+
+                    // Cas : Attributs autres que le premier ou le dernier
+                  } else {
+
                     sql_insert = sql_insert + ","
                         + featTemp.getAttribute(att.getMemberName());
-                  
+
                   }
-                  
+
                 }
-              
+
               }
-            
+
             }
-          
+
           }
-        
+
         }
-        
+
         // On termine la requête
         sql_insert = sql_insert + ")";
         System.out.println(sql_insert);
-        
+
         s.execute(sql_insert);
-        
+
         PostgisManager.logger.debug(Messages.getString("Sauvegarde.AddColum")
             + " : " + sql_insert);
       }
@@ -645,17 +844,17 @@ public class PostgisManager {
       // On ferme les connexions
       s.close();
       conn.close();
-      
+
       PostgisManager.logger.info(Messages.getString("PostGIS.End"));
 
     } catch (Exception e) {
-      
+
       throw e;
-    
+
     }
 
     return true;
-  
+
   }
 
   /**
