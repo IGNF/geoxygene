@@ -13,11 +13,15 @@ import javax.swing.JMenu;
 
 import org.apache.log4j.Logger;
 
+import cern.colt.Arrays;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
@@ -29,11 +33,14 @@ import fr.ign.cogit.geoxygene.appli.plugin.AbstractGeOxygeneApplicationPlugin;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.feature.SchemaDefaultFeature;
+import fr.ign.cogit.geoxygene.filter.expression.Expression;
 import fr.ign.cogit.geoxygene.filter.expression.Literal;
+import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.style.ExternalGraphic;
 import fr.ign.cogit.geoxygene.style.Fill;
 import fr.ign.cogit.geoxygene.style.Graphic;
@@ -46,6 +53,11 @@ import fr.ign.cogit.geoxygene.style.PointSymbolizer;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.style.TextSymbolizer;
+import fr.ign.cogit.geoxygene.style.thematic.DiagramRadius;
+import fr.ign.cogit.geoxygene.style.thematic.DiagramSizeElement;
+import fr.ign.cogit.geoxygene.style.thematic.DiagramSymbolizer;
+import fr.ign.cogit.geoxygene.style.thematic.ThematicClass;
+import fr.ign.cogit.geoxygene.style.thematic.ThematicSymbolizer;
 import fr.ign.cogit.geoxygene.util.algo.JtsUtil;
 import fr.ign.cogit.geoxygene.util.algo.MesureOrientation;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
@@ -178,6 +190,9 @@ public class OrientationBatiExample extends AbstractGeOxygeneApplicationPlugin {
       int nbOrientation = mesure.getNombreOrientation();
       double orientationMur2 = mesure.getContributionSecondaire();
       
+      double[] tab = mesure.getContributionsCotesOrientation();
+      // System.out.println(Arrays.toString(tab));
+      
       Object[] attributes = new Object[] { orientationGenerale, orientationMur, nbOrientation, orientationMur2};
       n.setAttributes(attributes);
 
@@ -207,9 +222,9 @@ public class OrientationBatiExample extends AbstractGeOxygeneApplicationPlugin {
       symbolizerP1.getGraphic().setMarks(marks1);
       symbolizerP1.getGraphic().setSize(20);
       symbolizerP1.getGraphic().getMarks().get(0).getStroke().setStrokeWidth(1);
-      symbolizerP1.getGraphic().getMarks().get(0).getStroke().setStrokeOpacity(0.8f);
+      symbolizerP1.getGraphic().getMarks().get(0).getStroke().setStrokeOpacity(0.0f);
       symbolizerP1.getGraphic().getMarks().get(0).getStroke().setColor(new Color(218, 81, 137));
-      symbolizerP1.getGraphic().getMarks().get(0).getFill().setFillOpacity(0.8f);
+      symbolizerP1.getGraphic().getMarks().get(0).getFill().setFillOpacity(0.0f);
       symbolizerP1.getGraphic().getMarks().get(0).getFill().setColor(new Color(236, 228, 236));
       symbolizerP1.getGraphic().getMarks().get(0).setWellKnownName("circle");
       
@@ -223,7 +238,6 @@ public class OrientationBatiExample extends AbstractGeOxygeneApplicationPlugin {
       
       layerBati.getStyles().get(0).getFeatureTypeStyles().get(0).getRules().get(0).getSymbolizers().add(symbolizerP1);
       
-      // 
       TextSymbolizer txtSymbolizer = new TextSymbolizer();
       txtSymbolizer.setUnitOfMeasurePixel();
       fr.ign.cogit.geoxygene.style.Font sldFont = new fr.ign.cogit.geoxygene.style.Font(
@@ -242,75 +256,11 @@ public class OrientationBatiExample extends AbstractGeOxygeneApplicationPlugin {
       placement.setPlacement(ptPlacement);
       ptPlacement.setRotation(0.0f);
       txtSymbolizer.setLabelPlacement(placement);
-      
       layerBati.getStyles().get(0).getFeatureTypeStyles().get(0).getRules().get(0).getSymbolizers().add(txtSymbolizer);
       
-      // -----------------------------------------------------------------
-      /*PointSymbolizer symbolizerP2 = new PointSymbolizer();
-      symbolizerP2.setUnitOfMeasurePixel();
-      Graphic graphic2 = new Graphic();
-      Mark mark2 = new Mark();
-      mark2.setStroke(new Stroke());
-      mark2.setFill(new Fill());
-      List<Mark> marks2 = new ArrayList<Mark>();
-      marks2.add(mark2);
-      graphic2.setMarks(marks2);
-      symbolizerP2.setGraphic(graphic2);
-      symbolizerP2.getGraphic().setMarks(marks2);
-      symbolizerP2.getGraphic().setSize(20);
-      symbolizerP2.getGraphic().getMarks().get(0).getStroke().setStrokeWidth(1);
-      symbolizerP2.getGraphic().getMarks().get(0).getStroke().setStrokeOpacity(0.0f);
-      symbolizerP2.getGraphic().getMarks().get(0).getStroke().setColor(new Color(218, 81, 137));
-      symbolizerP2.getGraphic().getMarks().get(0).getFill().setFillOpacity(0f);
-      symbolizerP2.getGraphic().getMarks().get(0).getFill().setColor(new Color(236, 228, 236));
-      symbolizerP2.getGraphic().getMarks().get(0).setWellKnownName("circle");
-      
-      double angle2 = 180 * orientationMur / Math.PI;
-      symbolizerP2.getGraphic().setRotation(new Literal(Double.toString(angle2)));
-      
-      ExternalGraphic externalGraphicCircle2 = new ExternalGraphic();
-      externalGraphicCircle2.setHref(urlCircle.toString());
-      externalGraphicCircle2.setFormat("png"); //$NON-NLS-1$
-      symbolizerP2.getGraphic().getExternalGraphics().add(externalGraphicCircle2);
-      
-      layerBati.getStyles().get(0).getFeatureTypeStyles().get(0).getRules().get(0).getSymbolizers().add(symbolizerP2);*/
-      
       // ==============================================================================================================
-      //    Layer 3 : axes
-      Population<DefaultFeature> popAxes = new Population<DefaultFeature>(false, "Axes", DefaultFeature.class, true);
-      popAxes.setFeatureType(this.featureTypeAxe);
-      
-      
-      
-      double a1 = Math.tan(orientationMur);
-      double b1 = -1 * bati01.centroid().getX() * a1 + bati01.centroid().getY();
-      double x1 = bati01.centroid().getX() + 2 ;
-      double y1 = a1 * x1 + b1;
-      ILineString axe1 = new GM_LineString (new DirectPosition(bati01.centroid().getX(), bati01.centroid().getY()), 
-          new DirectPosition(x1, y1));
-      DefaultFeature featAxe1 = popAxes.nouvelElement(axe1);
-      featAxe1.setSchema(this.schemaAxe);
-      
-      if (nbOrientation > 1) {
-        double a2 = Math.tan(orientationMur2 + Math.PI / 2);
-        double b2 = -1 * bati01.centroid().getX() * a2 + bati01.centroid().getY();
-        double x2 = bati01.centroid().getX() + 2;
-        double y2 = a2 * x2 + b2;
-        ILineString axe2 = new GM_LineString (new DirectPosition(bati01.centroid().getX(), bati01.centroid().getY()), 
-            new DirectPosition(x2, y2));
-        DefaultFeature featAxe2 = popAxes.nouvelElement(axe2);
-        featAxe2.setSchema(this.schemaAxe);
-      }
-      
-      Layer layerAxe = projectFrame.addUserLayer(popAxes, "Axes", null);
-      LineSymbolizer lineSymbol = (LineSymbolizer) layerAxe.getSymbolizer();
-      lineSymbol.getStroke().setColor(new Color(0, 0, 0));
-      lineSymbol.setUnitOfMeasurePixel();
-      lineSymbol.getStroke().setStrokeWidth(1.0f);
-      
-      // ==============================================================================================================
-      //    Layer 4 : Feuille
-      /*Population<DefaultFeature> popFeuille = new Population<DefaultFeature>(false, "Feuille", DefaultFeature.class, true);
+      //    Layer 3 : centre feuille
+      Population<DefaultFeature> popFeuille = new Population<DefaultFeature>(false, "Feuille", DefaultFeature.class, true);
       popFeuille.setFeatureType(this.featureFeuille);
       
       Coordinate[] coords = ppre.getCoordinates();
@@ -327,13 +277,124 @@ public class OrientationBatiExample extends AbstractGeOxygeneApplicationPlugin {
       if (lg2 < lg1) {
         l = lg2;
       }
-      DirectPosition pos = new DirectPosition(ppreGeox.centroid().getX() - l, ppreGeox.centroid().getY());
+      DirectPosition pos = new DirectPosition(ppreGeox.centroid().getX(), ppreGeox.centroid().getY() + l*2/3);
       
       DefaultFeature featCentre = popFeuille.nouvelElement(new GM_Point(pos));
       featCentre.setSchema(this.schemaFeuille);
+      Object[] atts = new  Object[90];
+      for (int i = 0; i < 90; i++) {
+        atts[i] = tab[i];
+      }
+      // attributes = new Object[] { nbOrientation};
+      featCentre.setAttributes(atts);
       
-      Layer layerFeuille = projectFrame.addUserLayer(popFeuille, "Feuilles", null);*/
-     
+      Layer layerFeuille = projectFrame.addUserLayer(popFeuille, "Feuilles", null);
+      PointSymbolizer symbolizerP2 = (PointSymbolizer) layerFeuille.getSymbolizer();
+      symbolizerP2.setUnitOfMeasurePixel();
+      Graphic graphic2 = new Graphic();
+      Mark mark2 = new Mark();
+      mark2.setStroke(new Stroke());
+      mark2.setFill(new Fill());
+      List<Mark> marks2 = new ArrayList<Mark>();
+      marks2.add(mark2);
+      graphic2.setMarks(marks2);
+      symbolizerP2.setGraphic(graphic2);
+      symbolizerP2.getGraphic().setMarks(marks2);
+      symbolizerP2.getGraphic().setSize(2);
+      symbolizerP2.getGraphic().getMarks().get(0).getStroke().setStrokeWidth(1);
+      symbolizerP2.getGraphic().getMarks().get(0).getStroke().setStrokeOpacity(0.8f);
+      symbolizerP2.getGraphic().getMarks().get(0).getStroke().setColor(new Color(218, 81, 137));
+      symbolizerP2.getGraphic().getMarks().get(0).getFill().setFillOpacity(0.0f);
+      symbolizerP2.getGraphic().getMarks().get(0).getFill().setColor(new Color(236, 228, 236));
+      symbolizerP2.getGraphic().getMarks().get(0).setWellKnownName("square");
+      // layerFeuille.getStyles().get(0).getFeatureTypeStyles().get(0).getRules().get(0).getSymbolizers().add(symbolizerP2);
+      
+      
+      // ==============================================================================================================
+      //    Layer 4 : axes
+      /*Population<DefaultFeature> popAxes = new Population<DefaultFeature>(false, "Axes", DefaultFeature.class, true);
+      popAxes.setFeatureType(this.featureTypeAxe);
+      
+      
+      
+      double a1 = Math.tan(orientationMur);
+      double b1 = pos.getY() - a1 * pos.getX();
+      double x1 = pos.getX() + 2;
+      if (orientationMur <= Math.PI / 2) {
+        x1 = pos.getX() + 10;
+      }
+      double y1 = a1 * x1 + b1;
+      ILineString axe1 = new GM_LineString (pos, new DirectPosition(x1, y1));
+      DefaultFeature featAxe1 = popAxes.nouvelElement(axe1);
+      featAxe1.setSchema(this.schemaAxe);
+      
+      if (nbOrientation > 1) {
+        double a2 = Math.tan(orientationMur2); // + Math.PI / 2
+        double b2 = pos.getY() - a2 * pos.getX();
+        double x2 = pos.getX() + 2;
+        if (orientationMur2 <= Math.PI / 2) {
+          x2 = pos.getX() + 10;
+        }
+        double y2 = a2 * x2 + b2;
+        ILineString axe2 = new GM_LineString (pos, new DirectPosition(x2, y2));
+        DefaultFeature featAxe2 = popAxes.nouvelElement(axe2);
+        featAxe2.setSchema(this.schemaAxe);
+      }
+      
+      Layer layerAxe = projectFrame.addUserLayer(popAxes, "Axes", null);
+      LineSymbolizer lineSymbol = (LineSymbolizer) layerAxe.getSymbolizer();
+      lineSymbol.getStroke().setColor(new Color(0, 0, 0));
+      lineSymbol.setUnitOfMeasurePixel();
+      lineSymbol.getStroke().setStrokeWidth(1.0f);*/
+      
+      
+      // ==============================================================================================================
+      //    Layer 5 : diagram rose
+      
+      //Layer roseLayerCommune = projectFrame.addUserLayer(commune75Pop, "RoseChart", null);
+      
+      Map<IFeature, IDirectPosition> points = new HashMap<IFeature, IDirectPosition>();
+      Map<IFeature, Double> radius = new HashMap<IFeature, Double>();
+      points.put(featCentre, pos);
+      radius.put(featCentre, 30.0);
+      
+      ThematicSymbolizer rosets = new ThematicSymbolizer();
+      rosets.setUnitOfMeasureMetre();
+      rosets.setRadius(radius);
+      rosets.setPoints(points);
+      List<DiagramSymbolizer> rosetsymbolizers = new ArrayList<DiagramSymbolizer>();
+      
+      DiagramSymbolizer symbolRose = new DiagramSymbolizer();
+      symbolRose.setDiagramType("rosechart90");
+      
+      DiagramRadius dr = new DiagramRadius();
+      dr.setValue(0.8);
+      
+      List<ThematicClass> themList = new ArrayList<ThematicClass>();
+      
+      for (int i = 0; i < 90; i++) {
+        ThematicClass bi = new ThematicClass();
+        bi.setClassLabel("angle " + i);
+        Fill fillBlue = new Fill();
+        fillBlue.setColor(Color.ORANGE);
+        bi.setFill(fillBlue);
+        Expression classValueBI = new PropertyName("angle " + i); 
+        bi.setClassValue(classValueBI);
+        themList.add(bi);
+      }
+      
+      
+      
+      List<DiagramSizeElement> rosels = new ArrayList<DiagramSizeElement>();
+      rosels.add(dr);
+      symbolRose.setDiagramSize(rosels);
+      symbolRose.setThematicClass(themList);
+      rosetsymbolizers.add(symbolRose);
+      
+      rosets.setSymbolizers(rosetsymbolizers);
+      layerFeuille.getStyles().get(0).getFeatureTypeStyles().get(0).getRules().get(0).getSymbolizers().add(rosets);
+      
+      
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -392,10 +453,19 @@ public class OrientationBatiExample extends AbstractGeOxygeneApplicationPlugin {
     this.featureFeuille.setTypeName("Feuille");
     this.featureFeuille.setGeometryType(IPoint.class);
     
+    // 
+    Map<Integer, String[]> attLookupFeuille = new HashMap<Integer, String[]>(0);
+    for (int i = 0; i < 90; i++) {
+      AttributeType anglei = new AttributeType("angle " + i, "double");
+      this.featureFeuille.addFeatureAttribute(anglei);
+      attLookupFeuille.put(new Integer(i), new String[] { anglei.getNomField(), anglei.getMemberName() });
+    }
+    
     this.schemaFeuille = new SchemaDefaultFeature();
     this.schemaFeuille.setFeatureType(this.featureFeuille);
     this.featureFeuille.setSchema(this.schemaFeuille);
-    Map<Integer, String[]> attLookupFeuille = new HashMap<Integer, String[]>(0);
+    
+    
     this.schemaFeuille.setAttLookup(attLookupFeuille);
   }
 

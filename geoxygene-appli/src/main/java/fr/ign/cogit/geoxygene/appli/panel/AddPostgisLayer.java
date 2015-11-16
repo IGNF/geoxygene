@@ -333,7 +333,7 @@ public class AddPostgisLayer extends JDialog implements ActionListener {
                     LOGGER.log(Level.DEBUG, "Geometry column : " + geomColumnValue);
                     
                     IPopulation<IFeature> pop = PostgisReader.read(params, tableValue, tableValue, null, false, geomColumnValue);
-                    layerLegendPanel.getLayerViewPanel().getProjectFrame().addUserLayer(pop, tableValue, null);
+                    layerLegendPanel.getLayerViewPanel().getProjectFrame().addUserLayer(pop, tableValue + " " + i, null);
                 }
                 
                 for (int i = 0; i < selectionQuery.length; i++) {
@@ -351,7 +351,7 @@ public class AddPostgisLayer extends JDialog implements ActionListener {
                   IPopulation<IFeature> pop = PostgisReader.read(params, tableValue, tableValue, null, false, geomColumnValue, filter);
                   LOGGER.log(Level.DEBUG, "Nb features = " + pop.size());
                   
-                  layerLegendPanel.getLayerViewPanel().getProjectFrame().addUserLayer(pop, tableValue, null);
+                  layerLegendPanel.getLayerViewPanel().getProjectFrame().addUserLayer(pop, tableValue + " " + i, null);
               }
                 
             } catch (Exception e) {

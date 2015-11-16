@@ -1752,9 +1752,9 @@ public final class RenderUtil {
 
                     startX += 3 * width;
                 }
-            } else if (s.getDiagramType().equalsIgnoreCase("rosechart")) {
+            } else if (s.getDiagramType().equalsIgnoreCase("rosechart90") || s.getDiagramType().equalsIgnoreCase("rosechart180")) {
                 int nbPas = s.getThematicClass().size();
-                double part = 0.90;
+                double part = 1.0; //0.90;
                 size *= part;
                 double x0 = point.getX() - size;
                 double y0 = point.getY() - size;
@@ -1770,7 +1770,12 @@ public final class RenderUtil {
                     if (value > max) max = value;
                 }
                 graphics.setColor(Color.ORANGE);
-                int pas = 180 / nbPas;
+                int pas = 10;
+                if (s.getDiagramType().equalsIgnoreCase("rosechart90")) {
+                  pas = 90 / nbPas;
+                } else if (s.getDiagramType().equalsIgnoreCase("rosechart180")) {
+                  pas = 180 / nbPas;
+                }
                 double angleDegre = 0;
                 for (ThematicClass thematicClass : s.getThematicClass()) {
                     double value = ((Number) thematicClass.getClassValue().evaluate(feature)).doubleValue();
