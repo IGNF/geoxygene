@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<GeOxygeneApplicationProperties>
+    <plugin>fr.ign.cogit.mapping.clients.geoxygene.TilingPlugin</plugin>
+   <lastOpenedFile>C:\Users\dtsatcha\Desktop\IGN\java\geox-geoxygene\tiling-geoxygene-mapping</lastOpenedFile>
+    <sld></sld>
+    <ConnectionParam>
+        <dbtype>postgis</dbtype>
+        <host>localhost</host>
+        <port>5432</port>
+        <database>test</database>
+        <schema>public</schema>
+        <user>postgres</user>
+        <passwd>bageaco81</passwd>
+    </ConnectionParam>
+    <DefaultVisualizationType>AWT</DefaultVisualizationType>
+    <ProjectFrameLayout>floating</ProjectFrameLayout>
+    <DefaultLookAndFeel></DefaultLookAndFeel>
+    <GeometryEngine>JTS</GeometryEngine>
+</GeOxygeneApplicationProperties>
