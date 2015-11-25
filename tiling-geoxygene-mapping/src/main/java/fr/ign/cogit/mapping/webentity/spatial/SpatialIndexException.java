@@ -2,17 +2,10 @@ package fr.ign.cogit.mapping.webentity.spatial;
 
 import fr.ign.cogit.mapping.generalindex.IndexException;
 
-// Parliament is licensed under the BSD License from the Open Source
-// Initiative, http://www.opensource.org/licenses/bsd-license.php
-//
-// Copyright (c) 2001-2009, BBN Technologies, Inc.
-// All rights reserved.
-
-
 /**
  * An exception that can be thrown in the {@link SpatialIndex}.
  *
- * @author rbattle
+ * @author Dr Tsatcha
  *
  */
 public class SpatialIndexException extends IndexException {
