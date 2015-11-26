@@ -1,0 +1,26 @@
+\begin{thebibliography}{Kev11}
+
+\bibitem[Ber01]{bertolotto2001}
+M.~Bertolotto.
+\newblock Progressive transmission of vector map data over the world wide web.
+\newblock {\em GeoInformatica}, pages 34--373, 2001.
+
+\bibitem[Gaf12]{gaffuri2012}
+J.~Gaffuri.
+\newblock Toward web mapping with vector data.
+\newblock In {\em Geographic Information Science}, volume 7478, pages 87--100,
+  2012.
+
+\bibitem[Kev11]{kevin2011}
+S.~Kevin.
+\newblock Discrete global grid systems. archives of photogrammetry, cartography
+  and remote sensing.
+\newblock pages 363--376, 2011.
+
+\bibitem[Liu09]{lui2009}
+H.~Liu.
+\newblock Progressive vector data transmission based on overall effects.
+\newblock In {\em Fourth International Conference on Networked Computing and
+  Advanced Information Management}, pages 604--608, 2009.
+
+\end{thebibliography}
