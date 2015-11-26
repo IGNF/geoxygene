@@ -22,6 +22,7 @@ import fr.ign.cogit.mapping.webentity.spatial.Constants;
  * et on construit ainsi les huits cadres necessaires...
  * en dehors du cadre centre les autres sont deposées
  * dans un cache...
+ * @author Dr Tsatcha
  * 
  * 
  *  ______________

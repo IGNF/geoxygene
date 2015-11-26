@@ -3,6 +3,10 @@ package fr.ign.cogit.mapping.datastructure.management;
 import java.util.concurrent.ConcurrentHashMap;
 import fr.ign.cogit.mapping.generalindex.Index;
 
+/*
+ * @author Dr Tsatcha D.
+ */
+
 public interface Manager{
 
     // permet de charger le contenu associé à un manager

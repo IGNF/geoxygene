@@ -36,6 +36,9 @@ import fr.ign.cogit.mapping.webentity.spatial.GeometryRecord;
 import fr.ign.cogit.mapping.webentity.spatial.Operation;
 import fr.ign.cogit.mapping.webentity.spatial.SpatialIndex;
 import fr.ign.cogit.mapping.webentity.spatial.SpatialIndexException;
+/*
+ * @author Dr Tsatcha D.
+ */
 
 public class HexaTreeIndex extends SpatialIndex {
 

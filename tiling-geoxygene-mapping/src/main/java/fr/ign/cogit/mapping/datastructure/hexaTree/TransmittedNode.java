@@ -7,6 +7,7 @@ public class TransmittedNode {
      * @param hexaIndiceI
      * @param hexaIndiceJ
      * @param geoOrder
+     * @author Dr Tsatcha D.
      */
     public TransmittedNode(int hexaIndiceI, int hexaIndiceJ,
             int geoOrder) {

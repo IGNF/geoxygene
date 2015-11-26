@@ -1,5 +1,9 @@
 package testmapping;
 
+/*
+ * @author Dr Tsatcha D.
+ */
+
 import static org.junit.Assert.fail;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,9 +20,6 @@ import fr.ign.cogit.mapping.webentity.spatial.GeometryConverter;
 import fr.ign.cogit.mapping.webentity.spatial.SpatialIndex;
 import fr.ign.cogit.mapping.webentity.spatial.SpatialIndexException;
 
-/*
- * @author Dtsatcha
- */
 public class RtreeMutiLevelIndexTest {
     
     

@@ -5,6 +5,10 @@ import org.junit.Test;
 import fr.ign.cogit.mapping.datastructure.management.ScaleInfo;
 import fr.ign.cogit.mapping.util.ScaleInfoUtil;
 
+/*
+ * @author Dr Tsatcha D.
+ */
+
 public class ScaleTest {
 
     @Test

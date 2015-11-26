@@ -11,13 +11,12 @@ import fr.ign.cogit.cartagen.graph.Node;
 /**
  * A factory for creating {@link Index}es. The <code>IndexFactory</code> is used
  * when Parliament wants to create an index for a given graph.
- *
- * @author rbattle
- *
+ * *
  * @param <I>
  *           The type of <code>Index</code>
  * @param <T>
  *           The type of object that is indexed
+ * @author Dr Tsatcha D.
  */
 public abstract class IndexFactory<I extends Index<T>, T> {
 

@@ -26,7 +26,7 @@ import fr.ign.cogit.mapping.webentity.spatial.Constants;
  * Un cadre est une zone suivant laquelle
  * le support visuelle peut voir les données sur 
  * la carte dont les echelles sont proposées....
- * Dr Tsatcha D.
+ * @author Dr Tsatcha D.
  */
 public class Cadre {
 

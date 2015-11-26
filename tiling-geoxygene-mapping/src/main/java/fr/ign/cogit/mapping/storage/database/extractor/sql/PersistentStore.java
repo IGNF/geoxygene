@@ -16,10 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /*
- * @author Dr Dieudonne Tsatcha 
- *
  * Cette classe est utilisée pour gerer les differentes phases
  * de connexion pour des bases de données sql.
+ * @author Dr Tsatcha D.
  */
 
 

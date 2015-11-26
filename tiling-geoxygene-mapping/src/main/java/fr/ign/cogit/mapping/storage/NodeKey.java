@@ -6,7 +6,7 @@ import java.io.Serializable;
 /**
  * Representation de la clé d'une map stocké.
  *
- * @author Dtsatcha
+ * @author Dr Tsatcha D.
  *
  */
 public class NodeKey implements Serializable {

@@ -26,7 +26,7 @@ import fr.ign.cogit.mapping.webentity.spatial.data.FloatingCircle;
  * Cette classe permet de convertir des string en des objets
  * geometriques : actuellement tous les objets simples et 
  * plus tard des objets multi...to do (s s'expirer de  coordinateToString 
- * @author  Dr DTsatcha
+ * @author  Dr  Tsatcha D.
  *
  */
 

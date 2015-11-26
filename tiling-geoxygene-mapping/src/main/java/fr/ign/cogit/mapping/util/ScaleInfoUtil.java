@@ -2,7 +2,9 @@ package fr.ign.cogit.mapping.util;
 
 import fr.ign.cogit.mapping.datastructure.management.ManageRtreeMultiLevel;
 import fr.ign.cogit.mapping.datastructure.management.ScaleInfo;
-
+/*
+ * @author Dr Tsatcha D.
+ */
 public class ScaleInfoUtil {
 
     // Cette methode permet de generer l'echelle ..;

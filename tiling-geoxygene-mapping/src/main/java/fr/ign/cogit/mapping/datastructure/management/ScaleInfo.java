@@ -12,6 +12,7 @@ import fr.ign.cogit.mapping.clients.Converter;
  * @see RtreeMultiLevelIndex
  * @see ManageRtreeMultiLevel
  * Une echelle est definie par l'intervalle [@minScaleValue, @maxScaleValue[
+ * @author Dr Tsatcha D.
  */
 public class ScaleInfo {
     /*

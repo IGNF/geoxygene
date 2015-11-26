@@ -6,7 +6,7 @@ import java.io.Serializable;
 /**
  * Representation des données géometriques à stocker.
  *
- * @author Dtsatcha
+ * @author Dr Tsatcha D.
  *
  */
 public class NodeData implements Serializable {

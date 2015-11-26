@@ -1,7 +1,9 @@
 package fr.ign.cogit.mapping.generalindex;
 
 
-
+/*
+ * @author Dr Tsatha D.
+ */
 
 public class Constants {
    public static final String NAMESPACE = "http://parliament.semwebcentral.org/";

@@ -4,6 +4,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import fr.ign.cogit.mapping.datastructure.RTreeIndex;
 import fr.ign.cogit.mapping.datastructure.hexaTree.HexaTreeIndex;
+/*
+ * @author Dr Tsatcha D.
+ */
 
 public class HexaTreeMultiLevel {
 

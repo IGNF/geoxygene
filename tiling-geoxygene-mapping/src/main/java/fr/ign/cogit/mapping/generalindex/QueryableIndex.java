@@ -25,7 +25,7 @@ import fr.ign.cogit.cartagen.graph.Node;
  * cache and check to see if the bound items intersect it.
  *
  * @author rbattle
- *
+ * @author Dr Tsatcha D.
  * @param <T> the type of object to index
  *
  * @see IndexPatternQuerier

@@ -38,7 +38,7 @@ import fr.ign.cogit.mapping.storage.NodeKey;
 import fr.ign.cogit.mapping.util.FileUtil;
 import fr.ign.cogit.mapping.util.NodeUtil;
 
-/** @author Dtsatcha */
+/** @author Dr Tsatcha D. */
 public abstract class SpatialIndex extends IndexBase<Geometry> implements
         QueryableIndex<Geometry> {
 

@@ -26,6 +26,9 @@ import fr.ign.cogit.mapping.generalindex.Record;
 import fr.ign.cogit.mapping.util.ConverterUtil;
 import fr.ign.cogit.mapping.util.HyperBoundingBoxUtil;
 import fr.ign.cogit.mapping.webentity.spatial.SpatialIndex;
+/*
+ * @author Dr Tsatcha D.
+ */
 
 public class ManageHexaTreeMultiLevel {
 

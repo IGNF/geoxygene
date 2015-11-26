@@ -1,7 +1,7 @@
 package fr.ign.cogit.mapping.webentity.spatial;
 
 /**
- *
+ *Dr Tsatcha D.
  */
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -9,10 +9,6 @@ import com.vividsolutions.jts.geom.Geometry;
 import fr.ign.cogit.mapping.datastructure.Node;
 import fr.ign.cogit.mapping.generalindex.Record;
 
-/**
- * @author Dtsatcha
- *
- */
 public class GeometryRecord extends Record<Geometry> {
    /**
     * Create a new instance.

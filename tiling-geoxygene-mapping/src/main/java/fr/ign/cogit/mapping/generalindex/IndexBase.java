@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
  * des operations sur l'index
  
  * @param <T> Le type de l'index
- * @author Dtsatcha
+ * @author Dr Tsatcha D.
  */
 public abstract class IndexBase<T> implements Index<T> {
 

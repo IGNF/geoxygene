@@ -15,7 +15,7 @@ import fr.ign.cogit.cartagen.graph.Node;
  
  * @param <T> Le type de l'index
  *
- * @author DTsatcha
+ * @author Dr Tsatcha D.
  *
  * @see RecordFactory
  * @see IndexFactory

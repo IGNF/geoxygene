@@ -1,10 +1,5 @@
 package fr.ign.cogit.mapping.webentity.spatial.data;
 
-// Parliament is licensed under the BSD License from the Open Source
-// Initiative, http://www.opensource.org/licenses/bsd-license.php
-//
-// Copyright (c) 2001-2009, BBN Technologies, Inc.
-// All rights reserved.
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +30,7 @@ import fr.ign.cogit.mapping.generalindex.Constants;
 import fr.ign.cogit.mapping.webentity.spatial.SpatialGeometryFactory;
 
 /**
- * @author Dtsatcha
+ * @author Dr Tsatcha D.
  */
 public class BufferedGeometry extends EphemeralGeometry {
    private static final long serialVersionUID = -2610110325142994450L;

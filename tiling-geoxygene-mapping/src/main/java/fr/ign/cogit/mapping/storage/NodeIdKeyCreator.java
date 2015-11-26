@@ -8,7 +8,7 @@ import com.sleepycat.bind.serial.SerialSerialKeyCreator;
  * A secondary key creator. This generates a key that maps the integer ID
  * field in the <code>NodeData</code> class to the data.
  *
- * @author Dtsatcha
+ * @author Dr Tsatcha D.
  *
  */
 public class NodeIdKeyCreator extends

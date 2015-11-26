@@ -5,7 +5,9 @@ import com.vividsolutions.jts.geom.Geometry;
 import fr.ign.cogit.cartagen.graph.Graph;
 import fr.ign.cogit.mapping.generalindex.RecordFactory;
 
-
+/*
+ * Dr Tsatcha D.
+ */
 
 public interface GeometryRecordFactory extends RecordFactory<Geometry> {
    /**

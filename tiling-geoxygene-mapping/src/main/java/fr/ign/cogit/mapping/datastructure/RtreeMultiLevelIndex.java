@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import fr.ign.cogit.mapping.datastructure.management.ScaleInfo;
+/*
+ *@author Dr Tsatcha D.
+ */
 
 
 public class RtreeMultiLevelIndex {
@@ -13,8 +16,7 @@ public class RtreeMultiLevelIndex {
      * pour la résoudre le probleme de la transmission multi-echelle
      * Dans ce cas, elle doit fabriquer  plusieurs rtree pour chaque
      * echelle. Les données necessaires pour un rtree sont indiquées
-     * par une index et par un repertoire..;
-     * @uthor Dtsatcha
+     * par une index et par un repertoire..
      * @see ManageRtreeMultiLevel
      * @see ScaleInfo
      * @see RTreeIndex

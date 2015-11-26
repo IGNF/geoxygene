@@ -12,6 +12,9 @@ import fr.ign.cogit.mapping.clients.frameworks.CadrageArea;
 import fr.ign.cogit.mapping.datastructure.hexaTree.HexaTree;
 import fr.ign.cogit.mapping.datastructure.management.ScaleInfo;
 import fr.ign.cogit.mapping.generalindex.Record;
+/*
+ * @author Dr Tsatcha D.
+ */
 
 public abstract class Converter {
 

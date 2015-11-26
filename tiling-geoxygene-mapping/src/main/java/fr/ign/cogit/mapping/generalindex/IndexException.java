@@ -4,7 +4,7 @@ package fr.ign.cogit.mapping.generalindex;
 /**
  * Attrape les erreurs générées pour un {@link Index}.
  *
- * @author Dtsatcha
+ * @author Dr Tsatcha D.
  */
 public class IndexException extends RuntimeException {
 	private static final long serialVersionUID = 1L;

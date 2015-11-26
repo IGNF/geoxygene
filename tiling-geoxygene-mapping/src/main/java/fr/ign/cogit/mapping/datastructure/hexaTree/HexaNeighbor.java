@@ -15,6 +15,7 @@ import fr.ign.cogit.mapping.util.HexaGoneUtil;
  * d'une hexagone avec leurs coordonnées...
  * On doit copnnaitre le rayon et l'aperture de l'hexagon en question
  * afin de calculer le premier sommet.
+ * @author Dr Tsatcha
  */
 
 public class HexaNeighbor {

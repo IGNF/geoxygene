@@ -1,11 +1,13 @@
 package fr.ign.cogit.mapping.webentity.spatial;
 
+/*
+ * @author Dr Tsatcha D.
+ */
 import fr.ign.cogit.mapping.generalindex.IndexException;
 
 /**
  * An exception that can be thrown in the {@link SpatialIndex}.
  *
- * @author Dr Tsatcha
  *
  */
 public class SpatialIndexException extends IndexException {

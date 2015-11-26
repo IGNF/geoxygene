@@ -1,5 +1,7 @@
 package fr.ign.cogit.mapping.webentity.spatial;
-
+/*
+ * @author Dr Tsatcha D.
+ */
 import com.vividsolutions.jts.geom.Geometry;
 
 

@@ -1,6 +1,8 @@
 package fr.ign.cogit.mapping.storage.database.extractor.sql.postgres;
 
- 
+ /*
+  * @author Dr Tsatcha D.
+  */
 public class ExtractorException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 

@@ -39,6 +39,7 @@ import fr.ign.cogit.mapping.webentity.spatial.GeometryRecord;
  * vont tenir compte de la borne supérieur de l'element le plus à gauche de la carte (x0, y0)...
  * dont les valeur à envoyer comme parametre sont x-x0, y-y0
  * il intersecte
+ * @author Dr Tsatcha D.
  */
 
 public class HexaTree implements java.io.Closeable {

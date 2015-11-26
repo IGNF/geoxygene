@@ -6,7 +6,7 @@ import java.util.Map;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 /*
- * @author Dr Tsatcha
+ * @author Dr Tsatcha D.
  * Cette classe permet de recuperer information
  * relative à une geometrie.
  */

@@ -12,6 +12,9 @@ import fr.ign.cogit.mapping.clients.Converter;
 import fr.ign.cogit.mapping.clients.geoxygene.GeoxConverter;
 import fr.ign.cogit.mapping.datastructure.Node;
 import fr.ign.cogit.mapping.webentity.spatial.Constants;
+/*
+ * @author Dr Tsatcha D.
+ */
 
 public class ConverterUtil {
     

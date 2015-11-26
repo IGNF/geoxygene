@@ -13,6 +13,7 @@ import fr.ign.cogit.mapping.datastructure.management.ScaleInfo;
 
 /*
  * Cette definir les differentes transformation geéometrique
+ * @author Dr Tsatcha D.
  */
 public class TransFormationUtil {
 

@@ -16,6 +16,9 @@ import com.vividsolutions.jts.geom.Point;
 import fr.ign.cogit.mapping.clients.frameworks.CadrageArea;
 import fr.ign.cogit.mapping.generalindex.Record;
 import fr.ign.cogit.mapping.util.HexaGoneUtil;
+/*
+ * @author Dr Tsatcha D.
+ */
 
 public class HexaNode extends Thread implements Runnable  {
 

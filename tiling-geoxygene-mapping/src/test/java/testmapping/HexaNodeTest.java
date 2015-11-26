@@ -11,7 +11,9 @@ import com.vividsolutions.jts.geom.Point;
 import fr.ign.cogit.mapping.datastructure.hexaTree.HexaNeighbor;
 import fr.ign.cogit.mapping.datastructure.hexaTree.HexaNode;
 import fr.ign.cogit.mapping.util.HexaGoneUtil;
-
+/*
+ * @author Dr Tsatcha D.
+ */
 public class HexaNodeTest {
 
     @Test

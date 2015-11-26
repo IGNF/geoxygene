@@ -28,6 +28,7 @@ import fr.ign.cogit.mapping.webentity.spatial.SpatialIndexException;
  * Le lancement des methodes du manager doit
  * se faire sequentiellement sinon certains processus
  * peut bloquer cette ressource et compromettre les resultats 
+ * @author Dr Tsatcha D.
  */
 public class ManageRtreeMultiLevelTest {
 

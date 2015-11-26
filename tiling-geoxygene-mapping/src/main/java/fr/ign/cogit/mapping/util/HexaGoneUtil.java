@@ -39,6 +39,7 @@ import fr.ign.cogit.mapping.webentity.spatial.Constants;
  * la largeur
  * et le SIDE de l'hexagone 
  * @see  Cadre.
+ * @author Dr Tsatcha D.
  */
 public class HexaGoneUtil {
 

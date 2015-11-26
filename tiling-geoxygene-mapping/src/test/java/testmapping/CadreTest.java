@@ -10,6 +10,9 @@ import com.vividsolutions.jts.geom.Point;
 
 import fr.ign.cogit.mapping.clients.frameworks.Cadre;
 import fr.ign.cogit.mapping.datastructure.hexaTree.HexaNode;
+/*
+ * @author Dr Tsatcha D.
+ */
 
 public class CadreTest {
 

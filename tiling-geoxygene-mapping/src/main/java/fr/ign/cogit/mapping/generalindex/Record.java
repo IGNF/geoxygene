@@ -5,9 +5,8 @@ import com.vividsolutions.jts.geom.Geometry;
 import fr.ign.cogit.mapping.datastructure.Node;
 
 
-/*
+/*  @author Dr Tsatcha D.
  * Cette classe permet d'enregistrer un objet
- * @author Dr Tsatcha dieudonné 
  * On change l'enregistrement dans notre modèle 
  * comme une composante entier et vakeur???
  * @see Node

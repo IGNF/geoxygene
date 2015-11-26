@@ -8,7 +8,7 @@ import java.util.List;
  * A registry for {@link IndexFactory}s. This registry is used by the
  * {@link IndexManager} when creating indexes.
  *
- * @author Dtsatcha
+ * @author Dr Tsatcha D.
  *
  * @see IndexManager
  */

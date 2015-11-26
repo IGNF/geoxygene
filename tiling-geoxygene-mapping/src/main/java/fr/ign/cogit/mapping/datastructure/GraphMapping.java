@@ -3,6 +3,7 @@ package fr.ign.cogit.mapping.datastructure;
  * @auhor Dtsatcha 
  * Cette classe permet de stocker les contenus à
  * charger dans un fichier ... pas encore utilisé
+ * @author Dr Tsatcha D.
  */
 
 public class GraphMapping {

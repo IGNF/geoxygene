@@ -31,6 +31,7 @@ import fr.ign.cogit.mapping.webentity.spatial.SpatialIndexException;
 /*
  * Stratégie pour determinier le grand rectangle qui contient les données
  * d'une echelle
+ * @author Dr Tsatcha D.
  */
 
 public class RTreeIndex extends SpatialIndex {

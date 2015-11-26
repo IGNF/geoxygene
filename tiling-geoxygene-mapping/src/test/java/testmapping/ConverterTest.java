@@ -10,6 +10,9 @@ import fr.ign.cogit.mapping.clients.Converter;
 import fr.ign.cogit.mapping.clients.geoxygene.GeoxConverter;
 import fr.ign.cogit.mapping.util.ConverterUtil;
 
+/*
+ * Dr Tsatcha D.
+ */
 public class ConverterTest {
 
     @Test
@@ -17,16 +20,15 @@ public class ConverterTest {
 
         Coordinate c1 = new Coordinate(0, 0, 0);
         Point interest = new GeometryFactory().createPoint(c1);
-        
-         Converter conv= new GeoxConverter(interest, 10,20,"hello");
-         String textH=conv.toString() ;
-         System.out.println("------1-"+ conv.toString());
-         //Converter con2=ConverterUtil.obtainConverterFromtext(textH);
-         String test= "scale"+15+"cadre"+0;
-         int taille = test.length();
-       
 
-         //System.out.println("---2----"+ con2.toString());
+        Converter conv = new GeoxConverter(interest, 10, 20, "hello");
+        String textH = conv.toString();
+        System.out.println("------1-" + conv.toString());
+        // Converter con2=ConverterUtil.obtainConverterFromtext(textH);
+        String test = "scale" + 15 + "cadre" + 0;
+        int taille = test.length();
+
+        // System.out.println("---2----"+ con2.toString());
 
     }
 

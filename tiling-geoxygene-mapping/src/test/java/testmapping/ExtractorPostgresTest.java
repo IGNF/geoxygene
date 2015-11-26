@@ -16,7 +16,9 @@ import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.AttributeType;
 import fr.ign.cogit.mapping.storage.database.extractor.sql.postgres.PostgresExtractor;
-
+/*
+ * @author Dr Tsatcha D.
+ */
 public class ExtractorPostgresTest {
     
 protected String tableName = "ref_patte_d_oie";

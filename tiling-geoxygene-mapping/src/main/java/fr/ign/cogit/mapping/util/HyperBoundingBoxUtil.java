@@ -11,6 +11,10 @@ import com.vividsolutions.jts.geom.PrecisionModel;
 
 import fr.ign.cogit.mapping.webentity.spatial.Constants;
 
+/*
+ * @author Dr Tsatcha D.
+ */
+
 public class HyperBoundingBoxUtil {
 
     private static final PrecisionModel PRECISION_MODEL = new PrecisionModel(

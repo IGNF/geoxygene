@@ -1,11 +1,8 @@
 package fr.ign.cogit.mapping.webentity.spatial.data;
 
-// Parliament is licensed under the BSD License from the Open Source
-// Initiative, http://www.opensource.org/licenses/bsd-license.php
-//
-// Copyright (c) 2001-2009, BBN Technologies, Inc.
-// All rights reserved.
-
+/*
+ * Dr Tsatcha D.
+ */
 
 import com.hp.hpl.jena.graph.Node;
 import com.vividsolutions.jts.geom.Coordinate;

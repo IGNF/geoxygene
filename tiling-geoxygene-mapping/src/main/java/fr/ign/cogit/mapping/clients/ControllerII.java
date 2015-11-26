@@ -51,7 +51,7 @@ import org.geotools.referencing.operation.matrix.AffineTransform2D;
  * est envoyé au client et ceux des autres echelles sont mis dans
  * des indexes et retirés ou ajouter au fur et à mesure que les transformations
  * sont réalisées chez le client.
- * Dr Tsatcha
+ * @author Dr Tsatcha D.
  */
 public class ControllerII extends Thread {
 

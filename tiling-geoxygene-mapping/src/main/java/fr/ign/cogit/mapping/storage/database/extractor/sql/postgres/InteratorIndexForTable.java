@@ -27,8 +27,7 @@ import fr.ign.cogit.mapping.webentity.spatial.SpatialIndexException;
  * qui sera utilisé par l'index spatial...
  * cette iterateur devra renvoyer l'echelle des informations sur les noeuds
  * construits 
- * 
- * Dr Dtsatcha
+ * @author Dr Tsatcha D.
  */
 
 public class InteratorIndexForTable implements

@@ -11,7 +11,7 @@ import fr.ign.cogit.mapping.datastructure.Node;
  * J'ai utilisé plutôt un String un Var que celui
  * definit dans la version initiale.
  */
-/** @author Dtsatcha */
+/** @author Dr Tsatcha  D.*/
 public class QueryCache<T> extends LinkedHashMap<Node, T> {
 	private static final long serialVersionUID = 1L;
 

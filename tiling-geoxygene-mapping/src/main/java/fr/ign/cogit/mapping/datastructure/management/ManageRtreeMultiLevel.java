@@ -1,6 +1,7 @@
 package fr.ign.cogit.mapping.datastructure.management;
 
 import java.io.BufferedReader;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -17,6 +18,10 @@ import fr.ign.cogit.mapping.datastructure.RTreeIndex;
 import fr.ign.cogit.mapping.datastructure.RtreeMultiLevelIndex;
 import fr.ign.cogit.mapping.util.ConverterUtil;
 import fr.ign.cogit.mapping.util.HyperBoundingBoxUtil;
+
+/*
+ * @author Dr Tsatcha D.
+ */
 
 public class ManageRtreeMultiLevel {
     /*

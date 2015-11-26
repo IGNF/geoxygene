@@ -1,9 +1,9 @@
 package fr.ign.cogit.mapping.datastructure.hexaTree;
 
 /*
- * @author Dr Tsatcha D.
  * Cette classe permet d'enregistrer des informations
  * à un noeud précis de l'arbre.
+ * @author Dr Tsatcha D.
  */
 
 public class HexaRecord<T> {

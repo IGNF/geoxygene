@@ -53,6 +53,9 @@ import fr.ign.cogit.mapping.util.GeometryUtil;
 import fr.ign.cogit.mapping.util.HexaGoneUtil;
 import fr.ign.cogit.mapping.webentity.spatial.GeometryRecord;
 import fr.ign.cogit.mapping.webentity.spatial.SpatialIndex;
+/*
+ * @author Dr Tsatcha
+ */
 
 public class GeoxConverter extends Converter {
 

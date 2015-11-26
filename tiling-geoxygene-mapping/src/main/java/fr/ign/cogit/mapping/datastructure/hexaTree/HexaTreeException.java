@@ -1,4 +1,7 @@
 package fr.ign.cogit.mapping.datastructure.hexaTree;
+/*
+ * @author Dr Tsatcha D.
+ */
 
 public class HexaTreeException extends RuntimeException{
 

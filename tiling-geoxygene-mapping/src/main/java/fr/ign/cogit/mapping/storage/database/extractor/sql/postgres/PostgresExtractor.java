@@ -33,6 +33,7 @@ import fr.ign.cogit.mapping.webentity.spatial.Constants;
  * postgres..et les charger au niveau de l'index multi-echelle via le biais
  * du manager...Enfin que la connexion soit faite il faut definir les propriétés
  * de votre base de données dans le fichier de constant...
+ * @author Dr Tsatcha D.
  * @see Constants
  * @see InteratorIndexForTable pour fabriquer un iterateur d'index d'une table
  * de la base de données

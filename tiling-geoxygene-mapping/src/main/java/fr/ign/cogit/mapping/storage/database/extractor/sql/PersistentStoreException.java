@@ -1,6 +1,6 @@
 package fr.ign.cogit.mapping.storage.database.extractor.sql;
 // Cette classe est fondée sur le projet Parliament...
-/** @author Dieudonné Tsatcha */
+/** @author Dr Tsatcha D. */
 public class PersistentStoreException extends Exception {
 
 	private static final long serialVersionUID = 1887660080864194263L;

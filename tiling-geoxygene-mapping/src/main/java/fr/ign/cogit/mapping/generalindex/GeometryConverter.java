@@ -1,11 +1,5 @@
 package fr.ign.cogit.mapping.generalindex;
 
-// Parliament is licensed under the BSD License from the Open Source
-// Initiative, http://www.opensource.org/licenses/bsd-license.php
-//
-// Copyright (c) 2001-2009, BBN Technologies, Inc.
-// All rights reserved.
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

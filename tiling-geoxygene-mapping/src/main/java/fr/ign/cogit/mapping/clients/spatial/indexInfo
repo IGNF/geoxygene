@@ -238,6 +238,3 @@ scale25 25 25 25 scale25_cadre3 [interestPoint:POINT (0 0)] [weight:1280.0] [hei
 scale15 15 15 15 scale15_cadre6 [interestPoint:POINT (0 0)] [weight:1280.0] [height:1024.0] 
 scale50 50 50 50 scale50_cadre5 [interestPoint:POINT (0 0)] [weight:1280.0] [height:1024.0] 
 scale15 15 15 15 scale15_cadre6 [interestPoint:POINT (0 0)] [weight:1280.0] [height:1024.0] 
-scale25 25 25 25 scale25_cadre1 [interestPoint:POINT (0 0)] [weight:1280.0] [height:1024.0] 
-scale50 50 50 50 scale50_cadre1 [interestPoint:POINT (0 0)] [weight:1280.0] [height:1024.0] 
-scale25 25 25 25 scale25_cadre2 [interestPoint:POINT (0 0)] [weight:1280.0] [height:1024.0] 

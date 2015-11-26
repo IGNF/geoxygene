@@ -7,7 +7,6 @@ import fr.ign.cogit.mapping.datastructure.hexaTree.TransmittedNode;
 import fr.ign.cogit.mapping.datastructure.management.ScaleInfo;
 
 /*
- * @author Dr Dieudonne Tsatcha
  * Cette classe permet de stocker les informations
  * necessaires en dehors de la geometrie de l'objet
  * extraite d'une base de données postgis.
@@ -17,6 +16,7 @@ import fr.ign.cogit.mapping.datastructure.management.ScaleInfo;
  * Plustard nous pourrons introduire des notions de temps
  * afin retirer regulièrementd dans la base de données des contenus
  * qui n'ont pas été recemment mis à jour.
+ * @author Dr Tsatcha D.
  * @see NodeUtil.java
  * @see ScaleInfo
  */

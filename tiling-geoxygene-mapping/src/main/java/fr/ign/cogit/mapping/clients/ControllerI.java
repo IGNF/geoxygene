@@ -53,7 +53,7 @@ import fr.ign.cogit.mapping.webentity.spatial.SpatialIndex;
  * qui seront par suite envoyé au controleur de niveau..
  * qui pourra ainsi fabriquer une  indexation tuilé en hexagone
  * afin de facilement communiqué avec le client
- * Dr Tsatcha
+ * @author Dr Tsatcha D.
  */
 
 public class ControllerI {

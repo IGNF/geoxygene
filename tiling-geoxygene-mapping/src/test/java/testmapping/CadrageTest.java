@@ -1,4 +1,7 @@
 package testmapping;
+/*
+ * @author Dr Tsatcha D.
+ */
 
 import java.util.concurrent.ConcurrentHashMap;
 

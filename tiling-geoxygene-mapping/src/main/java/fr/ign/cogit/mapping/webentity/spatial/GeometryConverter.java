@@ -1,11 +1,8 @@
 package fr.ign.cogit.mapping.webentity.spatial;
 
-// Parliament is licensed under the BSD License from the Open Source
-// Initiative, http://www.opensource.org/licenses/bsd-license.php
-//
-// Copyright (c) 2001-2009, BBN Technologies, Inc.
-// All rights reserved.
-
+/*
+ * Dr Tsatcha D.
+ */
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,9 +22,6 @@ import com.vividsolutions.jts.io.WKBWriter;
 import fr.ign.cogit.mapping.webentity.spatial.SpatialGeometryFactory;
 import fr.ign.cogit.mapping.webentity.spatial.SpatialIndexException;
 
-/**
- * @author Dtsatcha
- */
 public class GeometryConverter {
    private static Logger LOG = LoggerFactory.getLogger(GeometryConverter.class);
 

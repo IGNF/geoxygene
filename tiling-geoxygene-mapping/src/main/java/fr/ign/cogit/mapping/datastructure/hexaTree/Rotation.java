@@ -7,6 +7,9 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 
 //cette classe doit realiser la rotatatioàn d'angle x et centre  y 
+/*
+ * @author Dr Tsatcha D.
+ */
 public class Rotation {
     double rayon;
 

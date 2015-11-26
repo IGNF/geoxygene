@@ -1,6 +1,8 @@
 package fr.ign.cogit.mapping.datastructure.management;
 
-
+/*
+ * @author Dr Tsatcha D.
+ */
 public class RtreeMultiLevelException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 

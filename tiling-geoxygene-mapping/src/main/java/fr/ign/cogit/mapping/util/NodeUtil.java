@@ -4,7 +4,9 @@ import fr.ign.cogit.mapping.datastructure.Node;
 import fr.ign.cogit.mapping.datastructure.hexaTree.TransmittedNode;
 import fr.ign.cogit.mapping.datastructure.management.ScaleInfo;
 
-
+/*
+ * @author Dr Tsatcha D.
+ */
 
 public class NodeUtil {
 

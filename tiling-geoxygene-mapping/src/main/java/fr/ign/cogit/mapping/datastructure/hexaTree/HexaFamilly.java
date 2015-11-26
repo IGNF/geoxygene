@@ -20,7 +20,7 @@ package fr.ign.cogit.mapping.datastructure.hexaTree;
  * |     \________/     |
  * \                   /
  *  \_________________/                  
- * Dr Tsatcha
+ * @author Dr Tsatcha
  */
 
 public class HexaFamilly {
