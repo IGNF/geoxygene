@@ -347,9 +347,9 @@
 		</dependency>
 		
 		<dependency>
-  		<groupId>campskeleton</groupId>
+  		<groupId>twak</groupId>
   		<artifactId>campskeleton</artifactId>
-  		<version>6.0</version>
+  		<version>1.0</version>
 	</dependency>
 
 		<!-- <dependency> <groupId>java3d</groupId> <artifactId>j3d-core-utils</artifactId> 
