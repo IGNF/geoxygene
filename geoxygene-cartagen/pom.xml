@@ -130,9 +130,9 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>campskeleton</groupId>
+			<groupId>twak</groupId>
 			<artifactId>campskeleton</artifactId>
-			<version>6.0</version>
+			<version>1.0</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
