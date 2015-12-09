@@ -58,6 +58,11 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+        <repository>
+            <id>apache.snapshots</id>
+            <name>Apache commons</name>
+            <url>http://repository.apache.org/snapshots/</url>
+        </repository>	
 	</repositories>
 
 
@@ -129,6 +134,11 @@
 			<version>2.1</version>
 			<scope>compile</scope>
 		</dependency>
+		      <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.5</version>
+        </dependency>
 		<dependency>
 			<groupId>twak</groupId>
 			<artifactId>campskeleton</artifactId>
