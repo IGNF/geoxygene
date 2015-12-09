@@ -617,7 +617,17 @@
 				<enabled>true</enabled>
 			</releases>
 		</repository>
-
+		<repository>
+			<id>isc</id>
+			<name>GeoSolutions libraries repository</name>
+			<url>http://maven.iscpif.fr/ign-releases</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
 	</repositories>
 
 	<pluginRepositories>
