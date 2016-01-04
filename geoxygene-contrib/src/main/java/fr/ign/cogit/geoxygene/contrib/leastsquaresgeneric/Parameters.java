@@ -114,7 +114,7 @@ public class Parameters {
 		return getParameter(getParameterName(index));
 
 	}
-	
+
 	// -------------------------------------------------------------------
 	// Method to get index of a parameters from its name
 	// Input : parameter name (string)
@@ -124,19 +124,19 @@ public class Parameters {
 
 
 		for (int i=0; i<INDEX.size(); i++){
-				
+
 			if (INDEX.get(i).equals(name)){
-					
+
 				return i;
-					
+
 			}
-				
+
 		}
-			
+
 		System.out.println("Error : parameter "+name+" is not defined");
 		System.exit(0);
 		return 0;
-		
+
 	}
 
 
@@ -169,6 +169,20 @@ public class Parameters {
 	public boolean contains(String name){
 
 		return PARAMETERS.containsKey(name);
+
+	}
+
+	// -------------------------------------------------------------------
+	// Method to remove a parameter from its name
+	// Input : parameter name (string)
+	// Output : void
+	// -------------------------------------------------------------------
+	public void remove(String name){
+
+		int index = getIndex(name);
+		
+		PARAMETERS.remove(name);
+		INDEX.remove(index);
 
 	}
 

@@ -48,6 +48,9 @@ public class Solver {
 
 	// Variance factor
 	private double sigma02;
+	
+	// Verbose mode
+	private boolean verbose;
 
 	// -------------------------------------------------------------------
 	// Getters
@@ -64,6 +67,7 @@ public class Solver {
 	public double getDerivationStep(){return this.h;}
 	public double getReducingFactor(){return this.f;}
 	public double getConvergenceCriteria(){return this.e;}
+	public boolean getVerbose(){return verbose;}
 	public Constraint getConstraint(int index){return CONSTRAINTS.get(index);}
 	public String getParameterName(int index){return parameters.getParameterName(index);}
 	public Parameters getParameters(){return parameters;}
@@ -80,6 +84,7 @@ public class Solver {
 	public void setParameter(int index, double value){parameters.setParameter(index, value);}
 	public void setIndicativeConstraint(int index, Constraint newConstraint){CONSTRAINTS.set(index, newConstraint);}
 	public void setImperativeConstraint(int index, Constraint newConstraint){IMP_CONSTRAINTS.set(index, newConstraint);}
+	public void setVerbose(boolean verbose){this.verbose = verbose;}
 	public void setDerivationStep(double h){this.h =h;}
 	public void setReducingFactor(double f){this.f = f;}
 	public void setConvergenceCriteria(double epsilon){this.e = epsilon;}
@@ -317,6 +322,7 @@ public class Solver {
 			for (int i=np; i<np+nc; i++){
 				MB.set(i, 0, D.get(i-np, 0));
 			}
+			
 			
 
 			// -------------------------------------------------------------------
