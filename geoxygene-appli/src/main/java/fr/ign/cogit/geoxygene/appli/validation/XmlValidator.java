@@ -75,7 +75,8 @@ public abstract class XmlValidator {
             jc = JAXBContext.newInstance(contextclasses);
             Unmarshaller unmarshaller = jc.createUnmarshaller();
             if (schema_path != null) {
-                SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                //TODO to replace with the javax.xml constant W3C_XML_SCHEMA_NS_URI
+                SchemaFactory sf = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
                 String fpath = XmlValidator.class.getClassLoader().getResource(schema_path).getFile();
                 File f = new File(fpath);
                 if (f.exists() && f.isFile()) {
