@@ -48,67 +48,70 @@ import org.xml.sax.SAXNotSupportedException;
 
 public abstract class XmlValidator {
 
-    protected Logger logger = Logger.getLogger(XmlValidator.class);
+  protected Logger logger = Logger.getLogger(XmlValidator.class);
 
-    protected InputStream stream = null;
-    private String schema_path = null;
-    ValidationEventHandler eventHandler;
-    protected Object content;
-    protected LocationListener ll;
+  protected InputStream stream = null;
+  private String schema_path = null;
+  ValidationEventHandler eventHandler;
+  protected Object content;
+  protected LocationListener ll;
 
-    private Class[] contextclasses;
+  private Class[] contextclasses;
 
-    public XmlValidator(InputStream xml, Class... jaxbcontextclasses) {
-        this.stream = xml;
-        this.contextclasses = jaxbcontextclasses;
+  public XmlValidator(InputStream xml, Class... jaxbcontextclasses) {
+    this.stream = xml;
+    this.contextclasses = jaxbcontextclasses;
 
-    }
+  }
 
-    public boolean validate() {
-        return this.validateSchemaAndParse() & this.validateContent();
-    }
+  public boolean validate() {
+    return this.validateSchemaAndParse() & this.validateContent();
+  }
 
-    private boolean validateSchemaAndParse() {
+  private boolean validateSchemaAndParse() {
 
-        JAXBContext jc;
-        try {
-            jc = JAXBContext.newInstance(contextclasses);
-            Unmarshaller unmarshaller = jc.createUnmarshaller();
-            if (schema_path != null) {
-                //TODO to replace with the javax.xml constant W3C_XML_SCHEMA_NS_URI
-                SchemaFactory sf = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
-                String fpath = XmlValidator.class.getClassLoader().getResource(schema_path).getFile();
-                File f = new File(fpath);
-                if (f.exists() && f.isFile()) {
-                    Schema schema = sf.newSchema(f);
-                    unmarshaller.setSchema(schema);
-                } else {
-                    logger.fatal("Cannot validate the XML File: the XSD schema " + f.getName() + " was not found in the resources directory.");
-                    return false;
-                }
-            }
-            if (this.eventHandler != null)
-                unmarshaller.setEventHandler(this.eventHandler);
-
-            XMLInputFactory xif = XMLInputFactory.newFactory();
-            XMLStreamReader xsr = xif.createXMLStreamReader(this.stream);
-            this.ll = new LocationListener(xsr);
-            unmarshaller.setListener(ll);
-            content = unmarshaller.unmarshal(xsr);
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        } catch (SAXNotRecognizedException e1) {
-            e1.printStackTrace();
-        } catch (SAXNotSupportedException e2) {
-            e2.printStackTrace();
-        } catch (SAXException e3) {
-            e3.printStackTrace();
-        } catch (XMLStreamException e) {
-            e.printStackTrace();
+    JAXBContext jc;
+    try {
+      jc = JAXBContext.newInstance(contextclasses);
+      Unmarshaller unmarshaller = jc.createUnmarshaller();
+      if (schema_path != null) {
+        // TODO to replace with the javax.xml constant W3C_XML_SCHEMA_NS_URI
+        SchemaFactory sf = SchemaFactory
+            .newInstance("http://www.w3.org/2001/XMLSchema");
+        String fpath = XmlValidator.class.getClassLoader()
+            .getResource(schema_path).getFile();
+        File f = new File(fpath);
+        if (f.exists() && f.isFile()) {
+          Schema schema = sf.newSchema(f);
+          unmarshaller.setSchema(schema);
+        } else {
+          logger.fatal("Cannot validate the XML File: the XSD schema "
+              + f.getName() + " was not found in the resources directory.");
+          return false;
         }
-        return true;
-    }
+      }
+      if (this.eventHandler != null)
+        unmarshaller.setEventHandler(this.eventHandler);
 
-    protected abstract boolean validateContent();
+      XMLInputFactory xif = XMLInputFactory.newInstance();
+      XMLStreamReader xsr = xif.createXMLStreamReader(this.stream);
+      this.ll = new LocationListener(xsr);
+      unmarshaller.setListener(ll);
+      content = unmarshaller.unmarshal(xsr);
+    } catch (JAXBException e) {
+      e.printStackTrace();
+    } catch (SAXNotRecognizedException e1) {
+      e1.printStackTrace();
+    } catch (SAXNotSupportedException e2) {
+      e2.printStackTrace();
+    } catch (SAXException e3) {
+      e3.printStackTrace();
+    } catch (XMLStreamException e) {
+      e.printStackTrace();
+    }
+    return true;
+  }
+
+  protected abstract boolean validateContent();
 
 }
