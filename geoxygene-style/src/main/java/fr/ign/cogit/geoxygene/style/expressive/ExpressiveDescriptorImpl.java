@@ -28,10 +28,13 @@
 package fr.ign.cogit.geoxygene.style.expressive;
 
 import java.util.ArrayList;
+
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ExpressiveDescriptorImpl implements ExpressiveDescriptor {
 
     @XmlElement(name = "ExpressiveMethod")
