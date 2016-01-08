@@ -36,77 +36,85 @@ import fr.ign.cogit.geoxygene.style.StylingParameter;
 import fr.ign.cogit.geoxygene.style.texture.Texture;
 
 @XmlJavaTypeAdapter(ExpressiveParameterAdapter.class)
-public class ExpressiveParameter implements StylingParameter{
+public class ExpressiveParameter implements StylingParameter {
 
-    String name;
+  String name;
 
-    Object value;
+  Object value;
 
-    // The "type" attribute is defined by expressive method this parameter
-    // belongs to.
-    Class<?> type = null;
+  // The "type" attribute is defined by expressive method this parameter
+  // belongs to.
+  Class<?> type = null;
 
-    public String getName() {
-        return this.name;
+  public String getName() {
+    return this.name;
+  }
+
+  public void setName(String _name) {
+    this.name = _name;
+  }
+
+  public Object getValue() {
+
+    return this.type == null ? this.value : this.type.cast(value);
+  }
+
+  public static ExpressiveParameter getInstance(AdaptedExpressiveParameter v) {
+    if (v.content == null || v.content.isEmpty()) {
+      return null;
     }
-
-    public Object getValue() {
-
-        return this.type == null ? this.value : this.type.cast(value);
+    ExpressiveParameter sep = new ExpressiveParameter();
+    sep.name = v.name;
+    // If the content is of Xml type "mixed", the actual value is surrounded
+    // by nodes
+    for (Object o : v.content) {
+      if (!(o instanceof String)) {
+        sep.value = o;
+      }
     }
-
-    public static ExpressiveParameter getInstance(AdaptedExpressiveParameter v) {
-        if (v.content == null || v.content.isEmpty()) {
-            return null;
+    if (sep.value == null)
+      sep.value = v.content.get(0);
+    // Basic type detection
+    if (sep.value instanceof String) {
+      Pattern pdouble = Pattern
+          .compile("[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?");
+      Pattern pint = Pattern.compile("[-+]?[0-9]*");
+      Matcher m = pdouble.matcher((String) sep.value);
+      if (m.find()) {
+        sep.value = Double.parseDouble((String) sep.value);
+      } else {
+        m = pint.matcher((String) sep.value);
+        if (m.find()) {
+          sep.value = Integer.parseInt((String) sep.value);
         }
-        ExpressiveParameter sep = new ExpressiveParameter();
-        sep.name = v.name;
-        // If the content is of Xml type "mixed", the actual value is surrounded
-        // by nodes
-        for(Object o : v.content){
-            if (!(o instanceof String)){
-                sep.value =o;
-            }
-        }
-        if(sep.value == null)
-            sep.value = v.content.get(0);
-        // Basic type detection
-        if (sep.value instanceof String) {
-            Pattern pdouble = Pattern.compile("[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?");
-            Pattern pint = Pattern.compile("[-+]?[0-9]*");
-            Matcher m = pdouble.matcher((String) sep.value);
-            if (m.find()) {
-                sep.value = Double.parseDouble((String) sep.value);
-            } else {
-                m = pint.matcher((String) sep.value);
-                if (m.find()) {
-                    sep.value = Integer.parseInt((String) sep.value);
-                }
-            }
-        }
-
-        return sep;
+      }
     }
 
-    public String toString() {
-        return "ExpressiveParameter " + this.name + " = " + this.value;
-    }
+    return sep;
+  }
 
-    public boolean isSimpleParameter() {
-        return value instanceof String || value instanceof Double || value instanceof Integer || value instanceof Float || value instanceof Byte || value instanceof Short || value instanceof Long
-                || value instanceof Boolean || value instanceof Character;
-    }
+  public String toString() {
+    return "ExpressiveParameter " + this.name + " = " + this.value;
+  }
 
-    public void setType(Class<?> c) {
-        this.type = c;
-    }
+  public boolean isSimpleParameter() {
+    return value instanceof String || value instanceof Double
+        || value instanceof Integer || value instanceof Float
+        || value instanceof Byte || value instanceof Short
+        || value instanceof Long || value instanceof Boolean
+        || value instanceof Character;
+  }
 
-    public void setValue(Object _value) {
-        this.value =_value;
-    }
+  public void setType(Class<?> c) {
+    this.type = c;
+  }
 
-    public boolean isTextureParameter() {
-        return value instanceof Texture;
-    }
+  public void setValue(Object _value) {
+    this.value = _value;
+  }
+
+  public boolean isTextureParameter() {
+    return value instanceof Texture;
+  }
 
 }
