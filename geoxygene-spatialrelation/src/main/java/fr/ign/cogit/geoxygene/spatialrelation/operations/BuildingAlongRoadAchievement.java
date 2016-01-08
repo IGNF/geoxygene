@@ -46,7 +46,7 @@ public class BuildingAlongRoadAchievement implements
   // METHODS
   // ***************
   @Override
-  public void compute() {
+  public Object compute() {
 
     // prepare the buildings list for the intersections finding
     List<IGeometry> buildingsGeom = new ArrayList<IGeometry>();
@@ -112,6 +112,7 @@ public class BuildingAlongRoadAchievement implements
         relation.getDistance().setDistance(998);
       }
     }
+    return relation.getDistance();
   }
 
   @Override

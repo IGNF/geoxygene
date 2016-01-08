@@ -14,5 +14,7 @@ public interface RelationOperation {
   /**
    * Computes the operation.
    */
-  public void compute();
+  public Object compute();
+
+  public SpatialRelation getRelation();
 }

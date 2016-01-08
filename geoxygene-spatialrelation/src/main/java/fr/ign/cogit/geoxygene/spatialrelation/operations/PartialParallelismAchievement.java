@@ -54,7 +54,7 @@ public class PartialParallelismAchievement implements
    * features starts and where it ends.
    */
   @Override
-  public void compute() {
+  public Object compute() {
     boolean parallel = false;
     ILineString line2 = null;
     List<IDirectPosition> pts = new ArrayList<IDirectPosition>();
@@ -128,6 +128,7 @@ public class PartialParallelismAchievement implements
         }
       }
     }
+    return null;
 
   }
 
