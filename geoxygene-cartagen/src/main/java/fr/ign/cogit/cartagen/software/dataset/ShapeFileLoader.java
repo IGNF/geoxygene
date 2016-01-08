@@ -174,6 +174,93 @@ public class ShapeFileLoader {
    * @param chemin
    * @throws IOException
    */
+  public static boolean loadBuildingsFromSHP(String chemin,
+      CartAGenDataSet dataset, String natureName) throws IOException {
+    ShapefileReader shr = null;
+    DbaseFileReader dbr = null;
+    if (!chemin.endsWith(".shp"))
+      chemin = chemin + ".shp";
+    try {
+      ShpFiles shpf = new ShpFiles(chemin);
+      System.out.println(chemin);
+      shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
+      dbr = new DbaseFileReader(shpf, true, Charset.defaultCharset());
+    } catch (FileNotFoundException e) {
+      if (logger.isDebugEnabled()) {
+        logger.debug("fichier " + chemin + " non trouve.");
+      }
+      System.out.println("file not found");
+      return false;
+    }
+
+    if (logger.isInfoEnabled()) {
+      logger.info("Loading: " + chemin);
+    }
+
+    IPopulation<IBuilding> buildPop = dataset.getBuildings();
+
+    int j = 0;
+    while (shr.hasNext()) {
+      Record objet = shr.nextRecord();
+
+      Object[] champs = dbr.readEntry();
+      Map<String, Object> fields = new HashMap<String, Object>();
+      for (int i = 0; i < dbr.getHeader().getNumFields(); i++) {
+        fields.put(dbr.getHeader().getFieldName(i), champs[i]);
+      }
+      // get the building nature
+      String nature = "Indifferencie";
+      if (fields.containsKey(natureName)) {
+        nature = (String) fields.get(natureName);
+      }
+      IGeometry geom = null;
+      try {
+        geom = AdapterFactory.toGM_Object((Geometry) objet.shape());
+      } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+      }
+
+      if (geom instanceof IPolygon) {
+        IBuilding building = dataset.getCartAGenDB().getGeneObjImpl()
+            .getCreationFactory().createBuilding(new BatimentImpl(geom));
+        building.setId(dataset.getBuildings().size() + 1);
+        building.setNature(nature);
+        buildPop.add(building);
+
+      } else if (geom instanceof IMultiSurface<?>) {
+        for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
+          IBuilding building = dataset
+              .getCartAGenDB()
+              .getGeneObjImpl()
+              .getCreationFactory()
+              .createBuilding(
+                  new BatimentImpl(((IMultiSurface<?>) geom).get(i)));
+          building.setId(dataset.getBuildings().size() + 1);
+          building.setNature(nature);
+          buildPop.add(building);
+        }
+
+      } else {
+        logger
+            .error("ERREUR lors du chargement de shp " + chemin
+                + ". Type de geometrie " + geom.getClass().getName()
+                + " non gere.");
+      }
+      j++;
+    }
+
+    shr.close();
+    dbr.close();
+
+    return true;
+  }
+
+  /**
+   * Charge des batiments depuis un shapefile surfacique
+   * @param chemin
+   * @throws IOException
+   */
   public static boolean overwriteBuildingsFromSHP(String chemin,
       CartAGenDataSet dataset) throws IOException {
     ShapefileReader shr = null;

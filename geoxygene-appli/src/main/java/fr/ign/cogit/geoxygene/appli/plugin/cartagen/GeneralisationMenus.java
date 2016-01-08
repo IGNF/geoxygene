@@ -30,13 +30,16 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.interfacecartagen.annexes.GeneralisationLaunchingFrame;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.GeoxygeneMenu;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.dataset.DatasetGeoxGUIComponent;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.themes.DataThemesGUIComponent;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.util.GeneralisationConfigurationFrame;
+import fr.ign.cogit.geoxygene.style.Layer;
 
 /**
  * @author julien Gaffuri 6 mars 2009
@@ -62,6 +65,8 @@ public class GeneralisationMenus {
       "Generalisation launching");
   private JMenuItem mConfigGeneralisation = new JMenuItem(
       "Generalisation configuration");
+  private JMenuItem mRestoreInitialState = new JMenuItem(
+      "Restore initial state");
 
   // data themes
   private DataThemesGUIComponent dataThemesMenu = new DataThemesGUIComponent(
@@ -123,7 +128,24 @@ public class GeneralisationMenus {
         GeneralisationConfigurationFrame.getInstance().setVisible(true);
       }
     });
+    this.mRestoreInitialState.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent arg0) {
+        GeOxygeneApplication appli = CartAGenPlugin.getInstance()
+            .getApplication();
+        for (Layer layer : appli.getMainFrame().getSelectedProjectFrame()
+            .getLayers()) {
+          for (IFeature feat : layer.getFeatureCollection()) {
+            if (feat instanceof IGeneObj) {
+              feat.setGeom(((IGeneObj) feat).getInitialGeom());
+              ((IGeneObj) feat).cancelElimination();
+            }
+          }
+        }
+      }
+    });
     this.menuGene.add(this.mConfigGeneralisation);
+    this.menuGene.add(this.mRestoreInitialState);
 
     // ajout aux menus existants
 

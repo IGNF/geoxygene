@@ -13,6 +13,7 @@ import javax.swing.JTabbedPane;
 import javax.xml.bind.JAXBException;
 
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
+import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
@@ -27,6 +28,7 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolList;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolsUtil;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 
 public class AddShapefileFrame extends JFrame implements ActionListener {
@@ -118,6 +120,17 @@ public class AddShapefileFrame extends JFrame implements ActionListener {
           ShapeFileLoader.loadRailwayLineFromSHP(panel.getFile().getPath(),
               symbols, panel.getAttributeMapping().get("Sidetrack"),
               currentDb.getDataSet());
+        } catch (IOException e1) {
+          e1.printStackTrace();
+        }
+      } else if (panel.getLayerName().equals(CartAGenDataSet.BUILDINGS_POP)) {
+        currentDb.addClass(new ShapeFileClass(currentDb, panel.getFile()
+            .getParent(), IBuilding.FEAT_TYPE_NAME, IPolygon.class));
+        try {
+          ShapeFileLoader
+              .loadBuildingsFromSHP(panel.getFile().getPath(),
+                  currentDb.getDataSet(),
+                  panel.getAttributeMapping().get("Nature"));
         } catch (IOException e1) {
           e1.printStackTrace();
         }

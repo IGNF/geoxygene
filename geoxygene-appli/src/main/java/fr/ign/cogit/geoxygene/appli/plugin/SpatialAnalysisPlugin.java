@@ -19,6 +19,7 @@ import java.sql.DriverManager;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -69,6 +70,8 @@ import fr.ign.cogit.geoxygene.schemageo.impl.routier.NoeudRoutierImpl;
 import fr.ign.cogit.geoxygene.schemageo.impl.routier.TronconDeRouteImpl;
 import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.ReseauImpl;
 import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.measure.shape.PolygonSignatureFunction;
+import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.measure.shape.PolygonTurningFunction;
 
 public class SpatialAnalysisPlugin implements ProjectFramePlugin,
     GeOxygeneApplicationPlugin {
@@ -92,6 +95,12 @@ public class SpatialAnalysisPlugin implements ProjectFramePlugin,
     menu.add(riverMenu);
     menu.add(railMenu);
     menu.add(urbanMenu);
+    JMenu shapeMenu = new JMenu("Shape");
+    shapeMenu.add(new JMenuItem(new DisplayTurningFuncAction()));
+    shapeMenu.add(new JMenuItem(new CompareTurningFuncsAction()));
+    shapeMenu.add(new JMenuItem(new DisplaySignatureFuncAction()));
+    shapeMenu.add(new JMenuItem(new CompareSignatureFuncsAction()));
+    menu.add(shapeMenu);
     application.getMainFrame().getMenuBar()
         .add(menu, application.getMainFrame().getMenuBar().getMenuCount() - 2);
 
@@ -800,4 +809,137 @@ public class SpatialAnalysisPlugin implements ProjectFramePlugin,
     }
   }
 
+  /**
+   * Computes the turning function (Arkin et al 1991) on the polygon geometry of
+   * the selected feature, and displays the function in a plot in a frame.
+   * 
+   * @author GTouya
+   * 
+   */
+  class DisplayTurningFuncAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      IFeature feat = SelectionUtil.getFirstSelectedObject(application);
+      if (feat.getGeom() instanceof IPolygon) {
+        PolygonTurningFunction function = new PolygonTurningFunction(
+            (IPolygon) feat.getGeom());
+        function.print();
+      }
+    }
+
+    public DisplayTurningFuncAction() {
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Display in a frame the turning function of selected polygon feature");
+      this.putValue(Action.NAME, "Display turning function of selected polygon");
+    }
+  }
+
+  /**
+   * Computes the turning functions (Arkin et al 1991) on the polygons geometry
+   * of the two selected feature, and displays the functions in a single plot in
+   * a frame, in order to compare them.
+   * 
+   * @author GTouya
+   * 
+   */
+  class CompareTurningFuncsAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      Iterator<IFeature> iterator = SelectionUtil.getSelectedObjects(
+          application).iterator();
+      IFeature feat1 = iterator.next();
+      IFeature feat2 = iterator.next();
+      if (feat1.getGeom() instanceof IPolygon
+          && feat2.getGeom() instanceof IPolygon) {
+        PolygonTurningFunction function1 = new PolygonTurningFunction(
+            (IPolygon) feat1.getGeom());
+        PolygonTurningFunction function2 = new PolygonTurningFunction(
+            (IPolygon) feat2.getGeom());
+        function1.print(function2);
+      }
+    }
+
+    public CompareTurningFuncsAction() {
+      this.putValue(
+          Action.SHORT_DESCRIPTION,
+          "Compare the two turning functions of the two selected features in a single plot");
+      this.putValue(Action.NAME, "Compare two turning functions");
+    }
+  }
+
+  /**
+   * Computes the signature function (Vauglin & Bel Hadj Ali 1998) on the
+   * polygon geometry of the selected feature, and displays the function in a
+   * plot in a frame.
+   * 
+   * @author GTouya
+   * 
+   */
+  class DisplaySignatureFuncAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      IFeature feat = SelectionUtil.getFirstSelectedObject(application);
+      if (feat.getGeom() instanceof IPolygon) {
+        PolygonSignatureFunction function = new PolygonSignatureFunction(
+            (IPolygon) feat.getGeom());
+        function.print();
+      }
+    }
+
+    public DisplaySignatureFuncAction() {
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Display in a frame the signature function of selected polygon feature");
+      this.putValue(Action.NAME,
+          "Display signature function of selected polygon");
+    }
+  }
+
+  /**
+   * Computes the signature functions (Vauglin & Bel Hadj Ali 1998) on the
+   * polygons geometry of the two selected feature, and displays the functions
+   * in a single plot in a frame, in order to compare them.
+   * 
+   * @author GTouya
+   * 
+   */
+  class CompareSignatureFuncsAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      Iterator<IFeature> iterator = SelectionUtil.getSelectedObjects(
+          application).iterator();
+      IFeature feat1 = iterator.next();
+      IFeature feat2 = iterator.next();
+      if (feat1.getGeom() instanceof IPolygon
+          && feat2.getGeom() instanceof IPolygon) {
+        PolygonSignatureFunction function1 = new PolygonSignatureFunction(
+            (IPolygon) feat1.getGeom());
+        PolygonSignatureFunction function2 = new PolygonSignatureFunction(
+            (IPolygon) feat2.getGeom());
+        function1.print(function2);
+      }
+    }
+
+    public CompareSignatureFuncsAction() {
+      this.putValue(
+          Action.SHORT_DESCRIPTION,
+          "Compare the two signature functions of the two selected features in a single plot");
+      this.putValue(Action.NAME, "Compare two signature functions");
+    }
+  }
 }

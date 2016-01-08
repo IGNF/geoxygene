@@ -355,8 +355,8 @@ public class OSMPlugin implements ProjectFramePlugin,
           // fc.setCurrentDirectory(new File("src/main/resources/xml/"));
           fc.setCurrentDirectory(new File(application.getProperties()
               .getLastOpenedFile()));
-          int returnVal = fc.showSaveDialog(CartagenApplication.getInstance()
-              .getFrame());
+          int returnVal = fc
+              .showSaveDialog(application.getMainFrame().getGui());
           if (returnVal != JFileChooser.APPROVE_OPTION) {
             return;
           }
@@ -397,6 +397,8 @@ public class OSMPlugin implements ProjectFramePlugin,
         currentProjections.put("UTM 23S (Rio)", "32723");
         currentProjections.put("UTM 55S (Melbourne)", "32755");
         currentProjections.put("Gauss-Krueger zone 4 (East Germany)", "31468");
+        currentProjections
+            .put("Gauss-Krueger zone 3 (Center Germany)", "31467");
         this.setPreferredSize(new Dimension(350, 150));
 
         // JPanel filePanel = new JPanel();
@@ -681,6 +683,8 @@ public class OSMPlugin implements ProjectFramePlugin,
               }
             }
           }
+          // update initial geometry
+          remainingB.setInitialGeom(remainingB.getGeom());
           System.out.println("1 cluster traité");
         }
       } catch (Exception e) {

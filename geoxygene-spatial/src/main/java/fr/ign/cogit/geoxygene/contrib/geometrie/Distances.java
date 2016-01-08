@@ -442,6 +442,28 @@ public abstract class Distances {
   }
 
   /**
+   * même chose que distanceSurfaciqueRobuste mais pour des IPolygon.
+   */
+  public static double distanceSurfaciqueRobuste(IPolygon A, IPolygon B,
+      double min, double max) {
+    IGeometry inter = Operateurs.intersectionRobuste(A, B, min, max);
+    // en cas de problème d'intersection avec JTS, la méthode retourne 2
+    if (inter == null) {
+      inter = Operateurs.intersectionRobuste(A.buffer(0.1), B.buffer(0.1), min,
+          max);
+      if (inter == null)
+        return 2;
+    }
+    IGeometry union = A.union(B);
+    if (union == null) {
+      union = A.buffer(0.1).union(B.buffer(0.1));
+      if (union == null)
+        return 1;
+    }
+    return 1 - inter.area() / union.area();
+  }
+
+  /**
    * Distance surfacique entre deux IMultiSurface. Cette méthode contourne des
    * bugs de JTS, qui sont trop nombreux sur les agrégats. En contrepartie,
    * cette méthode n'est valable que si les IPolygon composant A [resp. B] ne

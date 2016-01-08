@@ -310,6 +310,33 @@ public class SpatialQuery {
    * @param distanceMax
    * @return
    */
+  public static IFeature selectNearestFeature(IGeometry geom,
+      IFeatureCollection<IFeature> features, double distanceMax) {
+    Collection<IFeature> closeObjs = features.select(geom, distanceMax);
+    if (closeObjs.size() == 0) {
+      return null;
+    }
+    IFeature nearest = null;
+    double minDist = distanceMax;
+    for (IFeature obj : closeObjs) {
+      GeometryProximity proxi = new GeometryProximity(geom, obj.getGeom());
+      if (proxi.getDistance() <= minDist) {
+        nearest = obj;
+        minDist = proxi.getDistance();
+      }
+    }
+
+    return nearest;
+  }
+
+  /**
+   * Get the nearest features of the geometry from the parameter collection. If
+   * no feature is close enough (distance under distanceMax), null is returned.
+   * @param geom
+   * @param features
+   * @param distanceMax
+   * @return
+   */
   public static Set<IFeature> selectNearestN(IGeometry geom,
       IFeatureCollection<? extends IFeature> features, int n, double step) {
     List<IFeature> closeObjs = new ArrayList<IFeature>();

@@ -37,7 +37,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -57,7 +56,6 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObjLin;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObjSurf;
-import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -66,6 +64,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
@@ -92,9 +91,9 @@ public class ExportFrame extends JFrame implements ActionListener {
     this.setResizable(false);
     this.setSize(new Dimension(400, 300));
     this.setLocation(100, 100);
-    this.setTitle(CartagenApplication.getInstance().getFrame().getTitle()
+    this.setTitle(CartAGenPlugin.getInstance().getApplication().getMainFrame()
+        .getGui().getTitle()
         + " - export généralisation");
-    this.setIconImage(CartagenApplication.getInstance().getFrame().getIcon());
     this.setAlwaysOnTop(true);
 
     this.getContentPane().setLayout(
@@ -145,7 +144,6 @@ public class ExportFrame extends JFrame implements ActionListener {
 	 */
   private JButton bExportTout, bExport;
   private JTextField txtDir;
-  private JLabel lSuivi;
 
   private boolean chooseDirectory() {
 

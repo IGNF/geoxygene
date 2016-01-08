@@ -10,6 +10,7 @@
 package fr.ign.cogit.geoxygene.appli.plugin.cartagen.themes;
 
 import java.awt.event.ActionEvent;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,13 +21,16 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
+import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
+import fr.ign.cogit.cartagen.genealgorithms.polygon.PolygonAggregation;
 import fr.ign.cogit.cartagen.genealgorithms.polygon.PolygonSquaring;
 import fr.ign.cogit.cartagen.genealgorithms.polygon.SquarePolygonLS;
 import fr.ign.cogit.cartagen.software.GeneralisationSpecifications;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.SelectionUtil;
@@ -92,6 +96,7 @@ public class BuildingMenu extends JMenu {
   private JMenuItem mSimplification = new JMenuItem(new SimplifyAction());
   private JMenuItem mSimpleSquaring = new JMenuItem(new SimpleSquaringAction());
   private JMenuItem mLSSquaring = new JMenuItem(new LSSquaringAction());
+  private JMenuItem mAmalgamation = new JMenuItem(new AmalgamationAction());
 
   /**
    * Constructor a of the menu from a title.
@@ -140,6 +145,7 @@ public class BuildingMenu extends JMenu {
     mSquaring.add(this.mSimpleSquaring);
     mSquaring.add(this.mLSSquaring);
     this.add(mSquaring);
+    this.add(this.mAmalgamation);
   }
 
   private class SelectAction extends AbstractAction {
@@ -568,7 +574,7 @@ public class BuildingMenu extends JMenu {
           String s2 = JOptionPane.showInputDialog(CartAGenPlugin.getInstance()
               .getApplication().getMainFrame().getGui(), "tolerance (radians)",
               "Cartagen", JOptionPane.PLAIN_MESSAGE);
-          double correctTol = 8 * Math.PI / 180;
+          double correctTol = 0.6 * Math.PI / 180;
           if (s2 != null && !s2.isEmpty()) {
             correctTol = Double.parseDouble(s2);
           }
@@ -665,6 +671,32 @@ public class BuildingMenu extends JMenu {
       this.putValue(Action.SHORT_DESCRIPTION,
           "Trigger Least Squares Squaring algorithm on selected buildings");
       this.putValue(Action.NAME, "Trigger LS Squaring");
+    }
+  }
+
+  private class AmalgamationAction extends AbstractAction {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      List<IFeature> selected = SelectionUtil
+          .getListOfSelectedObjects(CartAGenPlugin.getInstance()
+              .getApplication());
+      IFeature feat1 = selected.get(0);
+      IFeature feat2 = selected.get(1);
+      PolygonAggregation algo = new PolygonAggregation(
+          (IPolygon) feat1.getGeom(), (IPolygon) feat2.getGeom());
+      IPolygon amalgamated = algo.regnauldAmalgamation(1.0);
+      System.out.println(amalgamated);
+      feat1.setGeom(amalgamated);
+      ((IGeneObj) feat2).eliminate();
+    }
+
+    public AmalgamationAction() {
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Amalgamation of selected two buildings from Regnauld 98");
+      this.putValue(Action.NAME, "Amalgamation of selected two buildings");
     }
   }
 }
