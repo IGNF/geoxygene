@@ -158,7 +158,7 @@ public class PostgisManager {
       ResultSet r = s.executeQuery("select " + PostgisManager.NAME_COLUMN
           + ",type from " + PostgisManager.NAME_TABLE_SPATIALREF + " WHERE "
           + PostgisManager.NAME_TABLE + "='" + table + "'");
-
+      
       String nomColonneGeom = "";
       while (r.next()) {
         nomColonneGeom = r.getString(1);
@@ -250,7 +250,7 @@ public class PostgisManager {
 
       if (whereClause != "") {
 
-        requestSelect = requestSelect + " where " + whereClause;
+        requestSelect = requestSelect + " WHERE " + whereClause;
 
       }
 
@@ -421,11 +421,11 @@ public class PostgisManager {
 
       if (whereClause != "") {
 
-        requestSelect = requestSelect + " where " + whereClause;
+        requestSelect = requestSelect + " WHERE " + whereClause;
 
       }
 
-      // System.out.println(requestSelect + "\n");
+      System.out.println(requestSelect);
       r2 = s.executeQuery(requestSelect);
 
       while (r2.next()) {
