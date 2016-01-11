@@ -611,11 +611,14 @@ public abstract class AbstractDTM {
     if (isSursampled) {
 
       Coordinate[] coordEnv = poly.getEnvelope().getCoordinates();
-      double xmin = coordEnv[0].x;
-      double xmax = coordEnv[2].x;
+      
+      
+      //We add 5 m in order to avoid numerical errors
+      double xmin = coordEnv[0].x-5;
+      double xmax = coordEnv[2].x+5;
 
-      double ymin = coordEnv[0].y;
-      double ymax = coordEnv[2].y;
+      double ymin = coordEnv[0].y-5;
+      double ymax = coordEnv[2].y+5;
 
       multiP = this.processSurfacicGrid(xmin, xmax, ymin, ymax);
 
