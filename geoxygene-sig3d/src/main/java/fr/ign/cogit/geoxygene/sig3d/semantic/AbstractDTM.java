@@ -260,6 +260,8 @@ public abstract class AbstractDTM {
 
     // On adpate en fonction de la classe de la géométrie, la méthode à
     // appliquer
+    
+    // System.out.println("----- on passe peut-etre ici -----");
 
     // GM_Polygon
     if (geom instanceof Polygon) {
@@ -272,6 +274,7 @@ public abstract class AbstractDTM {
     }
 
     // GM_MultiSurface
+    // TODO : on passe ici pour les scb
     if (geom instanceof MultiPolygon) {
       MultiPolygon poly = (MultiPolygon) geom;
 
@@ -393,6 +396,7 @@ public abstract class AbstractDTM {
     // GM_Point
     if (geom instanceof Point) {
       Point point = (Point) geom;
+
       Coordinate coor = this.castCoordinate(point.getX(), point.getY(), altMax);
 
       DirectPosition dp = new DirectPosition(coor.x, coor.y, coor.z);
@@ -409,6 +413,7 @@ public abstract class AbstractDTM {
 
     // GM_MultiPoint
     if (geom instanceof MultiPoint) {
+
       MultiPoint multiPoint = (MultiPoint) geom;
 
       int nbElem = multiPoint.getNumGeometries();
@@ -612,7 +617,7 @@ public abstract class AbstractDTM {
 
       Coordinate[] coordEnv = poly.getEnvelope().getCoordinates();
       
-      
+      // System.out.println("on passe ici");
       //We add 5 m in order to avoid numerical errors
       double xmin = coordEnv[0].x-5;
       double xmax = coordEnv[2].x+5;
@@ -761,14 +766,35 @@ public abstract class AbstractDTM {
 
       MultiLineString gml;
 
-      if (coordEnv.length < 3) {
+      double xmin, xmax, ymin, ymax;
+      
+      if (coordEnv.length < 2) {
 
         return null;
+        
+      }else if(coordEnv.length == 2){
+        
+        xmin = (coordEnv[0].x) - 5;
+        xmax = (coordEnv[1].x) + 5;
+
+        ymin = (coordEnv[0].y) - 5;
+        ymax = (coordEnv[1].y) + 5;
+          
+        
       } else {
-        gml = this.processLinearGrid(coordEnv[0].x, coordEnv[0].y,
-            coordEnv[2].x, coordEnv[2].y);
+        //We add 5 m in order to avoid numerical errors
+         xmin = (coordEnv[0].x) - 5;
+         xmax = (coordEnv[2].x) + 5;
+
+         ymin = (coordEnv[0].y) - 5;
+         ymax = (coordEnv[2].y) + 5;
+        //gml = this.processLinearGrid(coordEnv[0].x, coordEnv[0].y,
+            //coordEnv[2].x, coordEnv[2].y);
+   
 
       }
+      
+      gml = this.processLinearGrid(xmin, ymin, xmax, ymax);
 
       // On récupère les points d'intersections
       com.vividsolutions.jts.geom.Geometry obj = gml.intersection(ls);
