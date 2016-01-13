@@ -29,7 +29,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Transient;
 
-import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.hibernate.annotations.Type;
 
 import fr.ign.cogit.cartagen.core.defaultschema.GeneObjSurfDefault;
@@ -37,7 +37,7 @@ import fr.ign.cogit.cartagen.core.genericschema.urban.ITown;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
 import fr.ign.cogit.cartagen.core.persistence.CollectionType;
 import fr.ign.cogit.cartagen.core.persistence.EncodedRelation;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.spatialanalysis.network.DeadEndGroup;
 import fr.ign.cogit.cartagen.spatialanalysis.network.streets.StreetNetwork;
@@ -223,7 +223,7 @@ public class Town extends GeneObjSurfDefault implements ITown {
     RobustELECTRETRIMethod electre = new RobustELECTRETRIMethod();
     Set<Criterion> criteria = new HashSet<Criterion>();
     boolean special = false;
-    if (CartAGenDocOld.getInstance().getCurrentDataset().getCartAGenDB()
+    if (CartAGenDoc.getInstance().getCurrentDataset().getCartAGenDB()
         .getSourceDLM().equals(SourceDLM.SPECIAL_CARTAGEN))
       special = true;
     if (!special)
