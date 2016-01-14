@@ -9,7 +9,6 @@
  ******************************************************************************/
 package fr.ign.cogit.geoxygene.appli.plugin.cartagen;
 
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,6 +20,7 @@ import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -31,14 +31,19 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
-import fr.ign.cogit.cartagen.software.CartagenApplication;
+import fr.ign.cogit.cartagen.genealgorithms.polygon.RaposoSimplification;
+import fr.ign.cogit.cartagen.genealgorithms.polygon.VisvalingamWhyatt;
 import fr.ign.cogit.cartagen.software.interfacecartagen.annexes.GeneralisationLaunchingFrame;
-import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.GeoxygeneMenu;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.dataset.DatasetGeoxGUIComponent;
+import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.SelectionUtil;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.themes.DataThemesGUIComponent;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.util.GeneralisationConfigurationFrame;
+import fr.ign.cogit.geoxygene.generalisation.Filtering;
 import fr.ign.cogit.geoxygene.style.Layer;
 
 /**
@@ -56,9 +61,14 @@ public class GeneralisationMenus {
 
   // generalisation
   private JMenu menuGene = new JMenu("Generalisation");
+  private JMenu menuAlgos = new JMenu("Algorithms");
 
   public JMenu getMenuGene() {
     return this.menuGene;
+  }
+
+  public JMenu getMenuAlgos() {
+    return this.menuAlgos;
   }
 
   private JMenuItem mLancerGeneralisation = new JMenuItem(
@@ -88,16 +98,6 @@ public class GeneralisationMenus {
   }
 
   private GeneralisationMenus() {
-  }
-
-  public JMenu getMenuComplement(Class<? extends JMenu> menuClass) {
-    GeoxygeneMenu menu = CartagenApplication.getInstance().getFrame().getMenu();
-    for (Component comp : menu.getComponents()) {
-      if (menuClass.isInstance(comp)) {
-        return menuClass.cast(comp);
-      }
-    }
-    return null;
   }
 
   /**
@@ -146,6 +146,75 @@ public class GeneralisationMenus {
     });
     this.menuGene.add(this.mConfigGeneralisation);
     this.menuGene.add(this.mRestoreInitialState);
+    JMenu mLineSimplif = new JMenu("Line simplification");
+    JMenuItem mDouglas = new JMenuItem("Douglas & Peucker");
+    mDouglas.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent arg0) {
+        GeOxygeneApplication appli = CartAGenPlugin.getInstance()
+            .getApplication();
+        double seuil = Double.valueOf(JOptionPane
+            .showInputDialog("Douglas & Peucker threshold"));
+        for (IFeature feat : SelectionUtil.getSelectedObjects(appli)) {
+          IGeometry geom = feat.getGeom();
+          IGeometry generalised = Filtering.DouglasPeucker(geom, seuil);
+          if (generalised != null)
+            feat.setGeom(generalised);
+        }
+      }
+    });
+    mLineSimplif.add(mDouglas);
+    JMenuItem mVisva = new JMenuItem("Visvalingam-Whyatt");
+    mVisva.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent arg0) {
+        GeOxygeneApplication appli = CartAGenPlugin.getInstance()
+            .getApplication();
+        double seuil = Double.valueOf(JOptionPane
+            .showInputDialog("Visvalingam-Whyatt threshold (m²)"));
+        for (IFeature feat : SelectionUtil.getSelectedObjects(appli)) {
+          IGeometry geom = feat.getGeom();
+          VisvalingamWhyatt algo = new VisvalingamWhyatt(seuil);
+          if (geom instanceof ILineString) {
+            ILineString generalised = algo.simplify((ILineString) geom);
+            if (generalised != null)
+              feat.setGeom(generalised);
+          } else if (geom instanceof IPolygon) {
+            IPolygon generalised = algo.simplify((IPolygon) geom);
+            if (generalised != null)
+              feat.setGeom(generalised);
+          }
+        }
+      }
+    });
+    mLineSimplif.add(mVisva);
+    JMenuItem mRaposo = new JMenuItem("Raposo simplification");
+    mRaposo.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent arg0) {
+        GeOxygeneApplication appli = CartAGenPlugin.getInstance()
+            .getApplication();
+        double initialScale = Double.valueOf(JOptionPane
+            .showInputDialog("initial scale of simplified data (1000.0 for 1:1k scale)"));
+        for (IFeature feat : SelectionUtil.getSelectedObjects(appli)) {
+          IGeometry geom = feat.getGeom();
+          RaposoSimplification algo = new RaposoSimplification(true, false,
+              initialScale);
+          if (geom instanceof ILineString) {
+            ILineString generalised = algo.simplify((ILineString) geom);
+            if (generalised != null)
+              feat.setGeom(generalised);
+          } else if (geom instanceof IPolygon) {
+            IPolygon generalised = algo.simplify((IPolygon) geom);
+            if (generalised != null)
+              feat.setGeom(generalised);
+          }
+        }
+      }
+    });
+    mLineSimplif.add(mRaposo);
+    this.menuAlgos.add(mLineSimplif);
+    this.menuGene.add(this.menuAlgos);
 
     // ajout aux menus existants
 
