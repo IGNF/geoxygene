@@ -39,6 +39,7 @@ import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Rule;
 import fr.ign.cogit.geoxygene.style.Style;
+import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 
 /**
@@ -198,8 +199,13 @@ public class GeneralisationConfigurationFrame extends JFrame {
 
     // update the SLD width values with the new scale value
     double scaleRatio = Legend.getSYMBOLISATI0N_SCALE() / oldScale;
-    for (Layer layer : CartAGenDoc.getInstance().getCurrentDataset().getSld()
-        .getLayers()) {
+    StyledLayerDescriptor sld = null;
+    if (CartAGenDoc.getInstance() != null)
+      sld = CartAGenDoc.getInstance().getCurrentDataset().getSld();
+    else
+      sld = CartAGenPlugin.getInstance().getApplication().getMainFrame()
+          .getSelectedProjectFrame().getSld();
+    for (Layer layer : sld.getLayers()) {
       for (Style style : layer.getStyles()) {
         for (FeatureTypeStyle ftStyle : style.getFeatureTypeStyles()) {
           for (Rule rule : ftStyle.getRules()) {
