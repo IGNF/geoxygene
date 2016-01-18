@@ -69,9 +69,9 @@ public class DisplayablePointRenderer extends DisplayableRenderer<DisplayablePoi
                 }
             }
             if (ps.getGraphic().getExternalGraphics() != null && !ps.getGraphic().getExternalGraphics().isEmpty()) {
-                Logger.getRootLogger().error("ExternalGraphic is not yet implemented for the GL version of Geoxygene");
+                global_success &= super.render(displayable_to_draw, global_opacity * ps.getGraphic().getOpacity(), ps.getGraphic().getExternalGraphics().toArray());
             }
-        }else {
+        } else {
             Logger.getRootLogger().error("Cannot apply a symbolizer of type " + displayable_to_draw.getSymbolizer().getClass().getSimpleName() + " to a Point");
             global_success = false;
         }
@@ -81,11 +81,10 @@ public class DisplayablePointRenderer extends DisplayableRenderer<DisplayablePoi
     @Override
     protected Collection<GLComplex> getComplexesForGroup(RenderingGroup g, DisplayablePoint disp) {
         if (g.getStyleElement() instanceof ExternalGraphic) {
-            Logger.getRootLogger().error("ExternalGraphic is not yet implemented for the GL version of Geoxygene");
+            return disp.getFullRepresentation();
         } else {
             return disp.getMarkGLComplexes(g.getStyleElement());
         }
-        return null;
     }
 
 }

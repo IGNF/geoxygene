@@ -116,7 +116,7 @@ public class TextureTaskFactory {
      */
     public static TextureTask<BasicTexture> createTextureTask(URI texture_uri, URL texture_location) {
         SimpleTexture st = new SimpleTexture();
-        st.setAbsoluteLocation(texture_location);
+        st.setLocation(texture_location);
         st.setTextureURI(texture_uri);
         return new BasicTextureTask(texture_uri, st);
     }

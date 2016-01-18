@@ -1,3 +1,29 @@
+/*******************************************************************************
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Géographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
+ *******************************************************************************/
 package fr.ign.cogit.geoxygene.appli.render.groups;
 
 import java.net.URI;
@@ -10,6 +36,7 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.GeoxygeneConstants;
 import fr.ign.cogit.geoxygene.appli.gl.ResourcesManager;
+import fr.ign.cogit.geoxygene.appli.render.DisplayableRenderer;
 import fr.ign.cogit.geoxygene.appli.render.methods.NamedRenderingParametersMap;
 import fr.ign.cogit.geoxygene.appli.render.methods.RenderingMethodDescriptor;
 import fr.ign.cogit.geoxygene.appli.render.methods.RenderingMethodParameterDescriptor;
@@ -19,12 +46,25 @@ import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.texture.Texture;
 
 /**
- * A rendering group is a set of rendering parameters to apply to a part (or
- * the whole) of a {@link GLDisplayable}. <br/>
- * E.g : a {@link PolygonSymbolizer} will contain two groups : one for the rendering
- * of its stroke and one for the rendering of its fill.
+ * A {@link RenderingGroup} is an internal class of the Geoxygene GL rendeing
+ * pipeline that generates the parameters needed to actually do the rendering of
+ * a {@link GLDisplayable} with a given styling description. <br/>
+ * The key mecanism of a {@link RenderingGroup} relies in 3 methods : <br/>
+ * Given a styling element and -if needed- a {@link RenderingMethodDescriptor}
+ * ...
+ * <ul>
+ * <li>{@link #create()} : Initializes the Rendering group by flattening the
+ * styling element of this group and extracting the parameters descriptions.</li>
+ * <li>{@link #filter()} : Retains only the parameters descriptions also
+ * described in the {@link RenderingMethodDescriptor}.</li>
+ * <li>{@link #fill(GLDisplayable, NamedRenderingParametersMap)} : Generates a
+ * {@link NamedRenderingParametersMap} for a {@link GLDisplayable} which
+ * contains all the parameters needed to render this displayable.</li>
+ * </ul>
+ * E.g : a {@link PolygonSymbolizer} will contain two groups : one for the
+ * rendering of its stroke and one for the rendering of its fill.
  * 
- * @author Bertrand Dumenieu
+ * @author Bertrand Duménieu
  */
 
 public abstract class RenderingGroup {
@@ -52,14 +92,16 @@ public abstract class RenderingGroup {
      * </ul>
      * 
      * @param d
-     * @return
+     *            the {@link GLDisplayable} for wich parameters must be created.
+     * @return a set of rendering parameters that can be used by a
+     *         {@link DisplayableRenderer}.
      */
     public NamedRenderingParametersMap getRenderingParameters(GLDisplayable d) {
         NamedRenderingParametersMap resolved_parameters;
         if (this.parameters_cache.containsKey(d)) {
             resolved_parameters = this.parameters_cache.get(d);
         } else {
-            Logger.getRootLogger().info("Generating a new set of parameters for the displayable "+d);
+            Logger.getRootLogger().debug("Generating a new set of parameters for the displayable " + d);
             Map<String, Object> parameters = create();
             resolved_parameters = filter(parameters, method);
             resolved_parameters = fill(d, resolved_parameters);
@@ -67,7 +109,6 @@ public abstract class RenderingGroup {
         }
         return resolved_parameters;
     }
-
 
     /**
      * Get the parameters needed by this {@link RenderingGroup}. These
@@ -153,7 +194,6 @@ public abstract class RenderingGroup {
         ad.setCustomRenderingParameters(p);
         return p;
     }
-
 
     public String toString() {
         return "Rendering group " + this.name;

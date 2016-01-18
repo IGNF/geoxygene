@@ -135,7 +135,7 @@ public abstract class DisplayableRenderer<T extends GLDisplayable> implements Ge
     /**
      * Render a GlDisplayable with a set of RenderingGroups.
      */
-    protected boolean render(T displayable_to_draw, double d, Object[] displayable_style_elements_to_draw) {
+    protected boolean render(T displayable_to_draw, double opacity, Object[] displayable_style_elements_to_draw) {
         boolean global_success = true;
         for (Object element : displayable_style_elements_to_draw) {
             RenderingGroup g = this.groups.get(element);
@@ -150,7 +150,7 @@ public abstract class DisplayableRenderer<T extends GLDisplayable> implements Ge
                 Collection<GLComplex> c = this.getComplexesForGroup(g, displayable_to_draw);
                 if (c != null && !c.isEmpty()) {
                     Map<RenderingMethodParameterDescriptor, Object> params = g.getRenderingParameters(displayable_to_draw);
-                    params.put(global_opacity, d);
+                    params.put(global_opacity, opacity);
                     try {
                         global_success &= this.render(c, g.getRenderingParameters(displayable_to_draw), g.getMethod().getGLProgram());
                     } catch (GLException | NoninvertibleTransformException e) {
@@ -161,7 +161,7 @@ public abstract class DisplayableRenderer<T extends GLDisplayable> implements Ge
                 } else {
                     // The complexes may not be ready
                     global_success = false;
-                    Logger.getRootLogger().info("No Complexes to render");
+                    Logger.getRootLogger().debug("Render but no GL primitive is available for drawing!");
                 }
             } else {
                 Logger.getRootLogger().warn("No RenderingGroup found for the style element " + element + " applied to the Displayable " + displayable_to_draw);

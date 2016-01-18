@@ -29,30 +29,39 @@ package fr.ign.cogit.geoxygene.appli.render.groups;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.appli.render.methods.RenderingMethodDescriptor;
-import fr.ign.cogit.geoxygene.style.RasterSymbolizer;
+import fr.ign.cogit.geoxygene.appli.render.primitive.GLDisplayable;
+import fr.ign.cogit.geoxygene.style.ExternalGraphic;
 
-public class RasterRenderingGroup  extends RenderingGroup {
-    
-    public static final String DEFAULT_RENDERING_METHOD_RASTER = "Raster";
+/**
+ * A rendering group for the {@link ExternalGraphic} styling element of a SLD.<br/>
+ * An {@link ExternalGraphicRenderingGroup} is able to generate the parameters needed to render any {@link GLDisplayable} with an {@link ExternalGraphic}. 
+ * @author Bertrand Duménieu
+ *
+ */
+public class ExternalGraphicRenderingGroup extends RenderingGroup {
 
-    public RasterRenderingGroup(String _name, RenderingMethodDescriptor renderingmethod, Object style_element) {
+    public ExternalGraphicRenderingGroup(String _name, RenderingMethodDescriptor renderingmethod, Object style_element) {
         super(_name, renderingmethod, style_element);
     }
 
+    public static final String DEFAULT_RENDERING_METHOD_EXTERNALGRAPHIC = "TextureFill";
+
     @Override
-    /**
-     * Get or build the parameters for a raster
-     */
     protected Map<String, Object> create() {
-        Map<String, Object> params =  new HashMap<String, Object>();
-        RasterSymbolizer rs = (RasterSymbolizer) this.style_element;
-        params.put("Animate", rs.getAnimate());
+
+        Map<String, Object> params = new HashMap<String, Object>();
+
+        if (style_element instanceof ExternalGraphic) {
+            ExternalGraphic graphic = (ExternalGraphic) style_element;
+            Map<String, Object> sparams = StyleElementFlattener.flatten(graphic);
+            params.putAll(sparams);
+        } else {
+            Logger.getRootLogger().error("Class" + style_element.getClass().getSimpleName() + " is not a valid class for "+this.getClass());
+        }
         return params;
-    }
-    
-    public static RenderingMethodDescriptor getRasterRenderingMethod(RasterSymbolizer r) {
-        return RenderingMethodDescriptor.retrieveMethod(DEFAULT_RENDERING_METHOD_RASTER);
     }
 
 }

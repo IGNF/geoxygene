@@ -98,8 +98,8 @@ public class BasicTextureTask extends AbstractTextureTask<BasicTexture> {
         this.setState(TaskState.INITIALIZING);
         this.setState(TaskState.RUNNING);
         try {
-            this.basicTexture.setTextureURL(this.tex_descriptor.getAbsoluteLocation());
-            this.getTexture().setTextureImage(ImageIO.read(this.tex_descriptor.getAbsoluteLocation()));
+            this.basicTexture.setTextureURL(this.tex_descriptor.getLocation());
+            this.getTexture().setTextureImage(ImageIO.read(this.tex_descriptor.getLocation()));
             this.setNeedCaching(false);
             this.setState(TaskState.FINISHED);
         } catch (MalformedURLException e) {

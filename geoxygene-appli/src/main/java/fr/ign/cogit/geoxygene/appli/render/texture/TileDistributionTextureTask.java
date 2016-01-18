@@ -36,10 +36,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -57,11 +55,8 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
-import fr.ign.cogit.geoxygene.appli.AbstractProjectFrame;
-import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage;
-import fr.ign.cogit.geoxygene.appli.gl.GLContext;
 import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage.BinaryGradientImageParameters;
 import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage.GradientPixel;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
@@ -138,7 +133,7 @@ public class TileDistributionTextureTask extends AbstractTextureTask<BasicTextur
      */
     private final void initTiles() throws IOException {
         for (ProbabilistTileDescriptor tileDesc : this.getTextureDescriptor().getTiles()) {
-            URL abs_location = tileDesc.getAbsoluteLocation();
+            URL abs_location = tileDesc.getTextureURI().toURL();
             Tile tile = DefaultTile.read(abs_location, tileDesc.getScaleFactor());
             DistanceTileProbability p = new DistanceTileProbability(this.texImage, tileDesc.getMinDistance(), tileDesc.getMaxDistance(), tileDesc.getInRangeProbability(),
                     tileDesc.getOutOfRangeProbability());

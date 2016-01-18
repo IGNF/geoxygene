@@ -231,7 +231,7 @@ public class DisplayableSurface extends AbstractDisplayable {
             }
             this.rasterImageRef = new WeakReference<RasterImage>(raster);
 
-            // retrive the colormap
+            // retreive the colormap
             raster.readColormap(rasterSymbolizer);
             URI colormap_uri = new URI("ColorMap-" + coverage.getName() + "-" + rasterSymbolizer.hashCode());
             GLTexture colormap = TextureManager.retrieveTexture(colormap_uri);

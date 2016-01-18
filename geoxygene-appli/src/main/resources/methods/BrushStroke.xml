@@ -2,13 +2,20 @@
 	<Name>BrushStroke</Name>
 	<GeneralMethodReference>WorldToScreenSpace</GeneralMethodReference>
 	<SetterClassName>BrushStrokeSetter</SetterClassName>
+	   <GeometryProcessing>BrushStroke</GeometryProcessing>
 	<ShaderList>
 		<ShaderRef gltype="GL_VERTEX_SHADER">bezier.vert.glsl</ShaderRef>
 		<ShaderRef gltype="GL_FRAGMENT_SHADER">bezier.frag.glsl</ShaderRef>
 	</ShaderList>
 	<Parameters>
-	       <Parameter required="true">
-            <Name>brushStartWidth</Name> <!-- aligned -->
+	       <Parameter required="true" userinput="true">
+            <Name>brushStartWidth</Name>            
+            <Restrictions>
+            <BoundRestriction min="0.0" max="100.0"/>
+            <Choices>
+                <ExpressiveParameter name="brushStartWidth" > 10.</ExpressiveParameter>
+            </Choices>
+            </Restrictions>
             <Type>Texture</Type>
         </Parameter>
         <Parameter required="true">

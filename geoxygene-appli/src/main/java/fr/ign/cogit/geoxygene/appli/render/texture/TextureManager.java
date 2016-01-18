@@ -119,6 +119,7 @@ public class TextureManager {
             if (t == null) {
                 TextureTask<? extends GLTexture> task;
                 task = TextureManager.buildTexture(path.toURL());
+                task.start();
                 TaskManager.waitForCompletion(task);
                 t = textureMap.get(path);
             }
@@ -229,22 +230,22 @@ public class TextureManager {
                         URI root_uri = (URI) ResourcesManager.Root().getResourceByName(GeoxygeneConstants.GEOX_Const_CurrentStyleRootURIName);
                         if (tex_descriptor instanceof SimpleTexture) {
                             SimpleTexture st = (SimpleTexture) tex_descriptor;
-                            URL resolved_location = ResourceLocationResolver.resolve(st.getInputLocation(), root_uri);
+                            URL resolved_location = ResourceLocationResolver.resolve(st.getTextureURI(), root_uri);
                             if (resolved_location == null) {
-                                logger.error("Failed to resolve the location of the texture " + st.getInputLocation() + ". The texture will not be loaded.");
+                                logger.error("Failed to resolve the location of the texture " + st.getTextureURI() + ". The texture will not be loaded.");
                                 return null;
                             }
-                            st.setAbsoluteLocation(resolved_location);
+                            st.setLocation(resolved_location);
                         }
                         if (tex_descriptor instanceof TileDistributionTexture) {
                             TileDistributionTexture tdt = (TileDistributionTexture) tex_descriptor;
                             for (ProbabilistTileDescriptor tile : tdt.getTiles()) {
-                                URL resolved_location = ResourceLocationResolver.resolve(tile.getInputLocation(), root_uri);
+                                URL resolved_location = ResourceLocationResolver.resolve(tile.getTextureURI(), root_uri);
                                 if (resolved_location == null) {
-                                    logger.error("Failed to resolve the location of the Tile texture " + tile.getInputLocation() + ". This Tile will not be loaded.");
+                                    logger.error("Failed to resolve the location of the Tile texture " + tile.getTextureURI() + ". This Tile will not be loaded.");
                                     return null;
                                 }
-                                tile.setAbsoluteLocation(resolved_location);
+                                tile.setLocation(resolved_location);
                             }
                         }
                         tt = TextureTaskFactory.createTextureTask(tex_uri, tex_descriptor, textured_objects, p);

@@ -28,9 +28,11 @@
 package fr.ign.cogit.geoxygene.appli.render.primitive;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -40,16 +42,23 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.GLComplexFactory;
 import fr.ign.cogit.geoxygene.appli.gl.GLSimpleComplex;
 import fr.ign.cogit.geoxygene.appli.gl.GLTextComplex;
 import fr.ign.cogit.geoxygene.appli.render.methods.NamedRenderingParametersMap;
+import fr.ign.cogit.geoxygene.appli.render.texture.TextureManager;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.style.ExternalGraphic;
 import fr.ign.cogit.geoxygene.style.Mark;
 import fr.ign.cogit.geoxygene.style.PointSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
+import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 
 /**
@@ -175,15 +184,57 @@ public class DisplayablePoint extends AbstractDisplayable {
             complexes.addAll(inners);
             complexes.addAll(outlines);
         }
+
+        for (ExternalGraphic eg : symbolizer.getGraphic().getExternalGraphics()) {
+
+            Image img = null;
+            try {
+                URI uri = new URI(eg.getHref());
+                BasicTexture t = (BasicTexture) TextureManager.getTexture(uri);
+                img = t.getTextureImage();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+            int imgw = img == null ? 0 : img.getWidth(null);
+            int imgh = img == null ? 0 : img.getHeight(null);
+            if (imgw == 0 || imgh == 0) {
+                logger.error("Trying to create a DisplayablePoint with an ExternalGraphic but the image " + eg.getHref() + " is null or of size 0x0");
+            } else {
+                for (IGeometry g : this.geometries) {
+                    float symwidth= symbolizer.getGraphic().getSize(); //C'est la largeur 
+                    float symheight = imgh * symwidth / imgw;
+                    DirectPosition topleft = new DirectPosition(0, symheight);
+                    DirectPosition topright = new DirectPosition(symwidth,symheight );
+                    DirectPosition botright = new DirectPosition(symwidth, 0);
+                    DirectPosition botleft = new DirectPosition(0, 0);
+                    IPolygon genvelope;
+                    try {
+                        genvelope = new GM_Polygon(new GM_LineString(topleft, topright, botright, botleft,topleft), 0.1);
+                        genvelope = (IPolygon) genvelope.translate(g.centroid().getX()-symwidth/2, g.centroid().getY()-symheight/2, 0);
+                        envelope = genvelope.getEnvelope();
+                        BasicParameterizer parameterizer = new BasicParameterizer(envelope, false, true);
+                        List<IPolygon> toFill = new ArrayList<IPolygon>();
+                        toFill.add(genvelope);
+                        GLSimpleComplex shapeComplex = GLComplexFactory.createFilledPolygons("1", toFill, Color.PINK, parameterizer, envelope.minX(), envelope.minY());
+                        shapeComplex.setColor(Color.WHITE);
+                        complexes.add(shapeComplex);
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
         return complexes;
     }
 
     public List<GLComplex> getMarkGLComplexes(Object styleElement) {
         return this.markscomplexesmap.get(styleElement);
     }
+
     @Override
     public void setCustomRenderingParameters(NamedRenderingParametersMap p) {
-        //Nothing to do?
+        // Nothing to do?
     }
 
 }
