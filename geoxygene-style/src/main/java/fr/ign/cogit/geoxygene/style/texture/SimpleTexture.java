@@ -46,13 +46,17 @@ import javax.xml.bind.annotation.XmlTransient;
 public class SimpleTexture extends Texture {
 
     /**
-     * The Texture location. This uri may be relative.
+     * The TextureURI, used to disambiguise its real location.
+     * This URI is also used as an identifier!
      */
     @XmlElement(name = "URI")
-    private URI tex_input_location = null;
+    private URI texURI = null;
     
+    /**
+     * The actual location of this texture, i.e. where to find the texture data.
+     */
     @XmlTransient
-    private URL tex_absolute_location = null;
+    private URL texLocation = null;
 
     /**
      * default constructor
@@ -74,7 +78,7 @@ public class SimpleTexture extends Texture {
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + ((this.tex_input_location == null) ? 0 : this.tex_input_location.hashCode());
+        result = prime * result + ((this.texURI == null) ? 0 : this.texURI.hashCode());
         return result;
     }
 
@@ -95,7 +99,7 @@ public class SimpleTexture extends Texture {
             return false;
         }
         SimpleTexture tex = (SimpleTexture) obj;
-        if (this.tex_input_location != tex.tex_input_location) {
+        if (this.texURI != tex.texURI) {
             return false;
         }
         return true;
@@ -108,24 +112,26 @@ public class SimpleTexture extends Texture {
      */
     @Override
     public String toString() {
-        return "BasicTextureDescriptor [uri=" + this.tex_input_location + " located at " +tex_absolute_location+", toString()=" + super.toString() + "]";
+        return "BasicTextureDescriptor [uri=" + this.texURI + " located at " +texLocation+", toString()=" + super.toString() + "]";
     }
 
-    public URI getInputLocation() {
-        return tex_input_location;
+    public URL getLocation() {
+        return texLocation;
     }
 
-    public void setInputLocation(URI location) {
-        this.tex_input_location = location;
+    public void setLocation(URL location) {
+        this.texLocation = location;
     }
 
-    
-    public URL getAbsoluteLocation() {
-        return tex_absolute_location;
+    @Override
+    public void setTextureURI(URI uri) {
+        this.texURI = uri;
+        super.setTextureURI(uri);
     }
 
-    public void setAbsoluteLocation(URL location) {
-        this.tex_absolute_location = location;
+    @Override
+    public URI getTextureURI() {
+        return this.texURI;
     }
 
 

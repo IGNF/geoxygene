@@ -43,7 +43,7 @@ public abstract class Texture implements ExpressiveParameterValue {
      * The identifier of this texture.
      */
     @XmlTransient
-    private URI texture_uid = null;
+    protected URI texture_uid = null;
 
     @XmlAttribute(name = "XRepeat")
     private boolean xRepeat = false;
