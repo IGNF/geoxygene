@@ -40,8 +40,12 @@ import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Collection;
+
+import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 import org.lwjgl.BufferUtils;
@@ -73,12 +77,14 @@ public class DisplayableTextRenderer extends DisplayableRenderer<AbstractDisplay
     private int textTextureId = -1;
     private int previousWidth = -1;
     private int previousHeight = -1;
+    private int width = 0;
+    private int height = 0;
     private int[] pixels = null;
     private GLProgram program;
 
     public DisplayableTextRenderer(Viewport _viewport) {
         super(_viewport);
-        RenderingMethodDescriptor method =  (RenderingMethodDescriptor) ResourcesManager.Root().getSubManager(GeoxygeneConstants.GEOX_Const_RenderingMethodsManagerName).getResourceByName("Text");
+        RenderingMethodDescriptor method = (RenderingMethodDescriptor) ResourcesManager.Root().getSubManager(GeoxygeneConstants.GEOX_Const_RenderingMethodsManagerName).getResourceByName("Text");
         program = method.getGLProgram();
     }
 
@@ -86,8 +92,11 @@ public class DisplayableTextRenderer extends DisplayableRenderer<AbstractDisplay
     public boolean render(AbstractDisplayable displayable_to_draw, double global_opacity) {
         if (displayable_to_draw.getSymbolizer() instanceof TextSymbolizer) {
             GLTools.glCheckError("gl error before text normal rendering");
-            if (this.textImage == null) {
-                this.initTextImage();
+            Integer width = (Integer) GLContext.getActiveGlContext().getSharedUniform(GeoxygeneConstants.GL_VarName_ScreenWidth);
+            Integer height = (Integer) GLContext.getActiveGlContext().getSharedUniform(GeoxygeneConstants.GL_VarName_ScreenHeight);
+            if (this.textImage == null || width != previousWidth || height != previousHeight) {
+                System.out.println("Create a new image " + this);
+                this.createTextImage(width, height);
             }
             // AWT toponyms rendering in the this.textImage
             this.awtRendering(displayable_to_draw.getFeature(), (TextSymbolizer) displayable_to_draw.getSymbolizer(), global_opacity);
@@ -102,30 +111,30 @@ public class DisplayableTextRenderer extends DisplayableRenderer<AbstractDisplay
         return null;
     }
 
-    private void initTextImage() {
-        Integer width = (Integer) GLContext.getActiveGlContext().getSharedUniform(GeoxygeneConstants.GL_VarName_ScreenWidth);
-        Integer height = (Integer) GLContext.getActiveGlContext().getSharedUniform(GeoxygeneConstants.GL_VarName_ScreenHeight);
-        if (this.textImage != null) {
-            this.textImageGraphics.dispose();
-            this.textImage = null;
-            this.textImageGraphics = null;
+    private void createTextImage(Integer width, Integer height) {
+        System.out.println("Create a new image of size " + width + "x" + height);
+        if (this.textImageGraphics != null) {
+            // this.textImageGraphics.dispose();
         }
         this.textImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
         this.textImageGraphics = this.textImage.createGraphics();
-        // clear all image with a transparent bg
-        this.textImageGraphics.setComposite(AlphaComposite.Clear);
-        this.textImageGraphics.setColor(Color.black);
-        this.textImageGraphics.fillRect(0, 0, width, height);
-        // reinit compositing to default behaviour (transparency fading enabled)
-        Composite fade = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f);
-        this.textImageGraphics.setComposite(fade);
+        this.textImageGraphics.setBackground(new Color(0, 0, 0, 1));
+        this.buffer = BufferUtils.createByteBuffer(width * height * 4);
+        this.pixels = new int[width * height];
+        this.previousHeight = this.height;
+        this.previousWidth = this.width;
+        this.width = width;
+        this.height = height;
+    }
+
+    private void clearTextImage() {
+        this.textImageGraphics.clearRect(0, 0, width, height);
     }
 
     /**
      * Render toponyms into an AWT graphics
      */
     private void awtRendering(IFeature f, TextSymbolizer textSym, double opacity) {
-        this.textImageGraphics = this.textImage.createGraphics();
         this.textImageGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         Object value = f.getAttribute(textSym.getLabel());
         String text = (value == null) ? null : value.toString();
@@ -137,9 +146,10 @@ public class DisplayableTextRenderer extends DisplayableRenderer<AbstractDisplay
     @Override
     public void switchRenderer() throws RenderingException {
         try {
-            if (this.textImage != null) {
+            if (this.textImageGraphics != null) {
                 this.drawText();
-                this.initTextImage(); // clear the image
+                this.clearTextImage(); // clear the image for the next
+                                       // rendering.
             }
         } catch (GLException e) {
             throw new RenderingException(e);
@@ -150,17 +160,6 @@ public class DisplayableTextRenderer extends DisplayableRenderer<AbstractDisplay
         if (this.program == null || this.textImage == null) {
             Logger.getRootLogger().debug("The GeoxGLTextRenderer " + this.hashCode() + "is not ready yet");
             return;
-        }
-        Integer width = (Integer) GLContext.getActiveGlContext().getSharedUniform(GeoxygeneConstants.GL_VarName_ScreenWidth);
-        Integer height = (Integer) GLContext.getActiveGlContext().getSharedUniform(GeoxygeneConstants.GL_VarName_ScreenHeight);
-
-        if (width != this.previousWidth || height != this.previousHeight || this.buffer == null || this.pixels == null) {
-            this.buffer = BufferUtils.createByteBuffer(width * height * 4);
-            this.pixels = new int[width * height];
-            this.previousWidth = width;
-            this.previousHeight = height;
-            width = this.textImage.getWidth();
-            height = this.textImage.getHeight();
         }
         this.textImage.getRGB(0, 0, width, height, this.pixels, 0, width);
         this.buffer.rewind();
@@ -174,7 +173,6 @@ public class DisplayableTextRenderer extends DisplayableRenderer<AbstractDisplay
             }
         }
         this.buffer.rewind();
-        this.textImageGraphics.dispose();
         glEnable(GL_TEXTURE_2D);
         GL13.glActiveTexture(GL13.GL_TEXTURE0 + 2);
         glBindTexture(GL_TEXTURE_2D, this.getTextTextureId());

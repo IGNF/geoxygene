@@ -14,6 +14,7 @@ import java.util.Set;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JSplitPane;
+import javax.swing.SwingUtilities;
 import javax.xml.bind.JAXBException;
 
 import org.apache.commons.io.FilenameUtils;
@@ -591,7 +592,18 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      */
     @Override
     public final void saveAsImage(final String fileName) {
-        this.getLayerViewPanel().saveAsImage(fileName);
+        this.saveAsImage(fileName, this.getLayerViewPanel().getWidth(), this.getLayerViewPanel().getHeight(), false);
+    }
+
+    @Override
+    public void saveAsImage(final String fileName, final int width, final int height, final boolean doSaveWorldFile) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                AbstractProjectFrame.this.getLayerViewPanel().saveAsImage(fileName, width, height, doSaveWorldFile);
+            }
+        });
+
     }
 
     /*
@@ -759,7 +771,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
                         } else if (sym instanceof PolygonSymbolizer && ((PolygonSymbolizer) sym).getFill().getExpressiveFill() != null) {
                             method = ((PolygonSymbolizer) sym).getFill().getExpressiveFill().getRenderingMethod();
                         }
-                        if (method != null && RenderingMethodDescriptor.retrieveMethod(method)==null) {
+                        if (method != null && RenderingMethodDescriptor.retrieveMethod(method) == null) {
                             RenderingMethodDescriptor rdesc = RenderingMethodBuilder.build(sld.getSource().resolve("../methods/"), method + ".xml");
                             if (rdesc == null) {
                                 logger.error("Failed to load the expressive rendering method " + method);

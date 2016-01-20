@@ -26,14 +26,13 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -82,7 +81,8 @@ public class LayerViewAwtPanel extends LayerViewPanel {
         this.addPaintListener(new LegendPaintListener());
         this.setDoubleBuffered(true);
         this.setOpaque(true);
-        this.renderingManager = new MultithreadedRenderingManager(this); // rendering manager
+        this.renderingManager = new MultithreadedRenderingManager(this); // rendering
+                                                                         // manager
     }
 
     /** @return The rendering manager handling the rendering of the layers */
@@ -217,72 +217,91 @@ public class LayerViewAwtPanel extends LayerViewPanel {
         return Printable.PAGE_EXISTS;
     }
 
+    @Override
+    public void saveAsImage(String fileName, int width, int height, boolean doSaveWorldFile) {
+        Color bg = this.getBackground();
+        BufferedImage outImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D graphics = outImage.createGraphics();
+        // TEMP
+        graphics.setColor(bg);
+        graphics.fillRect(0, 0, width, height);
+        int tmpw = this.getWidth();
+        int tmph = this.getHeight();
+        // We save the old extent to force the Viewport to keep the old
+        // window in world coordinates.
+        IEnvelope env = this.getViewport().getEnvelopeInModelCoordinates();
+        // Artificially resize the canvas to the image dimensions.
+        this.setSize(width, height);
+        try {
+            // We zoom to the old extent in the resized canvas.
+            this.getViewport().zoom(env);
+        } catch (NoninvertibleTransformException e2) {
+            logger.error("In Image Export : failed to zoom in the correct extent.");
+            e2.printStackTrace();
+        }
+        this.renderingManager.renderAll();
+        long time = System.currentTimeMillis();
+        long twaited = 0;
+        while (this.renderingManager.isRendering() && twaited < 15000) {
+            // Wait for the rendering to end for a maximum of 15s. If the
+            // rendering is not finished after this delay,
+            // we give up.
+            twaited = System.currentTimeMillis() - time;
+        }
+        if (this.renderingManager.isRendering()) {
+            logger.error("Export to image : waited 15s but the rendering is still not finished. Abort.");
+            return;
+        }
+
+        // We have to impose a bbox !!!
+        this.getRenderingManager().copyTo(graphics);
+
+        // TODO ask to paint overlays
+        this.paintOverlays(graphics);
+        graphics.dispose();
+        try {
+            ImgUtil.saveImage(outImage, fileName);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+
+        if (doSaveWorldFile) {
+            String wld = FilenameUtils.removeExtension(fileName) + ".wld";
+            try {
+                AffineTransform t = this.getViewport().getModelToViewTransform();
+                fr.ign.cogit.geoxygene.util.conversion.WorldFileWriter.write(new File(wld), t.getScaleX(), t.getScaleY(), this.getViewport().getViewOrigin().getX(), this.getViewport().getViewOrigin()
+                        .getY(), this.getHeight());
+            } catch (NoninvertibleTransformException e) {
+                logger.error("Failed to save the world file associated with the image file " + fileName);
+                e.printStackTrace();
+            }
+        }
+
+        // Finally, rollback the canvas to its original size.
+        this.setSize(tmpw, tmph);
+        try {
+            // Zoom back to the "normal" extent
+            this.getViewport().zoom(env);
+        } catch (NoninvertibleTransformException e2) {
+            logger.error("In Image Export : failed to zoom back to the original LayerViewPanel extent.");
+            e2.printStackTrace();
+            return;
+        }
+    }
+
     /*
      * (non-Javadoc)
      * 
      * @see
-     * fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#saveAsImage(java.lang
-     * .String)
+     * fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#saveAsImage(java
+     * .lang .String)
      */
     @Override
     public void saveAsImage(String fileName) {
         // TODO: ask for out resolution
         int widthOut = this.getWidth();
         int heightOut = this.getHeight();
-        
-        // To increase the resolution, we have to modify the viewport
-        
-        // TEMP
-        Color bg = this.getBackground();
-    
-        BufferedImage image = new BufferedImage(widthOut, heightOut, BufferedImage.TYPE_INT_ARGB);
-        
-        Graphics2D graphics = image.createGraphics();
-        
-        // TEMP
-        graphics.setColor(bg);
-        graphics.fillRect(0, 0, widthOut, heightOut);
-        
-        // We have to impose a bbox !!!
-        this.getRenderingManager().copyTo(graphics);
-        
-        // TODO ask to paint overlays
-        this.paintOverlays(graphics);
-        graphics.dispose();
-        try {
-            ImgUtil.saveImage(image, fileName);
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-        
-        String wld = FilenameUtils.removeExtension(fileName) + ".wld";
-        File file = new File(wld);
-
-        try {
-            // if file doesnt exists, then create it
-            if (!file.exists()) {
-                    file.createNewFile();
-            }
-            FileWriter fw = new FileWriter(file.getAbsoluteFile());
-            BufferedWriter bw = new BufferedWriter(fw);
-            bw.write(Double.toString(1.0 / this.getViewport().getModelToViewTransform().getScaleX()));
-            bw.newLine();
-            bw.write(Double.toString(0.0));
-            bw.newLine();
-            bw.write(Double.toString(0.0));
-            bw.newLine();
-            bw.write(Double.toString(1.0 / this.getViewport().getModelToViewTransform().getScaleY()));
-            bw.newLine();
-            bw.write(Double.toString(this.getViewport().getViewOrigin().getX()));
-            bw.newLine();
-            bw.write(Double.toString(this.getViewport().getViewOrigin().getY() 
-                    - (this.getHeight() / this.getViewport().getModelToViewTransform().getScaleY())));
-            bw.newLine();
-            bw.close();
-        } catch (IOException | NoninvertibleTransformException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        this.saveAsImage(fileName, widthOut, heightOut, false);
     }
 
     private boolean recording = false;
@@ -378,9 +397,8 @@ public class LayerViewAwtPanel extends LayerViewPanel {
      * (non-Javadoc)
      * 
      * @see
-     * fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#layerOrderChanged(int
-     * ,
-     * int)
+     * fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#layerOrderChanged
+     * (int , int)
      */
     @Override
     public void layerOrderChanged(int oldIndex, int newIndex) {

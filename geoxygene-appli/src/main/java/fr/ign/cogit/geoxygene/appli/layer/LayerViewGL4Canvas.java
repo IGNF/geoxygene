@@ -20,9 +20,12 @@ import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.GL11;
@@ -103,12 +106,12 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements ComponentLi
         // application without message error)
         // PixelFormat pixelFormat = new PixelFormat().withSamples(4);
         // this.setPixelFormat(pixelFormat);
-        
+
     }
 
     @Override
     protected void initGL() {
-        //System.out.println("initGL");
+        // System.out.println("initGL");
         super.initGL();
         glViewport(0, 0, this.getWidth(), this.getHeight());
         this.updateFBODimensions();
@@ -217,24 +220,27 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements ComponentLi
                 this.drawBackground(this.getWidth(), this.getHeight());
             }
             this.getGlContext().setSharedUniform("time", this.time_counter++);
-            //RENDER EVERYTHING
+            // RENDER EVERYTHING
             this.getParentPanel().getRenderingManager().renderAll();
-            
-            if (!this.isQuickRendering()) {
-                // Apply the antialiazing and copy the FBO texture into the
-                // backbuffer.
-                this.drawFBOPingPongInBackBuffer();
-                if (this.doPaintOverlay()) {
-                    RenderingStatistics.startOverlayRendering();
-                    this.glPaintOverlays();
-                    RenderingStatistics.endOverlayRendering();
+            if (!offScreenImgRendering) {
+                if (!this.isQuickRendering()) {
+                    // Apply the antialiazing and copy the FBO texture into the
+                    // backbuffer.
+                    this.drawFBOPingPongInBackBuffer();
+                    if (this.doPaintOverlay()) {
+                        RenderingStatistics.startOverlayRendering();
+                        this.glPaintOverlays();
+                        RenderingStatistics.endOverlayRendering();
+                    }
+                    this.getGlContext().setSharedUniform(GeoxygeneConstants.GL_VarName_FboWidth, this.getFBOImageWidth());
+                    this.getGlContext().setSharedUniform(GeoxygeneConstants.GL_VarName_FboHeight, this.getFBOImageHeight());
                 }
-                this.getGlContext().setSharedUniform(GeoxygeneConstants.GL_VarName_FboWidth, this.getFBOImageWidth());
-                this.getGlContext().setSharedUniform(GeoxygeneConstants.GL_VarName_FboHeight, this.getFBOImageHeight());
+                // Backbuffer to FrontBuffer
+                this.swapBuffers();
+            } else {
+                drawOffscreenImage();
+                this.offScreenImgRendering = false;
             }
-
-            // Backbuffer to FrontBuffer
-            this.swapBuffers();
             RenderingStatistics.endRendering();
             RenderingStatistics.printStatistics(System.err);
         } catch (Exception e) {
@@ -242,6 +248,42 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements ComponentLi
             e.printStackTrace();
         }
 
+    }
+
+    private void drawOffscreenImage() {
+        BufferedImage bimg = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        if (!this.getParentPanel().getRenderingManager().getLayers().isEmpty()) {
+            int w = bimg.getWidth();
+            int h = bimg.getHeight();
+            int[] pixels = new int[w * h];
+            ByteBuffer pixBuffer = ByteBuffer.allocateDirect(4 * w * h).order(ByteOrder.nativeOrder());
+            GL11.glReadPixels(0, 0, w, h, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, pixBuffer);
+            int bindex;
+            for (int i = 0; i < pixels.length; i++) {
+                bindex = i * 4;
+                pixels[i] = ((pixBuffer.get(bindex+3) << 24)) + ((pixBuffer.get(bindex) << 16)) + ((pixBuffer.get(bindex + 1) << 8)) + ((pixBuffer.get(bindex + 2) << 0));
+            }
+            try {
+                // Create a BufferedImage with the RGB pixels then save as PNG
+                bimg.setRGB(0, 0, w, h, pixels, 0, w);
+            } catch (Exception e) {
+                System.out.println("ScreenShot() exception: " + e);
+                e.printStackTrace();
+                return;
+            }
+            //Flip the image
+            BufferedImage flipped = new BufferedImage(bimg.getWidth(), bimg.getHeight(), bimg.getType());
+            AffineTransform tran = AffineTransform.getTranslateInstance(0, bimg.getHeight());
+            AffineTransform flip = AffineTransform.getScaleInstance(1d, -1d);
+            tran.concatenate(flip);
+            Graphics2D g = flipped.createGraphics();
+            g.setColor(this.getBackgroundColor());
+            g.fillRect ( 0, 0, bimg.getWidth(), bimg.getHeight() );
+            g.setTransform(tran);
+            g.drawImage(bimg, 0, 0, null);
+            g.dispose();
+            this.offscreenRenderedImg = flipped;
+        }
     }
 
     /**
@@ -323,7 +365,6 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements ComponentLi
         GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
         GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
 
-
         // Setup texture scaling filtering
         GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
         GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
@@ -340,7 +381,7 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements ComponentLi
         for (GLMesh mesh : this.getScreenQuad().getMeshes()) {
             GL11.glDrawElements(mesh.getGlType(), mesh.getLastIndex() - mesh.getFirstIndex() + 1, GL11.GL_UNSIGNED_INT, mesh.getFirstIndex() * (Integer.SIZE / 8));
         }
-        this.getScreenQuad().setColor(new Color(1f, 0f, 1f, 1f));
+        this.getScreenQuad().setColor(this.getBackgroundColor());
         GLTools.glCheckError("background textured quad");
         glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
         GL30.glBindVertexArray(0); // unbind VAO
@@ -463,7 +504,7 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements ComponentLi
      * 
      * @throws GLException
      */
-    
+
     // New version, try to optimize this time ...
     // TODO : do the optimization
     public void glPaintOverlays() throws GLException {
@@ -474,23 +515,22 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements ComponentLi
 
             this.pixels = new int[this.bg.getWidth() * this.bg.getHeight()];
         }
-        
+
         Graphics2D g = this.bg.createGraphics();
         g.setComposite(AlphaComposite.Clear);
         g.setColor(Color.red);
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
-        
+
         Composite fade = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f);
         g.setComposite(fade);
         this.parentPanel.paintOverlays(g);
         this.bg.getRGB(0, 0, this.bg.getWidth(), this.bg.getHeight(), this.pixels, 0, this.bg.getWidth());
         this.buffer.clear();
-        
-        // TODO : delete that crap, please 
-        // To be replaced by that, pb it is reversed and ABGR    
-        //buffer.asIntBuffer().put(IntBuffer.wrap(pixels));
-        
-        
+
+        // TODO : delete that crap, please
+        // To be replaced by that, pb it is reversed and ABGR
+        // buffer.asIntBuffer().put(IntBuffer.wrap(pixels));
+
         for (int y = this.bg.getHeight() - 1; y >= 0; y--) {
             for (int x = 0; x < this.bg.getWidth(); x++) {
                 int pixel = this.pixels[y * this.bg.getWidth() + x];
@@ -548,7 +588,7 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements ComponentLi
         GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 
         GLTools.glCheckError("before Overlay drawing textured quad");
-        
+
         // draw the background and legend and other stuff
         LwjglLayerRenderer.drawComplex(LayerViewGLPanel.getScreenQuad());
 
@@ -560,7 +600,6 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements ComponentLi
         glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
 
     }
-
 
     /*
      * ################ GL DRAWING METHODS ##########
@@ -894,9 +933,11 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements ComponentLi
             program.setUniform(GeoxygeneConstants.GL_VarName_FBOForeGroundTexture, 1);
             this.currentFboPingPongIndex = 2;
         }
-//        GLTools.glCheckError("FBO bind color texture");
-//        program.setUniform(GeoxygeneConstants.GL_VarName_AntialiasingSize, (int) this.getGlContext().getSharedUniform(GeoxygeneConstants.GL_VarName_AntialiasingSize));
-//        GLTools.glCheckError("FBO ping pong end");
+        // GLTools.glCheckError("FBO bind color texture");
+        // program.setUniform(GeoxygeneConstants.GL_VarName_AntialiasingSize,
+        // (int)
+        // this.getGlContext().getSharedUniform(GeoxygeneConstants.GL_VarName_AntialiasingSize));
+        // GLTools.glCheckError("FBO ping pong end");
         logger.debug("drawInPingPong START allocated mem = " + Runtime.getRuntime().totalMemory() / 1024. + " used");
     }
 

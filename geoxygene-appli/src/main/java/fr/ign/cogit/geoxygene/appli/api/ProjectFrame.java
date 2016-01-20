@@ -157,9 +157,27 @@ public interface ProjectFrame {
      * 
      * @param fileName
      *            the image file to save into.
+     * @param doSaveWorldFile 
+     * @param h : the height of the image 
+     * @param w : the width of the image
+     * @param  doSaveWorldFile : if set to True, save the georeferencing informations in a WorldFile
+     *         
+     */
+    public abstract void saveAsImage(String fileName, int w, int h, boolean doSaveWorldFile);
+
+    
+    /**
+     * Save the map into an image file. The file format is determined by the
+     * given file extension. If there is none or if the given extension is
+     * unsupported, the image is saved in PNG format.
+     * 
+     * @param fileName
+     *            the image file to save into.      
+     *@deprecated Use {@link #saveAsImage(String, int, int, boolean)} instead.         
      */
     public abstract void saveAsImage(String fileName);
-
+    
+    
     /**
      * Saves a layer into an ESRI Shapefile
      * 
@@ -249,5 +267,6 @@ public interface ProjectFrame {
     public Set<Object> getSldEditionOwners();
 
     public void clearAllSldEditionOwner();
+
 
 }

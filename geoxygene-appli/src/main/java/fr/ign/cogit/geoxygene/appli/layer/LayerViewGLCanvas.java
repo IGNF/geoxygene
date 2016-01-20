@@ -31,23 +31,29 @@ import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
 
 import org.apache.log4j.Logger;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.AWTGLCanvas;
 
+import fr.ign.cogit.geoxygene.appli.GeoxygeneConstants;
 import fr.ign.cogit.geoxygene.appli.gl.GLContext;
 import fr.ign.cogit.geoxygene.style.BackgroundDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 
 public abstract class LayerViewGLCanvas extends AWTGLCanvas implements
         ComponentListener, MouseListener, MouseMotionListener {
-
+    
     private static final long serialVersionUID = 1095977885262623231L; // Serializable UID
     private static final Color DEFAULT_BACKGROUND_COLOR= Color.WHITE; 
     protected LayerViewGLPanel parentPanel = null;
     private final boolean doPaintOverlay = true;
     private Color activeBackgroundColor;
+   
+    protected BufferedImage offscreenRenderedImg;
+    protected boolean offScreenImgRendering = false;
+
     
     
     protected static Logger logger = Logger.getLogger(LayerViewGLCanvas.class
@@ -182,4 +188,25 @@ public abstract class LayerViewGLCanvas extends AWTGLCanvas implements
         return this.activeBackgroundColor;
     }
 
+
+    public void renderToImage() {
+        this.offScreenImgRendering = true;
+    }
+
+    public BufferedImage getOffscreenImage() {
+        return this.offscreenRenderedImg;
+    }
+
+    @Override
+    public void setSize(int width, int height) {
+        super.setSize(width, height);
+        try {
+            this.getGlContext().setSharedUniform(GeoxygeneConstants.GL_VarName_ScreenWidth, this.getWidth());
+            this.getGlContext().setSharedUniform(GeoxygeneConstants.GL_VarName_ScreenHeight, this.getHeight());
+        } catch (GLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    
 }

@@ -45,7 +45,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import utils.Pair;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -64,6 +63,7 @@ import fr.ign.cogit.geoxygene.style.texture.ProbabilistTileDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.TileDistributionTexture;
 import fr.ign.cogit.geoxygene.style.texture.TileDistributionTexture.DistributionManagementType;
 import fr.ign.cogit.geoxygene.style.texture.TileDistributionTexture.TileBlendingType;
+import fr.ign.cogit.geoxygene.util.Pair;
 import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 import fr.ign.cogit.geoxygene.util.gl.Sample;
 import fr.ign.cogit.geoxygene.util.gl.Tile;
@@ -361,7 +361,7 @@ public class TileDistributionTextureTask extends AbstractTextureTask<BasicTextur
             this.monitorMemory("after setting dimension");
             TextureImageTileChooser tileChooser = new TextureImageTileChooser(this.textureDescriptor.getDistributionManagement());
             for (Pair<TileProbability, Tile> pair : this.tilesToBeApplied) {
-                tileChooser.addTile(pair.first(), pair.second());
+                tileChooser.addTile(pair.getU(), pair.getV());
             }
             this.monitorMemory("after tile chooser creation");
             if (this.isStopRequested()) {

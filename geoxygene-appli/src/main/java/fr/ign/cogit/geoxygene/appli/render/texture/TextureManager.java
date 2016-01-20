@@ -114,21 +114,23 @@ public class TextureManager {
     }
 
     public static GLTexture getTexture(URI path) {
-        GLTexture t = textureMap.get(path);
-        try {
-            if (t == null) {
-                TextureTask<? extends GLTexture> task;
-                task = TextureManager.buildTexture(path.toURL());
-                task.start();
-                TaskManager.waitForCompletion(task);
-                t = textureMap.get(path);
+        synchronized (textureMap) {
+            GLTexture t = textureMap.get(path);
+            try {
+                if (t == null) {
+                    TextureTask<? extends GLTexture> task;
+                    task = TextureManager.buildTexture(path.toURL());
+                    task.start();
+                    TaskManager.waitForCompletion(task);
+                    t = textureMap.get(path);
+                }
+            } catch (MalformedURLException | URISyntaxException e1) {
+                e1.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        } catch (MalformedURLException | URISyntaxException e1) {
-            e1.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            return t;
         }
-        return t;
     }
 
     /**

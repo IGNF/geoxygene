@@ -41,15 +41,13 @@ import fr.ign.cogit.geoxygene.style.Layer;
  * 
  * @author JeT
  */
-public abstract class LayerViewPanel extends JComponent implements Printable,
-        SldListener, fr.ign.cogit.geoxygene.style.SldListener {
+public abstract class LayerViewPanel extends JComponent implements Printable, SldListener, fr.ign.cogit.geoxygene.style.SldListener {
 
     /** Serializable UID. */
     private static final long serialVersionUID = -1275390035288869114L;
 
     /** The logger. */
-    private static Logger LOGGER = Logger.getLogger(LayerViewPanel.class
-            .getName());
+    private static Logger LOGGER = Logger.getLogger(LayerViewPanel.class.getName());
 
     /**
      * Taille d'un pixel en mètres (la longueur d'un coté de pixel de l'écran)
@@ -57,8 +55,7 @@ public abstract class LayerViewPanel extends JComponent implements Printable,
      * à partir de la résolution de l'écran en DPI. Par exemple si la résolution
      * est 90DPI, c'est: 90 pix/inch = 1/90 inch/pix = 0.0254/90 meter/pix.
      */
-    private final static double METERS_PER_PIXEL = 0.02540005 / Toolkit
-            .getDefaultToolkit().getScreenResolution();
+    private final static double METERS_PER_PIXEL = 0.02540005 / Toolkit.getDefaultToolkit().getScreenResolution();
 
     private boolean recording = false;
     private String recordFileName = "";
@@ -137,38 +134,34 @@ public abstract class LayerViewPanel extends JComponent implements Printable,
     }
 
     protected void paintGeometryEdition(Graphics g) {
-        Mode mode = this.getProjectFrame().getMainFrame().getMode()
-                .getCurrentMode();
+        Mode mode = this.getProjectFrame().getMainFrame().getMode().getCurrentMode();
         g.setColor(new Color(1f, 0f, 0f));
         if (mode instanceof AbstractGeometryEditMode) {
             IDirectPositionList points = new DirectPositionList();
             points.addAll(((AbstractGeometryEditMode) mode).getPoints());
             if (mode instanceof CreateLineStringMode) {
                 if (!points.isEmpty()) {
-                    points.add(((AbstractGeometryEditMode) mode)
-                            .getCurrentPoint());
-                    RenderUtil.draw(new GM_LineString(points),
-                            this.getViewport(), (Graphics2D) g, 1.0f);// FIXME
-                                                                      // OPACITY
-                                                                      // FIX
+                    points.add(((AbstractGeometryEditMode) mode).getCurrentPoint());
+                    RenderUtil.draw(new GM_LineString(points), this.getViewport(), (Graphics2D) g, 1.0f);// FIXME
+                                                                                                         // OPACITY
+                                                                                                         // FIX
                 }
             } else {
                 if (mode instanceof CreatePolygonMode) {
                     if (!points.isEmpty()) {
                         IDirectPosition start = points.get(0);
-                        points.add(((AbstractGeometryEditMode) mode)
-                                .getCurrentPoint());
+                        points.add(((AbstractGeometryEditMode) mode).getCurrentPoint());
                         if (points.size() > 2) {
                             points.add(start);
-                            RenderUtil.draw(new GM_Polygon(new GM_LineString(
-                                    points)), this.getViewport(),
-                                    (Graphics2D) g, 1.0f);// FIXME OPACITY FIX
+                            RenderUtil.draw(new GM_Polygon(new GM_LineString(points)), this.getViewport(), (Graphics2D) g, 1.0f);// FIXME
+                                                                                                                                 // OPACITY
+                                                                                                                                 // FIX
                         } else {
                             if (points.size() == 2) {
                                 points.add(start);
-                                RenderUtil.draw(new GM_LineString(points),
-                                        this.getViewport(), (Graphics2D) g,
-                                        1.0f);// FIXME OPACITY FIX
+                                RenderUtil.draw(new GM_LineString(points), this.getViewport(), (Graphics2D) g, 1.0f);// FIXME
+                                                                                                                     // OPACITY
+                                                                                                                     // FIX
                             }
                         }
                     }
@@ -276,19 +269,23 @@ public abstract class LayerViewPanel extends JComponent implements Printable,
      * 
      * @param fileName
      *            the image file to save into.
+     * @deprecated Use {@link #saveAsImage(String, int, int) instead}
      */
     public abstract void saveAsImage(String fileName);
 
-    // public abstract void layerAdded(Layer l);
-
-    // public abstract void layerOrderChanged(int oldIndex, int newIndex);
-
-    // public abstract void layersRemoved(Collection<Layer> layers);
+    /**
+     * Save the map into an image file. The file format is determined by the
+     * given file extension. If there is none or if the given extension is
+     * unsupported, the image is saved in PNG format.
+     * 
+     * @param fileName
+     *            the image file to save into.
+     * @param doSaveWorldFile : if set to True, save the georeferencing informations in a World File
+     */
+    public abstract void saveAsImage(String fileName, int width, int height, boolean doSaveWorldFile);
 
     public abstract void dispose();
 
-    // @Override
-    // public abstract void repaint();
 
     /**
      * Repaint the panel using the repaint method of the super class
@@ -299,8 +296,7 @@ public abstract class LayerViewPanel extends JComponent implements Printable,
     public abstract void superRepaint();
 
     /********************************* Paint listener management */
-    private final Set<PaintListener> overlayListeners = new HashSet<PaintListener>(
-            0);
+    private final Set<PaintListener> overlayListeners = new HashSet<PaintListener>(0);
 
     public void addPaintListener(PaintListener listener) {
         this.overlayListeners.add(listener);
@@ -335,8 +331,7 @@ public abstract class LayerViewPanel extends JComponent implements Printable,
      */
     public void reset() {
         // default behaviour is to reset renderers.
-        for (LayerRenderer layerRenderer : this.getRenderingManager()
-                .getRenderers()) {
+        for (LayerRenderer layerRenderer : this.getRenderingManager().getRenderers()) {
             layerRenderer.reset();
         }
         this.repaint();

@@ -31,8 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import utils.Pair;
 import fr.ign.cogit.geoxygene.style.texture.TileDistributionTexture.DistributionManagementType;
+import fr.ign.cogit.geoxygene.util.Pair;
 import fr.ign.cogit.geoxygene.util.gl.Sample;
 import fr.ign.cogit.geoxygene.util.gl.Tile;
 
@@ -78,7 +78,7 @@ public class TextureImageTileChooser implements TileChooser {
         double[] weightSum = new double[this.tilesToBeApplied.size()];
         for (int n = 0; n < this.tilesToBeApplied.size(); n++) {
             Pair<TileProbability, Tile> pair = this.tilesToBeApplied.get(n);
-            sumWeight += pair.first().getWeight(
+            sumWeight += pair.getU().getWeight(
                     sample.getLocation().getX(), sample.getLocation().getY());
             weightSum[n] = sumWeight;
         }
@@ -89,7 +89,7 @@ public class TextureImageTileChooser implements TileChooser {
         int n = 0;
         while (n < this.tilesToBeApplied.size()) {
             if (randomValue < weightSum[n]) {
-                return this.tilesToBeApplied.get(n).second();
+                return this.tilesToBeApplied.get(n).getV();
             }
             n++;
         }

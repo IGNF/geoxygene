@@ -192,6 +192,9 @@ public class DisplayablePoint extends AbstractDisplayable {
                 URI uri = new URI(eg.getHref());
                 BasicTexture t = (BasicTexture) TextureManager.getTexture(uri);
                 img = t.getTextureImage();
+                if(img == null){
+                    System.out.println("The texture "+uri+" is NULL...");
+                }
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }

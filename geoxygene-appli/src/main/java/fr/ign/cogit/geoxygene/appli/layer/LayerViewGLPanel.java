@@ -9,11 +9,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterException;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -33,9 +36,9 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
-
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
@@ -141,7 +144,6 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
             }
         }
     }
-
 
     public StyledLayerDescriptor getSld() {
         return this.getProjectFrame().getSld();
@@ -492,8 +494,58 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
 
     @Override
     public void saveAsImage(final String fileName) {
-        logger.error("LayerViewGLPanel::saveAsImage(...) not implemented yet");
+        this.saveAsImage(fileName, this.getWidth(), this.getHeight(), false);
+    }
 
+    @Override
+    public void saveAsImage(String fileName, int width, int height, boolean doSaveWorldFile) {
+        int tmpw = this.getWidth();
+        int tmph = this.getHeight();
+        // We save the old extent to force the Viewport to keep the old
+        // window in world coordinates.
+        IEnvelope env = this.getViewport().getEnvelopeInModelCoordinates();
+        // Artificially resize the canvas to the image dimensions.
+        this.setSize(width, height);
+        this.glCanvas.setSize(width, height);
+        try {
+            // We zoom to the old extent in the resized canvas.
+            this.getViewport().zoom(env);
+        } catch (NoninvertibleTransformException e2) {
+            logger.error("In Image Export : failed to zoom in the correct extent.");
+            e2.printStackTrace();
+        }
+        // Render and save the result in an image.
+        this.glCanvas.renderToImage();
+        this.paintImmediately(this.getBounds());
+        try {
+            ImageIO.write(this.glCanvas.offscreenRenderedImg, "png", new File(fileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+        // Save the World File if needed
+        if (doSaveWorldFile) {
+            String wld = FilenameUtils.removeExtension(fileName) + ".wld";
+            try {
+                AffineTransform t = this.getViewport().getModelToViewTransform();
+                fr.ign.cogit.geoxygene.util.conversion.WorldFileWriter.write(new File(wld), t.getScaleX(), t.getScaleY(), this.getViewport().getViewOrigin().getX(), this.getViewport().getViewOrigin()
+                        .getY(), this.getHeight());
+            } catch (NoninvertibleTransformException e) {
+                logger.error("Failed to save the world file associated with the image file " + fileName);
+                e.printStackTrace();
+            }
+        }
+        // Finally, rollback the canvas to its original size.
+        this.glCanvas.setSize(tmpw, tmph);
+        this.setSize(tmpw, tmph);
+        try {
+            // Zoom back to the "normal" extent
+            this.getViewport().zoom(env);
+        } catch (NoninvertibleTransformException e2) {
+            logger.error("In Image Export : failed to zoom back to the original LayerViewPanel extent.");
+            e2.printStackTrace();
+            return;
+        }
     }
 
     @Override
@@ -652,4 +704,5 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
         LayerViewGLPanel.screenQuad.setColor(Color.blue);
         LayerViewGLPanel.screenQuad.setOverallOpacity(0.5);
     }
+
 }
