@@ -32,6 +32,7 @@ public class LoadObjectSelection extends AbstractAction {
   public void actionPerformed(ActionEvent e) {
     JFileChooser fc = new JFileChooser();
     fc.setFileFilter(new XMLFileFilter());
+    fc.setCurrentDirectory(new File("src/main/resources"));
     fc.setName("Choose the XML file that contains the selection");
     int returnVal = fc.showOpenDialog(appli.getMainFrame().getGui());
     if (returnVal != JFileChooser.APPROVE_OPTION) {

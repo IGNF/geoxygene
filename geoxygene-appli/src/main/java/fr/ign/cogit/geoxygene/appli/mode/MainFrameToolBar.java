@@ -34,7 +34,9 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.NoninvertibleTransformException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
@@ -45,6 +47,7 @@ import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.api.MainFrame;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
@@ -58,7 +61,7 @@ import fr.ign.cogit.geoxygene.style.Layer;
  * @author Julien Perret
  */
 public class MainFrameToolBar implements ContainerListener, KeyListener,
-MouseListener, MouseWheelListener, MouseMotionListener {
+    MouseListener, MouseWheelListener, MouseMotionListener {
 
   /** Logger. */
   static final Logger LOGGER = Logger.getLogger(MainFrameToolBar.class
@@ -91,7 +94,7 @@ MouseListener, MouseWheelListener, MouseMotionListener {
     // ZoomToFullExtent
     ImageIcon zoomToFullExtentIcon = new ImageIcon(
         MainFrameToolBar.class
-        .getResource("/images/toolbar/zoomToFullExtent.png"));
+            .getResource("/images/toolbar/zoomToFullExtent.png"));
     JButton zoomToFullExtentButton = new JButton(zoomToFullExtentIcon);
     zoomToFullExtentButton.addActionListener(new ActionListener() {
       @Override
@@ -135,7 +138,7 @@ MouseListener, MouseWheelListener, MouseMotionListener {
       }
     });
     refreshButton
-    .setToolTipText(I18N.getString("ModeSelector.refresh.ToolTip")); //$NON-NLS-1$
+        .setToolTipText(I18N.getString("ModeSelector.refresh.ToolTip")); //$NON-NLS-1$
     this.toolBar.add(refreshButton);
 
     this.toolBar.addSeparator();
@@ -148,7 +151,7 @@ MouseListener, MouseWheelListener, MouseMotionListener {
     // Deselection
     ImageIcon deleteSelectionIcon = new ImageIcon(
         MainFrameToolBar.class
-        .getResource("/images/icons/16x16/deselection.png"));
+            .getResource("/images/icons/16x16/deselection.png"));
     JButton deleteSelectionButton = new JButton(deleteSelectionIcon);
     deleteSelectionButton.addActionListener(new ActionListener() {
       @Override
@@ -167,6 +170,34 @@ MouseListener, MouseWheelListener, MouseMotionListener {
     });
     deleteSelectionButton.setToolTipText(I18N.getString("Deselection.ToolTip"));
     this.toolBar.add(deleteSelectionButton);
+    this.toolBar.addSeparator();
+    ImageIcon deleteIcon = new ImageIcon(
+        MainFrameToolBar.class.getResource("/images/icons/16x16/trash.png"));
+    JButton deleteFeatureButton = new JButton(deleteIcon);
+    deleteFeatureButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        LayerViewPanel lvPanel = MainFrameToolBar.this.getMainFrame()
+            .getSelectedProjectFrame().getLayerViewPanel();
+        LOGGER.debug("Number of selected features before = "
+            + lvPanel.getSelectedFeatures().size());
+        Set<IFeature> selectedFeatures = new HashSet<>();
+        selectedFeatures.addAll(lvPanel.getSelectedFeatures());
+
+        lvPanel.getSelectedFeatures().removeAll(lvPanel.getSelectedFeatures());
+        LOGGER.debug("Number of selected features after = "
+            + lvPanel.getSelectedFeatures().size());
+        for (IFeature feat : selectedFeatures) {
+          Layer layer = MainFrameToolBar.this.getMainFrame()
+              .getSelectedProjectFrame().getLayerFromFeature(feat);
+          layer.getFeatureCollection().remove(feat);
+        }
+        lvPanel.getRenderingManager().render(
+            lvPanel.getRenderingManager().getSelectionRenderer());
+        lvPanel.superRepaint();
+      }
+    });
+    this.toolBar.add(deleteFeatureButton);
 
     this.toolBar.addSeparator();
 
@@ -207,7 +238,7 @@ MouseListener, MouseWheelListener, MouseMotionListener {
     JButton newProjectFrameButton = new JButton(
         new ImageIcon(
             MainFrameToolBar.class
-            .getResource("/images/icons/application_add.png"))); //$NON-NLS-1$
+                .getResource("/images/icons/application_add.png"))); //$NON-NLS-1$
     newProjectFrameButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
@@ -243,7 +274,7 @@ MouseListener, MouseWheelListener, MouseMotionListener {
   public final JToolBar getToolBar() {
     return this.toolBar;
   }
-  
+
   public final List<Mode> getModes() {
     return this.modes;
   }
