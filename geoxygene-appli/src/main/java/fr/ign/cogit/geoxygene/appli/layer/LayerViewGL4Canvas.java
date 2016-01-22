@@ -222,25 +222,26 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements ComponentLi
             this.getGlContext().setSharedUniform("time", this.time_counter++);
             // RENDER EVERYTHING
             this.getParentPanel().getRenderingManager().renderAll();
-            if (!offScreenImgRendering) {
-                if (!this.isQuickRendering()) {
-                    // Apply the antialiazing and copy the FBO texture into the
-                    // backbuffer.
-                    this.drawFBOPingPongInBackBuffer();
-                    if (this.doPaintOverlay()) {
-                        RenderingStatistics.startOverlayRendering();
-                        this.glPaintOverlays();
-                        RenderingStatistics.endOverlayRendering();
-                    }
-                    this.getGlContext().setSharedUniform(GeoxygeneConstants.GL_VarName_FboWidth, this.getFBOImageWidth());
-                    this.getGlContext().setSharedUniform(GeoxygeneConstants.GL_VarName_FboHeight, this.getFBOImageHeight());
+            if (!this.isQuickRendering()) {
+                // Apply the antialiazing and copy the FBO texture into the
+                // backbuffer.
+                this.drawFBOPingPongInBackBuffer();
+                if (this.doPaintOverlay()) {
+                    RenderingStatistics.startOverlayRendering();
+                    this.glPaintOverlays();
+                    RenderingStatistics.endOverlayRendering();
                 }
-                // Backbuffer to FrontBuffer
-                this.swapBuffers();
-            } else {
+                this.getGlContext().setSharedUniform(GeoxygeneConstants.GL_VarName_FboWidth, this.getFBOImageWidth());
+                this.getGlContext().setSharedUniform(GeoxygeneConstants.GL_VarName_FboHeight, this.getFBOImageHeight());
+            }
+            //Save to img if necessary
+            if (this.offScreenImgRendering) {
                 drawOffscreenImage();
                 this.offScreenImgRendering = false;
             }
+            // Backbuffer to FrontBuffer
+            this.swapBuffers();
+            
             RenderingStatistics.endRendering();
             RenderingStatistics.printStatistics(System.err);
         } catch (Exception e) {
@@ -261,7 +262,7 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements ComponentLi
             int bindex;
             for (int i = 0; i < pixels.length; i++) {
                 bindex = i * 4;
-                pixels[i] = ((pixBuffer.get(bindex+3) << 24)) + ((pixBuffer.get(bindex) << 16)) + ((pixBuffer.get(bindex + 1) << 8)) + ((pixBuffer.get(bindex + 2) << 0));
+                pixels[i] = ((pixBuffer.get(bindex + 3) << 24)) + ((pixBuffer.get(bindex) << 16)) + ((pixBuffer.get(bindex + 1) << 8)) + ((pixBuffer.get(bindex + 2) << 0));
             }
             try {
                 // Create a BufferedImage with the RGB pixels then save as PNG
@@ -271,14 +272,14 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements ComponentLi
                 e.printStackTrace();
                 return;
             }
-            //Flip the image
+            // Flip the image
             BufferedImage flipped = new BufferedImage(bimg.getWidth(), bimg.getHeight(), bimg.getType());
             AffineTransform tran = AffineTransform.getTranslateInstance(0, bimg.getHeight());
             AffineTransform flip = AffineTransform.getScaleInstance(1d, -1d);
             tran.concatenate(flip);
             Graphics2D g = flipped.createGraphics();
             g.setColor(this.getBackgroundColor());
-            g.fillRect ( 0, 0, bimg.getWidth(), bimg.getHeight() );
+            g.fillRect(0, 0, bimg.getWidth(), bimg.getHeight());
             g.setTransform(tran);
             g.drawImage(bimg, 0, 0, null);
             g.dispose();
@@ -969,4 +970,10 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements ComponentLi
                 || this.getParentPanel().useWireframe();
     }
 
+    @Override
+    public void setSize(int width, int height) {
+        super.setSize(width, height);
+        this.updateFBODimensions();
+        this.updateScreenSizeSharedUniforms();
+    }
 }

@@ -516,35 +516,35 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
         }
         // Render and save the result in an image.
         this.glCanvas.renderToImage();
-        this.paintImmediately(this.getBounds());
+        this.glCanvas.doPaint();
         try {
             ImageIO.write(this.glCanvas.offscreenRenderedImg, "png", new File(fileName));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-        // Save the World File if needed
-        if (doSaveWorldFile) {
-            String wld = FilenameUtils.removeExtension(fileName) + ".wld";
-            try {
+
+            // Save the World File if needed
+            if (doSaveWorldFile) {
+                String wld = FilenameUtils.removeExtension(fileName) + ".wld";
                 AffineTransform t = this.getViewport().getModelToViewTransform();
                 fr.ign.cogit.geoxygene.util.conversion.WorldFileWriter.write(new File(wld), t.getScaleX(), t.getScaleY(), this.getViewport().getViewOrigin().getX(), this.getViewport().getViewOrigin()
                         .getY(), this.getHeight());
-            } catch (NoninvertibleTransformException e) {
-                logger.error("Failed to save the world file associated with the image file " + fileName);
-                e.printStackTrace();
             }
-        }
-        // Finally, rollback the canvas to its original size.
-        this.glCanvas.setSize(tmpw, tmph);
-        this.setSize(tmpw, tmph);
-        try {
-            // Zoom back to the "normal" extent
-            this.getViewport().zoom(env);
-        } catch (NoninvertibleTransformException e2) {
-            logger.error("In Image Export : failed to zoom back to the original LayerViewPanel extent.");
-            e2.printStackTrace();
-            return;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoninvertibleTransformException e) {
+            logger.error("Failed to save the world file associated with the image file " + fileName);
+            e.printStackTrace();
+        } finally {
+            // Finally, rollback the canvas to its original size.
+            this.glCanvas.setSize(tmpw, tmph);
+            this.setSize(tmpw, tmph);
+            this.getProjectFrame().validate();
+            try {
+                // Zoom back to the "normal" extent
+                this.getViewport().zoom(env);
+            } catch (NoninvertibleTransformException e2) {
+                logger.error("In Image Export : failed to zoom back to the original LayerViewPanel extent.");
+                e2.printStackTrace();
+                return;
+            }
         }
     }
 

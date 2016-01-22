@@ -197,16 +197,7 @@ public abstract class LayerViewGLCanvas extends AWTGLCanvas implements
         return this.offscreenRenderedImg;
     }
 
-    @Override
-    public void setSize(int width, int height) {
-        super.setSize(width, height);
-        try {
-            this.getGlContext().setSharedUniform(GeoxygeneConstants.GL_VarName_ScreenWidth, this.getWidth());
-            this.getGlContext().setSharedUniform(GeoxygeneConstants.GL_VarName_ScreenHeight, this.getHeight());
-        } catch (GLException e) {
-            e.printStackTrace();
-        }
-    }
+
     
     
 }
