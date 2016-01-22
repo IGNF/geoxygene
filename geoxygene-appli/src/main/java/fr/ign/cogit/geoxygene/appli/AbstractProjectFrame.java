@@ -1,5 +1,6 @@
 package fr.ign.cogit.geoxygene.appli;
 
+import java.awt.Color;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -93,7 +94,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
         this.sld = new StyledLayerDescriptor();
         this.sld.addSldListener(this.getLayerViewPanel());
         this.sld.addSldListener(this.getLayerLegendPanel());
-        ResourcesManager.Root().registerResource(GeoxygeneConstants.GEOX_Const_CurrentStyleRootURIName, this.getClass().getClassLoader().getResource("/images/"), true);
+        ResourcesManager.Root().registerResource(GeoxygeneConstants.GEOX_Const_CurrentStyleRootURIName, this.getClass().getClassLoader().getResource("images/"), true);
     }
 
     @Override
@@ -220,6 +221,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
             this.splitPane.setOneTouchExpandable(true);
             this.splitPane.setDividerSize(DEFAULT_DIVIDER_SIZE);
             this.splitPane.setResizeWeight(0.);
+            this.splitPane.setBackground(Color.black);
         }
         return this.splitPane;
     }
@@ -728,7 +730,6 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
                     }
                     return;
                 } else {
-                    System.out.println("THE SLD IS VALID");
                     this.sld.setSource(sld.getSource());
                     ResourcesManager.Root().registerResource(GeoxygeneConstants.GEOX_Const_CurrentStyleRootURIName, this.sld.getSource(), true);
                 }

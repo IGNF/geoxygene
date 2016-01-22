@@ -28,6 +28,7 @@
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
@@ -36,12 +37,15 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 
@@ -133,7 +137,7 @@ public class TileDistributionTextureTask extends AbstractTextureTask<BasicTextur
      */
     private final void initTiles() throws IOException {
         for (ProbabilistTileDescriptor tileDesc : this.getTextureDescriptor().getTiles()) {
-            URL abs_location = tileDesc.getTextureURI().toURL();
+            URL abs_location = tileDesc.getLocation();
             Tile tile = DefaultTile.read(abs_location, tileDesc.getScaleFactor());
             DistanceTileProbability p = new DistanceTileProbability(this.texImage, tileDesc.getMinDistance(), tileDesc.getMaxDistance(), tileDesc.getInRangeProbability(),
                     tileDesc.getOutOfRangeProbability());

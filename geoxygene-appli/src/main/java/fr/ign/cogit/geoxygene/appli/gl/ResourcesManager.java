@@ -94,7 +94,7 @@ public class ResourcesManager {
         }
 
         if (resource == null) {
-            logger.error("Cannot register null resources");
+            logger.error("Cannot register null resource with name "+resource_name);
             return false;
         }
 
