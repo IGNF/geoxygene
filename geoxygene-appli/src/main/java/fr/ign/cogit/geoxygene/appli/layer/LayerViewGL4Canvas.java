@@ -26,6 +26,8 @@ import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import org.joda.time.LocalTime;
+
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.GL11;
@@ -219,7 +221,11 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements ComponentLi
                 GLTools.glClear(bgColor, GL11.GL_COLOR_BUFFER_BIT);
                 this.drawBackground(this.getWidth(), this.getHeight());
             }
-            this.getGlContext().setSharedUniform("time", this.time_counter++);
+            // this.getGlContext().setSharedUniform("time", this.time_counter++);
+            // Real time
+            // TODO: pb when changing day, but it's temporary ...
+            this.getGlContext().setSharedUniform("time", LocalTime.now().getMillisOfDay());
+            
             // RENDER EVERYTHING
             this.getParentPanel().getRenderingManager().renderAll();
             if (!this.isQuickRendering()) {
