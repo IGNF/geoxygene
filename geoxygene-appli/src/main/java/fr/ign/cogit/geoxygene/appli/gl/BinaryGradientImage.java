@@ -553,6 +553,20 @@ public class BinaryGradientImage{
                 }
             }
         }
+        
+        /// Uncomment these lines to save raw 
+//        // -distance field
+//        BufferedImage im = toBufferedImageDistanceHSV(texImage);
+//        //
+//        // -gradient direction 
+//        BufferedImage im = toBufferedImageGradientRGB(texImage);
+//        File outputfile = new File("/home/nmellado/saved.png");
+//        try {
+//          ImageIO.write(im, "png", outputfile);
+//        } catch (IOException e) {
+//          // TODO Auto-generated catch block
+//          e.printStackTrace();
+//        }
     }
 
     private static Point2d computeGradient(BinaryGradientImage image, int x,
@@ -1051,6 +1065,12 @@ public class BinaryGradientImage{
         return bi;
     }
 
+    
+    /**
+     * @brief Send normalized UV coordinates to HB components (HSB)
+     * @param image
+     * @return
+     */
     public static BufferedImage toBufferedImageUV(BinaryGradientImage image) {
         if (image == null) {
             return null;
@@ -1075,6 +1095,34 @@ public class BinaryGradientImage{
         }
         return bi;
     }
+    
+    /**
+     * @brief Send normalized pixel gradient coordinates to RG component (RGB)
+     * @param image
+     * @return
+     */
+    public static BufferedImage toBufferedImageGradientRGB(BinaryGradientImage image) {
+      if (image == null) {
+          return null;
+      }
+      image.invalidateUVBounds();
+      BufferedImage bi = new BufferedImage(image.getWidth(),
+              image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+      for (int y = 0; y < image.getHeight(); y++) {
+          for (int x = 0; x < image.getWidth(); x++) {
+              GradientPixel pixel = image.getPixel(x, y);
+              if (!pixel.in) {
+                  bi.setRGB(x, y, Color.black.getRGB());
+              } else {
+                double norm = pixel.vGradient.distance(new Point2d(0,0));
+                double u    = (pixel.vGradient.x / norm) * 0.5 + 0.5;
+                double v    = (pixel.vGradient.y / norm) * 0.5 + 0.5;
+                bi.setRGB(x, y, new Color((float)u,(float)v,0.f).getRGB());
+              }
+          }
+      }
+      return bi;
+  }
 
     public static BinaryGradientImage readBinaryGradientImage(File gradientFile)
             throws IOException {
