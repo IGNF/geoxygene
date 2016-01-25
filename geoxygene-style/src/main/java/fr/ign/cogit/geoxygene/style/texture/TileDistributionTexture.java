@@ -52,7 +52,7 @@ public class TileDistributionTexture extends Texture {
 
     
     @XmlElement(name = "Orientation")
-    private double orientation = Double.POSITIVE_INFINITY;
+    private double orientation = 0;
     
     @XmlElement(name = "Tile")
     private final List<ProbabilistTileDescriptor> tiles = new ArrayList<ProbabilistTileDescriptor>();
@@ -161,8 +161,7 @@ public class TileDistributionTexture extends Texture {
 
     
     /**
-     * 
-     * @return this.orientation the alignment angle.
+     * @return this.orientation the alignment angle in degrees.
      */
     public double getOrientation(){
         return this.orientation;
