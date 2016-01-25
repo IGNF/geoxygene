@@ -50,6 +50,10 @@ public class TileDistributionTexture extends Texture {
     @XmlElement(name = "MaxCoastlineLength")
     private double maxCoastlineLength = Double.POSITIVE_INFINITY;
 
+    
+    @XmlElement(name = "Orientation")
+    private double orientation = Double.POSITIVE_INFINITY;
+    
     @XmlElement(name = "Tile")
     private final List<ProbabilistTileDescriptor> tiles = new ArrayList<ProbabilistTileDescriptor>();
 
@@ -155,6 +159,16 @@ public class TileDistributionTexture extends Texture {
         EXACT, KEEP_OUTSIDE, CUT_OUTSIDE
     }
 
+    
+    /**
+     * 
+     * @return this.orientation the alignment angle.
+     */
+    public double getOrientation(){
+        return this.orientation;
+    }
+    
+    
     /*
      * (non-Javadoc)
      * 
@@ -239,6 +253,8 @@ public class TileDistributionTexture extends Texture {
         }
         return true;
     }
+    
+
 
     
 }
