@@ -55,7 +55,6 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.style.texture.BinaryGradientImageDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.TileDistributionTexture;
-import fr.ign.cogit.geoxygene.util.gl.GLTexture;
 import fr.ign.cogit.geoxygene.util.gl.Sample;
 
 /**
@@ -533,13 +532,6 @@ public class BinaryGradientImage{
         } else {
           int w = params.getWidth();
           int h = params.getHeight();
-          
-          // point used to start the distance field
-          Point source    = new Point(0,0);
-          if(params.orientationInRadians > 0 && params.orientationInRadians < Math.PI)
-            source.y = h;
-          if(params.orientationInRadians > Math.PI / 2. && params.orientationInRadians < 3. * Math.PI / 2.)
-            source.x = w;
 
           // normalized propagation direction
           Vector2d direction = new Vector2d(
@@ -550,9 +542,8 @@ public class BinaryGradientImage{
             for (int x = 0; x < w; x++) {
               GradientPixel pixel = gradientImage.getPixel(x, y);
               if (pixel.in) {
-                Vector2d pixelPos = new Vector2d(x-source.x, y-source.y);
-                // compute the orthogonal distance between pixelPos and the line passing by source and orthogonal to direction
-                pixel.distance  = pixelPos.dot(direction);
+                // compute the orthogonal distance between pixelPos and the line orthogonal to direction and passing by (0,0)
+                pixel.distance  = Math.abs(new Vector2d(x, y).dot(direction));
               }
             }
           }
