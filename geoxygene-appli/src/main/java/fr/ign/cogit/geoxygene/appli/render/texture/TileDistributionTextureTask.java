@@ -420,9 +420,12 @@ public class TileDistributionTextureTask extends AbstractTextureTask<BasicTextur
             this.setState(TaskState.STOPPED);
             return false;
         }
-        double maxCoastLine = this.getTextureDescriptor().getMaxCoastlineLength();
-        int blurSize = this.getTextureDescriptor().getBlurSize();
-        BinaryGradientImageParameters params = new BinaryGradientImageParameters(this.getTextureWidth(), this.getTextureHeight(), this.polygons, this.getEnvelope(), maxCoastLine, blurSize);
+        BinaryGradientImageParameters params = new BinaryGradientImageParameters(
+            this.getTextureWidth(), 
+            this.getTextureHeight(), 
+            this.polygons, 
+            this.getEnvelope(), 
+            this.getTextureDescriptor());
         try {
             this.texImage = BinaryGradientImage.generateBinaryGradientImage(params);
         } catch (Exception e1) {

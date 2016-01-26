@@ -52,6 +52,8 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
+import fr.ign.cogit.geoxygene.style.texture.BinaryGradientImageDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.TileDistributionTexture;
 import fr.ign.cogit.geoxygene.util.gl.GLTexture;
 import fr.ign.cogit.geoxygene.util.gl.Sample;
 
@@ -849,10 +851,38 @@ public class BinaryGradientImage{
         private final double imageToPolygonFactorY;
         private final double maxCoastlineLength;
         private int blurValue = 0; // half size of a square window around pixel
+        
+        /**
+         * This parameters stores the orientation in radians
+         */
+        private double orientationInRadians = -1;
 
         public BinaryGradientImageParameters(int width, int height,
                 List<IPolygon> polygons, IEnvelope envelope,
-                double maxCoastlineLength, int blurValue) {
+                BinaryGradientImageDescriptor descriptor) {
+            this(width, height, polygons, envelope, 
+                descriptor.isMaxCoastLineEnabled(),
+                descriptor.getMaxCoastlineLength(),
+                descriptor.getRotation().getAngleInRadians(),
+                descriptor.getBlurSize());
+        }
+
+        public BinaryGradientImageParameters(int width, int height,
+                List<IPolygon> polygons, IEnvelope envelope,
+                TileDistributionTexture texture) {
+            this(width, height, polygons, envelope, 
+                texture.isMaxCoastLineEnabled(),
+                texture.getMaxCoastlineLength(),
+                texture.getRotation().getAngleInRadians(),
+                texture.getBlurSize());
+        }
+
+        public BinaryGradientImageParameters(int width, int height,
+                List<IPolygon> polygons, IEnvelope envelope,
+                boolean isMaxCoastLineEnabled,
+                double maxCoastLine,
+                double orientationInRadians,
+                int blurValue) {
             super();
             this.width = width;
             this.height = height;
@@ -865,7 +895,14 @@ public class BinaryGradientImage{
                     / (this.width - 1);
             this.imageToPolygonFactorY = (this.maxY - this.minY)
                     / (this.height - 1);
-            this.maxCoastlineLength = maxCoastlineLength;
+            if (isMaxCoastLineEnabled){
+              this.maxCoastlineLength   = maxCoastLine;
+              this.orientationInRadians = -1;
+            }
+            else{
+              this.maxCoastlineLength   = -1;
+              this.orientationInRadians = orientationInRadians;
+            }
             this.blurValue = blurValue;
         }
 
