@@ -148,6 +148,15 @@ public class BinaryGradientImageDescriptor extends Texture {
     public void setMapScale(double mapScale) {
         this.mapScale = mapScale;
     }
+    
+    /**
+     * 
+     * @return state telling if maxCoastLineIsEnabled, and so if the orientation field 
+     * should be taken into account to generate the gradient, or not.
+     */
+    public boolean isMaxCoastLineEnabled() {
+      return this.maxCoastlineLength != Double.POSITIVE_INFINITY;
+    }
 
     /**
      * @param maxCoastlineLength

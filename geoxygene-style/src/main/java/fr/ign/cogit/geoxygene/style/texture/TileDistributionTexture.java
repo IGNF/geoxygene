@@ -49,10 +49,6 @@ public class TileDistributionTexture extends Texture {
     // coast lines
     @XmlElement(name = "MaxCoastlineLength")
     private double maxCoastlineLength = Double.POSITIVE_INFINITY;
-
-    
-    @XmlElement(name = "Orientation")
-    private double orientation = 0;
     
     @XmlElement(name = "Tile")
     private final List<ProbabilistTileDescriptor> tiles = new ArrayList<ProbabilistTileDescriptor>();
@@ -74,6 +70,15 @@ public class TileDistributionTexture extends Texture {
      */
     public TileDistributionTexture() {
         super(TextureDrawingMode.VIEWPORTSPACE);
+    }
+    
+    /**
+     * 
+     * @return state telling if maxCoastLineIsEnabled, and so if the orientation field 
+     * should be taken into account to generate the gradient, or not.
+     */
+    public boolean isMaxCoastLineEnabled() {
+      return this.maxCoastlineLength != Double.POSITIVE_INFINITY;
     }
 
     /**
@@ -158,15 +163,6 @@ public class TileDistributionTexture extends Texture {
     public enum DistributionManagementType {
         EXACT, KEEP_OUTSIDE, CUT_OUTSIDE
     }
-
-    
-    /**
-     * @return this.orientation the alignment angle in degrees.
-     */
-    public double getOrientation(){
-        return this.orientation;
-    }
-    
     
     /*
      * (non-Javadoc)
