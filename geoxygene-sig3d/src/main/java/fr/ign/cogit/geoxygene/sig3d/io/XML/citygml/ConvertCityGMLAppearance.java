@@ -37,6 +37,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISolid;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
+import fr.ign.cogit.geoxygene.sig3d.convert.geom.FromGeomToSurface;
 import fr.ign.cogit.geoxygene.sig3d.equation.ApproximatedPlanEquation;
 import fr.ign.cogit.geoxygene.sig3d.representation.Default3DRep;
 import fr.ign.cogit.geoxygene.sig3d.representation.texture.TextureManager;
@@ -45,6 +46,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSolid;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomcomp.GM_CompositeSolid;
+import fr.ign.cogit.geoxygene.spatial.geomcomp.GM_CompositeSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
 
 /**
@@ -378,7 +380,8 @@ public class ConvertCityGMLAppearance extends Default3DRep {
 
     // On redivise en face au cas ou il y en ait plusieurs
     ArrayList<IOrientableSurface> lFacettes = new ArrayList<IOrientableSurface>();
-
+    lFacettes.addAll(FromGeomToSurface.convertGeom(geom));
+    /*
     if (geom instanceof ISolid) {
       ISolid corps = (ISolid) geom;
       lFacettes.addAll(corps.getFacesList());
@@ -423,7 +426,7 @@ public class ConvertCityGMLAppearance extends Default3DRep {
 
       System.out.println("Type inconnue");
       return null;
-    }
+    }*/
 
     // géométrie de l'objet
     GeometryInfo geometryInfo = new GeometryInfo(GeometryInfo.POLYGON_ARRAY);
@@ -441,6 +444,14 @@ public class ConvertCityGMLAppearance extends Default3DRep {
     for (int i = 0; i < nbFacet; i++) {
 
       IOrientableSurface os = lFacettes.get(i);
+      
+      if(os instanceof GM_CompositeSurface || os.coord().isEmpty()){
+          lFacettes.remove(i);
+          i--;
+          nbFacet--;
+          
+          continue;
+      }
 
       npoints = npoints + os.coord().size();
       nStrip = nStrip + 1 + ((GM_Polygon) os).getInterior().size();

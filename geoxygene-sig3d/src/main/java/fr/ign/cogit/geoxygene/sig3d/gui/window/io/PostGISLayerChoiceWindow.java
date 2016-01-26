@@ -192,7 +192,7 @@ public class PostGISLayerChoiceWindow extends JDialog implements ActionListener 
         }
         // On effectue le même traitement que les shapefiles suivant la
         // dimension
-        int dimension = featColl.get(0).getGeom().dimension();
+        int dimension = featColl.get(0).getGeom().coordinateDimension();
 
         if (dimension == 2) {
 
@@ -219,7 +219,8 @@ public class PostGISLayerChoiceWindow extends JDialog implements ActionListener 
 
           if (result == JOptionPane.YES_OPTION) {
             try {
-              new ShapeFile3DWindow(this.iCarte3D, featColl);
+                ShapeFile3DWindow  shap = new ShapeFile3DWindow(this.iCarte3D, featColl);
+              shap.setVisible(true);
             } catch (Exception e1) {
               // TODO Auto-generated catch block
               e1.printStackTrace();

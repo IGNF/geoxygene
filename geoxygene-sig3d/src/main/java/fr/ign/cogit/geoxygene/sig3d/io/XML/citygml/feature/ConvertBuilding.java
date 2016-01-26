@@ -194,8 +194,15 @@ public class ConvertBuilding {
 
           if (bs.getAppearance() == null || bs.getAppearance().size() == 0) {
 
-            featTempColl = Util.processSurfaceProperties(bs
-                .getLod3MultiSurface().getMultiSurface().getSurfaceMember(), b);
+              if(bs.getLod3MultiSurface() != null && bs.getLod3MultiSurface().getMultiSurface() != null)
+              {
+          
+                  featTempColl = Util.processSurfaceProperties(bs
+                          .getLod3MultiSurface().getMultiSurface().getSurfaceMember(), b);
+              }else{
+                  System.out.println();
+              }
+            
           } else {
 
             

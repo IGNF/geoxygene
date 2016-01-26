@@ -124,7 +124,7 @@ public class ParserCityGMLV2 {
     CityGMLReader reader = ParserCityGMLV2.getCityGMLInputFactory()
         .createCityGMLReader(f);
 
-    ParserCityGMLV2.PATH = f.getParentFile().getAbsolutePath() + "\\";
+    ParserCityGMLV2.PATH = f.getParentFile().getAbsolutePath() + "/";
 
     ParserCityGMLV2.NB_LOADING++;
 
