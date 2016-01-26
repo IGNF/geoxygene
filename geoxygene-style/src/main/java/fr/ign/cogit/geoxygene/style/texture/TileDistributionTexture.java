@@ -78,7 +78,8 @@ public class TileDistributionTexture extends Texture {
      * should be taken into account to generate the gradient, or not.
      */
     public boolean isMaxCoastLineEnabled() {
-      return this.maxCoastlineLength != Double.POSITIVE_INFINITY;
+      return this.maxCoastlineLength != Double.POSITIVE_INFINITY
+          && this.maxCoastlineLength >= 0;
     }
 
     /**
