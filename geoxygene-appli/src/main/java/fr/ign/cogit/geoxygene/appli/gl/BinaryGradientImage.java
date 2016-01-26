@@ -45,6 +45,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.vecmath.Point2d;
+import javax.vecmath.Vector2d;
 
 import org.apache.log4j.Logger;
 
@@ -445,6 +446,12 @@ public class BinaryGradientImage{
         }
     }
 
+    /**
+     * @warning Several properties are stored in the output BinaryGradientImage.
+     *          Right now, only the distance field seems to be used in Geoxygene
+     * @param params
+     * @return
+     */
     public static BinaryGradientImage generateBinaryGradientImage(
             BinaryGradientImageParameters params) {
         BinaryGradientImage gradientImage = null;
@@ -504,40 +511,64 @@ public class BinaryGradientImage{
         // // TODO Auto-generated catch block
         // e.printStackTrace();
         // }
-        Set<Point> modifiedPixels = new HashSet<Point>();
+        
+        
+        // Compute values for the field pixel.distance. Two options here: 
+        //   - compute the distance field from the region boundary,
+        //   - compute a directional gradient 
+        if (params.maxCoastlineLength != -1){
+          Set<Point> modifiedPixels = new HashSet<Point>();
 
-        // FIXME: HACK: remove long edges (for the sea outside borders not to be
-        // considered as sea edges)
-        modifiedPixels = getModifiedPixelsButInfiniteDistancePixels(
-                gradientImage, pixelRenderer.getModifiedPixels());
+          // FIXME: HACK: remove long edges (for the sea outside borders not to be
+          // considered as sea edges)
+          modifiedPixels = getModifiedPixelsButInfiniteDistancePixels(
+                  gradientImage, pixelRenderer.getModifiedPixels());
 
-        // Set<Point> nonInfiniteModifiedPixels =
-        // pixelRenderer.getModifiedPixels();
-        while (!modifiedPixels.isEmpty()) {
+          while (!modifiedPixels.isEmpty()) {
             modifiedPixels = fillTextureCoordinates4(gradientImage,
-                    modifiedPixels, params.getImageToPolygonFactorX(),
-                    params.getImageToPolygonFactorY());
+                modifiedPixels, params.getImageToPolygonFactorX(),
+                params.getImageToPolygonFactorY());
+          }
+
+        } else {
+          int w = params.getWidth();
+          int h = params.getHeight();
+          
+          // point used to start the distance field
+          Point source    = new Point(0,0);
+          if(params.orientationInRadians > 0 && params.orientationInRadians < Math.PI)
+            source.y = h;
+          if(params.orientationInRadians > Math.PI / 2. && params.orientationInRadians < 3. * Math.PI / 2.)
+            source.x = w;
+
+          // normalized propagation direction
+          Vector2d direction = new Vector2d(
+              Math.cos(params.orientationInRadians), 
+              Math.sin(params.orientationInRadians));
+
+          for (int y = 0; y < h; y++) {
+            for (int x = 0; x < w; x++) {
+              GradientPixel pixel = gradientImage.getPixel(x, y);
+              if (pixel.in) {
+                Vector2d pixelPos = new Vector2d(x-source.x, y-source.y);
+                // compute the orthogonal distance between pixelPos and the line passing by source and orthogonal to direction
+                pixel.distance  = pixelPos.dot(direction);
+              }
+            }
+          }
         }
-        // try {
-        // TextureImageUtil.save(texImage, "3-texcoord");
-        // } catch (IOException e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // }
 
         fillVWithDistance(gradientImage);
-        // scaleV(gradientImage, gradientImage.getdMax());
-        computeGradient(gradientImage);
+        
+        // the line below is commented, because vGradient is not used later
+        //computeGradient(gradientImage);
+        
         // blurring filter to eliminate some high frequencies
-
         BinaryGradientImageUtil.blurTextureCoordinates(gradientImage,
-                params.blurValue);
-        // try {
-        // TextureImageUtil.save(texImage, "4-gradient");
-        // } catch (IOException e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // }
+            params.blurValue);
+
+        
+
         return gradientImage;
     }
 
@@ -555,20 +586,6 @@ public class BinaryGradientImage{
                 }
             }
         }
-        
-        /// Uncomment these lines to save raw 
-//        // -distance field
-//        BufferedImage im = toBufferedImageDistanceHSV(texImage);
-//        //
-//        // -gradient direction 
-//        BufferedImage im = toBufferedImageGradientRGB(texImage);
-//        File outputfile = new File("/home/nmellado/saved.png");
-//        try {
-//          ImageIO.write(im, "png", outputfile);
-//        } catch (IOException e) {
-//          // TODO Auto-generated catch block
-//          e.printStackTrace();
-//        }
     }
 
     private static Point2d computeGradient(BinaryGradientImage image, int x,
