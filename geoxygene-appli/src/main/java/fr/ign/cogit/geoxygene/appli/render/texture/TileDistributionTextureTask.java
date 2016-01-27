@@ -37,6 +37,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -420,12 +421,7 @@ public class TileDistributionTextureTask extends AbstractTextureTask<BasicTextur
             this.setState(TaskState.STOPPED);
             return false;
         }
-        BinaryGradientImageParameters params = new BinaryGradientImageParameters(
-            this.getTextureWidth(), 
-            this.getTextureHeight(), 
-            this.polygons, 
-            this.getEnvelope(), 
-            this.getTextureDescriptor());
+        BinaryGradientImageParameters params = new BinaryGradientImageParameters(this.getTextureWidth(), this.getTextureHeight(), this.polygons, this.getEnvelope(), this.getTextureDescriptor());
         try {
             this.texImage = BinaryGradientImage.generateBinaryGradientImage(params);
         } catch (Exception e1) {
@@ -520,23 +516,17 @@ public class TileDistributionTextureTask extends AbstractTextureTask<BasicTextur
                 // TODO: Check if the tile has a part outside geometry
                 // to not display it when DistributionManagement is CUT_OUTSIDE
                 AffineTransform transform = image.tileTransform((int) xTexture, (int) yTexture, tile.getWidth(), tile.getHeight());
+                // We flip vertically the image to draw the tiles with the right
+                // orientation
+                transform.scale(1, -1);
+                transform.translate(0, -tile.getHeight());
                 if (this.getTextureDescriptor().getBlending() == TileBlendingType.GRAPHCUT) {
                     graphCut.pasteTile(tile, transform);
                 } else {
+                    // We flip vertically the image to draw the tiles with the
+                    // right orientation
                     BufferedImage tileImage = tile.getTransparentImage();
                     g2.drawImage(tileImage, transform, null);
-                    // g2.fillRect(tileImage.getWidth() / 2,
-                    // tileImage.getHeight() / 2, tileImage.getWidth(),
-                    // tileImage.getHeight());
-                    // try {
-                    // // ImageIO.write(tileImage, "PNG", new File("tile-"
-                    // // + nSample + "-2.png"));
-                    // ImageIO.write(bi, "PNG", new File("tile-" + nSample
-                    // + "-5.png"));
-                    // } catch (IOException e) {
-                    // // TODO Auto-generated catch block
-                    // e.printStackTrace();
-                    // }
                 }
             }
             this.setProgress((double) nSample / nbSamples);

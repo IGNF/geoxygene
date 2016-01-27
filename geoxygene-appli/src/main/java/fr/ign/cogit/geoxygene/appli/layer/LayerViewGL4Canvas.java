@@ -281,13 +281,12 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements ComponentLi
             // Flip the image
             BufferedImage flipped = new BufferedImage(bimg.getWidth(), bimg.getHeight(), bimg.getType());
             AffineTransform tran = AffineTransform.getTranslateInstance(0, bimg.getHeight());
-            AffineTransform flip = AffineTransform.getScaleInstance(1d, -1d);
-            tran.concatenate(flip);
+            tran.scale(1, -1);
             Graphics2D g = flipped.createGraphics();
             g.setColor(this.getBackgroundColor());
             g.fillRect(0, 0, bimg.getWidth(), bimg.getHeight());
-            g.setTransform(tran);
-            g.drawImage(bimg, 0, 0, null);
+//            g.setTransform(tran);
+            g.drawImage(bimg, tran, null);
             g.dispose();
             this.offscreenRenderedImg = flipped;
         }
