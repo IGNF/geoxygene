@@ -528,6 +528,10 @@ public class BinaryGradientImage{
                 modifiedPixels, params.getImageToPolygonFactorX(),
                 params.getImageToPolygonFactorY());
           }
+          
+          fillVWithDistance(gradientImage);
+          // vGradient is used to align the textures along the coast line directions
+          computeGradient(gradientImage);
 
         } else {
           int w = params.getWidth();
@@ -544,15 +548,14 @@ public class BinaryGradientImage{
               if (pixel.in) {
                 // compute the orthogonal distance between pixelPos and the line orthogonal to direction and passing by (0,0)
                 pixel.distance  = Math.abs(new Vector2d(x, y).dot(direction));
+                pixel.vGradient = new Point2d(direction.x, direction.y);
               }
             }
           }
+          fillVWithDistance(gradientImage);          
         }
 
-        fillVWithDistance(gradientImage);
         
-        // the line below is commented, because vGradient is not used later
-        //computeGradient(gradientImage);
         
         // blurring filter to eliminate some high frequencies
         BinaryGradientImageUtil.blurTextureCoordinates(gradientImage,
