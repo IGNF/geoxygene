@@ -38,7 +38,20 @@ public class Console {
 
 			}
 			
-			if (s.contains("set verbose true")){
+			if (s.equals("new")){
+
+				VARIABLES = new Hashtable<String, Double>();
+				solver = new Solver();
+				
+				System.out.println("----------------------------");
+				System.out.println("NEW LEAST SQUARES ESTIMATION");
+				System.out.println("----------------------------");
+				
+				continue;
+
+			}
+			
+			if (s.equals("set verbose true")){
 
 				verbose = true;
 				System.out.println("Verbose mode activated");
@@ -46,7 +59,7 @@ public class Console {
 
 			}
 			
-			if (s.contains("set verbose false")){
+			if (s.equals("set verbose false")){
 
 				verbose = false;
 				continue;
@@ -57,7 +70,7 @@ public class Console {
 
 				String name = s.split(":=")[0];
 				double value = ExpressionComputer.eval(new ReversePolishNotation(s.split(":=")[1]));
-
+				
 				solver.getParameters().setParameter(name, value);
 				VARIABLES.put(name, value);
 
