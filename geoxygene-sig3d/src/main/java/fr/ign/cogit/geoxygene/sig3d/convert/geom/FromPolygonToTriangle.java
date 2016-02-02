@@ -7,7 +7,9 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ITriangle;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
+import fr.ign.cogit.geoxygene.sig3d.calculation.Util;
 import fr.ign.cogit.geoxygene.sig3d.geometry.topology.Triangle;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Triangle;
 
@@ -54,10 +56,46 @@ public class FromPolygonToTriangle {
     }
     return lT;
   }
+  
+  public  static boolean isConvertible(
+      List<IOrientableSurface> polygonList) {
+    
+        for(IOrientableSurface os : polygonList){
+          
+          if(!isConvertible(os)){
+            return false;
+          }
+          
+        }
+        
+        
+        return true;
+    
+  }
 
+  
+  public static boolean isConvertible(IOrientableSurface pol){
+    
+    IDirectPositionList dpl = pol.coord();
+    if (dpl.size() == 4) {
+      return true;
+
+    } else if (dpl.size() == 5) {
+    return true;
+
+    } 
+
+    return false;
+    
+    
+  }
+  
   public static List<ITriangle> convertAndTriangle(IOrientableSurface pol) {
 
     List<ITriangle> lTri = new ArrayList<ITriangle>();
+    
+
+    //System.out.println("pol : " + pol);
 
     IDirectPositionList dpl = pol.coord();
     if (dpl.size() == 4) {
@@ -71,9 +109,7 @@ public class FromPolygonToTriangle {
       return lTri;
 
     } else {
-
-      logger.warn("Conversion to ITriangle impossible. NB Points : "
-          + dpl.size());
+        
     }
 
     return null;

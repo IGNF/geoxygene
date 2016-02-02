@@ -60,10 +60,11 @@ import fr.ign.cogit.geoxygene.api.spatial.toporoot.ITopology;
  */
 
 public class DefaultFeature extends AbstractFeature {
-    
-    /** Logger. */
-    protected static final Logger LOGGER = Logger.getLogger(DefaultFeature.class.getName());
-    
+
+  /** Logger. */
+  protected static final Logger LOGGER = Logger.getLogger(DefaultFeature.class
+      .getName());
+
   /**
    * Constructeur vide
    */
@@ -151,7 +152,7 @@ public class DefaultFeature extends AbstractFeature {
     if (nom.equals("id")) { //$NON-NLS-1$
       return this.getId();
     }
-    
+
     /**
      * on regarde en priorité si le nom correspond à un nom d'attributeType
      * (métadonnées de niveau conceptuel)
@@ -178,7 +179,8 @@ public class DefaultFeature extends AbstractFeature {
       }
     }
     if (LOGGER.isDebugEnabled()) {
-        LOGGER.warn("!!! le nom '" + nom + "' ne correspond pas à un attribut de ce feature !!!"); //$NON-NLS-1$//$NON-NLS-2$
+      LOGGER
+          .warn("!!! le nom '" + nom + "' ne correspond pas à un attribut de ce feature !!!"); //$NON-NLS-1$//$NON-NLS-2$
     }
     return null;
   }
@@ -236,7 +238,7 @@ public class DefaultFeature extends AbstractFeature {
       if ((tabNoms != null) && (tabNoms[0] != null)) {
         if (tabNoms[0].equals(nom)) {
           if (LOGGER.isDebugEnabled()) {
-              LOGGER.debug("setAttribute " + nom + " =?= " + tabNoms[0]); //$NON-NLS-1$//$NON-NLS-2$
+            LOGGER.debug("setAttribute " + nom + " =?= " + tabNoms[0]); //$NON-NLS-1$//$NON-NLS-2$
           }
           this.setAttribute(key.intValue(), value);
           return;
@@ -244,13 +246,15 @@ public class DefaultFeature extends AbstractFeature {
       }
     }
     if (LOGGER.isDebugEnabled()) {
-        LOGGER.warn("!!! le nom '" + nom + "' ne correspond pas à un attribut de ce feature !!!"); //$NON-NLS-1$ //$NON-NLS-2$
+      LOGGER
+          .warn("!!! le nom '" + nom + "' ne correspond pas à un attribut de ce feature !!!"); //$NON-NLS-1$ //$NON-NLS-2$
       for (Integer key : this.getSchema().getAttLookup().keySet()) {
         tabNoms = this.getSchema().getAttLookup().get(key);
         if (tabNoms == null) {
           LOGGER.debug("Attribut " + key + " nul"); //$NON-NLS-1$ //$NON-NLS-2$
         } else {
-          LOGGER.debug("Attribut " + key + " = " + tabNoms[0] + " - " + tabNoms[1]); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+          LOGGER
+              .debug("Attribut " + key + " = " + tabNoms[0] + " - " + tabNoms[1]); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
         }
       }
     }
@@ -320,9 +324,25 @@ public class DefaultFeature extends AbstractFeature {
 
     return clone;
   }
-@Override
-public String toString() {
-  String result = "" + this.getId();// + " - " + this.getGeom();
-  return result;
-}
+
+  @Override
+  public String toString() {
+
+    StringBuffer sAttBuffer = new StringBuffer();
+    Object[] tabAtt = this.getAttributes();
+    if (tabAtt != null) {
+      int length = tabAtt.length;
+      for (int i = 0; i < length; i++) {
+        Object o = tabAtt[i];
+        if (o != null) {
+          sAttBuffer.append(o.toString()).append(" - ");
+        }
+
+      }
+    }
+    
+    String result = "" + this.getId() + " - " + sAttBuffer.toString() + " - "
+        + this.getGeom();
+    return result;
+  }
 }

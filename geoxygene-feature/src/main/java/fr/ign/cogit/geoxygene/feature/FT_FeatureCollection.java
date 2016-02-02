@@ -846,4 +846,18 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
   public void setFeatureType(GF_FeatureType featureType) {
     this.featureType = featureType;
   }
+  
+  
+  @Override
+  public String toString(){
+    if(this.isEmpty()){
+      return "Empty FeatureCollection";
+    }    
+     StringBuffer stringBuffer = new StringBuffer(); 
+   
+    for(IFeature feat:this){
+      stringBuffer.append(feat.toString() ).append(" ; ").append("  \n");
+    }
+    return stringBuffer.toString();
+  }
 }

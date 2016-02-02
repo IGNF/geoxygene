@@ -434,7 +434,9 @@ public class Extrusion2DObject {
       } else {
 
         // Solide
+        //System.out.println("\n" + obj.getClass());
         mSolid.add((GM_Solid) obj);
+        //System.out.println(mSolid);
 
       }
 
@@ -446,6 +448,7 @@ public class Extrusion2DObject {
       return mSurface;
     }
     // Solide
+    // System.out.println(mSolid);
     return mSolid;
 
   }

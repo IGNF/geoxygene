@@ -94,6 +94,9 @@ public class RoofDetection {
     double zmin = b.getLLDP().getZ();
     double zmax = b.getURDP().getZ();
     double zcut = (7.0 / 8.0) * zmin + (1.0 / 8.0) * zmax;
+    // System.out.println("zmin : " + zmin);
+    // System.out.println("zmax : " + zmax);
+    // System.out.println("zcut : " + zcut);
 
     int nbl = lOSOut.size();
 

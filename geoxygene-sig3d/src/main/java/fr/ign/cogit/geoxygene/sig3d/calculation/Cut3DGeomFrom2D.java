@@ -21,13 +21,14 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Triangle;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
+
 /**
  * 
- *        This software is released under the licence CeCILL
+ * This software is released under the licence CeCILL
  * 
- *        see LICENSE.TXT
+ * see LICENSE.TXT
  * 
- *        see <http://www.cecill.info/ http://www.cecill.info/
+ * see <http://www.cecill.info/ http://www.cecill.info/
  * 
  * 
  * 
@@ -85,16 +86,20 @@ public class Cut3DGeomFrom2D {
 
   }
 
-  public  static List<IOrientableSurface> cutSurfaceFromPolygon(IOrientableSurface oS,
-      IPolygon polyCut) {
+  public static List<IOrientableSurface> cutSurfaceFromPolygon(
+      IOrientableSurface oS, IPolygon polyCut) {
+    // System.out.println("oS : " + oS);
+    List<ITriangle> lT = FromPolygonToTriangle.convertAndTriangle(oS);
+    if (lT.get(0).isEmpty()){
+      System.out.println("lT est vide");
+    }
 
-    return cutTriangleFromPolygon(FromPolygonToTriangle.convertAndTriangle(oS),
-        polyCut);
+    return cutTriangleFromPolygon(lT, polyCut);
 
   }
 
-  public static List<IOrientableSurface> cutTriangleFromPolygon(List<ITriangle> lT,
-      IPolygon polyCut) {
+  public static List<IOrientableSurface> cutTriangleFromPolygon(
+      List<ITriangle> lT, IPolygon polyCut) {
 
     List<IOrientableSurface> lGeom = new ArrayList<>();
 
@@ -272,7 +277,7 @@ public class Cut3DGeomFrom2D {
 
     IGeometry geom = t.intersection(poly);
 
-    if (geom.isEmpty()) {
+    if (geom.isEmpty() || geom.area() == 0) {
       return null;
     }
 

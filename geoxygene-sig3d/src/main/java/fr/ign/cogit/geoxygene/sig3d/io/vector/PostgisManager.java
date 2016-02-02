@@ -158,7 +158,7 @@ public class PostgisManager {
       ResultSet r = s.executeQuery("select " + PostgisManager.NAME_COLUMN
           + ",type from " + PostgisManager.NAME_TABLE_SPATIALREF + " WHERE "
           + PostgisManager.NAME_TABLE + "='" + table + "'");
-      
+
       String nomColonneGeom = "";
       while (r.next()) {
         nomColonneGeom = r.getString(1);
@@ -864,6 +864,59 @@ public class PostgisManager {
     }
 
     return true;
+
+  }
+
+  /**
+   * Exécute une requête spécifiée en paramètre dans PostGis. Fonction
+   * principalement adaptée à l'insertion de données au sein d'une table ou
+   * d'une colonne.
+   * 
+   * @param host hote (localhost accepté)
+   * @param port port d'écoute
+   * @param database nom de la pase de données
+   * @param user utilisateur
+   * @param pw mot de passe
+   * @param sqlRequest la requête à exécuter
+   * @return indique si l'opération s'est déroulée avec succès
+   * @throws Exception
+   */
+  public static boolean executeSimpleRequestInsert(String host, String port,
+      String database, String user, String pw, String sqlRequest)
+      throws Exception {
+
+    if (sqlRequest != null && sqlRequest != "") {
+
+      java.sql.Connection conn;
+
+      try {
+
+        String url = "jdbc:postgresql://" + host + ":" + port + "/" + database;
+        PostgisManager.logger.info(Messages.getString("PostGIS.Try") + url);
+        conn = DriverManager.getConnection(url, user, pw);
+
+        Statement s = conn.createStatement();
+
+        s.execute(sqlRequest);
+        System.out.println(sqlRequest);
+
+        s.close();
+        conn.close();
+
+        PostgisManager.logger.info(Messages.getString("PosGIS.End"));
+
+      } catch (Exception e) {
+        throw e;
+      }
+
+      return true;
+
+    } else {
+
+      System.out.println("La requête sql envoyée est vide");
+
+      return false;
+    }
 
   }
 
