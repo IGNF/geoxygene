@@ -1,0 +1,1568 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<StyledLayerDescriptor xmlns:ogc="http://www.opengis.net/ogc">
+    <Background>
+        <SimpleTexture XRepeat="false" YRepeat="false">
+            <Displacement x="0.0" y="0.0"/>
+            <ScaleFactor x="1.0" y="1.0"/>
+            <Rotation Angle="0.0"/>
+            <URI>../images/canvas-bg.png</URI>
+        </SimpleTexture>
+        <PaperHeightInCm>4.0</PaperHeightInCm>
+        <PaperReferenceMapScale>100000.0</PaperReferenceMapScale>
+        <Color>#FFFFFF</Color>
+    </Background>
+    <NamedLayer>
+        <Name>emprise</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer emprise</Name>
+            <Name>Style créé pour le layer emprise</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#ffffff</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">1.0</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Fill>
+                            <ExpressiveFill>
+<ExpressiveMethod>TextureFill</ExpressiveMethod>
+<ExpressiveParameter name="fill-texture">
+    <SimpleTexture XRepeat="false" YRepeat="false">
+        <Displacement x="0.0" y="0.0"/>
+        <ScaleFactor x="0.3" y="0.3"/>
+        <Rotation Angle="0.0"/>
+        <URI>../images/fond_de_carte.png</URI>
+    </SimpleTexture>
+</ExpressiveParameter>
+                            </ExpressiveFill>
+                            <CssParameter name="fill">#ffffff</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>foret</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer emprise_foret</Name>
+            <Name>Style créé pour le layer emprise_foret</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#999999</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#222</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#ffffff</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">23.0</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Fill>
+                            <ExpressiveFill>
+<ExpressiveMethod>TextureFill</ExpressiveMethod>
+<ExpressiveParameter name="fill-texture">
+    <SimpleTexture XRepeat="false" YRepeat="false">
+        <Displacement x="0.0" y="0.0"/>
+        <ScaleFactor x="0.1" y="0.1"/>
+        <Rotation Angle="0.0"/>
+        <URI>../images/manche/foret_grande_reduite.png</URI>
+    </SimpleTexture>
+</ExpressiveParameter>
+                            </ExpressiveFill>
+                            <CssParameter name="fill">#ffffff</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>laisse</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer emprise_laisse</Name>
+            <Name>Style créé pour le layer emprise_laisse</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#333333</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#dddddd</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-width">15.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <PerpendicularOffset>0.0</PerpendicularOffset>
+                    </LineSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>france_cassini_taches_urbaines</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer emprise_france_cassini_taches_urbaines</Name>
+            <Name>Style créé pour le layer emprise_france_cassini_taches_urbaines</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#999999</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#222</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">1.0</CssParameter>
+                            <CssParameter name="stroke-width">14.0</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Fill>
+                            <ExpressiveFill>
+<ExpressiveMethod>TextureFill</ExpressiveMethod>
+<ExpressiveParameter name="fill-texture">
+    <SimpleTexture XRepeat="false" YRepeat="false">
+        <Displacement x="0.0" y="0.0"/>
+        <ScaleFactor x="0.25" y="0.25"/>
+        <Rotation Angle="0.0"/>
+        <URI>../images/manche/texture_bourg2.png</URI>
+    </SimpleTexture>
+</ExpressiveParameter>
+                            </ExpressiveFill>
+                            <CssParameter name="fill">#ffffff</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>mer</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer emprise_mer</Name>
+            <Name>Style créé pour le layer emprise_mer</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#444444</CssParameter>
+                            <CssParameter name="stroke-opacity">1.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Fill>
+                            <ExpressiveFill>
+<ExpressiveMethod>TextureFill</ExpressiveMethod>
+<ExpressiveParameter name="fill-texture">
+    <TileDistributionTexture XRepeat="false" YRepeat="false">
+        <Displacement x="0.0" y="0.0"/>
+        <ScaleFactor x="1.0" y="1.0"/>
+        <Rotation Angle="0.0"/>
+        <MaxCoastlineLength>INF</MaxCoastlineLength>
+        <Tile>
+            <URI>../images/StJeanDeLuz/merI-1_grand.png</URI>
+            <ScaleFactor>0.2</ScaleFactor>
+            <MinDistance>0.0</MinDistance>
+            <MaxDistance>INF</MaxDistance>
+            <InRangeProbability>10.0</InRangeProbability>
+            <OutOfRangeProbability>0.0</OutOfRangeProbability>
+        </Tile>
+        <Resolution>300.0</Resolution>
+        <Blending>ALPHA</Blending>
+        <DistributionManagement>EXACT</DistributionManagement>
+        <BlurSize>2</BlurSize>
+    </TileDistributionTexture>
+</ExpressiveParameter>
+                            </ExpressiveFill>
+                            <CssParameter name="fill">#ffffff</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>ocs</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer emprise_ocs</Name>
+            <Name>Style créé pour le layer emprise_ocs</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="false">
+                            <PropertyName>type</PropertyName>
+                            <Literal>lande2</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#ffffff</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">23.0</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Fill>
+                            <ExpressiveFill>
+<ExpressiveMethod>TextureFill</ExpressiveMethod>
+<ExpressiveParameter name="fill-texture">
+    <SimpleTexture XRepeat="false" YRepeat="false">
+        <Displacement x="0.0" y="0.0"/>
+        <ScaleFactor x="0.04" y="0.04"/>
+        <Rotation Angle="0.0"/>
+        <URI>../images/manche/lande2.png</URI>
+    </SimpleTexture>
+</ExpressiveParameter>
+                            </ExpressiveFill>
+                            <CssParameter name="fill">#ffffff</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="false">
+                            <PropertyName>type</PropertyName>
+                            <Literal>lande3</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#ffffff</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">23.0</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Fill>
+                            <ExpressiveFill>
+<ExpressiveMethod>TextureFill</ExpressiveMethod>
+<ExpressiveParameter name="fill-texture">
+    <SimpleTexture XRepeat="false" YRepeat="false">
+        <Displacement x="0.0" y="0.0"/>
+        <ScaleFactor x="0.07" y="0.07"/>
+        <Rotation Angle="0.0"/>
+        <URI>../images/manche/lande3_grande.png</URI>
+    </SimpleTexture>
+</ExpressiveParameter>
+                            </ExpressiveFill>
+                            <CssParameter name="fill">#ffffff</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#999999</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#222</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="false">
+                            <PropertyName>type</PropertyName>
+                            <Literal>bord_mer</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#ffffff</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">23.0</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Fill>
+                            <ExpressiveFill>
+<ExpressiveMethod>TextureFill</ExpressiveMethod>
+<ExpressiveParameter name="fill-texture">
+    <SimpleTexture XRepeat="false" YRepeat="false">
+        <Displacement x="0.0" y="0.0"/>
+        <ScaleFactor x="0.01" y="0.01"/>
+        <Rotation Angle="0.0"/>
+        <URI>../images/bord_mer.png</URI>
+    </SimpleTexture>
+</ExpressiveParameter>
+                            </ExpressiveFill>
+                            <CssParameter name="fill">#ffffff</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>rochy</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer emprise_france_cassini_toponyms</Name>
+            <Name>Style créé pour le layer emprise_france_cassini_toponyms</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="false">
+                            <PropertyName>representa</PropertyName>
+                            <Literal>0</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Graphic>
+                            <opacity>1.0</opacity>
+                            <Size>230.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                            <ExternalGraphic>
+<href>file:/media/bdumenieu/data/workspace/geoxygene/geoxygene-appli/samples/cassini/images/rochers/rocher00_bis.png</href>
+<Format>image/png</Format>
+                            </ExternalGraphic>
+                        </Graphic>
+                    </PointSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="false">
+                            <PropertyName>representa</PropertyName>
+                            <Literal>1</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Graphic>
+                            <opacity>1.0</opacity>
+                            <Size>220.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                            <ExternalGraphic>
+<href>file:/media/bdumenieu/data/workspace/geoxygene/geoxygene-appli/samples/cassini/images/rochers/rocher001_bis.png</href>
+<Format>image/png</Format>
+                            </ExternalGraphic>
+                        </Graphic>
+                    </PointSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="false">
+                            <PropertyName>representa</PropertyName>
+                            <Literal>2</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Graphic>
+                            <opacity>1.0</opacity>
+                            <Size>230.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                            <ExternalGraphic>
+<href>file:/media/bdumenieu/data/workspace/geoxygene/geoxygene-appli/samples/cassini/images/rochers/rocher002.png</href>
+<Format>image/png</Format>
+                            </ExternalGraphic>
+                        </Graphic>
+                    </PointSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="false">
+                            <PropertyName>representa</PropertyName>
+                            <Literal>3</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Graphic>
+                            <opacity>1.0</opacity>
+                            <Size>240.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                            <ExternalGraphic>
+<href>file:/media/bdumenieu/data/workspace/geoxygene/geoxygene-appli/samples/cassini/images/rochers/rocher003.png</href>
+<Format>image/png</Format>
+                            </ExternalGraphic>
+                        </Graphic>
+                    </PointSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="false">
+                            <PropertyName>representa</PropertyName>
+                            <Literal>4</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Graphic>
+                            <opacity>1.0</opacity>
+                            <Size>120.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                            <ExternalGraphic>
+<href>file:/media/bdumenieu/data/workspace/geoxygene/geoxygene-appli/samples/cassini/images/rochers/rocher002.png</href>
+<Format>image/png</Format>
+                            </ExternalGraphic>
+                        </Graphic>
+                    </PointSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="false">
+                            <PropertyName>representa</PropertyName>
+                            <Literal>5</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Graphic>
+                            <opacity>1.0</opacity>
+                            <Size>115.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                            <ExternalGraphic>
+<href>file:/media/bdumenieu/data/workspace/geoxygene/geoxygene-appli/samples/cassini/images/rochers/rocher003.png</href>
+<Format>image/png</Format>
+                            </ExternalGraphic>
+                        </Graphic>
+                    </PointSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="false">
+                            <PropertyName>representa</PropertyName>
+                            <Literal>6</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Graphic>
+                            <opacity>1.0</opacity>
+                            <Size>110.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                            <ExternalGraphic>
+<href>file:/media/bdumenieu/data/workspace/geoxygene/geoxygene-appli/samples/cassini/images/rochers/rocher00.png</href>
+<Format>image/png</Format>
+                            </ExternalGraphic>
+                        </Graphic>
+                    </PointSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="false">
+                            <PropertyName>representa</PropertyName>
+                            <Literal>7</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Graphic>
+                            <opacity>1.0</opacity>
+                            <Size>120.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                            <ExternalGraphic>
+<href>file:/media/bdumenieu/data/workspace/geoxygene/geoxygene-appli/samples/cassini/images/rochers/rocher00.png</href>
+<Format>image/png</Format>
+                            </ExternalGraphic>
+                        </Graphic>
+                    </PointSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="false">
+                            <PropertyName>representa</PropertyName>
+                            <Literal>8</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Graphic>
+                            <opacity>1.0</opacity>
+                            <Size>110.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                            <ExternalGraphic>
+<href>file:/media/bdumenieu/data/workspace/geoxygene/geoxygene-appli/samples/cassini/images/rochers/rocher001.png</href>
+<Format>image/png</Format>
+                            </ExternalGraphic>
+                        </Graphic>
+                    </PointSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>zone_hydro</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer zone_hydro</Name>
+            <Name>Style créé pour le layer zone_hydro</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Name>Etangs</Name>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#777777</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#BBBBBB</CssParameter>
+    <CssParameter name="stroke-opacity">1</CssParameter>
+    <CssParameter name="stroke-width">3.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="false">
+                            <PropertyName>type</PropertyName>
+                            <Literal>etang</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">1</CssParameter>
+                            <CssParameter name="stroke-width">14.0</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Fill>
+                            <ExpressiveFill>
+<ExpressiveMethod>TextureFill</ExpressiveMethod>
+<ExpressiveParameter name="fill-texture">
+    <SimpleTexture XRepeat="false" YRepeat="false">
+        <Displacement x="0.0" y="0.0"/>
+        <ScaleFactor x="0.05" y="0.05"/>
+        <Rotation Angle="0.0"/>
+        <URI>../images/manche/lac4_grand.png</URI>
+    </SimpleTexture>
+</ExpressiveParameter>
+                            </ExpressiveFill>
+                            <CssParameter name="fill">#ffffff</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Name>Rivieres</Name>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#777777</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#BBBBBB</CssParameter>
+    <CssParameter name="stroke-opacity">1</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="false">
+                            <PropertyName>type</PropertyName>
+                            <Literal>rivire</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">1.0</CssParameter>
+                            <CssParameter name="stroke-width">12.0</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Fill>
+                            <CssParameter name="fill">#ffffff</CssParameter>
+                            <CssParameter name="fill-opacity">0.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>hydro</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer emprise_hydro</Name>
+            <Name>Style créé pour le layer emprise_hydro</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#333333</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#dddddd</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-width">15.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <PerpendicularOffset>0.0</PerpendicularOffset>
+                    </LineSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>france_cassini</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer emprise_france_cassini</Name>
+            <Name>Style créé pour le layer emprise_france_cassini</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Name>Route non entretenue contour noir</Name>
+                    <Description>Route non entretenue contour noir</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>type</PropertyName>
+                            <Literal>blanc</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-width">50.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <PerpendicularOffset>0.0</PerpendicularOffset>
+                    </LineSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Name>Route non entretenue intérieur blanc</Name>
+                    <Description>Route non entretenue intérieur blanc</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>type</PropertyName>
+                            <Literal>blanc</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#FDFAF8</CssParameter>
+                            <CssParameter name="stroke-width">30.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <PerpendicularOffset>0.0</PerpendicularOffset>
+                    </LineSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Name>Route ville contour noir</Name>
+                    <Description>Route ville contour noir</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>type</PropertyName>
+                            <Literal>rue_ville</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-width">40.0</CssParameter>
+                            <CssParameter name="stroke-linecap">butt</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <PerpendicularOffset>0.0</PerpendicularOffset>
+                    </LineSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Name>Route ville intérieur blanc</Name>
+                    <Description>Route ville intérieur blanc</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>type</PropertyName>
+                            <Literal>rue_ville</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#FDFAF8</CssParameter>
+                            <CssParameter name="stroke-width">20.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <PerpendicularOffset>0.0</PerpendicularOffset>
+                    </LineSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#777777</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#555555</CssParameter>
+    <CssParameter name="stroke-opacity">1</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>type</PropertyName>
+                            <Literal>rouge</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#555555</CssParameter>
+                            <CssParameter name="stroke-opacity">1.0</CssParameter>
+                            <CssParameter name="stroke-width">100.0</CssParameter>
+                            <CssParameter name="stroke-linejoin">round</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                            <ExpressiveStroke>
+<ExpressiveMethod>CassiniRoadsPainting</ExpressiveMethod>
+<ExpressiveParameter name="transitionSize">10.0</ExpressiveParameter>
+<ExpressiveParameter name="paperReferenceMapScale">100000.0</ExpressiveParameter>
+<ExpressiveParameter name="paperRoughness">2.0</ExpressiveParameter>
+<ExpressiveParameter name="brushRoughness">4.0</ExpressiveParameter>
+<ExpressiveParameter name="strokePressure">17.0</ExpressiveParameter>
+<ExpressiveParameter name="strokeSoftness">0.2</ExpressiveParameter>
+<ExpressiveParameter name="paperSizeInCm">4.0</ExpressiveParameter>
+<ExpressiveParameter name="extremitiesLength">210.375</ExpressiveParameter>
+<ExpressiveParameter name="paperTexture">
+    <SimpleTexture XRepeat="false" YRepeat="false">
+        <Displacement x="0.0" y="0.0"/>
+        <ScaleFactor x="1.0" y="1.0"/>
+        <Rotation Angle="0.0"/>
+        <URI>../images/canvas-normalized.png</URI>
+    </SimpleTexture>
+</ExpressiveParameter>
+<ExpressiveParameter name="brushTexture">
+    <SimpleTexture XRepeat="false" YRepeat="false">
+        <Displacement x="0.0" y="0.0"/>
+        <ScaleFactor x="1.0" y="1.0"/>
+        <Rotation Angle="0.0"/>
+        <URI>../images/StJeanDeLuz/route_grande.png</URI>
+    </SimpleTexture>
+</ExpressiveParameter>
+                            </ExpressiveStroke>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <PerpendicularOffset>0.0</PerpendicularOffset>
+                    </LineSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>france_cassini_toponyms</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer emprise_france_cassini_toponyms</Name>
+            <Name>Style créé pour le layer emprise_france_cassini_toponyms</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="false">
+                            <PropertyName>type</PropertyName>
+                            <Literal>village</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Graphic>
+                            <opacity>1.0</opacity>
+                            <Size>600.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                            <ExternalGraphic>
+<href>file:/media/bdumenieu/data/workspace/geoxygene/geoxygene-appli/samples/cassini/images/ponctuels/ville_grande.png</href>
+<Format>image/png</Format>
+                            </ExternalGraphic>
+                        </Graphic>
+                    </PointSymbolizer>
+                    <TextSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Label>
+                            <PropertyName>nom</PropertyName>
+                        </Label>
+                        <Font>
+                            <CssParameter name="font-family">Palatino Linotype</CssParameter>
+                            <CssParameter name="font-style">normal</CssParameter>
+                            <CssParameter name="font-size">17.0</CssParameter>
+                        </Font>
+                        <LabelPlacement>
+                            <PointPlacement>
+<AnchorPoint>
+    <AnchorPointX>2.0</AnchorPointX>
+    <AnchorPointY>1.5</AnchorPointY>
+</AnchorPoint>
+<Displacement>
+    <DisplacementX>0.0</DisplacementX>
+    <DisplacementY>0.0</DisplacementY>
+</Displacement>
+<Rotation>0.0</Rotation>
+                            </PointPlacement>
+                        </LabelPlacement>
+                        <Fill>
+                            <CssParameter name="fill">#000000</CssParameter>
+                        </Fill>
+                    </TextSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="false">
+                            <PropertyName>type</PropertyName>
+                            <Literal>tache_urbaine</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#333333</CssParameter>
+    <CssParameter name="fill-opacity">0.0</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#dddddd</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">0.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>0.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </PointSymbolizer>
+                    <TextSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Label>
+                            <PropertyName>nom</PropertyName>
+                        </Label>
+                        <Font>
+                            <CssParameter name="font-family">Palatino Linotype</CssParameter>
+                            <CssParameter name="font-style">normal</CssParameter>
+                            <CssParameter name="font-weight">bold</CssParameter>
+                            <CssParameter name="font-size">24.0</CssParameter>
+                        </Font>
+                        <LabelPlacement>
+                            <PointPlacement>
+<AnchorPoint>
+    <AnchorPointX>0.0</AnchorPointX>
+    <AnchorPointY>0.0</AnchorPointY>
+</AnchorPoint>
+<Displacement>
+    <DisplacementX>0.0</DisplacementX>
+    <DisplacementY>0.0</DisplacementY>
+</Displacement>
+<Rotation>0.0</Rotation>
+                            </PointPlacement>
+                        </LabelPlacement>
+                        <Fill>
+                            <CssParameter name="fill">#000000</CssParameter>
+                        </Fill>
+                    </TextSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <And>
+                            <PropertyIsEqualTo matchCase="false">
+<PropertyName>type</PropertyName>
+<Literal>ferme</Literal>
+                            </PropertyIsEqualTo>
+                            <PropertyIsEqualTo matchCase="false">
+<PropertyName>commentair</PropertyName>
+<Literal>null</Literal>
+                            </PropertyIsEqualTo>
+                        </And>
+                    </Filter>
+                    <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Graphic>
+                            <opacity>1.0</opacity>
+                            <Size>180.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                            <ExternalGraphic>
+<href>file:/media/bdumenieu/data/workspace/geoxygene/geoxygene-appli/samples/cassini/images/ponctuels/ferme2_grande.png</href>
+<Format>image/png</Format>
+                            </ExternalGraphic>
+                        </Graphic>
+                    </PointSymbolizer>
+                    <TextSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Label>
+                            <PropertyName>nom</PropertyName>
+                        </Label>
+                        <Font>
+                            <CssParameter name="font-family">URW Chancery L</CssParameter>
+                            <CssParameter name="font-style">normal</CssParameter>
+                            <CssParameter name="font-size">20</CssParameter>
+                        </Font>
+                        <LabelPlacement>
+                            <PointPlacement>
+<AnchorPoint>
+    <AnchorPointX>-0.1</AnchorPointX>
+    <AnchorPointY>0.2</AnchorPointY>
+</AnchorPoint>
+<Displacement>
+    <DisplacementX>0.0</DisplacementX>
+    <DisplacementY>0.0</DisplacementY>
+</Displacement>
+<Rotation>0.0</Rotation>
+                            </PointPlacement>
+                        </LabelPlacement>
+                        <Fill>
+                            <CssParameter name="fill">#000000</CssParameter>
+                        </Fill>
+                    </TextSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <And>
+                            <PropertyIsEqualTo matchCase="false">
+<PropertyName>type</PropertyName>
+<Literal>ferme</Literal>
+                            </PropertyIsEqualTo>
+                            <PropertyIsEqualTo matchCase="false">
+<PropertyName>commentair</PropertyName>
+<Literal>type2</Literal>
+                            </PropertyIsEqualTo>
+                        </And>
+                    </Filter>
+                    <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Graphic>
+                            <opacity>1.0</opacity>
+                            <Size>200.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                            <ExternalGraphic>
+<href>file:/media/bdumenieu/data/workspace/geoxygene/geoxygene-appli/samples/cassini/images/ponctuels/ferme_type2_2.png</href>
+<Format>image/png</Format>
+                            </ExternalGraphic>
+                        </Graphic>
+                    </PointSymbolizer>
+                    <TextSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Label>
+                            <PropertyName>nom</PropertyName>
+                        </Label>
+                        <Font>
+                            <CssParameter name="font-family">URW Chancery L</CssParameter>
+                            <CssParameter name="font-style">normal</CssParameter>
+                            <CssParameter name="font-size">20.0</CssParameter>
+                        </Font>
+                        <LabelPlacement>
+                            <PointPlacement>
+<AnchorPoint>
+    <AnchorPointX>-0.1</AnchorPointX>
+    <AnchorPointY>0.2</AnchorPointY>
+</AnchorPoint>
+<Displacement>
+    <DisplacementX>0.0</DisplacementX>
+    <DisplacementY>0.0</DisplacementY>
+</Displacement>
+<Rotation>0.0</Rotation>
+                            </PointPlacement>
+                        </LabelPlacement>
+                        <Fill>
+                            <CssParameter name="fill">#000000</CssParameter>
+                        </Fill>
+                    </TextSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="false">
+                            <PropertyName>type</PropertyName>
+                            <Literal>calvaire</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Graphic>
+                            <opacity>1.0</opacity>
+                            <Size>300.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                            <ExternalGraphic>
+<href>file:/media/bdumenieu/data/workspace/geoxygene/geoxygene-appli/samples/cassini/images/ponctuels/calvaire.png</href>
+<Format>image/png</Format>
+                            </ExternalGraphic>
+                        </Graphic>
+                    </PointSymbolizer>
+                    <TextSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Label>
+                            <PropertyName>nom</PropertyName>
+                        </Label>
+                        <Font>
+                            <CssParameter name="font-family">URW Chancery L</CssParameter>
+                            <CssParameter name="font-style">normal</CssParameter>
+                            <CssParameter name="font-size">20.0</CssParameter>
+                        </Font>
+                        <LabelPlacement>
+                            <PointPlacement>
+<AnchorPoint>
+    <AnchorPointX>0.5</AnchorPointX>
+    <AnchorPointY>-0.7</AnchorPointY>
+</AnchorPoint>
+<Displacement>
+    <DisplacementX>0.0</DisplacementX>
+    <DisplacementY>0.0</DisplacementY>
+</Displacement>
+<Rotation>0.0</Rotation>
+                            </PointPlacement>
+                        </LabelPlacement>
+                        <Fill>
+                            <CssParameter name="fill">#000000</CssParameter>
+                        </Fill>
+                    </TextSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <And>
+                            <PropertyIsEqualTo matchCase="false">
+<PropertyName>type</PropertyName>
+<Literal>chapelle</Literal>
+                            </PropertyIsEqualTo>
+                            <PropertyIsEqualTo matchCase="false">
+<PropertyName>commentair</PropertyName>
+<Literal>null</Literal>
+                            </PropertyIsEqualTo>
+                        </And>
+                    </Filter>
+                    <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Graphic>
+                            <opacity>1.0</opacity>
+                            <Size>200.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                            <ExternalGraphic>
+<href>file:/media/bdumenieu/data/workspace/geoxygene/geoxygene-appli/samples/cassini/images/ponctuels/chapelle1_grande.png</href>
+<Format>image/png</Format>
+                            </ExternalGraphic>
+                        </Graphic>
+                    </PointSymbolizer>
+                    <TextSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Label>
+                            <PropertyName>nom</PropertyName>
+                        </Label>
+                        <Font>
+                            <CssParameter name="font-family">URW Chancery L</CssParameter>
+                            <CssParameter name="font-style">normal</CssParameter>
+                            <CssParameter name="font-size">20</CssParameter>
+                        </Font>
+                        <LabelPlacement>
+                            <PointPlacement>
+<AnchorPoint>
+    <AnchorPointX>-0.1</AnchorPointX>
+    <AnchorPointY>0.2</AnchorPointY>
+</AnchorPoint>
+<Displacement>
+    <DisplacementX>0.0</DisplacementX>
+    <DisplacementY>0.0</DisplacementY>
+</Displacement>
+<Rotation>0.0</Rotation>
+                            </PointPlacement>
+                        </LabelPlacement>
+                        <Fill>
+                            <CssParameter name="fill">#000000</CssParameter>
+                        </Fill>
+                    </TextSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <And>
+                            <PropertyIsEqualTo matchCase="false">
+<PropertyName>type</PropertyName>
+<Literal>chapelle</Literal>
+                            </PropertyIsEqualTo>
+                            <PropertyIsEqualTo matchCase="false">
+<PropertyName>commentair</PropertyName>
+<Literal>type2</Literal>
+                            </PropertyIsEqualTo>
+                        </And>
+                    </Filter>
+                    <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Graphic>
+                            <opacity>1.0</opacity>
+                            <Size>300.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                            <ExternalGraphic>
+<href>file:/media/bdumenieu/data/workspace/geoxygene/geoxygene-appli/samples/cassini/images/ponctuels/chapelle_type3_2_grande.png</href>
+<Format>image/png</Format>
+                            </ExternalGraphic>
+                        </Graphic>
+                    </PointSymbolizer>
+                    <TextSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Label>
+                            <PropertyName>nom</PropertyName>
+                        </Label>
+                        <Font>
+                            <CssParameter name="font-family">URW Chancery L</CssParameter>
+                            <CssParameter name="font-style">normal</CssParameter>
+                            <CssParameter name="font-size">20.0</CssParameter>
+                        </Font>
+                        <LabelPlacement>
+                            <PointPlacement>
+<AnchorPoint>
+    <AnchorPointX>-0.1</AnchorPointX>
+    <AnchorPointY>0.2</AnchorPointY>
+</AnchorPoint>
+<Displacement>
+    <DisplacementX>0.0</DisplacementX>
+    <DisplacementY>0.0</DisplacementY>
+</Displacement>
+<Rotation>0.0</Rotation>
+                            </PointPlacement>
+                        </LabelPlacement>
+                        <Fill>
+                            <CssParameter name="fill">#000000</CssParameter>
+                        </Fill>
+                    </TextSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <And>
+                            <PropertyIsEqualTo matchCase="false">
+<PropertyName>type</PropertyName>
+<Literal>chapelle</Literal>
+                            </PropertyIsEqualTo>
+                            <PropertyIsEqualTo matchCase="false">
+<PropertyName>commentair</PropertyName>
+<Literal>type3</Literal>
+                            </PropertyIsEqualTo>
+                        </And>
+                    </Filter>
+                    <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Graphic>
+                            <opacity>1.0</opacity>
+                            <Size>300.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                            <ExternalGraphic>
+<href>file:/media/bdumenieu/data/workspace/geoxygene/geoxygene-appli/samples/cassini/images/ponctuels/chapelle_type3_2_grande.png</href>
+<Format>image/png</Format>
+                            </ExternalGraphic>
+                        </Graphic>
+                    </PointSymbolizer>
+                    <TextSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Label>
+                            <PropertyName>nom</PropertyName>
+                        </Label>
+                        <Font>
+                            <CssParameter name="font-family">URW Chancery L</CssParameter>
+                            <CssParameter name="font-style">normal</CssParameter>
+                            <CssParameter name="font-size">20.0</CssParameter>
+                        </Font>
+                        <LabelPlacement>
+                            <PointPlacement>
+<AnchorPoint>
+    <AnchorPointX>-0.2</AnchorPointX>
+    <AnchorPointY>0.2</AnchorPointY>
+</AnchorPoint>
+<Displacement>
+    <DisplacementX>0.0</DisplacementX>
+    <DisplacementY>0.0</DisplacementY>
+</Displacement>
+<Rotation>0.0</Rotation>
+                            </PointPlacement>
+                        </LabelPlacement>
+                        <Fill>
+                            <CssParameter name="fill">#000000</CssParameter>
+                        </Fill>
+                    </TextSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="false">
+                            <PropertyName>type</PropertyName>
+                            <Literal>abbaye</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Graphic>
+                            <opacity>1.0</opacity>
+                            <Size>100.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                            <ExternalGraphic>
+<href>file:/media/bdumenieu/data/workspace/geoxygene/geoxygene-appli/samples/cassini/images/ponctuels/abbaye.png</href>
+<Format>image/png</Format>
+                            </ExternalGraphic>
+                        </Graphic>
+                    </PointSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="false">
+                            <PropertyName>type</PropertyName>
+                            <Literal>hameau</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Graphic>
+                            <opacity>1.0</opacity>
+                            <Size>300.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                            <ExternalGraphic>
+<href>file:/media/bdumenieu/data/workspace/geoxygene/geoxygene-appli/samples/cassini/images/ponctuels/village_grand.png</href>
+<Format>image/png</Format>
+                            </ExternalGraphic>
+                        </Graphic>
+                    </PointSymbolizer>
+                    <TextSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Label>
+                            <PropertyName>nom</PropertyName>
+                        </Label>
+                        <Font>
+                            <CssParameter name="font-family">URW Chancery L</CssParameter>
+                            <CssParameter name="font-style">normal</CssParameter>
+                            <CssParameter name="font-size">24.0</CssParameter>
+                        </Font>
+                        <LabelPlacement>
+                            <PointPlacement>
+<AnchorPoint>
+    <AnchorPointX>-0.1</AnchorPointX>
+    <AnchorPointY>0.2</AnchorPointY>
+</AnchorPoint>
+<Displacement>
+    <DisplacementX>0.0</DisplacementX>
+    <DisplacementY>0.0</DisplacementY>
+</Displacement>
+<Rotation>0.0</Rotation>
+                            </PointPlacement>
+                        </LabelPlacement>
+                        <Fill>
+                            <CssParameter name="fill">#000000</CssParameter>
+                        </Fill>
+                    </TextSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="false">
+                            <PropertyName>type</PropertyName>
+                            <Literal>fanal</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Graphic>
+                            <opacity>1.0</opacity>
+                            <Size>200.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                            <ExternalGraphic>
+<href>file:/media/bdumenieu/data/workspace/geoxygene/geoxygene-appli/samples/cassini/images/ponctuels/fanal.png</href>
+<Format>image/png</Format>
+                            </ExternalGraphic>
+                        </Graphic>
+                    </PointSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="false">
+                            <PropertyName>type</PropertyName>
+                            <Literal>moulin_eau</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Graphic>
+                            <opacity>1.0</opacity>
+                            <Size>150.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                            <ExternalGraphic>
+<href>file:/media/bdumenieu/data/workspace/geoxygene/geoxygene-appli/samples/cassini/images/ponctuels/moulin_eau1.png</href>
+<Format>image/png</Format>
+                            </ExternalGraphic>
+                        </Graphic>
+                    </PointSymbolizer>
+                    <TextSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Label>
+                            <PropertyName>nom</PropertyName>
+                        </Label>
+                        <Font>
+                            <CssParameter name="font-family">URW Chancery L</CssParameter>
+                            <CssParameter name="font-style">normal</CssParameter>
+                            <CssParameter name="font-size">17.0</CssParameter>
+                        </Font>
+                        <LabelPlacement>
+                            <PointPlacement>
+<AnchorPoint>
+    <AnchorPointX>-0.1</AnchorPointX>
+    <AnchorPointY>0.2</AnchorPointY>
+</AnchorPoint>
+<Displacement>
+    <DisplacementX>0.0</DisplacementX>
+    <DisplacementY>0.0</DisplacementY>
+</Displacement>
+<Rotation>0.0</Rotation>
+                            </PointPlacement>
+                        </LabelPlacement>
+                        <Fill>
+                            <CssParameter name="fill">#000000</CssParameter>
+                        </Fill>
+                    </TextSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+</StyledLayerDescriptor>
