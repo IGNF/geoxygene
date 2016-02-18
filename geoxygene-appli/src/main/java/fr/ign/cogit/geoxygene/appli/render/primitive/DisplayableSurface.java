@@ -31,6 +31,8 @@ import java.awt.Color;
 import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -62,11 +64,14 @@ import fr.ign.cogit.geoxygene.style.RasterSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.expressive.ExpressiveParameter;
 import fr.ign.cogit.geoxygene.style.texture.Texture;
+import fr.ign.cogit.geoxygene.style.texture.TileDistributionTexture;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLComplexRenderer;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
+import fr.ign.cogit.geoxygene.util.gl.GLRenderingCapability;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
 import fr.ign.cogit.geoxygene.util.gl.GLTexture;
+import fr.ign.cogit.geoxygene.util.gl.GLVertex;
 
 /**
  * @author JeT A displayable surface is a displayable containing GL geometries
@@ -297,7 +302,15 @@ public class DisplayableSurface extends AbstractDisplayable {
                                     + rm.getName() + " has no such texture parameter.");
                             complexes.addAll(this.generateWithSolidColor(symbolizer, featureCollection));
                         } else {
+                          boolean keepOut = false;
+                          if(p.getValue() instanceof TileDistributionTexture){
+                            keepOut = ((TileDistributionTexture) (p.getValue())).getDistributionManagement() == TileDistributionTexture.DistributionManagementType.KEEP_OUTSIDE;
+                          }
+                          if (keepOut)
+                            this.createBoundingQuadWithTextureDescriptor(featureCollection, complexes, texparameter, (Texture) p.getValue());
+                          else
                             this.createWithTextureDescriptor(featureCollection, complexes, texparameter, (Texture) p.getValue());
+                            
                         }
                     }
                 }
@@ -307,6 +320,41 @@ public class DisplayableSurface extends AbstractDisplayable {
             complexes.addAll(this.generateWithSolidColor(symbolizer, featureCollection));
         }
         return !complexes.isEmpty();
+    }
+
+    private boolean createBoundingQuadWithTextureDescriptor(
+        IFeatureCollection<IFeature> featureCollection,
+        List<GLComplex> complexes,
+        RenderingMethodParameterDescriptor texparameter, Texture tex) {
+      IEnvelope envelope = featureCollection.getEnvelope();
+      if (tex == null) {
+          logger.error("Creating a DisplayableSurface with a texture (" + texparameter.getName() + ") but no such texture is provided by the symbolizer");
+          return false;
+      }
+      this.createTexture(tex, false); // Launch the texture task
+                                      // asynchronously.
+
+      // should put it back?
+      // draw the texture image into resulting image
+      switch (tex.getTextureDrawingMode()) {
+      case VIEWPORTSPACE:
+
+          BasicParameterizer parameterizer = new BasicParameterizer(envelope, false, true);
+          parameterizer.scaleX(1. / tex.getScaleFactor().getX());
+          parameterizer.scaleY(1. / tex.getScaleFactor().getY());
+          GLSimpleComplex quad = this.GLComplexQuadEnvelope(this.getName() + "-quad-texture-filled", envelope, (PolygonSymbolizer) this.getSymbolizer(), 0, 0 );
+          quad.setOverallOpacity(((PolygonSymbolizer) this.getSymbolizer()).getFill().getFillOpacity());
+          complexes.add(quad);
+          
+          break;
+      case SCREENSPACE:
+          logger.warn("Screenspace coordinates textures are not yet implemented in GL rendering");
+          break;
+      default:
+          logger.warn("Do not know how to draw texture type " + tex.getTextureDrawingMode());
+      }
+      return true;
+      
     }
 
     /**
@@ -415,14 +463,14 @@ public class DisplayableSurface extends AbstractDisplayable {
      * 
      * @param name
      * @param envelope
-     * @param object
+     *  //@param object
      * @param parameterizer
      * @param minX
      * @param minY
      * @param renderer
      * @return
      */
-    private GLSimpleComplex GLComplexQuadEnvelope(String name, IEnvelope envelope, Object object, Parameterizer parameterizer, double minX, double minY, GLComplexRenderer renderer) {
+    private GLSimpleComplex GLComplexQuadEnvelope(String name, IEnvelope envelope, PolygonSymbolizer symbolizer, /*Object object, Parameterizer parameterizer, */double minX, double minY/*, GLComplexRenderer renderer*/) {
         GLSimpleComplex primitive = new GLSimpleComplex(name + "-envelope", minX, minY);
         GLMesh quad = primitive.addGLMesh(GL11.GL_TRIANGLES);
         int nw = primitive.addVertex(new GLSimpleVertex(new float[] { (float) (envelope.getLowerCorner().getX() - minX), (float) (envelope.getLowerCorner().getY() - minY), 0 }, new float[] { 0, 1 }));
@@ -433,6 +481,7 @@ public class DisplayableSurface extends AbstractDisplayable {
         quad.addIndices(nw, se, sw);
         // primitive.setRenderer(new GeoxComplexRendererBasic(this
         // .getLayerRenderer(), this.getSymbolizer()));
+        primitive.setColor(symbolizer.getFill().getColor());
         return primitive;
     }
 
