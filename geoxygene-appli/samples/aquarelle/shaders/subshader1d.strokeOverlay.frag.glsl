@@ -62,8 +62,7 @@ vec2 computeBrushTextureCoordinates( DataPainting fragmentData ) {
 }
 
 /************************************************************************************/
-vec4 computeFragmentColor( in vec4 brushColor, in vec4 paperColor, in DataPainting fragmentData ) {
-
-	return vec4(brushColor);
-	//vec4( fragmentData.color.rgb * brushColor.rgb * paperColor.rgb, fragmentData.color.a );
+vec4 computeFragmentColor( in vec4 brushColor, in vec4 paperColor, in   DataPainting fragmentData ) {
+   float overlayStrength = 0.5*clamp(1.0-fragmentData.strokePressure, 0.0, 1.0);
+   return vec4(brushColor.rgb*(1.0-2.0*overlayStrength)+vec3(overlayStrength),1);
 }
