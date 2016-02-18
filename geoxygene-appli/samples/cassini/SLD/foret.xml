@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<StyledLayerDescriptor xmlns:ogc="http://www.opengis.net/ogc">
+    <Background>
+        <SimpleTexture XRepeat="false" YRepeat="false">
+            <Displacement x="0.0" y="0.0"/>
+            <ScaleFactor x="1.0" y="1.0"/>
+            <Rotation Angle="0.0"/>
+            <URI>../images/canvas-bg.png</URI>
+        </SimpleTexture>
+        <PaperHeightInCm>4.0</PaperHeightInCm>
+        <PaperReferenceMapScale>100000.0</PaperReferenceMapScale>
+        <Color>#FFFFFF</Color>
+    </Background>
+    <NamedLayer>
+        <Name>foret_complete_test9</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer foret_complete_test7</Name>
+            <Name>Style créé pour le layer foret_complete_test7</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#dfa706</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#9c7404</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">1.0</CssParameter>
+                            <CssParameter name="stroke-width">15.0</CssParameter>
+                            <CssParameter name="stroke-linejoin">round</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                            <ExpressiveStroke>
+<ExpressiveMethod>DerainStrokePainting</ExpressiveMethod>
+<ExpressiveParameter name="transitionSize">5.0</ExpressiveParameter>
+<ExpressiveParameter name="brushStartWidth">136.0</ExpressiveParameter>
+<ExpressiveParameter name="brushEndWidth">135.0</ExpressiveParameter>
+<ExpressiveParameter name="paperReferenceMapScale">100000.0</ExpressiveParameter>
+<ExpressiveParameter name="paperRoughness">2.839</ExpressiveParameter>
+<ExpressiveParameter name="brushRoughness">2.992</ExpressiveParameter>
+<ExpressiveParameter name="strokePressure">4.104</ExpressiveParameter>
+<ExpressiveParameter name="strokeSoftness">0.5</ExpressiveParameter>
+<ExpressiveParameter name="paperSizeInCm">0.4</ExpressiveParameter>
+<ExpressiveParameter name="extremitiesLength">50.0</ExpressiveParameter>
+<ExpressiveParameter name="paperTexture">
+    <SimpleTexture XRepeat="false" YRepeat="false">
+        <Displacement x="0.0" y="0.0"/>
+        <ScaleFactor x="1.0" y="1.0"/>
+        <Rotation Angle="0.0"/>
+        <URI>../images/canvas-normalized.png</URI>
+    </SimpleTexture>
+</ExpressiveParameter>
+<ExpressiveParameter name="brushTexture">
+    <SimpleTexture XRepeat="false" YRepeat="false">
+        <Displacement x="0.0" y="0.0"/>
+        <ScaleFactor x="1.0" y="1.0"/>
+        <Rotation Angle="0.0"/>
+        <URI>../images/pencil1-tiled-136-135.png</URI>
+    </SimpleTexture>
+</ExpressiveParameter>
+                            </ExpressiveStroke>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <PerpendicularOffset>0.0</PerpendicularOffset>
+                    </LineSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>sol_test9</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer sol_test7</Name>
+            <Name>Style créé pour le layer sol_test7</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#bbf61b</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#82ac12</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+<LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#555555</CssParameter>
+                            <CssParameter name="stroke-opacity">1.0</CssParameter>
+                            <CssParameter name="stroke-width">100.0</CssParameter>
+                            <CssParameter name="stroke-linejoin">round</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                            <ExpressiveStroke>
+                                <ExpressiveMethod>Broussailles</ExpressiveMethod>
+                                <ExpressiveParameter name="transitionSize">0</ExpressiveParameter>
+                                <ExpressiveParameter name="paperReferenceMapScale">100000.0</ExpressiveParameter> <!-- Only used for tesselation -->
+                                <ExpressiveParameter name="paperRoughness">2</ExpressiveParameter>
+                                <ExpressiveParameter name="brushRoughness">4</ExpressiveParameter>
+                                <ExpressiveParameter name="strokePressure">17</ExpressiveParameter>
+                                <ExpressiveParameter name="strokeSoftness">0.2</ExpressiveParameter>
+                                <ExpressiveParameter name="paperSizeInCm">4</ExpressiveParameter>
+                                <ExpressiveParameter name="extremitiesLength">0</ExpressiveParameter>
+                                <ExpressiveParameter name="paperTexture">
+                                    <SimpleTexture XRepeat="false" YRepeat="false">
+                                        <Displacement x="0.0" y="0.0"></Displacement>
+                                        <ScaleFactor x="1.0" y="1.0"></ScaleFactor>
+                                        <Rotation Angle="0.0"></Rotation>
+                                        <URI>../images/canvas-normalized.png</URI>
+                                    </SimpleTexture>
+                                </ExpressiveParameter>
+                                <ExpressiveParameter name="brushTexture">
+                                    <SimpleTexture XRepeat="false" YRepeat="false">
+                                        <Displacement x="0.0" y="0.0"></Displacement>
+                                        <ScaleFactor x="1.0" y="1.0"></ScaleFactor>
+                                        <Rotation Angle="0.0"></Rotation>
+                                        <URI>../images/broussailles/broussaille.png</URI>
+                                    </SimpleTexture>
+                                </ExpressiveParameter>
+                            </ExpressiveStroke>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <PerpendicularOffset>0.0</PerpendicularOffset>
+                    </LineSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>    
+</StyledLayerDescriptor>
