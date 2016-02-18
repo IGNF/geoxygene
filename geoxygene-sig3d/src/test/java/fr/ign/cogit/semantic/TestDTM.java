@@ -8,8 +8,6 @@ import java.net.MalformedURLException;
 import javax.media.j3d.TriangleStripArray;
 import javax.vecmath.Color4f;
 
-import junit.framework.TestCase;
-
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
@@ -22,6 +20,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
+import junit.framework.TestCase;
 
 
 

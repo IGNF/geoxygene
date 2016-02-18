@@ -2,8 +2,6 @@ package fr.ign.cogit.calculation;
 
 import java.util.ArrayList;
 
-import junit.framework.TestCase;
-
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -16,6 +14,7 @@ import fr.ign.cogit.geoxygene.sig3d.geometry.Sphere;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
 import fr.ign.cogit.tools.Utils;
+import junit.framework.TestCase;
 
 public class TestBooleanOperators extends TestCase {
 

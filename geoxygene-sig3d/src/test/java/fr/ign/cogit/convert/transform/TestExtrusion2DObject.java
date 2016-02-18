@@ -3,8 +3,6 @@ package fr.ign.cogit.convert.transform;
 
 
 
-import junit.framework.TestCase;
-
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
@@ -16,6 +14,7 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
 import fr.ign.cogit.tools.Utils;
+import junit.framework.TestCase;
 
 
 

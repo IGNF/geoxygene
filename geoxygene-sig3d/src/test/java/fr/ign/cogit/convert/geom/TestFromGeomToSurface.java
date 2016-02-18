@@ -4,8 +4,6 @@ package fr.ign.cogit.convert.geom;
 
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
@@ -15,6 +13,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
 import fr.ign.cogit.tools.Utils;
+import junit.framework.TestCase;
 
 
 

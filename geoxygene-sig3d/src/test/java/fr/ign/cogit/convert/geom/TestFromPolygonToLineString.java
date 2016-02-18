@@ -6,8 +6,6 @@ package fr.ign.cogit.convert.geom;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
@@ -16,6 +14,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.sig3d.convert.geom.FromPolygonToLineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.tools.Utils;
+import junit.framework.TestCase;
 
 
 

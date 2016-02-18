@@ -1,7 +1,5 @@
 package fr.ign.cogit.equation;
 
-import junit.framework.TestCase;
-
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -11,6 +9,7 @@ import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
 import fr.ign.cogit.geoxygene.sig3d.equation.LineEquation;
 import fr.ign.cogit.geoxygene.sig3d.equation.PlanEquation;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
+import junit.framework.TestCase;
 
 public class TestLineEquation extends TestCase {
 

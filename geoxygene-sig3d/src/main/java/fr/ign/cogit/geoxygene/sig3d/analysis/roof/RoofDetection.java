@@ -69,7 +69,6 @@ public class RoofDetection {
         lTri), threshold, facesWellOriented);
   }
 
-  @SuppressWarnings("unchecked")
   public static IMultiSurface<? extends IOrientableSurface> detectRoof(
       IGeometry geom, double threshold, boolean facesWellOriented) {
 

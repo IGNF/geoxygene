@@ -1,7 +1,5 @@
 package fr.ign.cogit.geometry;
 
-import junit.framework.TestCase;
-
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -13,6 +11,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
 import fr.ign.cogit.tools.Utils;
+import junit.framework.TestCase;
 
 
 

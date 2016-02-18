@@ -1,7 +1,5 @@
 package fr.ign.cogit.sample;
 
-import junit.framework.TestCase;
-
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -14,6 +12,7 @@ import fr.ign.cogit.geoxygene.sig3d.sample.DisplayData;
 import fr.ign.cogit.geoxygene.sig3d.sample.RGE;
 import fr.ign.cogit.geoxygene.sig3d.sample.Symbology;
 import fr.ign.cogit.geoxygene.sig3d.sample.Toponym;
+import junit.framework.TestCase;
 ;
 
 

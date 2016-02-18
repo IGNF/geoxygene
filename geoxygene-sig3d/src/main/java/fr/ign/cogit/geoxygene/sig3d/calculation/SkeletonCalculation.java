@@ -23,8 +23,7 @@ public class SkeletonCalculation {
     
     
     
-    String ffiltered = "E:/mbrasebin/Donnees/Strasbourg/ZoneTest/ExpBDH/RetrieveDatabase/destroyedFilteredBuildings.shp";
-    
+ 
 
     IFeatureCollection<IFeature> iFC = ShapefileReader.read(f);
 
@@ -32,9 +31,7 @@ public class SkeletonCalculation {
     IFeatureCollection<IFeature> iFCOutProb = new FT_FeatureCollection<IFeature>();
 
     
-    
-    IFeatureCollection<IFeature> filteredFeat =  new FT_FeatureCollection<IFeature>();
-    
+   
     
     int count = 0;
 

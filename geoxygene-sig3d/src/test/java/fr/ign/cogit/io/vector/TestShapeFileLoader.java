@@ -1,7 +1,5 @@
 package fr.ign.cogit.io.vector;
 
-import junit.framework.TestCase;
-
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -11,6 +9,7 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.sig3d.io.vector.ShapeFileLoader;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
+import junit.framework.TestCase;
 
 
 

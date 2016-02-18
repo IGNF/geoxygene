@@ -1,8 +1,5 @@
 package fr.ign.cogit;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
 import fr.ign.cogit.calculation.TestBooleanOperators;
 import fr.ign.cogit.calculation.TestCalculation3D;
 import fr.ign.cogit.calculation.TestProximity;
@@ -20,6 +17,9 @@ import fr.ign.cogit.io.vector.TestShapeFileLoader;
 import fr.ign.cogit.sample.TestSample;
 import fr.ign.cogit.semantic.TestDTM;
 import fr.ign.cogit.semantic.TestDTM2;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+import junit.textui.TestRunner;
 
 //--------------------------------------------------------------------------------
 // Class containing main function to launch test suite

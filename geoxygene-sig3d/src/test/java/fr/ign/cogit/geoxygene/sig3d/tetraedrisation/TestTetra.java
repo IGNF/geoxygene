@@ -2,8 +2,6 @@ package fr.ign.cogit.geoxygene.sig3d.tetraedrisation;
 
 import java.util.ArrayList;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -17,6 +15,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
+import junit.framework.Assert;
 
 public class TestTetra {
 

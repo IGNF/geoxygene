@@ -1,7 +1,5 @@
 package fr.ign.cogit.equation;
 
-import junit.framework.TestCase;
-
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -15,6 +13,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Triangle;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Surface;
 import fr.ign.cogit.tools.Utils;
+import junit.framework.TestCase;
 
 public class TestPlanEquation extends TestCase {
 

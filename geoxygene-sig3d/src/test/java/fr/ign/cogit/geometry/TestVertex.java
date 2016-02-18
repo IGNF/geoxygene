@@ -2,8 +2,6 @@ package fr.ign.cogit.geometry;
 
 import java.util.ArrayList;
 
-import junit.framework.TestCase;
-
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -12,6 +10,7 @@ import org.junit.Test;
 import fr.ign.cogit.geoxygene.sig3d.geometry.topology.Triangle;
 import fr.ign.cogit.geoxygene.sig3d.geometry.topology.Vertex;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
+import junit.framework.TestCase;
 
 
 
