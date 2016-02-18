@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<StyledLayerDescriptor xmlns:ogc="http://www.opengis.net/ogc">
+    <Background>
+        <SimpleTexture XRepeat="false" YRepeat="false">
+            <Displacement x="0.0" y="0.0"/>
+            <ScaleFactor x="1.0" y="1.0"/>
+            <Rotation Angle="0.0"/>
+            <URI>../images/canvas-bg.png</URI>
+        </SimpleTexture>
+        <PaperHeightInCm>4.0</PaperHeightInCm>
+        <PaperReferenceMapScale>100000.0</PaperReferenceMapScale>
+        <Color>#FFFFFF</Color>
+    </Background>
+    <NamedLayer>
+        <Name>relief_hydro</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer relief_hydro</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#9d8256</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#6d5b3c</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#555555</CssParameter>
+                            <CssParameter name="stroke-opacity">1.0</CssParameter>
+                            <CssParameter name="stroke-width">100.0</CssParameter>
+                            <CssParameter name="stroke-linejoin">round</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                            <ExpressiveStroke>
+<ExpressiveMethod>CassiniRoadsPainting</ExpressiveMethod>
+<ExpressiveParameter name="transitionSize">10.0</ExpressiveParameter>
+<ExpressiveParameter name="paperReferenceMapScale">100000.0</ExpressiveParameter>
+<ExpressiveParameter name="paperRoughness">2.0</ExpressiveParameter>
+<ExpressiveParameter name="brushRoughness">4.0</ExpressiveParameter>
+<ExpressiveParameter name="strokePressure">17.0</ExpressiveParameter>
+<ExpressiveParameter name="strokeSoftness">0.2</ExpressiveParameter>
+<ExpressiveParameter name="paperSizeInCm">4.0</ExpressiveParameter>
+<ExpressiveParameter name="extremitiesLength">210.375</ExpressiveParameter>
+<ExpressiveParameter name="paperTexture">
+    <SimpleTexture XRepeat="false" YRepeat="false">
+        <Displacement x="0.0" y="0.0"/>
+        <ScaleFactor x="1.0" y="1.0"/>
+        <Rotation Angle="0.0"/>
+        <URI>../images/canvas-normalized.png</URI>
+    </SimpleTexture>
+</ExpressiveParameter>
+<ExpressiveParameter name="brushTexture">
+    <SimpleTexture XRepeat="false" YRepeat="false">
+        <Displacement x="0.0" y="0.0"/>
+        <ScaleFactor x="1.0" y="1.0"/>
+        <Rotation Angle="3.0"/>
+        <URI>../images/relief_rot.png</URI>
+    </SimpleTexture>
+</ExpressiveParameter>
+                            </ExpressiveStroke>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <BlendingMode>Normal</BlendingMode>
+                        <Fill>
+                            <CssParameter name="fill">#ffffff</CssParameter>
+                            <CssParameter name="fill-opacity">0.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+</StyledLayerDescriptor>
