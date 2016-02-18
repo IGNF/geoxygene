@@ -166,8 +166,8 @@ public class MipMapMask {
      */
     public Point source2MipMapCoordinate(double x, double y, int level) {
         return new Point(
-                (int) (x * this.mipmapImageWidthPerLevel[level] / this.imageWidth),
-                (int) (y * this.mipmapImageWidthPerLevel[level] / this.imageHeight));
+                (int) Math.floor (((double)x) * ((double)this.mipmapImageWidthPerLevel[level]) / ((double)this.imageWidth)),
+                (int) Math.floor (((double)y) * ((double)this.mipmapImageWidthPerLevel[level]) / ((double)this.imageHeight)));
     }
 
     /**
@@ -188,9 +188,9 @@ public class MipMapMask {
         // " to " + (((double) p.x / this.getMipmapSize() *
         // this.getImageWidth())) + "x"
         // + (((double) p.y / this.getMipmapSize() * this.getImageHeight())));
-        return new Point((int) Math.round((double) p.x / this.getMipmapSize()
-                * this.getImageWidth()), (int) Math.round((double) p.y
-                / this.getMipmapSize() * this.getImageHeight()));
+        return new Point(
+            (int) Math.floor(((double) p.x+1) / ((double)this.getMipmapSize()) * ((double)this.getImageWidth())), 
+            (int) Math.floor(((double) p.y+1) / ((double)this.getMipmapSize()) * ((double)this.getImageHeight())));
     }
 
     /**
@@ -224,6 +224,7 @@ public class MipMapMask {
         if (currentLevel <= 0) {
             return null;
         }
+        
         Point[] cellsCoordinates = new Point[4];
         cellsCoordinates[0] = new Point(x * 2, y * 2);
         cellsCoordinates[1] = new Point(x * 2 + 1, y * 2);
@@ -273,12 +274,20 @@ public class MipMapMask {
      *            x coordinate expressed in image source coordinate system
      * @param y
      *            y coordinate expressed in image source coordinate system
+     *            
+     *            
+     * 
      */
     public void removeWhitePixel(int x, int y) {
+      /// check that the pixel is actually white
+      int nbwhite = this.mipmapImages[0].getCell(this.source2MipMapCoordinate(x, y, 0)).nbWhite;
+      if ( nbwhite == 1){
         for (int level = 0; level < this.mipmapNbLevels; level++) {
-            this.mipmapImages[level].getCell(this.source2MipMapCoordinate(x, y,
-                    level)).nbWhite--;
+          this.mipmapImages[level].getCell(this.source2MipMapCoordinate(x, y, 
+              level)).nbWhite--;
         }
+      } else if (nbwhite != 0)
+        throw new RuntimeException("Wrong number of white pixels!");
     }
 
     /**

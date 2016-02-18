@@ -159,7 +159,9 @@ public class TextureImageSamplerMipMap implements SamplingAlgorithm {
         // System.err.println("compute samples using mipmap");
         // MipMapMask.save(this.imageMask, "./initial mipmap.png");
         // System.err.println("save file initial mipmap.png");
-        while ((p = this.nextWhitePixel(rand)) != null) {
+
+        while (this.imageMask.getNbWhite() != 0 && (p = this.nextWhitePixel(rand)) != null) {
+
             // System.err.println("Chosen sample = " + p + " between " +
             // this.imageMask.getNbWhite() + " white pixels");
             GradientPixel pixel = this.image.getPixel(p.x, p.y);
@@ -188,6 +190,8 @@ public class TextureImageSamplerMipMap implements SamplingAlgorithm {
         }
         // MipMapMask.save(this.imageMask, "./mipmap.png");
         // System.err.println("save file mipmap.png");
+        
+        // check if we still have white points
     }
 
     /**
@@ -245,9 +249,9 @@ public class TextureImageSamplerMipMap implements SamplingAlgorithm {
                 } else {
                     outCount++;
                 }
-                if (this.imageMask.getWhitePixelCount(xImage, yImage) != 0) {
+                //if (this.imageMask.getWhitePixelCount(xImage, yImage) != 0) {
                     this.imageMask.removeWhitePixel(xImage, yImage);
-                }
+                //}
             }
         }
         return inCount / (double) (inCount + outCount);
@@ -430,6 +434,7 @@ public class TextureImageSamplerMipMap implements SamplingAlgorithm {
      * @param rand
      *            random seed used when multiple cells have the same maximum
      *            white pixels
+     * @warning the returned pixel is marked as un-available           
      * @return one of the max cell or null if none
      */
     private Point nextWhitePixel(Random rand) {
@@ -441,8 +446,10 @@ public class TextureImageSamplerMipMap implements SamplingAlgorithm {
         if (pixelInMipmapCoordinates == null) {
             return null;
         }
-        return this.imageMask
-                .mipmap2SourceCoordinates(pixelInMipmapCoordinates);
+        
+        Point pixelPos = this.imageMask.mipmap2SourceCoordinates(pixelInMipmapCoordinates);
+        
+        return pixelPos;
     }
 
     /**
