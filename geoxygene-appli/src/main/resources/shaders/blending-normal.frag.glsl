@@ -16,9 +16,6 @@ void main(void) {
 	vec3 resultColor = vec3(0);
 	vec4 foregroundColor = colorFilter( texture( foregroundTexture, fragmentTextureCoord.xy ) );
 	vec4 backgroundColor = texture( backgroundTexture, fragmentTextureCoord.xy );
-	foregroundColor.rgb = foregroundColor.rgb * foregroundColor.a;
-	backgroundColor.rgb = backgroundColor.rgb * backgroundColor.a;
-	float sumAlpha = foregroundColor.a + backgroundColor.a;
 
 	resultColor = foregroundColor.rgb * foregroundColor.a + backgroundColor.rgb * (1.0 - foregroundColor.a );
 
