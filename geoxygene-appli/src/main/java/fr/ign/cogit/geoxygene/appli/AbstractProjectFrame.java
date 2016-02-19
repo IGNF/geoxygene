@@ -221,7 +221,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
             this.splitPane.setOneTouchExpandable(true);
             this.splitPane.setDividerSize(DEFAULT_DIVIDER_SIZE);
             this.splitPane.setResizeWeight(0.);
-            this.splitPane.setBackground(Color.black);
+            this.splitPane.setBackground(Color.white);
         }
         return this.splitPane;
     }
