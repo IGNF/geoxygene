@@ -649,8 +649,8 @@
 			</releases>
 		</repository>
 		<repository>
-			<id>isc</id>
-			<name>GeoSolutions libraries repository</name>
+			<id>iscpif-ign-releases</id>
+			<name>ISCPIF Release repository for IGN</name>
 			<url>http://maven.iscpif.fr/ign-releases</url>
 			<snapshots>
 				<enabled>false</enabled>
