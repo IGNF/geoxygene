@@ -367,7 +367,7 @@ public class PostgisManager {
       ResultSet r1 = s
           .executeQuery("SELECT column_name, data_type FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '"
               + table + "'");
-
+      
       // On construit le FeatureType, le Schema et la Map
       FeatureType fType = new FeatureType();
       SchemaDefaultFeature schema = new SchemaDefaultFeature();
@@ -387,7 +387,7 @@ public class PostgisManager {
       int shiftIni = 1;
 
       while (r1.next()) {
-
+        
         String nomField = r1.getString(1);
         AttributeType type = new AttributeType();
         String memberName = nomField;
@@ -412,7 +412,7 @@ public class PostgisManager {
 
       // On renseigne les informations pour chaque ligne de la table
       int nbAttribut = fType.getFeatureAttributes().size();
-      // System.out.println("nb att : " + nbAttribut);
+      
       schema.setFeatureType(fType);
       fType.setSchema(schema);
       schema.setAttLookup(attLookup);
@@ -425,11 +425,10 @@ public class PostgisManager {
 
       }
 
-      System.out.println(requestSelect);
       r2 = s.executeQuery(requestSelect);
-
+      
       while (r2.next()) {
-
+        
         // On crée l'entité et on lui associé ses métadonnées
         DefaultFeature deF = new DefaultFeature();
         deF.setSchema(schema);
@@ -447,17 +446,11 @@ public class PostgisManager {
           // Pour chaque attribut (l'index des row commence à 1)
           for (int i = 1; i < nbAttribut /* + shiftIni */; i++) {
 
-            // System.out.println("valeur de i : " + i);
-
             if (i <= nbAttribut) {
               // On renseigne l'attribut
 
               deF.setAttribute(i, r2.getString(i + shiftIni));
 
-              // System.out.println(r2.getString(i));
-              // System.out.println("val i : " + i);
-              // System.out.println("val shift : " + shift);
-              // System.out.println("val i-shift : " + (i - shift) + "\n");
               shift++;
             }
 
@@ -466,7 +459,6 @@ public class PostgisManager {
         }
 
         // On ajoute à la collection
-        // System.out.println("deF : " + deF);
         fColl.add(deF);
 
       }
@@ -482,9 +474,6 @@ public class PostgisManager {
       throw e;
 
     }
-    // System.out.println("Taille fColl : " + fColl.size());
-    // System.out.println("Contenu fColl : " + fColl.get(0));
-    // System.out.println("\n" + "\t" + "------> fColl : " + fColl + "\n");
 
     return fColl;
 
