@@ -34,18 +34,13 @@ import static org.lwjgl.opengl.GL11.glBindTexture;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Collection;
-
-import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 import org.lwjgl.BufferUtils;
@@ -95,7 +90,6 @@ public class DisplayableTextRenderer extends DisplayableRenderer<AbstractDisplay
             Integer width = (Integer) GLContext.getActiveGlContext().getSharedUniform(GeoxygeneConstants.GL_VarName_ScreenWidth);
             Integer height = (Integer) GLContext.getActiveGlContext().getSharedUniform(GeoxygeneConstants.GL_VarName_ScreenHeight);
             if (this.textImage == null || width != previousWidth || height != previousHeight) {
-                System.out.println("Create a new image " + this);
                 this.createTextImage(width, height);
             }
             // AWT toponyms rendering in the this.textImage
@@ -112,10 +106,6 @@ public class DisplayableTextRenderer extends DisplayableRenderer<AbstractDisplay
     }
 
     private void createTextImage(Integer width, Integer height) {
-        System.out.println("Create a new image of size " + width + "x" + height);
-        if (this.textImageGraphics != null) {
-            // this.textImageGraphics.dispose();
-        }
         this.textImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
         this.textImageGraphics = this.textImage.createGraphics();
         this.textImageGraphics.setBackground(new Color(0, 0, 0, 1));
@@ -129,6 +119,7 @@ public class DisplayableTextRenderer extends DisplayableRenderer<AbstractDisplay
 
     private void clearTextImage() {
         this.textImageGraphics.clearRect(0, 0, width, height);
+        
     }
 
     /**
