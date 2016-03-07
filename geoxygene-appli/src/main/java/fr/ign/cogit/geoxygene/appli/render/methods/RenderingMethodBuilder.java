@@ -34,10 +34,8 @@ import java.net.URL;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.appli.gl.Shader;
-
 public class RenderingMethodBuilder {
-    public final static URL DEFAULT_METHODS_LOCATION_DIR = Shader.class.getClassLoader().getResource("methods/");
+    public final static URL DEFAULT_METHODS_LOCATION_DIR = RenderingMethodBuilder.class.getClassLoader().getResource("methods/");
 
     public static RenderingMethodDescriptor build(URI location) {
         RenderingMethodDescriptor method = RenderingMethodDescriptor.unmarshall(new File(location));

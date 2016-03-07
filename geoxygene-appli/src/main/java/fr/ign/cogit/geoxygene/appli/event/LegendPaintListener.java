@@ -164,9 +164,11 @@ public class LegendPaintListener implements PaintListener {
                     + (int) rule.getLegendGraphic().getGraphic().getSize() / 2,
                 textCurrentLine
                     - (int) rule.getLegendGraphic().getGraphic().getSize() / 2);
-            graphics.drawString(rule.getTitle(), textBaseLine + shift + shift
+            if(rule.getTitle() != null){
+                graphics.drawString(rule.getTitle(), textBaseLine + shift + shift
                 + (int) rule.getLegendGraphic().getGraphic().getSize(),
                 textCurrentLine);
+            }
             textCurrentLine += Math.max((int) rule.getLegendGraphic()
                 .getGraphic().getSize(), graphics.getFontMetrics().getHeight());
           }
