@@ -1,0 +1,874 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<StyledLayerDescriptor xmlns:ogc="http://www.opengis.net/ogc">
+	<Background>
+		<SimpleTexture XRepeat="false" YRepeat="false">
+			<Displacement x="0.0" y="0.0" />
+			<ScaleFactor x="1.0" y="1.0" />
+			<Rotation Angle="0.0" />
+			<URI>../images/canvas-bg.png</URI>
+		</SimpleTexture>
+		<PaperHeightInCm>4.0</PaperHeightInCm>
+		<PaperReferenceMapScale>100000.0</PaperReferenceMapScale>
+		<Color>#FFFFFF</Color>
+	</Background>
+	<NamedLayer>
+		<Name>mer_generalized</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer mer_OCS_100</Name>
+			<Name>Style créé pour le layer mer_OCS_100</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#444444</CssParameter>
+							<CssParameter name="stroke-opacity">1.0</CssParameter>
+							<CssParameter name="stroke-width">0.0</CssParameter>
+							<CssParameter name="stroke-linecap">round</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<BlendingMode>Normal</BlendingMode>
+						<Fill>
+							<ExpressiveFill>
+								<ExpressiveMethod>TextureFill</ExpressiveMethod>
+								<ExpressiveParameter name="fill-texture">
+									<TileDistributionTexture XRepeat="false"
+										YRepeat="false">
+										<Displacement x="0.0" y="0.0" />
+										<ScaleFactor x="0.5" y="0.5" />
+										<Rotation Angle="0.0" />
+										<MaxCoastlineLength>5000.0</MaxCoastlineLength>
+										<Tile>
+											<URI>../images/StJeanDeLuz/mer1.png</URI>
+											<ScaleFactor>0.4</ScaleFactor>
+											<MinDistance>0.0</MinDistance>
+											<MaxDistance>2600.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/StJeanDeLuz/mer2.png</URI>
+											<ScaleFactor>0.7</ScaleFactor>
+											<MinDistance>0.0</MinDistance>
+											<MaxDistance>2600.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/StJeanDeLuz/mer12.png</URI>
+											<ScaleFactor>0.8</ScaleFactor>
+											<MinDistance>2400.0</MinDistance>
+											<MaxDistance>2800.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/StJeanDeLuz/mer11.png</URI>
+											<ScaleFactor>0.4</ScaleFactor>
+											<MinDistance>2400.0</MinDistance>
+											<MaxDistance>2800.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/StJeanDeLuz/mer5.png</URI>
+											<ScaleFactor>0.5</ScaleFactor>
+											<MinDistance>2700.0</MinDistance>
+											<MaxDistance>3400.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/StJeanDeLuz/mer6.png</URI>
+											<ScaleFactor>0.6</ScaleFactor>
+											<MinDistance>2700.0</MinDistance>
+											<MaxDistance>3400.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/StJeanDeLuz/mer7.png</URI>
+											<ScaleFactor>0.7</ScaleFactor>
+											<MinDistance>2800.0</MinDistance>
+											<MaxDistance>3100.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/StJeanDeLuz/mer8.png</URI>
+											<ScaleFactor>0.5</ScaleFactor>
+											<MinDistance>3300.0</MinDistance>
+											<MaxDistance>4000.0</MaxDistance>
+											<InRangeProbability>0.6</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/StJeanDeLuz/mer9.png</URI>
+											<ScaleFactor>0.5</ScaleFactor>
+											<MinDistance>3300.0</MinDistance>
+											<MaxDistance>4000.0</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/StJeanDeLuz/mer10.png</URI>
+											<ScaleFactor>0.1</ScaleFactor>
+											<MinDistance>3500.0</MinDistance>
+											<MaxDistance>INF</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Resolution>600.0</Resolution>
+										<Blending>ALPHA</Blending>
+										<DistributionManagement>KEEP_OUTSIDE</DistributionManagement>
+										<BlurSize>1</BlurSize>
+									</TileDistributionTexture>
+								</ExpressiveParameter>
+							</ExpressiveFill>
+							<CssParameter name="fill">#ffffff</CssParameter>
+							<CssParameter name="fill-opacity">1.0</CssParameter>
+						</Fill>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>ground</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer ground</Name>
+			<Name>Style créé pour le layer ground</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<LegendGraphic>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#6fe215</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#4d9e0e</CssParameter>
+									<CssParameter name="stroke-opacity">0.8</CssParameter>
+									<CssParameter name="stroke-width">0.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</LegendGraphic>
+					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#4d9e0e</CssParameter>
+							<CssParameter name="stroke-opacity">0.8</CssParameter>
+							<CssParameter name="stroke-width">0.0</CssParameter>
+							<CssParameter name="stroke-linejoin">round</CssParameter>
+							<CssParameter name="stroke-linecap">round</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<BlendingMode>Normal</BlendingMode>
+						<Fill>
+							<ExpressiveFill>
+								<ExpressiveMethod>TextureFill</ExpressiveMethod>
+								<ExpressiveParameter name="fill-texture">
+									<SimpleTexture XRepeat="false" YRepeat="false">
+										<Displacement x="0.0" y="0.0" />
+										<ScaleFactor x="0.4" y="0.4" />
+										<Rotation Angle="0.0" />
+										<URI>../images/canvas-bg.png</URI>
+									</SimpleTexture>
+								</ExpressiveParameter>
+							</ExpressiveFill>
+							<CssParameter name="fill">#ffffff</CssParameter>
+							<CssParameter name="fill-opacity">1.0</CssParameter>
+						</Fill>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>ocs</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer emprise_ocs</Name>
+			<Name>Style créé pour le layer emprise_ocs</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<Filter>
+						<PropertyIsEqualTo matchCase="false">
+							<PropertyName>type</PropertyName>
+							<Literal>lande2</Literal>
+						</PropertyIsEqualTo>
+					</Filter>
+					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#ffffff</CssParameter>
+							<CssParameter name="stroke-opacity">0.0</CssParameter>
+							<CssParameter name="stroke-width">23.0</CssParameter>
+							<CssParameter name="stroke-linecap">round</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<BlendingMode>Normal</BlendingMode>
+						<Fill>
+							<ExpressiveFill>
+								<ExpressiveMethod>TextureFill</ExpressiveMethod>
+								<ExpressiveParameter name="fill-texture">
+									<SimpleTexture XRepeat="false" YRepeat="false">
+										<Displacement x="0.0" y="0.0" />
+										<ScaleFactor x="0.04" y="0.04" />
+										<Rotation Angle="0.0" />
+										<URI>../images/manche/lande2.png</URI>
+									</SimpleTexture>
+								</ExpressiveParameter>
+							</ExpressiveFill>
+							<CssParameter name="fill">#ffffff</CssParameter>
+							<CssParameter name="fill-opacity">1.0</CssParameter>
+						</Fill>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Filter>
+						<PropertyIsEqualTo matchCase="false">
+							<PropertyName>type</PropertyName>
+							<Literal>lande3</Literal>
+						</PropertyIsEqualTo>
+					</Filter>
+					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#ffffff</CssParameter>
+							<CssParameter name="stroke-opacity">0.0</CssParameter>
+							<CssParameter name="stroke-width">23.0</CssParameter>
+							<CssParameter name="stroke-linecap">round</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<BlendingMode>Normal</BlendingMode>
+						<Fill>
+							<ExpressiveFill>
+								<ExpressiveMethod>TextureFill</ExpressiveMethod>
+								<ExpressiveParameter name="fill-texture">
+									<SimpleTexture XRepeat="false" YRepeat="false">
+										<Displacement x="0.0" y="0.0" />
+										<ScaleFactor x="0.07" y="0.07" />
+										<Rotation Angle="0.0" />
+										<URI>../images/manche/lande3_grande.png</URI>
+									</SimpleTexture>
+								</ExpressiveParameter>
+							</ExpressiveFill>
+							<CssParameter name="fill">#ffffff</CssParameter>
+							<CssParameter name="fill-opacity">1.0</CssParameter>
+						</Fill>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<LegendGraphic>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#999999</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#222</CssParameter>
+									<CssParameter name="stroke-opacity">0.8</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</LegendGraphic>
+					<Filter>
+						<PropertyIsEqualTo matchCase="false">
+							<PropertyName>type</PropertyName>
+							<Literal>bord_mer</Literal>
+						</PropertyIsEqualTo>
+					</Filter>
+					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#ffffff</CssParameter>
+							<CssParameter name="stroke-opacity">0.0</CssParameter>
+							<CssParameter name="stroke-width">23.0</CssParameter>
+							<CssParameter name="stroke-linecap">round</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<BlendingMode>Normal</BlendingMode>
+						<Fill>
+							<ExpressiveFill>
+								<ExpressiveMethod>TextureFill</ExpressiveMethod>
+								<ExpressiveParameter name="fill-texture">
+									<SimpleTexture XRepeat="false" YRepeat="false">
+										<Displacement x="0.0" y="0.0" />
+										<ScaleFactor x="0.01" y="0.01" />
+										<Rotation Angle="0.0" />
+										<URI>../images/bord_mer.png</URI>
+									</SimpleTexture>
+								</ExpressiveParameter>
+							</ExpressiveFill>
+							<CssParameter name="fill">#ffffff</CssParameter>
+							<CssParameter name="fill-opacity">1.0</CssParameter>
+						</Fill>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>foret</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer vegetation_OCS_100</Name>
+			<Name>Style créé pour le layer vegetation_OCS_100</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<LegendGraphic>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#999999</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#222</CssParameter>
+									<CssParameter name="stroke-opacity">0.8</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</LegendGraphic>
+					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-opacity">0.0</CssParameter>
+							<CssParameter name="stroke-width">23.0</CssParameter>
+							<CssParameter name="stroke-linecap">round</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<BlendingMode>Normal</BlendingMode>
+						<Fill>
+							<ExpressiveFill>
+								<ExpressiveMethod>TextureFill</ExpressiveMethod>
+								<ExpressiveParameter name="fill-texture">
+									<TileDistributionTexture XRepeat="false"
+										YRepeat="false">
+										<Displacement x="0.0" y="0.0" />
+										<ScaleFactor x="1.0" y="1.0" />
+										<Rotation Angle="0.0" />
+										<MaxCoastlineLength>INF</MaxCoastlineLength>
+										<Tile>
+											<URI>../images/StJeanDeLuz/veget1.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>0.0</MinDistance>
+											<MaxDistance>INF</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/StJeanDeLuz/veget2.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>0.0</MinDistance>
+											<MaxDistance>INF</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/StJeanDeLuz/veget3.png</URI>
+											<ScaleFactor>1.0</ScaleFactor>
+											<MinDistance>0.0</MinDistance>
+											<MaxDistance>INF</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Tile>
+											<URI>../images/StJeanDeLuz/veget4.png</URI>
+											<ScaleFactor>0.2</ScaleFactor>
+											<MinDistance>0.0</MinDistance>
+											<MaxDistance>INF</MaxDistance>
+											<InRangeProbability>1.0</InRangeProbability>
+											<OutOfRangeProbability>0.0</OutOfRangeProbability>
+										</Tile>
+										<Resolution>300.0</Resolution>
+										<Blending>ALPHA</Blending>
+										<DistributionManagement>KEEP_OUTSIDE</DistributionManagement>
+										<BlurSize>2</BlurSize>
+									</TileDistributionTexture>
+								</ExpressiveParameter>
+							</ExpressiveFill>
+							<CssParameter name="fill">#ffffff</CssParameter>
+							<CssParameter name="fill-opacity">1.0</CssParameter>
+						</Fill>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>hydro</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer hydro_100</Name>
+			<Name>Style créé pour le layer hydro_100</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<LegendGraphic>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#333333</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#dddddd</CssParameter>
+									<CssParameter name="stroke-opacity">0.8</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</LegendGraphic>
+					<LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-opacity">0.8</CssParameter>
+							<CssParameter name="stroke-width">50.0</CssParameter>
+							<CssParameter name="stroke-linejoin">round</CssParameter>
+							<CssParameter name="stroke-linecap">round</CssParameter>
+							<ExpressiveStroke>
+								<ExpressiveMethod>CassiniRiverPainting</ExpressiveMethod>
+								<ExpressiveParameter name="transitionSize">10.0</ExpressiveParameter>
+								<ExpressiveParameter name="paperReferenceMapScale">100000.0</ExpressiveParameter>
+								<ExpressiveParameter name="paperRoughness">0.7</ExpressiveParameter>
+								<ExpressiveParameter name="brushRoughness">1.9</ExpressiveParameter>
+								<ExpressiveParameter name="strokePressure">2.6</ExpressiveParameter>
+								<ExpressiveParameter name="strokeSoftness">0.1</ExpressiveParameter>
+								<ExpressiveParameter name="paperSizeInCm">4.0</ExpressiveParameter>
+								<ExpressiveParameter name="extremitiesLength">6.0</ExpressiveParameter>
+								<ExpressiveParameter name="thickness">0.5</ExpressiveParameter>
+								<ExpressiveParameter name="hardness">0.5</ExpressiveParameter>
+								<ExpressiveParameter name="noiseWavelength">138.0</ExpressiveParameter>
+								<ExpressiveParameter name="paperTexture">
+									<SimpleTexture XRepeat="false" YRepeat="false">
+										<Displacement x="0.0" y="0.0" />
+										<ScaleFactor x="1.0" y="1.0" />
+										<Rotation Angle="0.0" />
+										<URI>../images/canvas-normalized.png</URI>
+									</SimpleTexture>
+								</ExpressiveParameter>
+								<ExpressiveParameter name="brushTexture">
+									<SimpleTexture XRepeat="false" YRepeat="false">
+										<Displacement x="0.0" y="0.0" />
+										<ScaleFactor x="1.0" y="1.0" />
+										<Rotation Angle="0.0" />
+										<URI>../images/chalk2-100-200.png</URI>
+									</SimpleTexture>
+								</ExpressiveParameter>
+							</ExpressiveStroke>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<BlendingMode>Normal</BlendingMode>
+						<PerpendicularOffset>0.0</PerpendicularOffset>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>zone_hydro</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer zone_hydro</Name>
+			<Name>Style créé pour le layer zone_hydro</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>Etangs</Name>
+					<LegendGraphic>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#777777</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#BBBBBB</CssParameter>
+									<CssParameter name="stroke-opacity">1</CssParameter>
+									<CssParameter name="stroke-width">3.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</LegendGraphic>
+					<Filter>
+						<PropertyIsEqualTo matchCase="false">
+							<PropertyName>type</PropertyName>
+							<Literal>etang</Literal>
+						</PropertyIsEqualTo>
+					</Filter>
+					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-opacity">1</CssParameter>
+							<CssParameter name="stroke-width">14.0</CssParameter>
+							<CssParameter name="stroke-linecap">round</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<BlendingMode>Normal</BlendingMode>
+						<Fill>
+							<ExpressiveFill>
+								<ExpressiveMethod>TextureFill</ExpressiveMethod>
+								<ExpressiveParameter name="fill-texture">
+									<SimpleTexture XRepeat="false" YRepeat="false">
+										<Displacement x="0.0" y="0.0" />
+										<ScaleFactor x="0.05" y="0.05" />
+										<Rotation Angle="0.0" />
+										<URI>../images/manche/lac4_grand.png</URI>
+									</SimpleTexture>
+								</ExpressiveParameter>
+							</ExpressiveFill>
+							<CssParameter name="fill">#ffffff</CssParameter>
+							<CssParameter name="fill-opacity">1.0</CssParameter>
+						</Fill>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>Rivieres</Name>
+					<LegendGraphic>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#777777</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#BBBBBB</CssParameter>
+									<CssParameter name="stroke-opacity">1</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</LegendGraphic>
+					<Filter>
+						<PropertyIsEqualTo matchCase="false">
+							<PropertyName>type</PropertyName>
+							<Literal>rivire</Literal>
+						</PropertyIsEqualTo>
+					</Filter>
+					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-opacity">1.0</CssParameter>
+							<CssParameter name="stroke-width">12.0</CssParameter>
+							<CssParameter name="stroke-linecap">round</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<BlendingMode>Normal</BlendingMode>
+						<Fill>
+							<CssParameter name="fill">#ffffff</CssParameter>
+							<CssParameter name="fill-opacity">0.0</CssParameter>
+						</Fill>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>laisse</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer laisse</Name>
+			<Name>Style créé pour le layer laisse</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<LegendGraphic>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#667ad2</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#475593</CssParameter>
+									<CssParameter name="stroke-opacity">0.8</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</LegendGraphic>
+					<LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-opacity">1.0</CssParameter>
+							<CssParameter name="stroke-width">15.0</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<BlendingMode>Normal</BlendingMode>
+						<PerpendicularOffset>0.0</PerpendicularOffset>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>france_cassini_taches_urbaines</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer emprise_france_cassini_taches_urbaines</Name>
+			<Name>Style créé pour le layer emprise_france_cassini_taches_urbaines</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<LegendGraphic>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#999999</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#222</CssParameter>
+									<CssParameter name="stroke-opacity">0.8</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</LegendGraphic>
+					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-opacity">1.0</CssParameter>
+							<CssParameter name="stroke-width">14.0</CssParameter>
+							<CssParameter name="stroke-linecap">round</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<BlendingMode>Normal</BlendingMode>
+						<Fill>
+							<ExpressiveFill>
+								<ExpressiveMethod>TextureFill</ExpressiveMethod>
+								<ExpressiveParameter name="fill-texture">
+									<SimpleTexture XRepeat="false" YRepeat="false">
+										<Displacement x="0.0" y="0.0" />
+										<ScaleFactor x="0.25" y="0.25" />
+										<Rotation Angle="0.0" />
+										<URI>../images/manche/texture_bourg2.png</URI>
+									</SimpleTexture>
+								</ExpressiveParameter>
+							</ExpressiveFill>
+							<CssParameter name="fill">#ffffff</CssParameter>
+							<CssParameter name="fill-opacity">1.0</CssParameter>
+						</Fill>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>france_cassini</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer emprise_france_cassini</Name>
+			<Name>Style créé pour le layer emprise_france_cassini</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>Route non entretenue contour noir</Name>
+					<Description>Route non entretenue contour noir</Description>
+					<Filter>
+						<PropertyIsEqualTo matchCase="true">
+							<PropertyName>type</PropertyName>
+							<Literal>blanc</Literal>
+						</PropertyIsEqualTo>
+					</Filter>
+					<LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-width">50.0</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<BlendingMode>Normal</BlendingMode>
+						<PerpendicularOffset>0.0</PerpendicularOffset>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>Route non entretenue intérieur blanc</Name>
+					<Description>Route non entretenue intérieur blanc</Description>
+					<Filter>
+						<PropertyIsEqualTo matchCase="true">
+							<PropertyName>type</PropertyName>
+							<Literal>blanc</Literal>
+						</PropertyIsEqualTo>
+					</Filter>
+					<LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#FDFAF8</CssParameter>
+							<CssParameter name="stroke-width">30.0</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<BlendingMode>Normal</BlendingMode>
+						<PerpendicularOffset>0.0</PerpendicularOffset>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>Route ville contour noir</Name>
+					<Description>Route ville contour noir</Description>
+					<Filter>
+						<PropertyIsEqualTo matchCase="true">
+							<PropertyName>type</PropertyName>
+							<Literal>rue_ville</Literal>
+						</PropertyIsEqualTo>
+					</Filter>
+					<LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-width">40.0</CssParameter>
+							<CssParameter name="stroke-linecap">butt</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<BlendingMode>Normal</BlendingMode>
+						<PerpendicularOffset>0.0</PerpendicularOffset>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>Route ville intérieur blanc</Name>
+					<Description>Route ville intérieur blanc</Description>
+					<Filter>
+						<PropertyIsEqualTo matchCase="true">
+							<PropertyName>type</PropertyName>
+							<Literal>rue_ville</Literal>
+						</PropertyIsEqualTo>
+					</Filter>
+					<LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#FDFAF8</CssParameter>
+							<CssParameter name="stroke-width">20.0</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<BlendingMode>Normal</BlendingMode>
+						<PerpendicularOffset>0.0</PerpendicularOffset>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<LegendGraphic>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#777777</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#555555</CssParameter>
+									<CssParameter name="stroke-opacity">1</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</LegendGraphic>
+					<Filter>
+						<PropertyIsEqualTo matchCase="true">
+							<PropertyName>type</PropertyName>
+							<Literal>rouge</Literal>
+						</PropertyIsEqualTo>
+					</Filter>
+					<LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#555555</CssParameter>
+							<CssParameter name="stroke-opacity">1.0</CssParameter>
+							<CssParameter name="stroke-width">100.0</CssParameter>
+							<CssParameter name="stroke-linejoin">round</CssParameter>
+							<CssParameter name="stroke-linecap">round</CssParameter>
+							<ExpressiveStroke>
+								<ExpressiveMethod>CassiniRoadsPainting</ExpressiveMethod>
+								<ExpressiveParameter name="transitionSize">10.0</ExpressiveParameter>
+								<ExpressiveParameter name="paperReferenceMapScale">100000.0</ExpressiveParameter>
+								<ExpressiveParameter name="paperRoughness">2.0</ExpressiveParameter>
+								<ExpressiveParameter name="brushRoughness">4.0</ExpressiveParameter>
+								<ExpressiveParameter name="strokePressure">17.0</ExpressiveParameter>
+								<ExpressiveParameter name="strokeSoftness">0.2</ExpressiveParameter>
+								<ExpressiveParameter name="paperSizeInCm">4.0</ExpressiveParameter>
+								<ExpressiveParameter name="extremitiesLength">210.375</ExpressiveParameter>
+								<ExpressiveParameter name="paperTexture">
+									<SimpleTexture XRepeat="false" YRepeat="false">
+										<Displacement x="0.0" y="0.0" />
+										<ScaleFactor x="1.0" y="1.0" />
+										<Rotation Angle="0.0" />
+										<URI>../images/canvas-normalized.png</URI>
+									</SimpleTexture>
+								</ExpressiveParameter>
+								<ExpressiveParameter name="brushTexture">
+									<SimpleTexture XRepeat="false" YRepeat="false">
+										<Displacement x="0.0" y="0.0" />
+										<ScaleFactor x="1.0" y="1.0" />
+										<Rotation Angle="0.0" />
+										<URI>../images/StJeanDeLuz/route_grande.png</URI>
+									</SimpleTexture>
+								</ExpressiveParameter>
+							</ExpressiveStroke>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<BlendingMode>Normal</BlendingMode>
+						<PerpendicularOffset>0.0</PerpendicularOffset>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+</StyledLayerDescriptor>
