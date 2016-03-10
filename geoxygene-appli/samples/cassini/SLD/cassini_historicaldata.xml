@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- NOTE : LES LAYERS SONT DANS L'ORDRE DANS LEQUEL ILS DOIVENT ETRE AFFICHES 
+	DANS GEOXYGENE (DE HAUT EN BAS DANS LA LEGENDE) -->
 <StyledLayerDescriptor xmlns:ogc="http://www.opengis.net/ogc">
 	<Background>
 		<SimpleTexture XRepeat="false" YRepeat="false">
@@ -188,6 +191,49 @@
 							<CssParameter name="fill-opacity">1.0</CssParameter>
 						</Fill>
 					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>laisse</Name>
+		<UserStyle>
+			<Name>Style créé pour le layer laisse</Name>
+			<Name>Style créé pour le layer laisse</Name>
+			<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+				<Rule>
+					<LegendGraphic>
+						<Graphic>
+							<Mark>
+								<WellKnownName>square</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#667ad2</CssParameter>
+									<CssParameter name="fill-opacity">0.8</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#475593</CssParameter>
+									<CssParameter name="stroke-opacity">0.8</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+							<opacity>1.0</opacity>
+							<Size>6.0</Size>
+							<Rotation>
+								<Literal>0</Literal>
+							</Rotation>
+						</Graphic>
+					</LegendGraphic>
+					<LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-opacity">1.0</CssParameter>
+							<CssParameter name="stroke-width">15.0</CssParameter>
+						</Stroke>
+						<GeometryPropertyName>geom</GeometryPropertyName>
+						<BlendingMode>Normal</BlendingMode>
+						<PerpendicularOffset>0.0</PerpendicularOffset>
+					</LineSymbolizer>
 				</Rule>
 			</FeatureTypeStyle>
 		</UserStyle>
@@ -422,81 +468,6 @@
 		</UserStyle>
 	</NamedLayer>
 	<NamedLayer>
-		<Name>hydro</Name>
-		<UserStyle>
-			<Name>Style créé pour le layer hydro_100</Name>
-			<Name>Style créé pour le layer hydro_100</Name>
-			<IsDefault>false</IsDefault>
-			<FeatureTypeStyle>
-				<Rule>
-					<LegendGraphic>
-						<Graphic>
-							<Mark>
-								<WellKnownName>square</WellKnownName>
-								<Fill>
-									<CssParameter name="fill">#333333</CssParameter>
-									<CssParameter name="fill-opacity">0.8</CssParameter>
-								</Fill>
-								<Stroke>
-									<CssParameter name="stroke">#dddddd</CssParameter>
-									<CssParameter name="stroke-opacity">0.8</CssParameter>
-									<CssParameter name="stroke-width">1.0</CssParameter>
-								</Stroke>
-							</Mark>
-							<opacity>1.0</opacity>
-							<Size>6.0</Size>
-							<Rotation>
-								<Literal>0</Literal>
-							</Rotation>
-						</Graphic>
-					</LegendGraphic>
-					<LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
-						<Stroke>
-							<CssParameter name="stroke">#000000</CssParameter>
-							<CssParameter name="stroke-opacity">0.8</CssParameter>
-							<CssParameter name="stroke-width">50.0</CssParameter>
-							<CssParameter name="stroke-linejoin">round</CssParameter>
-							<CssParameter name="stroke-linecap">round</CssParameter>
-							<ExpressiveStroke>
-								<ExpressiveMethod>CassiniRiverPainting</ExpressiveMethod>
-								<ExpressiveParameter name="transitionSize">10.0</ExpressiveParameter>
-								<ExpressiveParameter name="paperReferenceMapScale">100000.0</ExpressiveParameter>
-								<ExpressiveParameter name="paperRoughness">0.7</ExpressiveParameter>
-								<ExpressiveParameter name="brushRoughness">1.9</ExpressiveParameter>
-								<ExpressiveParameter name="strokePressure">2.6</ExpressiveParameter>
-								<ExpressiveParameter name="strokeSoftness">0.1</ExpressiveParameter>
-								<ExpressiveParameter name="paperSizeInCm">4.0</ExpressiveParameter>
-								<ExpressiveParameter name="extremitiesLength">6.0</ExpressiveParameter>
-								<ExpressiveParameter name="thickness">0.5</ExpressiveParameter>
-								<ExpressiveParameter name="hardness">0.5</ExpressiveParameter>
-								<ExpressiveParameter name="noiseWavelength">138.0</ExpressiveParameter>
-								<ExpressiveParameter name="paperTexture">
-									<SimpleTexture XRepeat="false" YRepeat="false">
-										<Displacement x="0.0" y="0.0" />
-										<ScaleFactor x="1.0" y="1.0" />
-										<Rotation Angle="0.0" />
-										<URI>../images/canvas-normalized.png</URI>
-									</SimpleTexture>
-								</ExpressiveParameter>
-								<ExpressiveParameter name="brushTexture">
-									<SimpleTexture XRepeat="false" YRepeat="false">
-										<Displacement x="0.0" y="0.0" />
-										<ScaleFactor x="1.0" y="1.0" />
-										<Rotation Angle="0.0" />
-										<URI>../images/chalk2-100-200.png</URI>
-									</SimpleTexture>
-								</ExpressiveParameter>
-							</ExpressiveStroke>
-						</Stroke>
-						<GeometryPropertyName>geom</GeometryPropertyName>
-						<BlendingMode>Normal</BlendingMode>
-						<PerpendicularOffset>0.0</PerpendicularOffset>
-					</LineSymbolizer>
-				</Rule>
-			</FeatureTypeStyle>
-		</UserStyle>
-	</NamedLayer>
-	<NamedLayer>
 		<Name>zone_hydro</Name>
 		<UserStyle>
 			<Name>Style créé pour le layer zone_hydro</Name>
@@ -603,49 +574,6 @@
 							<CssParameter name="fill-opacity">0.0</CssParameter>
 						</Fill>
 					</PolygonSymbolizer>
-				</Rule>
-			</FeatureTypeStyle>
-		</UserStyle>
-	</NamedLayer>
-	<NamedLayer>
-		<Name>laisse</Name>
-		<UserStyle>
-			<Name>Style créé pour le layer laisse</Name>
-			<Name>Style créé pour le layer laisse</Name>
-			<IsDefault>false</IsDefault>
-			<FeatureTypeStyle>
-				<Rule>
-					<LegendGraphic>
-						<Graphic>
-							<Mark>
-								<WellKnownName>square</WellKnownName>
-								<Fill>
-									<CssParameter name="fill">#667ad2</CssParameter>
-									<CssParameter name="fill-opacity">0.8</CssParameter>
-								</Fill>
-								<Stroke>
-									<CssParameter name="stroke">#475593</CssParameter>
-									<CssParameter name="stroke-opacity">0.8</CssParameter>
-									<CssParameter name="stroke-width">1.0</CssParameter>
-								</Stroke>
-							</Mark>
-							<opacity>1.0</opacity>
-							<Size>6.0</Size>
-							<Rotation>
-								<Literal>0</Literal>
-							</Rotation>
-						</Graphic>
-					</LegendGraphic>
-					<LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
-						<Stroke>
-							<CssParameter name="stroke">#000000</CssParameter>
-							<CssParameter name="stroke-opacity">1.0</CssParameter>
-							<CssParameter name="stroke-width">15.0</CssParameter>
-						</Stroke>
-						<GeometryPropertyName>geom</GeometryPropertyName>
-						<BlendingMode>Normal</BlendingMode>
-						<PerpendicularOffset>0.0</PerpendicularOffset>
-					</LineSymbolizer>
 				</Rule>
 			</FeatureTypeStyle>
 		</UserStyle>
