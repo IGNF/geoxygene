@@ -2,11 +2,11 @@
 
 float thicknessVariationSeed = 43.214548;
 uniform float thicknessVariationWavelength = 500;
-uniform float thicknessVariationAmplitude = 0.5;
+uniform float thicknessVariationAmplitude = 0.0;
 
 float shiftVariationSeed = 28.84321871;
 uniform float shiftVariationWavelength = 500;
-uniform float shiftVariationAmplitude = 0.1;
+uniform float shiftVariationAmplitude = 0.0;
 
 float pressureVariationSeed = 128.84321871;
 uniform float pressureVariationWavelength = 500;
@@ -228,12 +228,14 @@ vec2 computeBrushTextureCoordinates( DataPainting fragmentData ) {
 
 /************************************************************************************/
 vec4 computeFragmentColor( in vec4 brushColor, in vec4 paperColor, in DataPainting fragmentData ) {
-
     vec3 paperHeightField = paperColor.rgb;
     float brushHeightField = ( brushColor.r + brushColor.g + brushColor.b ) / 3.;
     float bh = fragmentData.strokePressure * computeStrokePressure( fragmentData.uv.x, fragmentData.uMax ) * brushHeightField * fragmentData.brushRoughness;
     float ph = (0.5 + (paperHeightField.x-0.5) * fragmentData.paperRoughness);
     float penetration = clamp( ph - (1-bh), -1, 1);
     float f = smoothstep( 0.0 - fragmentData.strokeSoftness, 0.0 + fragmentData.strokeSoftness,  penetration );
-    return vec4( fragmentData.color.rgb * brushColor.rgb, fragmentData.color.a * ( 1-f ) );
+    //return vec4( fragmentData.uv/vec2(fragmentData.uMax,1), 0, 1 );
+    return vec4( fragmentData.color.rgb, fragmentData.color.a * ( 1-f )); 
+    return vec4( fragmentData.color.rgb*( fragmentData.color.a * ( 1-f )), fragmentData.color.a * ( 1-f ));   
+    
 }
