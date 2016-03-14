@@ -11,6 +11,7 @@ package fr.ign.cogit.cartagen.genealgorithms.polygon;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Triangle;
@@ -84,8 +85,7 @@ public class VisvalingamWhyatt {
    * @param IFeatureCollection<IFeature> lignes
    * @return IFeatureCollection<IFeature> lignes
    */
-  public IFeatureCollection<IFeature> simplifyDebugVersion(
-      IFeatureCollection<IFeature> lignes) {
+  public IFeatureCollection<IFeature> simplifyDebugVersion(IFeatureCollection<IFeature> lignes) {
     IFeatureCollection<IFeature> copy = new FT_FeatureCollection<>(lignes);
     int i = 0;
     long startTime, endTime;
@@ -113,8 +113,7 @@ public class VisvalingamWhyatt {
             if (area < areaTolerance) {
               if (lignesEnvConv == null) {
                 startTime = System.nanoTime();
-                lignesEnvConv = new FT_FeatureCollection<>(lignes.select(l
-                    .convexHull()));
+                lignesEnvConv = new FT_FeatureCollection<>(lignes.select(l.convexHull()));
                 endTime = System.nanoTime();
                 sumSimp += (endTime - startTime);
               }
@@ -141,13 +140,9 @@ public class VisvalingamWhyatt {
       f.setGeom(l);
     }
     System.out.println(i + " points supprimés");
-    System.out.println(" Temps passé pour calcul aire : " + sumtimeArea
-        / 1000000 + " ms");
-    System.out.println(" Temps passé pour select : " + sumtimeSelect / 1000000
-        + " ms");
-    System.out
-        .println(" Temps passé pour intersection lignes et enveloppe convexe : "
-            + sumSimp / 1000000 + " ms");
+    System.out.println(" Temps passé pour calcul aire : " + sumtimeArea / 1000000 + " ms");
+    System.out.println(" Temps passé pour select : " + sumtimeSelect / 1000000 + " ms");
+    System.out.println(" Temps passé pour intersection lignes et enveloppe convexe : " + sumSimp / 1000000 + " ms");
     return copy;
   }
 
@@ -156,8 +151,7 @@ public class VisvalingamWhyatt {
    * @param IFeatureCollection<IFeature> lignes
    * @return IFeatureCollection<IFeature> lignes
    */
-  public IFeatureCollection<IFeature> simplify(
-      IFeatureCollection<IFeature> lignes) {
+  public IFeatureCollection<IFeature> simplify(IFeatureCollection<IFeature> lignes) {
     IFeatureCollection<IFeature> copy = new FT_FeatureCollection<>(lignes);
     int i = 0;
     long end, start = 0, duration = 0;
@@ -178,8 +172,7 @@ public class VisvalingamWhyatt {
             if (areaTriangle < areaTolerance) {
               if (lignesInterConvexHull == null) {
                 // start = System.nanoTime();
-                lignesInterConvexHull = new FT_FeatureCollection<>(
-                    lignes.select(line.convexHull()));
+                lignesInterConvexHull = new FT_FeatureCollection<>(lignes.select(line.convexHull()));
                 // end = System.nanoTime();
                 // duration = end - start;
                 // System.out.println("select in " + duration / 1000000 +
@@ -212,14 +205,62 @@ public class VisvalingamWhyatt {
    * @param SpatialIndex<IFeature> idx
    * @return IFeatureCollection<IFeature> lignes
    */
-  public IFeatureCollection<IFeature> simplify(
-      IFeatureCollection<IFeature> lignes, SpatialIndex<IFeature> idx) {
+  public IFeatureCollection<IFeature> simplify(IFeatureCollection<IFeature> lignes, SpatialIndex<IFeature> idx) {
     int i = 0;
     long end, start = 0, duration = 0;
     ((FT_FeatureCollection<IFeature>) lignes).setSpatialIndexToExisting(idx);
     System.out.println("methode avec index spatial");
     System.out.println("spatial index used : " + idx.getClass());
     for (IFeature f : lignes) {
+      boolean pointPoidsMinExists = true;
+      ILineString line = (ILineString) f.getGeom();
+      while (pointPoidsMinExists) {
+        double areaMin = Double.MAX_VALUE;
+        IDirectPosition pointMin = null;
+        for (int pt = 1; pt < line.coord().size() - 1; ++pt) {
+          IDirectPosition point = line.coord().get(pt);
+          IGeometry triangle = getTriangle(line, pt);
+          double areaTriangle = triangle.area();
+          if (areaTriangle < areaMin && !containsAnotherPoint(line, point))
+            if (areaTriangle < areaTolerance) {
+              if (lignes.select(triangle).size() < 2) {
+                areaMin = areaTriangle;
+                pointMin = point;
+              }
+            }
+        } // fin d'un parcours d'une ligne
+        if (pointMin != null) {
+          IDirectPositionList newCoord = line.coord();
+          newCoord.remove(pointMin);
+          line = new GM_LineString(newCoord);
+          ++i;
+        } else
+          pointPoidsMinExists = false;
+      } // c'est fini pour la ligne, on passe à la suivante
+      f.setGeom(line);
+    }
+    System.out.println(i + " points supprimés");
+    return lignes;
+  }
+
+  /**
+   * Visvalingam-Whyatt simplification of a subset of an indexed collection of
+   * linestrings. Using a spatial index, speed improvement can be massive
+   * @param IFeatureCollection<IFeature> lignes
+   * @param Set<Integer> linestoSimplify lignes's features ids to simplify
+   * @param SpatialIndex<IFeature> idx
+   * @return IFeatureCollection<IFeature> lignes
+   */
+  public IFeatureCollection<IFeature> simplify(IFeatureCollection<IFeature> lignes, Set<Integer> linestoSimplify,
+      SpatialIndex<IFeature> idx) {
+    int i = 0;
+    long end, start = 0, duration = 0;
+    ((FT_FeatureCollection<IFeature>) lignes).setSpatialIndexToExisting(idx);
+    System.out.println("methode avec index spatial");
+    System.out.println("spatial index used : " + idx.getClass());
+    for (IFeature f : lignes) {
+      if (!linestoSimplify.contains(f.getId()))
+        continue;
       boolean pointPoidsMinExists = true;
       ILineString line = (ILineString) f.getGeom();
       while (pointPoidsMinExists) {
@@ -310,18 +351,12 @@ public class VisvalingamWhyatt {
   public double fastArea(IGeometry triangle) {
     IDirectPositionList coords = triangle.coord();
     // System.out.println(coords);
-    double a2 = (coords.get(0).getX() - coords.get(1).getX())
-        * (coords.get(0).getX() - coords.get(1).getX())
-        + (coords.get(0).getY() - coords.get(1).getY())
-        * (coords.get(0).getY() - coords.get(1).getY());
-    double b2 = (coords.get(1).getX() - coords.get(2).getX())
-        * (coords.get(1).getX() - coords.get(2).getX())
-        + (coords.get(1).getY() - coords.get(2).getY())
-        * (coords.get(1).getY() - coords.get(2).getY());
-    double c2 = (coords.get(0).getX() - coords.get(2).getX())
-        * (coords.get(0).getX() - coords.get(2).getX())
-        + (coords.get(0).getY() - coords.get(2).getY())
-        * (coords.get(1).getY() - coords.get(2).getY());
+    double a2 = (coords.get(0).getX() - coords.get(1).getX()) * (coords.get(0).getX() - coords.get(1).getX())
+        + (coords.get(0).getY() - coords.get(1).getY()) * (coords.get(0).getY() - coords.get(1).getY());
+    double b2 = (coords.get(1).getX() - coords.get(2).getX()) * (coords.get(1).getX() - coords.get(2).getX())
+        + (coords.get(1).getY() - coords.get(2).getY()) * (coords.get(1).getY() - coords.get(2).getY());
+    double c2 = (coords.get(0).getX() - coords.get(2).getX()) * (coords.get(0).getX() - coords.get(2).getX())
+        + (coords.get(0).getY() - coords.get(2).getY()) * (coords.get(1).getY() - coords.get(2).getY());
     double s = triangle.length() / 2;
 
     double a = Math.sqrt(a2);
@@ -370,8 +405,7 @@ public class VisvalingamWhyatt {
     ILineString ligne = new GM_LineString(points);
     IPolygon triangle = new GM_Polygon(ligne);
     // VisvalingamWhyatt vis = new VisvalingamWhyatt(25);
-    Triangle t = new Triangle(new Coordinate(1000, 0), new Coordinate(1201,
-        3250), new Coordinate(32114, 2514));
+    Triangle t = new Triangle(new Coordinate(1000, 0), new Coordinate(1201, 3250), new Coordinate(32114, 2514));
 
     long startTime = System.nanoTime();
     for (int i = 0; i < 100000; ++i)
