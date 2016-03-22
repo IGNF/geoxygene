@@ -160,7 +160,14 @@ public class TextureImageSamplerMipMap implements SamplingAlgorithm {
         // MipMapMask.save(this.imageMask, "./initial mipmap.png");
         // System.err.println("save file initial mipmap.png");
 
-        while (this.imageMask.getNbWhite() != 0 && (p = this.nextWhitePixel(rand)) != null) {
+        int nbWhite = this.imageMask.getNbWhite();
+        int prevNbWhite = nbWhite + 1;
+
+        while ((nbWhite = this.imageMask.getNbWhite()) != prevNbWhite 
+            && nbWhite != 0 
+            && (p = this.nextWhitePixel(rand)) != null) {
+          
+            prevNbWhite = nbWhite;
 
             // System.err.println("Chosen sample = " + p + " between " +
             // this.imageMask.getNbWhite() + " white pixels");
