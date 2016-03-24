@@ -2,8 +2,8 @@ package fr.ign.cogit.geoxygene.contrib.algorithms;
 
 import java.util.ArrayList;
 
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
 
@@ -11,7 +11,7 @@ public class ShapeMoments {
 
 
 	// Nombre de tirages
-	private static int npts = 1000;
+	private static int npts = 5000;
 
 	// Echantillonnage
 	private static int n_sample = 500;
@@ -20,7 +20,7 @@ public class ShapeMoments {
 	private static int w = 10;
 
 
-	public static double[] compute(GM_Polygon polygon){
+	public static double[] compute(IGeometry bati){
 
 
 		// Valeurs extremales
@@ -34,12 +34,12 @@ public class ShapeMoments {
 		
 
 		// Ajout de z dans le polygone
-		for (int i=0; i<polygon.coord().size(); i++){
+		for (int i=0; i<bati.coord().size(); i++){
 
-			if (polygon.coord().get(i).getX() < xmin){xmin = polygon.coord().get(i).getX();}
-			if (polygon.coord().get(i).getY() < ymin){ymin = polygon.coord().get(i).getY();}
-			if (polygon.coord().get(i).getX() > xmax){xmax = polygon.coord().get(i).getX();}
-			if (polygon.coord().get(i).getY() > ymax){ymax = polygon.coord().get(i).getY();}
+			if (bati.coord().get(i).getX() < xmin){xmin = bati.coord().get(i).getX();}
+			if (bati.coord().get(i).getY() < ymin){ymin = bati.coord().get(i).getY();}
+			if (bati.coord().get(i).getX() > xmax){xmax = bati.coord().get(i).getX();}
+			if (bati.coord().get(i).getY() > ymax){ymax = bati.coord().get(i).getY();}
 
 		} 
 
@@ -52,7 +52,7 @@ public class ShapeMoments {
 
 			DirectPosition p1 = new DirectPosition(x1,y1);
 
-			while (!polygon.contains(new GM_Point(p1))){
+			while (!bati.contains(new GM_Point(p1))){
 
 				x1 = (xmax-xmin)*Math.random()+xmin;
 				y1 = (ymax-ymin)*Math.random()+ymin;
@@ -68,7 +68,7 @@ public class ShapeMoments {
 
 			DirectPosition p2 = new DirectPosition(x2,y2);
 
-			while (!polygon.contains(new GM_Point(p2))){
+			while (!bati.contains(new GM_Point(p2))){
 
 				x2 = (xmax-xmin)*Math.random()+xmin;
 				y2 = (ymax-ymin)*Math.random()+ymin;
