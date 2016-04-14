@@ -9,8 +9,8 @@
  ******************************************************************************/
 package fr.ign.cogit.cartagen.util.multicriteriadecision.ranking.electre3;
 
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 public class ELECTREIIIPreOrder {
   // //////////////////////////////////////////
@@ -26,7 +26,7 @@ public class ELECTREIIIPreOrder {
   // Package visible fields //
 
   // Private fields //
-  private ArrayList<HashSet<ELECTREIIIAction>> preOrder;
+  private List<HashSet<ELECTREIIIAction>> preOrder;
 
   // //////////////////////////////////////////
   // Static methods //
@@ -37,17 +37,17 @@ public class ELECTREIIIPreOrder {
   // //////////////////////////////////////////
 
   // Public constructors //
-  public ELECTREIIIPreOrder(ArrayList<HashSet<ELECTREIIIAction>> preOrder) {
+  public ELECTREIIIPreOrder(List<HashSet<ELECTREIIIAction>> preOrder) {
     super();
     this.preOrder = preOrder;
   }
 
   // Getters and setters //
-  public void setPreOrder(ArrayList<HashSet<ELECTREIIIAction>> preOrder) {
+  public void setPreOrder(List<HashSet<ELECTREIIIAction>> preOrder) {
     this.preOrder = preOrder;
   }
 
-  public ArrayList<HashSet<ELECTREIIIAction>> getPreOrder() {
+  public List<HashSet<ELECTREIIIAction>> getPreOrder() {
     return preOrder;
   }
 

@@ -200,7 +200,8 @@ public class GeneralisationConfigurationFrame extends JFrame {
     // update the SLD width values with the new scale value
     double scaleRatio = Legend.getSYMBOLISATI0N_SCALE() / oldScale;
     StyledLayerDescriptor sld = null;
-    if (CartAGenDoc.getInstance() != null)
+    if (CartAGenDoc.getInstance() != null
+        && CartAGenDoc.getInstance().getCurrentDataset() != null)
       sld = CartAGenDoc.getInstance().getCurrentDataset().getSld();
     else
       sld = CartAGenPlugin.getInstance().getApplication().getMainFrame()

@@ -37,6 +37,8 @@ import fr.ign.cogit.geoxygene.appli.LayerLegendPanel;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.layer.LayerFactory;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.util.ShowIniGeomAction;
+import fr.ign.cogit.geoxygene.appli.render.AwtLayerRendererWithDeletion;
+import fr.ign.cogit.geoxygene.appli.render.LayerRenderer;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
@@ -182,6 +184,9 @@ public class BottomLegendToolbar extends JToolBar {
     @Override
     public void actionPerformed(ActionEvent e) {
       if (eliminatedBtn.isSelected()) {
+        for (LayerRenderer renderer : frame.getLayerViewPanel()
+            .getRenderingManager().getRenderers())
+          ((AwtLayerRendererWithDeletion) renderer).setRenderDeleted(true);
         // store the symbolised sld
         if (initialSld == null)
           initialSld = frame.getSld();
@@ -194,6 +199,9 @@ public class BottomLegendToolbar extends JToolBar {
         } else
           frame.setSld(elimSld);
       } else {
+        for (LayerRenderer renderer : frame.getLayerViewPanel()
+            .getRenderingManager().getRenderers())
+          ((AwtLayerRendererWithDeletion) renderer).setRenderDeleted(false);
         frame.setSld(initialSld);
       }
       frame.getLayerViewPanel().repaint();

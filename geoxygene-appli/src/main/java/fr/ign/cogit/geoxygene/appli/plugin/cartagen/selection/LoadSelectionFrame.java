@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.BoxLayout;
@@ -97,7 +98,7 @@ public class LoadSelectionFrame extends JFrame implements ActionListener {
     JPanel panelListe = new JPanel();
     DefaultListModel dlm = new DefaultListModel();
     // on charge les sélections depuis le fichier XML
-    chargerSelections(file);
+    chargerSelections(file, appli, sels);
     for (ObjectSelection sel : sels)
       dlm.addElement(sel);
     liste = new JList(dlm);
@@ -116,7 +117,8 @@ public class LoadSelectionFrame extends JFrame implements ActionListener {
     this.pack();
   }
 
-  private void chargerSelections(File fic) throws ParserConfigurationException,
+  public static void chargerSelections(File fic, GeOxygeneApplication appli,
+      List<ObjectSelection> sels) throws ParserConfigurationException,
       SAXException, IOException {
 
     // on commence par ouvrir le doucment XML pour le parser

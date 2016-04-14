@@ -45,10 +45,10 @@ public class CentroidCriterion extends ELECTRECriterion {
   // Public constructors //
   public CentroidCriterion(String nom) {
     super(nom);
-    this.setWeight(1.0);
-    this.setIndifference(0.025);
+    this.setWeight(1.5);
+    this.setIndifference(0.1);
     this.setPreference(0.2);
-    this.setVeto(0.05);
+    this.setVeto(0.4);
   }
 
   // Getters and setters //
@@ -59,15 +59,17 @@ public class CentroidCriterion extends ELECTRECriterion {
     IUrbanBlock block = (IUrbanBlock) param.get("block");
     CentroidCriterion.logger.finest("block: " + block.getId());
     IDirectPosition centroid = (IDirectPosition) param.get("centroid");
+    double maxDist = (Double) param.get("max_dist");
+    maxDist = maxDist * 2 / 3;
     if (block.getGeom().contains(centroid.toGM_Point())) {
-      return 1.0;
+      CentroidCriterion.logger.finest(this.getName() + " : " + 0.95);
+      return 0.95;
     }
     double distance = centroid.distance(block.getGeom().centroid());
-    double value = Math.max(0.0, 1.0 - distance / 2000.0);
+    double value = Math.max(0.0, Math.pow(1.0 - distance / maxDist, 2));
     CentroidCriterion.logger.finest(this.getName() + " : " + value);
     return value;
   }
-
   // //////////////////////////////////////////
   // Protected methods //
   // //////////////////////////////////////////

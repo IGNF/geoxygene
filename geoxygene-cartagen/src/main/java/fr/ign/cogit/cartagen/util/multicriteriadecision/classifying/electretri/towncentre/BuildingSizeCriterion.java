@@ -12,10 +12,11 @@ package fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.electretri.
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
+import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanElement;
 import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.electretri.ELECTRECriterion;
-import fr.ign.cogit.geoxygene.schemageo.api.bati.Ilot;
-import fr.ign.cogit.geoxygene.schemageo.api.support.elementsIndependants.ElementIndependant;
 
 public class BuildingSizeCriterion extends ELECTRECriterion {
 
@@ -48,8 +49,8 @@ public class BuildingSizeCriterion extends ELECTRECriterion {
     super(nom);
     this.setWeight(1.5);
     this.setIndifference(0.05);
-    this.setPreference(0.2);
-    this.setVeto(0.1);
+    this.setPreference(0.15);
+    this.setVeto(0.5);
   }
 
   // Getters and setters //
@@ -60,24 +61,33 @@ public class BuildingSizeCriterion extends ELECTRECriterion {
     IUrbanBlock block = (IUrbanBlock) param.get("block");
     BuildingSizeCriterion.logger.finest("block: " + block.getId());
     double meanArea = ((Double) param.get("meanBuildingArea")).doubleValue();
+    DescriptiveStatistics buildingAreas = new DescriptiveStatistics();
+    if (meanArea == 0.0 || meanArea == Double.NaN)
+      return 0.0;
     double maxArea = 3.0 * meanArea;
-    Ilot ilot = (Ilot) block.getGeoxObj();
-    double totalArea = 0.0;
-    for (ElementIndependant e : ilot.getComposants()) {
-      totalArea += e.getGeom().area();
+    for (IUrbanElement e : block.getUrbanElements()) {
+      buildingAreas.addValue(e.getGeom().area());
     }
-    double area = totalArea / ilot.getComposants().size();
+
+    double area = 0.0;
+    if (block.getUrbanElements().size() != 0)
+      area = buildingAreas.getPercentile(50);
     if (area < meanArea) {
       BuildingSizeCriterion.logger.finest(this.getName() + " : " + area
-          / meanArea);
-      return area / meanArea;
+          / (2 * meanArea) + " - small area");
+      return area / (2 * meanArea);
     }
     // progression linéaire entre 0.5 et 1 pour les ilots dont l'aire des
     // bâtiments varie entre la moyenne et le maximum
-    double value = Math.min(1.0, block.getGeom().area()
-        / (2.0 * (maxArea - meanArea)) + 1 - 1 / (2.0 * (maxArea - meanArea))
-        + 0.1);
-    BuildingSizeCriterion.logger.finest(this.getName() + " : " + value);
+    double areaValue = -area / (2.0 * (meanArea - maxArea)) + 1 + maxArea
+        / (2.0 * (meanArea - maxArea));
+    double value = Math.min(1.0, areaValue);
+    BuildingSizeCriterion.logger.finest("maxArea: " + maxArea);
+    BuildingSizeCriterion.logger.finest("meanArea: " + meanArea);
+    BuildingSizeCriterion.logger.finest("current area: " + area);
+    BuildingSizeCriterion.logger.finest("computed value: " + areaValue);
+    BuildingSizeCriterion.logger.finest(this.getName() + " : " + value
+        + " - large area");
     return value;
   }
 

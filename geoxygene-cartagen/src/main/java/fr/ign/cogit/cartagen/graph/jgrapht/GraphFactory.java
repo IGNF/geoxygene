@@ -76,6 +76,8 @@ public class GraphFactory {
 
     // then, create edges
     for (INetworkSection section : network.getSections()) {
+      if (section.isEliminated())
+        continue;
       double weight = graphWeighter.getEdgeWeight(section);
       DefaultWeightedEdge edge = graph.addEdge(section.getInitialNode(),
           section.getFinalNode());

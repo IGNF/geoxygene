@@ -103,7 +103,7 @@ public class Filtering {
       for (int i = 0; i < polygone.sizeInterior(); i++) {
         ICurve inte = Filtering.DouglasPeuckerLineString(polygone
             .getInterior(i).getPrimitive(), seuil);
-        if (inte.numPoints() > 4) {
+        if (inte.coord().size() > 4) {
           poly.addInterior(new GM_Ring(inte));
         } else if (Filtering.logger.isDebugEnabled()) {
           Filtering.logger.debug("Trou non ajouté " + inte);
@@ -168,7 +168,8 @@ public class Filtering {
    */
   public static IDirectPositionList DouglasPeuckerList(
       IDirectPositionList PtList, double seuil) {
-    return new DirectPositionList(Filtering.DouglasPeuckerList(PtList.getList(), seuil));
+    return new DirectPositionList(Filtering.DouglasPeuckerList(
+        PtList.getList(), seuil));
   }
 
   /**

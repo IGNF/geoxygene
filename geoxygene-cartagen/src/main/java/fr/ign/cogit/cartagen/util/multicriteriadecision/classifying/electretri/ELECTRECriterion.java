@@ -12,8 +12,11 @@ package fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.electretri;
 import fr.ign.cogit.cartagen.util.multicriteriadecision.Criterion;
 
 /**
- * @author PTaillandier Crit�re destin� � la m�thode de d�cision
- *         multicrit�re ELECTRE TRI (voir th�se, Chap E.)
+ * @author PTaillandier
+ * @author GTouya
+ * 
+ *         Critère destiné à la méthode de décision multicritère ELECTRE TRI
+ *         (Figueira et al 2005)
  */
 public abstract class ELECTRECriterion extends Criterion {
 
@@ -122,11 +125,11 @@ public abstract class ELECTRECriterion extends Criterion {
   }
 
   /**
-   * Calcul de la concordance entre a et b (degré de certitude que le vecteur
-   * de valeurs qui pour valeur pour ce crit�re a est mieux que le vecteur qui
-   * a pour valeur pour ce crit�re b)
-   * @param a : valeur du premier vecteur de valeurs pour ce crit�re
-   * @param b : valeur du second vecteur de valeurs pour ce crit�re
+   * Calcul de la concordance entre a et b (degré de certitude que le vecteur de
+   * valeurs qui pour valeur pour ce critère a est mieux que le vecteur qui a
+   * pour valeur pour ce critère b)
+   * @param a : valeur du premier vecteur de valeurs pour ce critère
+   * @param b : valeur du second vecteur de valeurs pour ce critère
    * @return la valeur de concordance entre a et b
    */
   public double computeConcordance(double a, double b) {
@@ -142,11 +145,11 @@ public abstract class ELECTRECriterion extends Criterion {
   }
 
   /**
-   * Calcul de la discrodance entre a et b (degré de certitude que le vecteur
-   * de valeurs qui pour valeur pour ce crit�re a n'est pas mieux que le
-   * vecteur qui a pour valeur pour ce crit�re b)
-   * @param a : valeur du premier vecteur de valeurs pour ce crit�re
-   * @param b : valeur du second vecteur de valeurs pour ce crit�re
+   * Calcul de la discrodance entre a et b (degré de certitude que le vecteur de
+   * valeurs qui pour valeur pour ce critère a n'est pas mieux que le vecteur
+   * qui a pour valeur pour ce critère b)
+   * @param a : valeur du premier vecteur de valeurs pour ce critère
+   * @param b : valeur du second vecteur de valeurs pour ce critère
    * @return la valeur de discordance entre a et b
    */
   public double computeDiscordance(double a, double b) {

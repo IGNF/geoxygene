@@ -52,7 +52,7 @@ public class BuildingHeightCriterion extends ELECTRECriterion {
     this.setWeight(1.2);
     this.setIndifference(0.05);
     this.setPreference(0.1);
-    this.setVeto(0.1);
+    this.setVeto(0.4);
   }
 
   // Getters and setters //

@@ -221,6 +221,9 @@ public class MorphologyTransform {
 
   public IPolygon minkowskiSumWithCustomPolyCentr(IPolygon polygon,
       IPolygon polyToSum, IDirectPosition centroid) {
+    if (polygon == null)
+      return null;
+
     // easy case: no holes in polygon
     if (polygon.getInterior().size() == 0) {
       return minkowskiSumWithCustomPolyCentrNoHole(polygon, polyToSum, centroid);

@@ -48,7 +48,7 @@ public class LimitCriterion extends ELECTRECriterion {
     this.setWeight(0.7);
     this.setIndifference(0.05);
     this.setPreference(0.2);
-    this.setVeto(0.15);
+    this.setVeto(0.9);
   }
 
   // Getters and setters //
@@ -63,8 +63,8 @@ public class LimitCriterion extends ELECTRECriterion {
       LimitCriterion.logger.finest(this.getName() + " : " + 0.0);
       return 0.0;
     }
-    LimitCriterion.logger.finest(this.getName() + " : " + 0.7);
-    return 0.7;
+    LimitCriterion.logger.finest(this.getName() + " : " + 0.5);
+    return 0.5;
   }
 
   // //////////////////////////////////////////

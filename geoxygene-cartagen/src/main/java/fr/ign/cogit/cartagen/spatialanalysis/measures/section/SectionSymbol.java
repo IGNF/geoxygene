@@ -19,9 +19,12 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
+import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.CommonAlgorithmsFromCartAGen;
 
 public class SectionSymbol {
   private static Logger logger = Logger
@@ -41,6 +44,7 @@ public class SectionSymbol {
    * The geometry of the symbol on the field
    * @return
    */
+  @SuppressWarnings("unchecked")
   public static IGeometry getSymbolExtent(INetworkSection section) {
     IGeometry g = section.getGeom().buffer(
         section.getWidth() / 2 * Legend.getSYMBOLISATI0N_SCALE() / 1000, 10,
@@ -54,6 +58,8 @@ public class SectionSymbol {
           .warn("Warning lors du calcul de l'emprise du troncon " + section
               + ". geometrie resultat non polygone: " + g + ". geom initiale: "
               + section.getGeom());
+      return CommonAlgorithmsFromCartAGen
+          .getBiggerFromMultiSurface((IMultiSurface<IOrientableSurface>) g);
     }
     return g;
   }

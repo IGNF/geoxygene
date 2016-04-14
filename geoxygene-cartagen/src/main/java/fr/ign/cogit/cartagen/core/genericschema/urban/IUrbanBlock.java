@@ -85,12 +85,21 @@ public interface IUrbanBlock extends IGeneObjSurf {
 
   public double getDensity();
 
+  /**
+   * Determines if a city block is standard, that is to say, if it can be
+   * aggregated during the selection process. Road structures like roundabouts
+   * are not standard blocks.
+   */
   public boolean isStandard();
 
   public void updateGeom(IPolygon cutGeom);
 
   public IPolygon getCityBlockGeom();
 
+  /**
+   * true if the block is a hole inside another block. It means that the block
+   * is a part of a dead end group.
+   */
   public boolean isHoleBlock();
 
   public void setHoleBlock(boolean holeBlock);

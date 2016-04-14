@@ -35,7 +35,6 @@ import org.xml.sax.SAXException;
 import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
-import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 
 public abstract class CartAGenDB {
@@ -112,8 +111,7 @@ public abstract class CartAGenDB {
   }
 
   public CartAGenDB() {
-    this.geneObjImpl = CartagenApplication.getInstance()
-        .getStandardImplementation();
+    this.geneObjImpl = GeneObjImplementation.getDefaultImplementation();
     classes = new ArrayList<GeographicClass>();
   }
 
@@ -206,7 +204,7 @@ public abstract class CartAGenDB {
       hibConfig.addAnnotatedClass(classObj);
       Session session = hibConfig.buildSessionFactory().openSession(
           PostgisDB.getConnection());
-      CartAGenDocOld.getInstance().setPostGisSession(session);
+      CartAGenDoc.getInstance().setPostGisSession(session);
 
       // query the objects of this class in this DB
       Query q = session.createQuery("from " + classObj.getSimpleName());

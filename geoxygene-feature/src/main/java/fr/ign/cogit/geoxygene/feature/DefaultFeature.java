@@ -340,9 +340,10 @@ public class DefaultFeature extends AbstractFeature {
 
       }
     }
-    
+
     String result = "" + this.getId() + " - " + sAttBuffer.toString() + " - "
         + this.getGeom();
     return result;
   }
+
 }

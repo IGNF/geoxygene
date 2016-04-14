@@ -238,6 +238,8 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
     } else {
       node = this.getRoot().getNoeudFinal();
     }
+    if (node == null)
+      return;
     HashSet<ArcReseau> followers = Stroke.getFollowing(this.getRoot(), node);
 
     // loop while there is a segment with a good continuity

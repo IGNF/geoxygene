@@ -65,6 +65,8 @@ public class CollapseRoundabout {
     IRoadNode node = CartAGenDoc.getInstance().getCurrentDataset()
         .getCartAGenDB().getGeneObjImpl().getCreationFactory()
         .createRoadNode(new GM_Point(centroid));
+    CartAGenDoc.getInstance().getCurrentDataset().getRoadNetwork()
+        .addNode(node);
 
     // loop on the external roads to extend them
     for (IRoadLine road : externalRoads) {

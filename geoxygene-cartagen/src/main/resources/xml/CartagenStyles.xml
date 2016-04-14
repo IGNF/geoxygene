@@ -416,7 +416,56 @@
 			</FeatureTypeStyle>
 		</UserStyle>
 	</NamedLayer>
-		
+	    <NamedLayer>
+        <Name>railwayLines</Name>
+		<UserStyle>
+		  <Name>railways</Name>
+		  <FeatureTypeStyle>
+			<Rule>	
+			  <LineSymbolizer>
+				<Stroke>
+				  <CssParameter name="stroke-linejoin">round</CssParameter>
+				  <CssParameter name="stroke-width">9</CssParameter>
+				  <CssParameter name="stroke">#999999</CssParameter>
+				</Stroke>
+			  </LineSymbolizer>
+			</Rule>
+		  </FeatureTypeStyle>	
+		</UserStyle>
+		<UserStyle>          	
+		  <FeatureTypeStyle>		
+			<Rule>		
+			  <LineSymbolizer>
+				<Geometry>
+					<PropertyName>geom</PropertyName>
+				</Geometry>
+				<Stroke>
+				  <CssParameter name="stroke-linejoin">round</CssParameter>
+				  <CssParameter name="stroke-width">6</CssParameter>
+				  <CssParameter name="stroke">#f8f8fa</CssParameter>
+				</Stroke>
+			  </LineSymbolizer>
+			</Rule>	
+		  </FeatureTypeStyle>
+		</UserStyle>
+		<UserStyle>      
+		  <FeatureTypeStyle>      			 
+			<Rule>		
+			  <LineSymbolizer>
+				<Geometry>
+					<PropertyName>geom</PropertyName>
+				</Geometry>          
+				<Stroke>
+				  <CssParameter name="stroke">#999999</CssParameter>
+				  <CssParameter name="stroke-width">6</CssParameter>
+				  <CssParameter name="stroke-dasharray">20 28</CssParameter>
+				  <CssParameter name="stroke-linecap">square</CssParameter>
+				</Stroke>
+			  </LineSymbolizer>
+			</Rule>
+		  </FeatureTypeStyle>
+		</UserStyle>
+    </NamedLayer>	
 		<NamedLayer>
 		<Name>Polygon</Name>
 		<UserStyle>

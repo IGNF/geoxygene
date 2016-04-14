@@ -10,6 +10,7 @@
 package fr.ign.cogit.geoxygene.appli.plugin.cartagen.themes;
 
 import java.awt.event.ActionEvent;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
@@ -20,6 +21,8 @@ import javax.swing.JMenuItem;
 
 import fr.ign.cogit.cartagen.core.genericschema.network.INetwork;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
+import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanElement;
+import fr.ign.cogit.cartagen.genealgorithms.block.BuildingsDeletionProximityMultiCriterion;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.spatialanalysis.urban.UrbanEnrichment;
@@ -78,6 +81,7 @@ public class BlockMenu extends JMenu {
     this.addSeparator();
 
     this.add(this.mVoirCoutSuppressionBatiments);
+    this.add(new JMenuItem(new EliminationRankAction()));
 
     this.addSeparator();
 
@@ -170,6 +174,26 @@ public class BlockMenu extends JMenu {
 
     public CreateBlocksInAreaAction() {
       this.putValue(Action.NAME, "Create blocks in the selected area");
+    }
+  }
+
+  private class EliminationRankAction extends AbstractAction {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      for (IFeature obj : SelectionUtil.getSelectedObjects(CartAGenPlugin
+          .getInstance().getApplication(), CartAGenDataSet.BLOCKS_POP)) {
+        List<IUrbanElement> rank = BuildingsDeletionProximityMultiCriterion
+            .compute((IUrbanBlock) obj);
+        for (int j = 1; j <= rank.size(); j++)
+          System.out.println(j + ". " + rank.get(j));
+      }
+    }
+
+    public EliminationRankAction() {
+      this.putValue(Action.NAME, "Show building elimination rank");
     }
   }
 

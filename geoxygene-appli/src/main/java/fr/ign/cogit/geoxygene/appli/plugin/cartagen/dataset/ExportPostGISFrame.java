@@ -13,13 +13,15 @@
 package fr.ign.cogit.geoxygene.appli.plugin.cartagen.dataset;
 
 import java.awt.AWTEvent;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,21 +34,23 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFinder;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
-import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.opengis.feature.simple.SimpleFeature;
@@ -75,21 +79,21 @@ import fr.ign.cogit.geoxygene.util.conversion.I18N;
  * 
  */
 
-public class ExportFrame extends JFrame implements ActionListener {
+public class ExportPostGISFrame extends JFrame implements ActionListener {
 
-  private String exportDir;
   private static final long serialVersionUID = 1L;
-  static Logger logger = Logger.getLogger(ExportFrame.class.getName());
+  static Logger logger = Logger.getLogger(ExportPostGISFrame.class.getName());
   private List<String> unexportedLayers = new ArrayList<String>();
   private List<Layer> layers;
   private Map<Layer, JCheckBox> mapLayers = new HashMap<Layer, JCheckBox>();
+  private JTextField txtHost, txtPort, txtDb, txtUser, txtPwd, txtSchema;
 
-  public ExportFrame(ProjectFrame projectFrame) {
+  public ExportPostGISFrame(ProjectFrame projectFrame) {
     CartAGenDoc.getInstance().getCurrentDataset();
     this.layers = projectFrame.getLayers();
     this.enableEvents(AWTEvent.WINDOW_EVENT_MASK);
     this.setResizable(false);
-    this.setSize(new Dimension(400, 300));
+    this.setPreferredSize(new Dimension(600, 300));
     this.setLocation(100, 100);
     this.setTitle(CartAGenPlugin.getInstance().getApplication().getMainFrame()
         .getGui().getTitle()
@@ -99,20 +103,6 @@ public class ExportFrame extends JFrame implements ActionListener {
     this.getContentPane().setLayout(
         new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
-    JPanel dirPanel = new JPanel();
-    JButton dirButton = new JButton(new ImageIcon(this.getClass().getResource(
-        "/images/icons/magnifier.png")));
-    dirButton.addActionListener(this);
-    dirButton.setActionCommand("directory");
-    txtDir = new JTextField();
-    txtDir.setPreferredSize(new Dimension(180, 20));
-    txtDir.setMaximumSize(new Dimension(180, 20));
-    txtDir.setMinimumSize(new Dimension(180, 20));
-    dirPanel.add(this.txtDir);
-    dirPanel.add(dirButton);
-    dirPanel.setLayout(new BoxLayout(dirPanel, BoxLayout.X_AXIS));
-    dirPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
     JPanel layerPanel = new JPanel();
     for (Layer layer : layers) {
       JCheckBox box = new JCheckBox(layer.getName());
@@ -120,6 +110,96 @@ public class ExportFrame extends JFrame implements ActionListener {
       layerPanel.add(box);
     }
     layerPanel.setLayout(new BoxLayout(layerPanel, BoxLayout.Y_AXIS));
+
+    // define a panel with the connection information
+    JPanel connectionPanel = new JPanel();
+    // hôte
+    JPanel hostPanel = new JPanel();
+    txtHost = new JTextField("localhost");
+    txtHost.setPreferredSize(new Dimension(100, 20));
+    txtHost.setMinimumSize(new Dimension(100, 20));
+    txtHost.setMaximumSize(new Dimension(100, 20));
+    hostPanel.add(new JLabel("host : "));
+    hostPanel.add(txtHost);
+    hostPanel.setLayout(new BoxLayout(hostPanel, BoxLayout.X_AXIS));
+    hostPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+    // port
+    JPanel portPanel = new JPanel();
+    txtPort = new JTextField("5432");
+    txtPort.setPreferredSize(new Dimension(80, 20));
+    txtPort.setMinimumSize(new Dimension(80, 20));
+    txtPort.setMaximumSize(new Dimension(80, 20));
+    portPanel.add(new JLabel("port : "));
+    portPanel.add(txtPort);
+    portPanel.setLayout(new BoxLayout(portPanel, BoxLayout.X_AXIS));
+    portPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+    // database
+    JPanel dbPanel = new JPanel();
+    txtDb = new JTextField();
+    txtDb.setPreferredSize(new Dimension(120, 20));
+    txtDb.setMinimumSize(new Dimension(120, 20));
+    txtDb.setMaximumSize(new Dimension(120, 20));
+    dbPanel.add(new JLabel("database name : "));
+    dbPanel.add(txtDb);
+    dbPanel.setLayout(new BoxLayout(dbPanel, BoxLayout.X_AXIS));
+    dbPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+    // user
+    JPanel userPanel = new JPanel();
+    txtUser = new JTextField();
+    txtUser.setPreferredSize(new Dimension(100, 20));
+    txtUser.setMinimumSize(new Dimension(100, 20));
+    txtUser.setMaximumSize(new Dimension(100, 20));
+    userPanel.add(new JLabel("user : "));
+    userPanel.add(txtUser);
+    userPanel.setLayout(new BoxLayout(userPanel, BoxLayout.X_AXIS));
+    userPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+    // password
+    JPanel pwdPanel = new JPanel();
+    txtPwd = new JTextField();
+    txtPwd.setPreferredSize(new Dimension(100, 20));
+    txtPwd.setMinimumSize(new Dimension(100, 20));
+    txtPwd.setMaximumSize(new Dimension(100, 20));
+    pwdPanel.add(new JLabel("password : "));
+    pwdPanel.add(txtPwd);
+    pwdPanel.setLayout(new BoxLayout(pwdPanel, BoxLayout.X_AXIS));
+    pwdPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+    // password
+    JPanel schemaPanel = new JPanel();
+    txtSchema = new JTextField("public");
+    txtSchema.setPreferredSize(new Dimension(100, 20));
+    txtSchema.setMinimumSize(new Dimension(100, 20));
+    txtSchema.setMaximumSize(new Dimension(100, 20));
+    schemaPanel.add(new JLabel("schema : "));
+    schemaPanel.add(txtSchema);
+    schemaPanel.setLayout(new BoxLayout(schemaPanel, BoxLayout.X_AXIS));
+    schemaPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+    // button
+    JButton connBtn = new JButton("Test Connection");
+    connBtn.addActionListener(this);
+    connBtn.setActionCommand("test_connect");
+
+    connectionPanel.add(hostPanel);
+    connectionPanel.add(Box.createVerticalGlue());
+    connectionPanel.add(portPanel);
+    connectionPanel.add(Box.createVerticalGlue());
+    connectionPanel.add(dbPanel);
+    connectionPanel.add(Box.createVerticalGlue());
+    connectionPanel.add(userPanel);
+    connectionPanel.add(Box.createVerticalGlue());
+    connectionPanel.add(pwdPanel);
+    connectionPanel.add(Box.createVerticalGlue());
+    connectionPanel.add(schemaPanel);
+    connectionPanel.add(Box.createVerticalGlue());
+    connectionPanel.add(connBtn);
+    connectionPanel.add(Box.createVerticalGlue());
+    connectionPanel.setLayout(new BoxLayout(connectionPanel, BoxLayout.Y_AXIS));
+
+    // build a horizontal panel for layerPanel et connectionPanel
+    JPanel middlePanel = new JPanel();
+    middlePanel.add(new JScrollPane(layerPanel));
+    middlePanel.add(Box.createHorizontalGlue());
+    middlePanel.add(connectionPanel);
+    middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.X_AXIS));
 
     JPanel btnPanel = new JPanel();
     bExport = new JButton("Export");
@@ -136,8 +216,7 @@ public class ExportFrame extends JFrame implements ActionListener {
     btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.X_AXIS));
     btnPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-    this.add(dirPanel);
-    this.add(new JScrollPane(layerPanel));
+    this.add(middlePanel);
     this.add(btnPanel);
 
     this.pack();
@@ -146,39 +225,31 @@ public class ExportFrame extends JFrame implements ActionListener {
   /**
 	 */
   private JButton bExportTout, bExport, bExportSelection;
-  private JTextField txtDir;
-
-  private boolean chooseDirectory() {
-
-    // File chooser
-    JFileChooser choix = new JFileChooser();
-    choix.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-    int retour = choix.showDialog(null, "Select export directory");
-    if (retour == JFileChooser.APPROVE_OPTION)
-      this.txtDir.setText(choix.getSelectedFile().getAbsolutePath());
-
-    return true;
-
-  }
 
   @Override
   public void actionPerformed(ActionEvent e) {
     if (e.getActionCommand().equals("export")) {
-      exportDir = txtDir.getText();
       computeUnexportedLayers();
-      exportToShapefiles(false);
+      exportToPostGIS(false);
       dispose();
     } else if (e.getActionCommand().equals("exportSel")) {
-      exportDir = txtDir.getText();
       computeUnexportedLayers();
-      exportToShapefiles(true);
+      exportToPostGIS(true);
       dispose();
     } else if (e.getActionCommand().equals("exportAll")) {
-      exportDir = txtDir.getText();
-      exportToShapefiles(false);
+      exportToPostGIS(false);
       dispose();
-    } else if (e.getActionCommand().equals("directory")) {
-      chooseDirectory();
+    } else if (e.getActionCommand().equals("test_connect")) {
+      String url = "jdbc:postgresql://" + txtHost.getText() + ":"
+          + txtPort.getText() + "/" + txtDb.getText();
+      try {
+        DriverManager.getConnection(url, txtUser.getText(), txtPwd.getText());
+        JOptionPane.showMessageDialog(null, "Connection to " + url
+            + " established");
+      } catch (SQLException e1) {
+        JOptionPane.showMessageDialog(null, "Connection failed");
+        e1.printStackTrace();
+      }
     }
   }
 
@@ -186,7 +257,8 @@ public class ExportFrame extends JFrame implements ActionListener {
    * Export the generalised data of the dataset as shapefiles (one shapefile per
    * scale master line).
    */
-  public void exportToShapefiles(boolean selection) {
+  public void exportToPostGIS(boolean selection) {
+
     // loop on the layers
     for (Layer layer : layers) {
       // one shapefile is exported per layer
@@ -196,10 +268,9 @@ public class ExportFrame extends JFrame implements ActionListener {
       if (unexportedLayers.contains(layer.getName()))
         continue;
 
-      String shapeFileName = layer.getName();
+      String tableName = layer.getName();
       if (logger.isLoggable(Level.FINE)) {
-        logger.fine(shapeFileName);
-        logger.fine(this.exportDir);
+        logger.fine(tableName);
       }
 
       Class<? extends IGeometry> geomType = null;
@@ -234,27 +305,40 @@ public class ExportFrame extends JFrame implements ActionListener {
       }
 
       // write the shapefile
-      write(features, geomType, this.exportDir + "\\" + shapeFileName);
+      write(features, geomType, tableName);
     }
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public <Feature extends IFeature> void write(
       IFeatureCollection<IFeature> featurePop,
-      Class<? extends IGeometry> geomType, String shpName) {
+      Class<? extends IGeometry> geomType, String tableName) {
     if (featurePop == null) {
       return;
     }
     if (featurePop.isEmpty()) {
       return;
     }
-    String shapefileName = shpName;
+
     try {
-      if (!shapefileName.contains(".shp")) { //$NON-NLS-1$
-        shapefileName = shapefileName + ".shp"; //$NON-NLS-1$
+
+      Map postGISparams = new HashMap();
+
+      postGISparams.put("dbtype", "postgis");
+      postGISparams.put("host", txtHost.getText());
+      postGISparams.put("port", new Integer(txtPort.getText()));
+      postGISparams.put("database", txtDb.getText());
+      postGISparams.put("user", txtUser.getText());
+      postGISparams.put("passwd", txtPwd.getText());
+      if (txtSchema.getText() != null && !txtSchema.getText().equals(""))
+        postGISparams.put("schema", txtSchema.getText());
+
+      // storage in PostGIS
+      DataStore dataStore = DataStoreFinder.getDataStore(postGISparams);
+
+      if (dataStore == null) {
+        return;
       }
-      ShapefileDataStore store = new ShapefileDataStore(new File(shapefileName)
-          .toURI().toURL());
 
       // specify the geometry type
       String specs = "geom:"; //$NON-NLS-1$
@@ -270,13 +354,10 @@ public class ExportFrame extends JFrame implements ActionListener {
         specs += result.get(1);
       }
 
-      String featureTypeName = shapefileName.substring(
-          shapefileName.lastIndexOf("/") + 1, //$NON-NLS-1$
-          shapefileName.lastIndexOf(".")); //$NON-NLS-1$
-      featureTypeName = featureTypeName.replace('.', '_');
+      String featureTypeName = tableName;
       SimpleFeatureType type = DataUtilities.createType(featureTypeName, specs);
-      store.createSchema(type);
-      FeatureStore featureStore = (FeatureStore) store
+      dataStore.createSchema(type);
+      FeatureStore featureStore = (FeatureStore) dataStore
           .getFeatureSource(featureTypeName);
       Transaction t = new DefaultTransaction();
       List<SimpleFeature> collection = new ArrayList<SimpleFeature>();
@@ -305,25 +386,25 @@ public class ExportFrame extends JFrame implements ActionListener {
       featureStore.addFeatures(DataUtilities.collection(collection));
       t.commit();
       t.close();
-      store.dispose();
+      dataStore.dispose();
     } catch (MalformedURLException e) {
       logger.log(Level.SEVERE, I18N.getString("ShapefileWriter.FileName") //$NON-NLS-1$
-          + shapefileName + I18N.getString("ShapefileWriter.Malformed")); //$NON-NLS-1$
+          + tableName + I18N.getString("ShapefileWriter.Malformed")); //$NON-NLS-1$
       e.printStackTrace();
     } catch (IOException e) {
       logger.log(Level.SEVERE,
           I18N.getString("ShapefileWriter.ErrorWritingFile") //$NON-NLS-1$
-              + shapefileName);
+              + tableName);
       e.printStackTrace();
     } catch (SchemaException e) {
       logger.log(Level.SEVERE,
           I18N.getString("ShapefileWriter.SchemeUsedForWritingFile") //$NON-NLS-1$
-              + shapefileName + I18N.getString("ShapefileWriter.Incorrect")); //$NON-NLS-1$
+              + tableName + I18N.getString("ShapefileWriter.Incorrect")); //$NON-NLS-1$
       e.printStackTrace();
     } catch (Exception e) {
       logger.log(Level.SEVERE,
           I18N.getString("ShapefileWriter.ErrorWritingFile") //$NON-NLS-1$
-              + shapefileName);
+              + tableName);
       e.printStackTrace();
     }
   }

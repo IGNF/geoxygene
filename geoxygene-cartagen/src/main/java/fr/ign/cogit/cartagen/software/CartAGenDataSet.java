@@ -78,6 +78,10 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolList;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.Population;
@@ -1402,6 +1406,119 @@ public class CartAGenDataSet extends DataSet {
       this.addPopulation(pop);
       return pop;
     }
+  }
+
+  /**
+   * Get the geometry type from the population name, useful for putting the
+   * population in a layer for instance
+   * @param popName
+   * @return
+   */
+  public Class<? extends IGeometry> getGeometryTypeFromName(String popName) {
+    if (popName.equals(CartAGenDataSet.BUILDINGS_POP)) {
+      return IPolygon.class;
+    } else if (popName.equals(CartAGenDataSet.BLOCKS_POP)) {
+      return IPolygon.class;
+    } else if (popName.equals(CartAGenDataSet.TOWNS_POP)) {
+      return IPolygon.class;
+    } else if (popName.equals(CartAGenDataSet.URBAN_ALIGNMENTS_POP)) {
+      return ILineString.class;
+    } else if (popName.equals(CartAGenDataSet.ROADS_POP)) {
+      return ILineString.class;
+    } else if (popName.equals(CartAGenDataSet.ROAD_NODES_POP)) {
+      return IPoint.class;
+    } else if (popName.equals(CartAGenDataSet.PATHS_POP)) {
+      return ILineString.class;
+    } else if (popName.equals(CartAGenDataSet.WATER_LINES_POP)) {
+      return ILineString.class;
+    } else if (popName.equals(CartAGenDataSet.WATER_NODES_POP)) {
+      return IPoint.class;
+    } else if (popName.equals(CartAGenDataSet.WATER_AREAS_POP)) {
+      return IPolygon.class;
+    } else if (popName.equals(CartAGenDataSet.WATER_ISLAND_POP)) {
+      return IPolygon.class;
+    } else if (popName.equals(CartAGenDataSet.RAILWAY_LINES_POP)) {
+      return ILineString.class;
+    } else if (popName.equals(CartAGenDataSet.ELECTRICITY_LINES_POP)) {
+      return ILineString.class;
+    } else if (popName.equals(CartAGenDataSet.CONTOUR_LINES_POP)) {
+      return ILineString.class;
+    } else if (popName.equals(CartAGenDataSet.RELIEF_LINES_POP)) {
+      return ILineString.class;
+    } else if (popName.equals(CartAGenDataSet.SPOT_HEIGHTS_POP)) {
+      return IPoint.class;
+    } else if (popName.equals(CartAGenDataSet.LANDUSE_AREAS_POP)) {
+      return IPolygon.class;
+    } else if (popName.equals(CartAGenDataSet.NETWORK_FACES_POP)) {
+      return IPolygon.class;
+    } else if (popName.equals(CartAGenDataSet.SPECIAL_POINTS_POP)) {
+      return IPoint.class;
+    } else if (popName.equals(CartAGenDataSet.ROAD_STROKES_POP)) {
+      return ILineString.class;
+    } else if (popName.equals(CartAGenDataSet.ROUNDABOUTS_POP)) {
+      return IPolygon.class;
+    } else if (popName.equals(CartAGenDataSet.BRANCHINGS_POP)) {
+      return IPolygon.class;
+    } else if (popName.equals(CartAGenDataSet.MASK)) {
+      return IPolygon.class;
+    } else if (popName.equals(CartAGenDataSet.ROAD_FACILITY_PT_POP)) {
+      return IPoint.class;
+    } else if (popName.equals(CartAGenDataSet.ROAD_AREA_POP)) {
+      return IPolygon.class;
+    } else if (popName.equals(CartAGenDataSet.RAILWAY_NODE_POP)) {
+      return IPoint.class;
+    } else if (popName.equals(CartAGenDataSet.TRIAGE_AREA_POP)) {
+      return IPolygon.class;
+    } else if (popName.equals(CartAGenDataSet.CABLE_POP)) {
+      return ILineString.class;
+    } else if (popName.equals(CartAGenDataSet.BOUNDED_AREA_POP)) {
+      return IPolygon.class;
+    } else if (popName.equals(CartAGenDataSet.LABEL_PT_POP)) {
+      return IPoint.class;
+    } else if (popName.equals(CartAGenDataSet.MISC_AREA_POP)) {
+      return IPolygon.class;
+    } else if (popName.equals(CartAGenDataSet.MISC_LINE_POP)) {
+      return ILineString.class;
+    } else if (popName.equals(CartAGenDataSet.MISC_PT_POP)) {
+      return IPoint.class;
+    } else if (popName.equals(CartAGenDataSet.AIRPORT_AREA_POP)) {
+      return IPolygon.class;
+    } else if (popName.equals(CartAGenDataSet.RUNWAY_AREA_POP)) {
+      return IPolygon.class;
+    } else if (popName.equals(CartAGenDataSet.RUNWAY_LINE_POP)) {
+      return ILineString.class;
+    } else if (popName.equals(CartAGenDataSet.TAXIWAY_AREA_POP)) {
+      return IPolygon.class;
+    } else if (popName.equals(CartAGenDataSet.TAXIWAY_LINE_POP)) {
+      return ILineString.class;
+    } else if (popName.equals(CartAGenDataSet.WATER_PT_POP)) {
+      return IPoint.class;
+    } else if (popName.equals(CartAGenDataSet.ADMIN_CAP_POP)) {
+      return IPoint.class;
+    } else if (popName.equals(CartAGenDataSet.ADMIN_UNIT_POP)) {
+      return IPolygon.class;
+    } else if (popName.equals(CartAGenDataSet.ADMIN_LIMIT_POP)) {
+      return IPoint.class;
+    } else if (popName.equals(CartAGenDataSet.BUILD_PT_POP)) {
+      return IPoint.class;
+    } else if (popName.equals(CartAGenDataSet.SPORTS_FIELDS_POP)) {
+      return IPolygon.class;
+    } else if (popName.equals(CartAGenDataSet.RELIEF_PTS_POP)) {
+      return IPoint.class;
+    } else if (popName.equals(CartAGenDataSet.BUILD_AREA_POP)) {
+      return IPolygon.class;
+    } else if (popName.equals(CartAGenDataSet.POI_POP)) {
+      return IPoint.class;
+    } else if (popName.equals(CartAGenDataSet.BRIDGE_PT_POP)) {
+      return IPoint.class;
+    } else if (popName.equals(CartAGenDataSet.COASTLINE_POP)) {
+      return ILineString.class;
+    } else if (popName.equals(CartAGenDataSet.SQUARE_AREA_POP)) {
+      return IPolygon.class;
+    } else if (popName.equals(CartAGenDataSet.CEMETERY_POP)) {
+      return IPolygon.class;
+    }
+    return IGeometry.class;
   }
 
 }

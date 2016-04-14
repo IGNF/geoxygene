@@ -32,9 +32,13 @@ import javax.persistence.Transient;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.hibernate.annotations.Type;
 
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
+
 import fr.ign.cogit.cartagen.core.defaultschema.GeneObjSurfDefault;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ITown;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
+import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanElement;
 import fr.ign.cogit.cartagen.core.persistence.CollectionType;
 import fr.ign.cogit.cartagen.core.persistence.EncodedRelation;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
@@ -57,10 +61,10 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
-import fr.ign.cogit.geoxygene.schemageo.api.bati.Ilot;
 import fr.ign.cogit.geoxygene.schemageo.api.bati.Ville;
-import fr.ign.cogit.geoxygene.schemageo.api.support.elementsIndependants.ElementIndependant;
 import fr.ign.cogit.geoxygene.schemageo.impl.bati.VilleImpl;
+import fr.ign.cogit.geoxygene.util.algo.CommonAlgorithms;
+import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
 
 /*
  * ###### IGN / CartAGen ###### Title: Town Description: Villes Author: J.
@@ -247,7 +251,7 @@ public class Town extends GeneObjSurfDefault implements ITown {
     }
     String res = electre.decision(criteria, valeursCourantes, conclusion)
         .getCategory();
-    if (res.equals("very good")) {
+    if (res.equals("very good") || res.equals("good")) {
       Town.logger.info("block " + block.getId() + " est grise !!!!");
       return true;
     }
@@ -258,10 +262,15 @@ public class Town extends GeneObjSurfDefault implements ITown {
     DescriptiveStatistics blockAreas = new DescriptiveStatistics();
     DescriptiveStatistics buildingAreas = new DescriptiveStatistics();
     for (IUrbanBlock b : this.townBlocks) {
+      // exclude the non standard and too small blocks from the computation of
+      // stats on block and building size
+      if (!b.isStandard())
+        continue;
+      if (b.getGeom().area() < 2000.0)
+        continue;
       DescriptiveStatistics blockStats = new DescriptiveStatistics();
       blockAreas.addValue(b.getGeom().area());
-      Ilot ilot = (Ilot) b.getGeoxObj();
-      for (ElementIndependant e : ilot.getComposants()) {
+      for (IUrbanElement e : b.getUrbanElements()) {
         if (e.isDeleted()) {
           continue;
         }
@@ -270,12 +279,15 @@ public class Town extends GeneObjSurfDefault implements ITown {
         }
         blockStats.addValue(e.getGeom().area());
       }
-      if (ilot.getComposants().size() != 0) {
-        buildingAreas.addValue(blockStats.getMean());
+      if (b.getUrbanElements().size() != 0) {
+        buildingAreas.addValue(blockStats.getPercentile(50));
       }
     }
-    this.meanBlockArea = new Double(blockAreas.getMean());
-    this.meanBuildArea = new Double(buildingAreas.getMean());
+    this.meanBlockArea = new Double(blockAreas.getPercentile(50));
+    if (buildingAreas.getMean() == Double.NaN)
+      this.meanBuildArea = 0.0;
+    else
+      this.meanBuildArea = new Double(buildingAreas.getPercentile(50));
   }
 
   /**
@@ -299,6 +311,18 @@ public class Town extends GeneObjSurfDefault implements ITown {
       if (centrePos == null)
         centrePos = this.getGeom().centroid();
       param.put("centroid", centrePos);
+      Point pt;
+      try {
+        pt = CommonAlgorithms.getPointLePlusLoin(
+            (Point) JtsGeOxygene.makeJtsGeom(centrePos.toGM_Point()),
+            (Polygon) JtsGeOxygene.makeJtsGeom(this.getGeom()));
+        IDirectPosition dp = JtsGeOxygene.makeDirectPosition(pt
+            .getCoordinateSequence());
+        double maxDist = dp.distance2D(centrePos);
+        param.put("max_dist", maxDist);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     } else if (crit.getName().equals("Area")) {
       param.put("meanBlockArea", this.meanBlockArea);
     } else if (crit.getName().equals("Limit")) {

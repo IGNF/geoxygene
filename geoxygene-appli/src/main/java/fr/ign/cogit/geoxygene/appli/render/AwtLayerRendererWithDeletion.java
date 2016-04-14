@@ -26,6 +26,8 @@ public class AwtLayerRendererWithDeletion extends AwtLayerRenderer {
   private static Logger LOGGER = Logger
       .getLogger(AwtLayerRendererWithDeletion.class.getName());
 
+  private boolean renderDeleted = false;
+
   public AwtLayerRendererWithDeletion(Layer theLayer,
       LayerViewPanel theLayerViewPanel) {
     super(theLayer, theLayerViewPanel);
@@ -142,7 +144,7 @@ public class AwtLayerRendererWithDeletion extends AwtLayerRenderer {
               list = collection.toArray(list);
             }
             for (IFeature feature : list) {
-              if (feature.isDeleted())
+              if (feature.isDeleted() && !this.renderDeleted)
                 continue;
               for (Rule rule : featureTypeStyle.getRules()) {
                 if (rule.getFilter() == null
@@ -159,7 +161,7 @@ public class AwtLayerRendererWithDeletion extends AwtLayerRenderer {
             }
             Rule rule = featureTypeStyle.getRules().get(indexRule);
             for (IFeature feature : filteredFeatures.get(rule)) {
-              if (feature.isDeleted())
+              if (feature.isDeleted() && !this.renderDeleted)
                 continue;
               if (this.isCancelled()) {
                 return;
@@ -180,6 +182,14 @@ public class AwtLayerRendererWithDeletion extends AwtLayerRenderer {
     }
     this.fireActionPerformed(new ActionEvent(this, 5,
         "Rendering finished", featureRenderIndex)); //$NON-NLS-1$
+  }
+
+  public boolean isRenderDeleted() {
+    return renderDeleted;
+  }
+
+  public void setRenderDeleted(boolean renderDeleted) {
+    this.renderDeleted = renderDeleted;
   }
 
 }

@@ -47,8 +47,8 @@ public class BlockSizeCriterion extends ELECTRECriterion {
     super(nom);
     this.setWeight(1.0);
     this.setIndifference(0.05);
-    this.setPreference(0.2);
-    this.setVeto(0.1);
+    this.setPreference(0.1);
+    this.setVeto(0.4);
   }
 
   // Getters and setters //

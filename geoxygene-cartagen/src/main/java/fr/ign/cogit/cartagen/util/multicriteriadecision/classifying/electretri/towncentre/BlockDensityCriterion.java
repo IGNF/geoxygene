@@ -50,7 +50,7 @@ public class BlockDensityCriterion extends ELECTRECriterion {
     this.setWeight(1.5);
     this.setIndifference(0.05);
     this.setPreference(0.2);
-    this.setVeto(0.15);
+    this.setVeto(0.4);
   }
 
   // Getters and setters //

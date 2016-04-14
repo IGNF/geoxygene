@@ -1513,4 +1513,66 @@ public class CommonAlgorithmsFromCartAGen {
     }
     return new GM_LineString(coordList);
   }
+
+  /**
+   * Compute the self intersections of a line string ordered according the line
+   * vertices order. Intersections can lie on vertices or between two vertices.
+   * Uses a non-optimal method.
+   * 
+   * @param line
+   * @return
+   */
+  public static List<IDirectPosition> getSelfIntersections(ILineString line) {
+    List<IDirectPosition> selfIntersections = new ArrayList<>();
+    List<Segment> segments = Segment.getSegmentList(line);
+    Set<Segment> remainingSegments = new HashSet<>(segments);
+
+    for (int i = 0; i < segments.size(); i++) {
+      Segment segment = segments.get(i);
+      remainingSegments.remove(segment);
+      Set<Segment> toTest = new HashSet<>(remainingSegments);
+      // remove the next segment
+      if (i < segments.size() - 1)
+        toTest.remove(segments.get(i + 1));
+      for (Segment other : toTest) {
+        if (segment.intersects(other)) {
+          if (!selfIntersections.contains(segment.intersection(other)
+              .centroid()))
+            selfIntersections.add(segment.intersection(other).centroid());
+        }
+      }
+    }
+    return selfIntersections;
+  }
+
+  /**
+   * Finds the duplicate points of a line and returns a new line without
+   * duplicates.
+   * @param line
+   * @return
+   * @throws Exception
+   */
+  public static ILineString removeDuplicates(ILineString line) throws Exception {
+    Coordinate[] coordinateArray = JtsGeOxygene.makeJtsGeom(line)
+        .getCoordinates();
+    IDirectPositionList coords = new DirectPositionList();
+    // List<Coordinate> coordinates = new ArrayList<Coordinate>();
+    // build a list of linestring coordinates and remove duplicates
+    Coordinate previous = coordinateArray[0];
+    coords.add(new DirectPosition(previous.x, previous.y));
+    for (int i = 1; i < coordinateArray.length; i++) {
+      if (!coordinateArray[i].equals2D(previous)) {
+        coords.add(new DirectPosition(coordinateArray[i].x,
+            coordinateArray[i].y));
+        previous = coordinateArray[i];
+      }
+    }
+    if (coords.size() >= 2) {
+      GeometryEngine.init();
+      return GeometryEngine.getFactory().createILineString(coords);
+    } else {
+      return null;
+    }
+  }
+
 }
