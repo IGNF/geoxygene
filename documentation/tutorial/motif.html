@@ -1,0 +1,402 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Style : motifs &amp; poncifs &mdash; GeOxygene</title>
+    
+    <link rel="stylesheet" href="../../_static/geoxygene.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="GeOxygene" href="../../index.html" />
+    <link rel="up" title="Tutorial" href="index.html" />
+    <link rel="next" title="Style : gestion des contours" href="contour.html" />
+    <link rel="prev" title="Expression de filtres" href="filter.html" /> 
+  </head>
+  <body role="document">
+
+    <div class="header">
+        <div class="wrap">
+            <div id="logo"><a href="http://oxygene-project.sourceforge.net/">GeOxygene</a></div>
+            <h1 id="logo_cogit"><a href="http://recherche.ign.fr/labos/cogit/">COGIT</a></h1>
+            <h1 id="logo_ign" alt="Institut National de l'Information Géographique et Forestière">
+                <a href="http://www.ign.fr" alt="Institut National de l'Information Géographique et Forestière">IGN</a>
+            </h1>
+            <!-- <h1 id="logo_sourceforge"><a href="http://sourceforge.net/projects/oxygene-project/">Sourceforge</a></h1> -->
+            
+            <!-- <div class='top-xleft'><span>Last Published :  | Version :1.6</span></div> -->
+            
+            <ul id="top-nav">
+                <li class="first"><a href="/community/index.html">About</a></li>
+                <li><a href="/download/index.html">Download</a></li>
+                <li><a href="/documentation/index.html">Documentation</a></li>
+            </ul>
+            
+        </div>
+    </div>
+
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="contour.html" title="Style : gestion des contours"
+                 accesskey="N">next</a></li>
+            <li class="right" >
+              <a href="filter.html" title="Expression de filtres"
+                 accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Tutorial</a> &raquo;</li>
+        <li><a href="#">Style : motifs &amp; poncifs</a></li>
+      </ul>
+    </div> 
+
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+	
+	<h4>Navigation</h4><ul style='list-style: none;padding-left:4px;'>
+	<li><a href="https://sourceforge.net/p/oxygene-project">
+	   Sourceforge Home
+	   <span style="padding-left:4px;"><img src="/_static/img/sourceforge.png" /></span>
+	</a></li>
+	<li><a href="http://oxygene-project.sourceforge.net/apidocs/index.html">
+	   Online javadoc
+	</a></li>
+	</ul>
+	
+	<h4>Table Of Contents</h4>
+    <ul>
+<li><a class="reference internal" href="#">Style : motifs &amp; poncifs</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#methodes-de-rendu">Méthodes de rendu</a><ul>
+<li><a class="reference internal" href="#la-classe-graphicfill">La classe GraphicFill</a></li>
+<li><a class="reference internal" href="#la-classe-graphicstroke">La classe GraphicStroke</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#implementation-dans-geoxygene">Implémentation dans GeOxygene</a></li>
+<li><a class="reference internal" href="#exemples-de-rendus">Exemples de rendus</a></li>
+<li><a class="reference internal" href="#bibliographie">Bibliographie</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="filter.html"
+                        title="previous chapter">Expression de filtres</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="contour.html"
+                        title="next chapter">Style : gestion des contours</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation/tutorial/motif.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+    <form class="navbar-search pull-right" style="margin-bottom:-3px;" action="../../search.html" method="get">
+        <input type="text" name="q" placeholder="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+    
+    <!-- div>
+        <script type="text/javascript" src="http://www.ohloh.net/p/40483/widgets/project_thin_badge.js"></script>
+    </div -->
+    
+
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="style-motifs-poncifs">
+<h1>Style : motifs &amp; poncifs</h1>
+<div class="section" id="introduction">
+<h2>Introduction</h2>
+<p>Il existe plusieurs façons de décrire un motif selon la norme SLD et de l&#8217;appliquer
+à un objet géographique dans GeOxygene qui implémente cette norme.
+Cette page a pour objectif d&#8217;illustrer le plus exhaustivement possible les différents cas :</p>
+<ul class="simple">
+<li>avec différentes méthodes (répétition le long d&#8217;un contour ou distribution dans une forme),</li>
+<li>selon le mode d&#8217;implantation des objets (point, ligne, polygone),</li>
+<li>selon les différents formats de motifs (image png ou gif, image svg, forme SLD)</li>
+</ul>
+</div>
+<div class="section" id="methodes-de-rendu">
+<h2>Méthodes de rendu</h2>
+<div class="section" id="la-classe-graphicfill">
+<h3>La classe GraphicFill</h3>
+<p>La classe GraphicFill modélise la méthode de rendu qui consiste à remplir une forme par répétition régulière d&#8217;un motif.</p>
+<p>Cela peut être réalisé de façon très classique à l&#8217;intérieur d&#8217;un polygone, mais également à l&#8217;intérieur d&#8217;un contour (de point, de ligne ou de polygone).</p>
+<p>Il n&#8217;y a pas pour l&#8217;instant de paramètre d&#8217;agencement des motifs à l&#8217;intérieur de la forme (ni prévu par la norme ni implémenté dans GeOxygene).
+Cependant il est possible de remplir la forme par une image du motif afin de :</p>
+<ul class="simple">
+<li>gérer l&#8217;espacement entre motifs (en ajoutant plus de blanc autour du motif)</li>
+<li>créer un motif irégulier (en ajoutant plus d&#8217;un blanc d&#8217;un côté du motif)</li>
+<li>réaliser un motif en quinconce</li>
+</ul>
+<p>Plus d&#8217;explication en images:</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="44%" />
+<col width="44%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Motif élémentaire</td>
+<td><div class="first last figure">
+<a class="reference internal image-reference" href="documentation/resources/img/motif/circle.png"><img alt="documentation/resources/img/motif/circle.png" src="documentation/resources/img/motif/circle.png" style="width: 100px;" /></a>
+</div>
+</td>
+<td><div class="first last figure">
+<a class="reference internal image-reference" href="../../_images/circles-green.png"><img alt="../../_images/circles-green.png" src="../../_images/circles-green.png" style="width: 100px;" /></a>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td>Rendu sur un polygone</td>
+<td><div class="first last figure">
+<a class="reference internal image-reference" href="../../_images/Motif_GraphicFill_circle.png"><img alt="../../_images/Motif_GraphicFill_circle.png" src="../../_images/Motif_GraphicFill_circle.png" style="width: 150px;" /></a>
+</div>
+</td>
+<td><div class="first last figure">
+<a class="reference internal image-reference" href="../../_images/Motif_GraphicFill_circles_vert.png"><img alt="../../_images/Motif_GraphicFill_circles_vert.png" src="../../_images/Motif_GraphicFill_circles_vert.png" style="width: 150px;" /></a>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="nt">&lt;PolygonSymbolizer</span> <span class="na">uom=</span><span class="s">&quot;http://www.opengeospatial.org/se/units/metre&quot;</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;Stroke&gt;</span>
+		<span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke&quot;</span><span class="nt">&gt;</span>#007F0E<span class="nt">&lt;/CssParameter&gt;</span>
+		<span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke-opacity&quot;</span><span class="nt">&gt;</span>0.8<span class="nt">&lt;/CssParameter&gt;</span>
+		<span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke-width&quot;</span><span class="nt">&gt;</span>1.0<span class="nt">&lt;/CssParameter&gt;</span>
+	<span class="nt">&lt;/Stroke&gt;</span>
+	<span class="nt">&lt;GeometryPropertyName&gt;</span>geom<span class="nt">&lt;/GeometryPropertyName&gt;</span>
+	<span class="nt">&lt;Fill&gt;</span>
+		<span class="nt">&lt;GraphicFill&gt;</span>
+			<span class="nt">&lt;Graphic&gt;</span>
+				<span class="nt">&lt;opacity&gt;</span>1.0<span class="nt">&lt;/opacity&gt;</span>
+				<span class="nt">&lt;Size&gt;</span>10.0<span class="nt">&lt;/Size&gt;</span>
+				<span class="nt">&lt;Rotation&gt;</span>
+					<span class="nt">&lt;Literal&gt;</span>0<span class="nt">&lt;/Literal&gt;</span>
+				<span class="nt">&lt;/Rotation&gt;</span>
+				<span class="nt">&lt;ExternalGraphic&gt;</span>
+					<span class="nt">&lt;href&gt;</span>file:/D:\motif\circles-purple.png<span class="nt">&lt;/href&gt;</span>
+					<span class="nt">&lt;Format&gt;</span>png<span class="nt">&lt;/Format&gt;</span>
+				<span class="nt">&lt;/ExternalGraphic&gt;</span>
+			<span class="nt">&lt;/Graphic&gt;</span>
+		<span class="nt">&lt;/GraphicFill&gt;</span>
+		<span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;fill&quot;</span><span class="nt">&gt;</span>#ffffff<span class="nt">&lt;/CssParameter&gt;</span>
+		<span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;fill-opacity&quot;</span><span class="nt">&gt;</span>1.0<span class="nt">&lt;/CssParameter&gt;</span>
+	<span class="nt">&lt;/Fill&gt;</span>
+<span class="nt">&lt;/PolygonSymbolizer&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="la-classe-graphicstroke">
+<h3>La classe GraphicStroke</h3>
+<p>La classe GraphicStroke modélise la méthode de rendu qui consiste à répéter un motif le long d&#8217;un objet linéaire.</p>
+<p>Cela peut donc être réalisé sur une ligne, mais également sur le contour d&#8217;un polygone ou d&#8217;un point.</p>
+</div>
+</div>
+<div class="section" id="implementation-dans-geoxygene">
+<h2>Implémentation dans GeOxygene</h2>
+<div class="centerside container">
+<div class="figure" id="id1">
+<a class="reference internal image-reference" href="../../_images/DC_GeOxygene_SE.png"><img alt="../../_images/DC_GeOxygene_SE.png" src="../../_images/DC_GeOxygene_SE.png" style="width: 800px;" /></a>
+<p class="caption"><span class="caption-text">Figure 1 : Diagramme de classes des classes Symbolizer dans GeOxygene</span></p>
+</div>
+</div>
+<p>Des exemples de constructions de tels styles sont disponibles dans la classe
+<a class="reference external" href="http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/geoxygene-appli/src/main/java/fr/ign/cogit/geoxygene/appli/example/SLDDemoApplication.java">SLDDemoApplication.java</a></p>
+<p>Des fichiers SLD avec des exemples de styles sont également disponibles dans les ressources du module appli (dossier sld).</p>
+<p>Un exemple de GraphicFill sur un LineSymbolizer :</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span>  <span class="cm">/**</span>
+<span class="cm">   * Le Graphic Fill permet de répéter une forme dans le remplissage d&#39;une</span>
+<span class="cm">   * ligne. Cette forme peut être une image (ExternalGraphic) ou une forme</span>
+<span class="cm">   * prédéfinie (Mark).</span>
+<span class="cm">   */</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">exampleGraphicFill_Line</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">Layer</span> <span class="n">layer</span> <span class="o">=</span> <span class="n">projectFrame</span><span class="o">.</span><span class="na">getSld</span><span class="o">().</span><span class="na">createLayer</span><span class="o">(</span><span class="s">&quot;GraphicFill_Line&quot;</span><span class="o">,</span>
+        <span class="n">GM_LineString</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">Color</span><span class="o">.</span><span class="na">green</span><span class="o">,</span> <span class="n">Color</span><span class="o">.</span><span class="na">red</span><span class="o">,</span> <span class="mf">1f</span><span class="o">,</span> <span class="mi">4</span><span class="o">);</span>
+    <span class="n">LineSymbolizer</span> <span class="n">symbolizer</span> <span class="o">=</span> <span class="o">(</span><span class="n">LineSymbolizer</span><span class="o">)</span> <span class="n">layer</span><span class="o">.</span><span class="na">getSymbolizer</span><span class="o">();</span>
+    <span class="n">GraphicFill</span> <span class="n">graphicFill</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GraphicFill</span><span class="o">();</span>
+    <span class="n">Graphic</span> <span class="n">graphic</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Graphic</span><span class="o">();</span>
+    <span class="n">graphic</span><span class="o">.</span><span class="na">setSize</span><span class="o">(</span><span class="mf">5f</span><span class="o">);</span>
+
+    <span class="c1">// --------------- Exemple avec un Graphic de type image ----------------------------------</span>
+    <span class="c1">// --------------------- Image au format svg</span>
+    <span class="n">ExternalGraphic</span> <span class="n">circle</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ExternalGraphic</span><span class="o">();</span>
+    <span class="n">URL</span> <span class="n">url</span> <span class="o">=</span> <span class="n">SLDDemoApplication</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getResource</span><span class="o">(</span><span class="s">&quot;/images/circles.svg&quot;</span><span class="o">);</span>
+    <span class="n">circle</span><span class="o">.</span><span class="na">setHref</span><span class="o">(</span><span class="n">url</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+    <span class="n">circle</span><span class="o">.</span><span class="na">setFormat</span><span class="o">(</span><span class="s">&quot;svg&quot;</span><span class="o">);</span>
+    <span class="n">graphic</span><span class="o">.</span><span class="na">getExternalGraphics</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="n">circle</span><span class="o">);</span>
+
+    <span class="n">graphicFill</span><span class="o">.</span><span class="na">getGraphics</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="n">graphic</span><span class="o">);</span>
+    <span class="n">symbolizer</span><span class="o">.</span><span class="na">getStroke</span><span class="o">().</span><span class="na">setGraphicType</span><span class="o">(</span><span class="n">graphicFill</span><span class="o">);</span>
+
+    <span class="n">Population</span><span class="o">&lt;</span><span class="n">DefaultFeature</span><span class="o">&gt;</span> <span class="n">pop</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Population</span><span class="o">&lt;</span><span class="n">DefaultFeature</span><span class="o">&gt;(</span><span class="s">&quot;GraphicFill_Line&quot;</span><span class="o">);</span>
+    <span class="n">pop</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">DefaultFeature</span><span class="o">(</span><span class="k">new</span> <span class="n">GM_LineString</span><span class="o">(</span><span class="k">new</span> <span class="n">DirectPositionList</span><span class="o">(</span>
+        <span class="k">new</span> <span class="n">DirectPosition</span><span class="o">(</span><span class="mi">10</span><span class="o">,</span> <span class="mi">120</span><span class="o">),</span> <span class="k">new</span> <span class="n">DirectPosition</span><span class="o">(</span><span class="mi">10</span><span class="o">,</span> <span class="mi">170</span><span class="o">),</span>
+        <span class="k">new</span> <span class="n">DirectPosition</span><span class="o">(</span><span class="mi">60</span><span class="o">,</span> <span class="mi">170</span><span class="o">),</span> <span class="k">new</span> <span class="n">DirectPosition</span><span class="o">(</span><span class="mi">60</span><span class="o">,</span> <span class="mi">220</span><span class="o">),</span>
+        <span class="k">new</span> <span class="n">DirectPosition</span><span class="o">(</span><span class="mi">110</span><span class="o">,</span> <span class="mi">220</span><span class="o">)))));</span>
+    <span class="n">projectFrame</span><span class="o">.</span><span class="na">getDataSet</span><span class="o">().</span><span class="na">addPopulation</span><span class="o">(</span><span class="n">pop</span><span class="o">);</span>
+    <span class="n">projectFrame</span><span class="o">.</span><span class="na">getSld</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="n">layer</span><span class="o">);</span>
+  <span class="o">}</span>
+</pre></div>
+</div>
+<p>Un exemple de GraphicStroke sur un PolygonSymbolizer :</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span>  <span class="cm">/**</span>
+<span class="cm">   * Le Graphic Stroke permet de répéter une forme le long d&#39;une ligne. Cette</span>
+<span class="cm">   * forme peut être une image (ExternalGraphic) ou une forme prédéfinie (Mark).</span>
+<span class="cm">   */</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">exampleGraphicStroke_Stroke_Polygon</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">Layer</span> <span class="n">layer</span> <span class="o">=</span> <span class="n">projectFrame</span><span class="o">.</span><span class="na">getSld</span><span class="o">().</span><span class="na">createLayer</span><span class="o">(</span>
+        <span class="s">&quot;GraphicStroke_Stroke_Polygon&quot;</span><span class="o">,</span> <span class="c1">//$NON-NLS-1$</span>
+        <span class="n">GM_Polygon</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">Color</span><span class="o">.</span><span class="na">red</span><span class="o">,</span> <span class="n">Color</span><span class="o">.</span><span class="na">yellow</span><span class="o">,</span> <span class="mf">1f</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
+    <span class="n">PolygonSymbolizer</span> <span class="n">symbolizer</span> <span class="o">=</span> <span class="o">(</span><span class="n">PolygonSymbolizer</span><span class="o">)</span> <span class="n">layer</span><span class="o">.</span><span class="na">getSymbolizer</span><span class="o">();</span>
+    <span class="n">GraphicStroke</span> <span class="n">graphicStroke</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GraphicStroke</span><span class="o">();</span>
+
+    <span class="c1">// --------------- Exemple avec un graphic de type image</span>
+    <span class="c1">// ----------------------------------</span>
+    <span class="n">Graphic</span> <span class="n">graphicCircle</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Graphic</span><span class="o">();</span>
+    <span class="n">graphicCircle</span><span class="o">.</span><span class="na">setSize</span><span class="o">(</span><span class="mi">20</span><span class="n">f</span><span class="o">);</span>
+    <span class="n">ExternalGraphic</span> <span class="n">externalGraphicCircle</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ExternalGraphic</span><span class="o">();</span>
+    <span class="n">URL</span> <span class="n">urlCircle</span> <span class="o">=</span> <span class="n">SLDDemoApplication</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getResource</span><span class="o">(</span><span class="s">&quot;/images/circle.png&quot;</span><span class="o">);</span> <span class="c1">//$NON-NLS-1$</span>
+    <span class="n">externalGraphicCircle</span><span class="o">.</span><span class="na">setHref</span><span class="o">(</span><span class="n">urlCircle</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+    <span class="n">externalGraphicCircle</span><span class="o">.</span><span class="na">setFormat</span><span class="o">(</span><span class="s">&quot;png&quot;</span><span class="o">);</span> <span class="c1">//$NON-NLS-1$</span>
+    <span class="n">graphicCircle</span><span class="o">.</span><span class="na">getExternalGraphics</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="n">externalGraphicCircle</span><span class="o">);</span>
+    <span class="n">graphicStroke</span><span class="o">.</span><span class="na">getGraphics</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="n">graphicCircle</span><span class="o">);</span>
+
+    <span class="c1">// --------------- Exemple avec un graphic de type Mark</span>
+    <span class="c1">// ----------------------------------</span>
+    <span class="c1">// Graphic graphicStar = new Graphic();</span>
+    <span class="c1">// graphicStar.setSize(8f);</span>
+    <span class="c1">// Mark markStar = new Mark();</span>
+    <span class="c1">//        markStar.setWellKnownName(&quot;star&quot;); //$NON-NLS-1$</span>
+    <span class="c1">// Fill fillStar = new Fill();</span>
+    <span class="c1">// fillStar.setColor(new Color(1.f,0.4f,0.4f));</span>
+    <span class="c1">// markStar.setFill(fillStar);</span>
+    <span class="c1">// graphicStar.getMarks().add(markStar);</span>
+    <span class="c1">// graphicStroke.getGraphics().add(graphicStar);</span>
+
+    <span class="n">symbolizer</span><span class="o">.</span><span class="na">getStroke</span><span class="o">().</span><span class="na">setGraphicType</span><span class="o">(</span><span class="n">graphicStroke</span><span class="o">);</span>
+
+    <span class="n">Population</span><span class="o">&lt;</span><span class="n">DefaultFeature</span><span class="o">&gt;</span> <span class="n">pop</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Population</span><span class="o">&lt;</span><span class="n">DefaultFeature</span><span class="o">&gt;(</span>
+        <span class="s">&quot;GraphicStroke_Stroke_Polygon&quot;</span><span class="o">);</span> <span class="c1">//$NON-NLS-1$</span>
+    <span class="n">pop</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">DefaultFeature</span><span class="o">(</span><span class="k">new</span> <span class="n">GM_Polygon</span><span class="o">(</span>
+        <span class="k">new</span> <span class="n">GM_Envelope</span><span class="o">(</span><span class="mi">120</span><span class="o">,</span> <span class="mi">220</span><span class="o">,</span> <span class="mi">10</span><span class="o">,</span> <span class="mi">110</span><span class="o">))));</span>
+    <span class="n">projectFrame</span><span class="o">.</span><span class="na">getDataSet</span><span class="o">().</span><span class="na">addPopulation</span><span class="o">(</span><span class="n">pop</span><span class="o">);</span>
+    <span class="n">projectFrame</span><span class="o">.</span><span class="na">getSld</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="n">layer</span><span class="o">);</span>
+  <span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="exemples-de-rendus">
+<h2>Exemples de rendus</h2>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="9%" />
+<col width="30%" />
+<col width="31%" />
+<col width="31%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>&nbsp;</td>
+<td>LineSymbolizer</td>
+<td colspan="2">PolygonSymbolizer</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>Stroke</td>
+<td>Stroke</td>
+<td>Fill</td>
+</tr>
+<tr class="row-odd"><td>GraphicFill</td>
+<td><div class="first last figure">
+<a class="reference internal image-reference" href="../../_images/GraphicFill_Stroke_Line.png"><img alt="../../_images/GraphicFill_Stroke_Line.png" src="../../_images/GraphicFill_Stroke_Line.png" style="width: 150px;" /></a>
+</div>
+</td>
+<td><div class="first last figure">
+<a class="reference internal image-reference" href="../../_images/GraphicFill_Stroke_Polygon.png"><img alt="../../_images/GraphicFill_Stroke_Polygon.png" src="../../_images/GraphicFill_Stroke_Polygon.png" style="width: 150px;" /></a>
+</div>
+</td>
+<td><div class="first last figure">
+<a class="reference internal image-reference" href="../../_images/GraphicFill_Fill_Polygon.png"><img alt="../../_images/GraphicFill_Fill_Polygon.png" src="../../_images/GraphicFill_Fill_Polygon.png" style="width: 150px;" /></a>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td>GraphicStroke</td>
+<td><div class="first last figure">
+<a class="reference internal image-reference" href="../../_images/GraphicStroke_Stroke_Line.png"><img alt="../../_images/GraphicStroke_Stroke_Line.png" src="../../_images/GraphicStroke_Stroke_Line.png" style="width: 150px;" /></a>
+</div>
+</td>
+<td><div class="first last figure">
+<a class="reference internal image-reference" href="../../_images/GraphicStroke_Stroke_Polygon.png"><img alt="../../_images/GraphicStroke_Stroke_Polygon.png" src="../../_images/GraphicStroke_Stroke_Polygon.png" style="width: 150px;" /></a>
+</div>
+</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="bibliographie">
+<h2>Bibliographie</h2>
+<ul class="simple">
+<li><a class="reference external" href="http://www.opengeospatial.org/standards/sld">OpenGIS Styled Layer Descriptor Profile of the Web Map Service Implementation Specification, Version 1.1.0, Norme de l’Open Geospatial Consortium (OGC)</a></li>
+<li><a class="reference external" href="http://www.opengeospatial.org/standards/se">OpenGIS Symbology Encoding Implementation Specification , Version 1.1.0, Norme de l’Open Geospatial Consortium (OGC)</a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="contour.html" title="Style : gestion des contours"
+                 >next</a></li>
+            <li class="right" >
+              <a href="filter.html" title="Expression de filtres"
+                 >previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" >Tutorial</a> &raquo;</li>
+        <li><a href="#">Style : motifs &amp; poncifs</a></li>
+      </ul>
+    </div> 
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Laboratoire COGIT, IGN.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

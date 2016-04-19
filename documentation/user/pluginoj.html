@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Getting Started with GeOxygene Plugin for OpenJUMP &mdash; GeOxygene</title>
+    
+    <link rel="stylesheet" href="../../_static/geoxygene.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="GeOxygene" href="../../index.html" />
+    <link rel="up" title="Guide de l’utilisateur" href="index.html" />
+    <link rel="next" title="Jeux de données" href="datadirectory.html" />
+    <link rel="prev" title="Prise en main de l’interface graphique 2D" href="userguide2D.html" /> 
+  </head>
+  <body role="document">
+
+    <div class="header">
+        <div class="wrap">
+            <div id="logo"><a href="http://oxygene-project.sourceforge.net/">GeOxygene</a></div>
+            <h1 id="logo_cogit"><a href="http://recherche.ign.fr/labos/cogit/">COGIT</a></h1>
+            <h1 id="logo_ign" alt="Institut National de l'Information Géographique et Forestière">
+                <a href="http://www.ign.fr" alt="Institut National de l'Information Géographique et Forestière">IGN</a>
+            </h1>
+            <!-- <h1 id="logo_sourceforge"><a href="http://sourceforge.net/projects/oxygene-project/">Sourceforge</a></h1> -->
+            
+            <!-- <div class='top-xleft'><span>Last Published :  | Version :1.6</span></div> -->
+            
+            <ul id="top-nav">
+                <li class="first"><a href="/community/index.html">About</a></li>
+                <li><a href="/download/index.html">Download</a></li>
+                <li><a href="/documentation/index.html">Documentation</a></li>
+            </ul>
+            
+        </div>
+    </div>
+
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="datadirectory.html" title="Jeux de données"
+                 accesskey="N">next</a></li>
+            <li class="right" >
+              <a href="userguide2D.html" title="Prise en main de l’interface graphique 2D"
+                 accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Guide de l&#8217;utilisateur</a> &raquo;</li>
+        <li><a href="#">Getting Started with GeOxygene Plugin for OpenJUMP</a></li>
+      </ul>
+    </div> 
+
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+	
+	<h4>Navigation</h4><ul style='list-style: none;padding-left:4px;'>
+	<li><a href="https://sourceforge.net/p/oxygene-project">
+	   Sourceforge Home
+	   <span style="padding-left:4px;"><img src="/_static/img/sourceforge.png" /></span>
+	</a></li>
+	<li><a href="http://oxygene-project.sourceforge.net/apidocs/index.html">
+	   Online javadoc
+	</a></li>
+	</ul>
+	
+	<h4>Table Of Contents</h4>
+    <ul>
+<li><a class="reference internal" href="#">Getting Started with GeOxygene Plugin for OpenJUMP</a><ul>
+<li><a class="reference internal" href="#plugin-network-matching">Plugin Network matching</a><ul>
+<li><a class="reference internal" href="#playing">Playing</a></li>
+<li><a class="reference internal" href="#reference">Reference</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#plugins-quality">Plugins &#8220;quality&#8221;</a><ul>
+<li><a class="reference internal" href="#presentation">Presentation</a></li>
+<li><a class="reference internal" href="#id1">Reference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="userguide2D.html"
+                        title="previous chapter">Prise en main de l&#8217;interface graphique 2D</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="datadirectory.html"
+                        title="next chapter">Jeux de données</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation/user/pluginoj.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+    <form class="navbar-search pull-right" style="margin-bottom:-3px;" action="../../search.html" method="get">
+        <input type="text" name="q" placeholder="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+    
+    <!-- div>
+        <script type="text/javascript" src="http://www.ohloh.net/p/40483/widgets/project_thin_badge.js"></script>
+    </div -->
+    
+
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="getting-started-with-geoxygene-plugin-for-openjump">
+<span id="userguideoj"></span><h1>Getting Started with GeOxygene Plugin for OpenJUMP</h1>
+<div class="section" id="plugin-network-matching">
+<h2>Plugin Network matching</h2>
+<div class="section" id="playing">
+<h3>Playing</h3>
+<ol class="arabic">
+<li><p class="first">Download demo data :</p>
+<ul class="simple">
+<li>Network 1 : <a class="reference external" href="http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene-data/ign-echantillon/bdcarto/BDC_3-1_SHP_LAMB93_X072-ED111/RESEAU_ROUTIER/TRONCON_ROUTE.zip">http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene-data/ign-echantillon/bdcarto/BDC_3-1_SHP_LAMB93_X072-ED111/RESEAU_ROUTIER/TRONCON_ROUTE.zip</a></li>
+<li>Network 2 : <a class="reference external" href="http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene-data/ign-echantillon/bdtopo/72_BDTOPO_shp/BDT_2-0_SHP_LAMB93_X062-ED111/A_RESEAU_ROUTIER/ROUTE.zip">http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene-data/ign-echantillon/bdtopo/72_BDTOPO_shp/BDT_2-0_SHP_LAMB93_X062-ED111/A_RESEAU_ROUTIER/ROUTE.zip</a></li>
+</ul>
+</li>
+<li><p class="first">Start OpenJUMP.</p>
+</li>
+<li><p class="first">Load both shapefiles</p>
+</li>
+<li><p class="first">Select menu &#8220;GeOxygene &gt;&gt; Appariement &gt;&gt; Appariement de réseaux&#8221;.</p>
+</li>
+<li><p class="first">Launch matching</p>
+<div class="centerside container">
+<div class="figure" id="id2">
+<a class="reference internal image-reference" href="../../_images/GeoxygeneOpenJump01.png"><img alt="../../_images/GeoxygeneOpenJump01.png" src="../../_images/GeoxygeneOpenJump01.png" style="width: 450px;" /></a>
+<p class="caption"><span class="caption-text">Figure 1 : Dataset</span></p>
+</div>
+</div>
+</li>
+<li><p class="first">Results of matching will be displayed on windows.</p>
+<div class="centerside container">
+<div class="figure" id="id3">
+<a class="reference internal image-reference" href="../../_images/GeoxygeneOpenJump02.png"><img alt="../../_images/GeoxygeneOpenJump02.png" src="../../_images/GeoxygeneOpenJump02.png" style="width: 450px;" /></a>
+<p class="caption"><span class="caption-text">Figure 2 : Results of matching</span></p>
+</div>
+</div>
+</li>
+<li><p class="first">Finish.</p>
+</li>
+</ol>
+</div>
+<div class="section" id="reference">
+<h3>Reference</h3>
+<ul class="simple">
+<li>Mustière S., Devogele T., 2008, <a class="reference external" href="http://www.informaworld.com/smpp/1673074808-66010030/content~db=all~content=a902412390">Matching networks with different levels of detail</a> ,
+GeoInformatica, Vol.12 n°4, pp 435-453</li>
+</ul>
+</div>
+</div>
+<div class="section" id="plugins-quality">
+<h2>Plugins &#8220;quality&#8221;</h2>
+<div class="section" id="presentation">
+<h3>Presentation</h3>
+<p>Several plugins concern the &#8220;geoxygene-quality&#8221; module :</p>
+<ul class="simple">
+<li>« PlugInEstim » : this plugin concern the EstIM model developed during the PhD of (Girres,
+2012). Allows the computation of different impacts (projection, terrain,
+polygonal approximation, digitizing error, generalisation) for lengths and
+areas.</li>
+<li>« PlugInComparison » : a plugin to compute differences between datasets.
+Automatic or manuel matching are provided for polygons and linestrings. Different methods to
+normalize linestring comparisons are also proposed (extremity cutting,
+section cutting)</li>
+<li>« PlugInMountainGridDetection » : a plugin to facilitate the delineation of mountainous areas</li>
+<li>...</li>
+</ul>
+<div class="centerside container">
+<div class="figure" id="id4">
+<a class="reference internal image-reference" href="../../_images/800px-QUALITE-Comparison.png"><img alt="../../_images/800px-QUALITE-Comparison.png" src="../../_images/800px-QUALITE-Comparison.png" style="width: 450px;" /></a>
+<p class="caption"><span class="caption-text">Figure 3 : Results of computing differences between datasets</span></p>
+</div>
+</div>
+</div>
+<div class="section" id="id1">
+<h3>Reference</h3>
+<ul class="simple">
+<li>Jean-François Girres, 2012, <a class="reference external" href="http://recherche.ign.fr/labos/cogit/pdf/THESES/GIRRES/theseJFGirres.pdf">Modèle d’estimation de l’imprécision des mesures géométriques de données géographiques.
+Application aux mesures de longueur et de surface.</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="datadirectory.html" title="Jeux de données"
+                 >next</a></li>
+            <li class="right" >
+              <a href="userguide2D.html" title="Prise en main de l’interface graphique 2D"
+                 >previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" >Guide de l&#8217;utilisateur</a> &raquo;</li>
+        <li><a href="#">Getting Started with GeOxygene Plugin for OpenJUMP</a></li>
+      </ul>
+    </div> 
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Laboratoire COGIT, IGN.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

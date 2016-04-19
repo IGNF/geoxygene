@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Site web GeOxygene &mdash; GeOxygene</title>
+    
+    <link rel="stylesheet" href="../../_static/geoxygene.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="GeOxygene" href="../../index.html" /> 
+  </head>
+  <body role="document">
+
+    <div class="header">
+        <div class="wrap">
+            <div id="logo"><a href="http://oxygene-project.sourceforge.net/">GeOxygene</a></div>
+            <h1 id="logo_cogit"><a href="http://recherche.ign.fr/labos/cogit/">COGIT</a></h1>
+            <h1 id="logo_ign" alt="Institut National de l'Information Géographique et Forestière">
+                <a href="http://www.ign.fr" alt="Institut National de l'Information Géographique et Forestière">IGN</a>
+            </h1>
+            <!-- <h1 id="logo_sourceforge"><a href="http://sourceforge.net/projects/oxygene-project/">Sourceforge</a></h1> -->
+            
+            <!-- <div class='top-xleft'><span>Last Published :  | Version :1.6</span></div> -->
+            
+            <ul id="top-nav">
+                <li class="first"><a href="/community/index.html">About</a></li>
+                <li><a href="/download/index.html">Download</a></li>
+                <li><a href="/documentation/index.html">Documentation</a></li>
+            </ul>
+            
+        </div>
+    </div>
+
+    <div class="related">
+      <ul id="breadcrumbs">
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+        <li><a href="#">Site web GeOxygene</a></li>
+      </ul>
+    </div> 
+
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+	
+	<h4>Navigation</h4><ul style='list-style: none;padding-left:4px;'>
+	<li><a href="https://sourceforge.net/p/oxygene-project">
+	   Sourceforge Home
+	   <span style="padding-left:4px;"><img src="/_static/img/sourceforge.png" /></span>
+	</a></li>
+	<li><a href="http://oxygene-project.sourceforge.net/apidocs/index.html">
+	   Online javadoc
+	</a></li>
+	</ul>
+	
+	<h4>Table Of Contents</h4>
+    <ul>
+<li><a class="reference internal" href="#">Site web GeOxygene</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#sphinx">Sphinx</a><ul>
+<li><a class="reference internal" href="#windows">Windows</a></li>
+<li><a class="reference internal" href="#linux">Linux</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#code-source-du-site-web">Code source du site web</a><ul>
+<li><a class="reference internal" href="#checkout">Checkout</a></li>
+<li><a class="reference internal" href="#architecture-sur-la-forge">Architecture sur la forge</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#compiler-et-tester">Compiler et tester</a></li>
+<li><a class="reference internal" href="#deploiement-sur-sourceforge">Déploiement sur sourceforge</a></li>
+<li><a class="reference internal" href="#n-b">N.B.</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation/developer/website.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+    <form class="navbar-search pull-right" style="margin-bottom:-3px;" action="../../search.html" method="get">
+        <input type="text" name="q" placeholder="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+    
+    <!-- div>
+        <script type="text/javascript" src="http://www.ohloh.net/p/40483/widgets/project_thin_badge.js"></script>
+    </div -->
+    
+
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="site-web-geoxygene">
+<h1>Site web GeOxygene</h1>
+<div class="section" id="introduction">
+<h2>Introduction</h2>
+<p>Le site internet dédié au projet GeOxygene est consultable sur internet, à l&#8217;adresse suivante:
+href{<a class="reference external" href="http://oxygene-project.sourceforge.net/maven">http://oxygene-project.sourceforge.net/maven</a>}{<a class="reference external" href="http://oxygene-project.sourceforge.net/maven">http://oxygene-project.sourceforge.net/maven</a>}.</p>
+<p>Il est généré automatiquement puis déployé sur internet à partir du code source du projet <em>geoxygene-docs</em>,
+grâce à Sphinx.</p>
+</div>
+<div class="section" id="sphinx">
+<h2>Sphinx</h2>
+<div class="section" id="windows">
+<h3>Windows</h3>
+</div>
+<div class="section" id="linux">
+<h3>Linux</h3>
+<p>Coming soon ....</p>
+</div>
+</div>
+<div class="section" id="code-source-du-site-web">
+<h2>Code source du site web</h2>
+<div class="section" id="checkout">
+<h3>Checkout</h3>
+</div>
+<div class="section" id="architecture-sur-la-forge">
+<h3>Architecture sur la forge</h3>
+</div>
+</div>
+<div class="section" id="compiler-et-tester">
+<h2>Compiler et tester</h2>
+</div>
+<div class="section" id="deploiement-sur-sourceforge">
+<h2>Déploiement sur sourceforge</h2>
+<p>Le site internet dédié au projet GeOxygene est consultable sur internet, à l’adresse suivante :
+[<a class="reference external" href="http://oxygene-project.sourceforge.net/index.html">http://oxygene-project.sourceforge.net/index.html</a> <a class="reference external" href="http://oxygene-project.sourceforge.net/index.html">http://oxygene-project.sourceforge.net/index.html</a>].</p>
+<p>Le code source se trouve dans le sous-module &#8216;&#8217;&#8216;docs&#8217;&#8216;&#8217; de GeOxygene (OpenSource)</p>
+<p>&lt;pre&gt;
+<a class="reference external" href="https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene-docs/">https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene-docs/</a>
+&lt;/pre&gt;</p>
+<p>== Administration  ==
+* URL de production : <a class="reference external" href="http://oxygene-project.sourceforge.net/">http://oxygene-project.sourceforge.net/</a>
+* URL de test : <a class="reference external" href="http://rks0911w044.ign.fr:8083/jenkins/job/Geoxygene%20-%20site%20web/ws/target/site/html/index.html">http://rks0911w044.ign.fr:8083/jenkins/job/Geoxygene%20-%20site%20web/ws/target/site/html/index.html</a></p>
+<ul class="simple">
+<li>Langue officielle : Anglais</li>
+</ul>
+<p>== Génération des sources du site internet ==
+Le site est construit à partir de &#8216;&#8217;&#8216;Sphinx&#8217;&#8216;&#8217;.</p>
+<p>La prcoédure d&#8217;installation est décrite ici : [<a class="reference external" href="http://techquila.com/tech/2013/05/installing-sphinx-on-windows/">http://techquila.com/tech/2013/05/installing-sphinx-on-windows/</a> installing-sphinx-on-windows]. Il faut installer successivement python, easy_install et sphinx.</p>
+<p>Quelques liens pour écrire les fichiers textes :
+* <a class="reference external" href="http://openalea.gforge.inria.fr/doc/openalea/doc/_build/html/source/sphinx/rest_syntax.html">http://openalea.gforge.inria.fr/doc/openalea/doc/_build/html/source/sphinx/rest_syntax.html</a>
+* <a class="reference external" href="http://sphinx-doc.org/contents.html">http://sphinx-doc.org/contents.html</a></p>
+<p>== Compilation ==</p>
+<p>Le module est indépendant des autres modules GeOxygene.</p>
+<p>Il suffit de lancer un compile au niveau du module :
+&lt;pre&gt;
+mvn compile
+&lt;/pre&gt;</p>
+<p>== Mise en ligne du site internet ==</p>
+<p>Le site se met à jour via une connexion au serveur web à partir de FileZilla.
+La procédure est décrite [[Forge_GeOxygene_OpenSource | ici]].</p>
+</div>
+<div class="section" id="n-b">
+<h2>N.B.</h2>
+<blockquote>
+<div>&#8211;&gt; Droits commits + déploiement</div></blockquote>
+<p>/home/project-web/oxygene-project/htdocs</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <ul id="breadcrumbs">
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+        <li><a href="#">Site web GeOxygene</a></li>
+      </ul>
+    </div> 
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Laboratoire COGIT, IGN.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

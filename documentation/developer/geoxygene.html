@@ -1,0 +1,307 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installation de GeOxygene &mdash; GeOxygene</title>
+    
+    <link rel="stylesheet" href="../../_static/geoxygene.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="GeOxygene" href="../../index.html" />
+    <link rel="up" title="Developer Guide" href="index.html" />
+    <link rel="next" title="Configuration des librairies OpenGL" href="geoxygeneOGL.html" />
+    <link rel="prev" title="Installation des outils pour GeOxygene" href="install.html" /> 
+  </head>
+  <body role="document">
+
+    <div class="header">
+        <div class="wrap">
+            <div id="logo"><a href="http://oxygene-project.sourceforge.net/">GeOxygene</a></div>
+            <h1 id="logo_cogit"><a href="http://recherche.ign.fr/labos/cogit/">COGIT</a></h1>
+            <h1 id="logo_ign" alt="Institut National de l'Information Géographique et Forestière">
+                <a href="http://www.ign.fr" alt="Institut National de l'Information Géographique et Forestière">IGN</a>
+            </h1>
+            <!-- <h1 id="logo_sourceforge"><a href="http://sourceforge.net/projects/oxygene-project/">Sourceforge</a></h1> -->
+            
+            <!-- <div class='top-xleft'><span>Last Published :  | Version :1.6</span></div> -->
+            
+            <ul id="top-nav">
+                <li class="first"><a href="/community/index.html">About</a></li>
+                <li><a href="/download/index.html">Download</a></li>
+                <li><a href="/documentation/index.html">Documentation</a></li>
+            </ul>
+            
+        </div>
+    </div>
+
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="geoxygeneOGL.html" title="Configuration des librairies OpenGL"
+                 accesskey="N">next</a></li>
+            <li class="right" >
+              <a href="install.html" title="Installation des outils pour GeOxygene"
+                 accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Developer Guide</a> &raquo;</li>
+        <li><a href="#">Installation de GeOxygene</a></li>
+      </ul>
+    </div> 
+
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+	
+	<h4>Navigation</h4><ul style='list-style: none;padding-left:4px;'>
+	<li><a href="https://sourceforge.net/p/oxygene-project">
+	   Sourceforge Home
+	   <span style="padding-left:4px;"><img src="/_static/img/sourceforge.png" /></span>
+	</a></li>
+	<li><a href="http://oxygene-project.sourceforge.net/apidocs/index.html">
+	   Online javadoc
+	</a></li>
+	</ul>
+	
+	<h4>Table Of Contents</h4>
+    <ul>
+<li><a class="reference internal" href="#">Installation de GeOxygene</a><ul>
+<li><a class="reference internal" href="#importer-le-projet-geoxygene">Importer le projet GeOxygene</a></li>
+<li><a class="reference internal" href="#compilation">Compilation</a></li>
+<li><a class="reference internal" href="#lancement-des-interfaces-graphiques">Lancement des interfaces graphiques</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="install.html"
+                        title="previous chapter">Installation des outils pour GeOxygene</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="geoxygeneOGL.html"
+                        title="next chapter">Configuration des librairies OpenGL</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation/developer/geoxygene.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+    <form class="navbar-search pull-right" style="margin-bottom:-3px;" action="../../search.html" method="get">
+        <input type="text" name="q" placeholder="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+    
+    <!-- div>
+        <script type="text/javascript" src="http://www.ohloh.net/p/40483/widgets/project_thin_badge.js"></script>
+    </div -->
+    
+
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="installation-de-geoxygene">
+<h1>Installation de GeOxygene</h1>
+<div class="section" id="importer-le-projet-geoxygene">
+<h2>Importer le projet GeOxygene</h2>
+<p>Dans Eclipse la création d&#8217;un nouveau projet s&#8217;effectue via l&#8217;assistant &#8220;Import&#8221;.
+Celui-ci offre en effet une pléthore de modèles. Il suffit donc pour importer GeOxygene de choisir
+celui qui va extraire un projet Maven depuis un SCM (dans notre cas SVN).</p>
+<p>Comme décrits dans les deux captures d’écran ci-dessous, cliquer :</p>
+<div class="twocol container">
+<div class="leftside container">
+<ol class="arabic simple">
+<li>D&#8217;abord sur :</li>
+</ol>
+<div class="chemin container">
+File &gt;&gt; Import</div>
+<div class="centerside container">
+<div class="figure" id="id1">
+<a class="reference internal image-reference" href="../../_images/Import_01.png"><img alt="../../_images/Import_01.png" src="../../_images/Import_01.png" style="width: 350px;" /></a>
+<p class="caption"><span class="caption-text">Figure 1 : Import Project</span></p>
+</div>
+</div>
+</div>
+<div class="rightside container">
+<ol class="arabic simple" start="2">
+<li>Puis sur :</li>
+</ol>
+<div class="chemin container">
+Maven &gt;&gt; Checkout Maven Projects from SCM</div>
+<div class="centerside container">
+<div class="figure" id="id2">
+<a class="reference internal image-reference" href="../../_images/Import_02.png"><img alt="../../_images/Import_02.png" src="../../_images/Import_02.png" style="width: 350px;" /></a>
+<p class="caption"><span class="caption-text">Figure 2 : Check out Maven Projects from SCM</span></p>
+</div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="3">
+<li>Ensuite comme l&#8217;indique la figure suivante, sélectionner <strong>svn</strong> dans la première liste comme SCM URL et indiquer l&#8217;adresse du svn de GeOxygene :</li>
+</ol>
+<div class="centerside container">
+<div class="figure" id="id3">
+<img alt="../../_images/geoxygeneEtape3.png" src="../../_images/geoxygeneEtape3.png" />
+<p class="caption"><span class="caption-text">Figure 3 : SCM URL for check out GeOxygene</span></p>
+</div>
+</div>
+<ul>
+<li><p class="first">Si vous êtes enregistré sur <a class="reference external" href="http://sourceforge.net/">Sourceforge</a>  et si vous avez des droits en tant que développeur ou administrateur sur le projet geoxygene :</p>
+<div class="svnurl container">
+<p><a class="reference external" href="https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene">https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene</a></p>
+</div>
+</li>
+<li><p class="first">Sinon :</p>
+<div class="svnurl container">
+<p><a class="reference external" href="http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/">http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/</a></p>
+</div>
+</li>
+</ul>
+<ol class="arabic simple" start="4">
+<li>puis cliquer sur &#8220;Next&#8221;.</li>
+</ol>
+<div class="twocol container">
+<div class="leftside container">
+<div class="centerside container">
+<div class="figure" id="id4">
+<a class="reference internal image-reference" href="../../_images/geoxygeneEtape4.png"><img alt="../../_images/geoxygeneEtape4.png" src="../../_images/geoxygeneEtape4.png" style="width: 420px;" /></a>
+<p class="caption"><span class="caption-text">Figure 4 : Configure your import</span></p>
+</div>
+</div>
+</div>
+<div class="rightside container">
+<ol class="arabic simple" start="5">
+<li>Dans le panneau suivant, vous pouvez:</li>
+</ol>
+<ul class="simple">
+<li>sélectionner le répertoire où sera stocké votre projet (par défaut dans le workspace courant),</li>
+<li>ajouter le projet à un working set (c&#8217;est à dire à un groupe de projets)</li>
+<li>modifier le nom du (ou des) projet(s) récupéré (s) (dans Advanced).</li>
+</ul>
+<p>Cette dernière option est utile si vous souhaitez ajouter à tous les projets récupérés un préfixe, un suffixe au nom du projet.
+Par exemple <strong>geox-[artifactId]</strong> vous créera, pour geoxygene, n projets nommés geox-xxxx.</p>
+</div>
+</div>
+<ol class="arabic" start="6">
+<li><p class="first">Cliquez ensuite sur <strong>Finish</strong>.</p>
+</li>
+<li><p class="first">Certains connectors vont peut-être se mettre à jour ou pas durant cette phase. Cliquer sur <strong>OK</strong> si vous avez un message
+d&#8217;avertissement ou d&#8217;erreur de type <em>Maven Goal Execution</em>,</p>
+<div class="centerside container">
+<div class="figure" id="id5">
+<a class="reference internal image-reference" href="../../_images/IncompleteMaven.png"><img alt="../../_images/IncompleteMaven.png" src="../../_images/IncompleteMaven.png" style="width: 500px;" /></a>
+<p class="caption"><span class="caption-text">Figure 5 : Configure your import</span></p>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="compilation">
+<h2>Compilation</h2>
+<p>Lancer un maven build manuellement. Pour cela :</p>
+<ol class="arabic simple">
+<li>Dans le menu, cliquer sur</li>
+</ol>
+<blockquote>
+<div><div class="chemin container">
+Run &gt;&gt; Run Configurations</div>
+<div class="centerside container">
+<div class="figure" id="id6">
+<a class="reference internal image-reference" href="../../_images/geoxygeneRunEtape1.png"><img alt="../../_images/geoxygeneRunEtape1.png" src="../../_images/geoxygeneRunEtape1.png" style="width: 600px;" /></a>
+<p class="caption"><span class="caption-text">Figure 6</span></p>
+</div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li>Sélectionner comme type de run &#8220;Maven&#8221;, puis cliquer dans le menu en haut sur &#8220;New launch configuration&#8221;</li>
+</ol>
+<blockquote>
+<div><div class="centerside container">
+<div class="figure" id="id7">
+<a class="reference internal image-reference" href="../../_images/geoxygeneRunEtape2.png"><img alt="../../_images/geoxygeneRunEtape2.png" src="../../_images/geoxygeneRunEtape2.png" style="width: 350px;" /></a>
+<p class="caption"><span class="caption-text">Figure 7</span></p>
+</div>
+</div>
+</div></blockquote>
+<ol class="arabic" start="3">
+<li><p class="first">Dans la nouvelle fenêtre &#8220;Run configuration&#8221; configurer :</p>
+<div class="field container">
+<p><strong>Name</strong> : geoxygene</p>
+<dl class="docutils">
+<dt><strong>Base directory</strong> <span class="classifier-delimiter">:</span> <span class="classifier">saisir le chemin d&#8217;installation de GeOxygene</span></dt>
+<dd><p class="first last">(c&#8217;est celui de votre Workspace auquel il faut ajouter geoxygene)</p>
+</dd>
+</dl>
+<p><strong>Goal</strong> : clean install. Vous définissez la phase du cycle (clean, install, package, compile, test, site, ...)</p>
+</div>
+</li>
+</ol>
+<blockquote>
+<div><div class="centerside container">
+<div class="figure" id="id8">
+<a class="reference internal image-reference" href="../../_images/geoxygeneRunEtape3.png"><img alt="../../_images/geoxygeneRunEtape3.png" src="../../_images/geoxygeneRunEtape3.png" style="width: 600px;" /></a>
+<p class="caption"><span class="caption-text">Figure 8</span></p>
+</div>
+</div>
+</div></blockquote>
+<p>Si tout se passe bien, Maven devrait récupérer tous les jars des librairies nécessaires et compiler le projet.</p>
+<p>Cette opération peut prendre un certain temps !</p>
+</div>
+<div class="section" id="lancement-des-interfaces-graphiques">
+<h2>Lancement des interfaces graphiques</h2>
+<p>Si vous voulez utiliser l&#8217;interface graphique avec un rendu OpenGL, il reste une configuration à faire, décrite <a class="reference internal" href="geoxygeneOGL.html#rendugeoxogl"><span>ici</span></a>.</p>
+<p>Sinon le guide de lancement des interfaces graphiques est décrit sur la : <a class="reference internal" href="launching.html#launchinggeox"><span>page suivante</span></a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="geoxygeneOGL.html" title="Configuration des librairies OpenGL"
+                 >next</a></li>
+            <li class="right" >
+              <a href="install.html" title="Installation des outils pour GeOxygene"
+                 >previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" >Developer Guide</a> &raquo;</li>
+        <li><a href="#">Installation de GeOxygene</a></li>
+      </ul>
+    </div> 
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Laboratoire COGIT, IGN.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installation de l’extension WPS GeOxygene &mdash; GeOxygene</title>
+    
+    <link rel="stylesheet" href="../../_static/geoxygene.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="GeOxygene" href="../../index.html" />
+    <link rel="up" title="Developer Guide" href="index.html" />
+    <link rel="next" title="GeOxygene Library for Maven Developer" href="maven.html" />
+    <link rel="prev" title="Installation des plugins OpenJump GeOxygene" href="openjump.html" /> 
+  </head>
+  <body role="document">
+
+    <div class="header">
+        <div class="wrap">
+            <div id="logo"><a href="http://oxygene-project.sourceforge.net/">GeOxygene</a></div>
+            <h1 id="logo_cogit"><a href="http://recherche.ign.fr/labos/cogit/">COGIT</a></h1>
+            <h1 id="logo_ign" alt="Institut National de l'Information Géographique et Forestière">
+                <a href="http://www.ign.fr" alt="Institut National de l'Information Géographique et Forestière">IGN</a>
+            </h1>
+            <!-- <h1 id="logo_sourceforge"><a href="http://sourceforge.net/projects/oxygene-project/">Sourceforge</a></h1> -->
+            
+            <!-- <div class='top-xleft'><span>Last Published :  | Version :1.6</span></div> -->
+            
+            <ul id="top-nav">
+                <li class="first"><a href="/community/index.html">About</a></li>
+                <li><a href="/download/index.html">Download</a></li>
+                <li><a href="/documentation/index.html">Documentation</a></li>
+            </ul>
+            
+        </div>
+    </div>
+
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="maven.html" title="GeOxygene Library for Maven Developer"
+                 accesskey="N">next</a></li>
+            <li class="right" >
+              <a href="openjump.html" title="Installation des plugins OpenJump GeOxygene"
+                 accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Developer Guide</a> &raquo;</li>
+        <li><a href="#">Installation de l&#8217;extension WPS GeOxygene</a></li>
+      </ul>
+    </div> 
+
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+	
+	<h4>Navigation</h4><ul style='list-style: none;padding-left:4px;'>
+	<li><a href="https://sourceforge.net/p/oxygene-project">
+	   Sourceforge Home
+	   <span style="padding-left:4px;"><img src="/_static/img/sourceforge.png" /></span>
+	</a></li>
+	<li><a href="http://oxygene-project.sourceforge.net/apidocs/index.html">
+	   Online javadoc
+	</a></li>
+	</ul>
+	
+	<h4>Table Of Contents</h4>
+    <ul>
+<li><a class="reference internal" href="#">Installation de l&#8217;extension WPS GeOxygene</a><ul>
+<li><a class="reference internal" href="#installation-de-geoserver-et-de-l-extension-wps">Installation de GeoServer et de l&#8217;extension WPS</a></li>
+<li><a class="reference internal" href="#importer-le-projet-geoxygene-wps">Importer le projet geoxygene-wps</a></li>
+<li><a class="reference internal" href="#compilation-du-module-geoxygene-wps">Compilation du module geoxygene-wps</a></li>
+<li><a class="reference internal" href="#tester-les-services-geoxygene-wps-dans-geoserver">Tester les services GeOxygene WPS dans GeoServer</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="openjump.html"
+                        title="previous chapter">Installation des plugins OpenJump GeOxygene</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="maven.html"
+                        title="next chapter">GeOxygene Library for Maven Developer</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation/developer/wps.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+    <form class="navbar-search pull-right" style="margin-bottom:-3px;" action="../../search.html" method="get">
+        <input type="text" name="q" placeholder="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+    
+    <!-- div>
+        <script type="text/javascript" src="http://www.ohloh.net/p/40483/widgets/project_thin_badge.js"></script>
+    </div -->
+    
+
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="installation-de-l-extension-wps-geoxygene">
+<h1>Installation de l&#8217;extension WPS GeOxygene</h1>
+<p>Les Web Processing Services de GeOxygene sont des extensions de <a class="reference external" href="http://geoserver.org/">GeoServer</a> .
+Plus précisément ce sont des librairies GeOxygene (mises sous forme de java archive) que l&#8217;on va déposer dans le répertoire d&#8217;installation de GeoServer.</p>
+<p>Les extensions WPS GeOxygene sont implémentées dans un module dédié <strong>geoxygene-wps</strong> et versionnées dans un dépôt différent du noyau de GeOxygene.</p>
+<p>L&#8217;environnement de développement des extensions WPS GeOxygene nécessite :</p>
+<ul class="simple">
+<li>l&#8217;installation du projet GeOxygene.</li>
+<li>l&#8217;installation de GeoServer et de son extension WPS.</li>
+</ul>
+<div class="section" id="installation-de-geoserver-et-de-l-extension-wps">
+<h2>Installation de GeoServer et de l&#8217;extension WPS</h2>
+<p>Suivre les instructions pour l&#8217;installation de</p>
+<ol class="arabic">
+<li><p class="first">GeoServer ici :</p>
+<div class="chemin container">
+<p><a class="reference external" href="http://geoserver.geo-solutions.it/edu/en/install_run/gs_install.html">http://geoserver.geo-solutions.it/edu/en/install_run/gs_install.html</a></p>
+</div>
+</li>
+<li><p class="first">l&#8217;extension WPS de GeoServer ici :</p>
+<div class="chemin container">
+<p><a class="reference external" href="http://geoserver.geo-solutions.it/edu/en/install_run/gs_extensions.html">http://geoserver.geo-solutions.it/edu/en/install_run/gs_extensions.html</a></p>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="importer-le-projet-geoxygene-wps">
+<h2>Importer le projet geoxygene-wps</h2>
+<p>Suivre les mêmes étapes que l&#8217;import du projet GeOxygene.</p>
+<p>En revanche, les URLS du serveur SVN sont à choisir parmi celles-ci.
+Si vous êtes enregistré sur <a class="reference external" href="http://sourceforge.net/">Sourceforge</a>  et si vous avez des droits en tant que développeur
+sur le projet geoxygene :</p>
+<div class="svnurl container">
+<a class="reference external" href="https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene-extension/geoxygene-wps/">https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene-extension/geoxygene-wps/</a></div>
+<p>Sinon :</p>
+<div class="svnurl container">
+<a class="reference external" href="http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene-extension/geoxygene-wps/">http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene-extension/geoxygene-wps/</a></div>
+</div>
+<div class="section" id="compilation-du-module-geoxygene-wps">
+<h2>Compilation du module geoxygene-wps</h2>
+<ol class="arabic simple">
+<li>Stopper le serveur GeoServer.</li>
+<li>Avant de compiler le module <em>geoxygene-wps</em>, modifier les variables <em>path.geoxygene.noyau</em> et <em>path.geoserver</em> dans le fichier <strong>pom.xml</strong> du module <strong>geoxygene-wps</strong> :</li>
+</ol>
+<div class="highlight-xml"><div class="highlight"><pre><span></span>	<span class="nt">&lt;properties&gt;</span>
+		...
+		<span class="nt">&lt;path.geoxygene.noyau&gt;</span>D:\SVN\geoxygene\opensource\geoxygene<span class="nt">&lt;/path.geoxygene.noyau&gt;</span>
+		<span class="nt">&lt;path.geoserver&gt;</span>D:\MesProgrammes\GeoServer\GeoServer-2.4.1\webapps\geoserver\WEB-INF\lib<span class="nt">&lt;/path.geoserver&gt;</span>
+	<span class="nt">&lt;/properties&gt;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>La variable <em>path.geoxygene.noyau</em> doit contenir le chemin d&#8217;installation du noyau de GeOxygene</li>
+<li>La variable <em>path.geoserver</em> doit contenir le chemin d&#8217;installation de GeoServer.</li>
+</ul>
+<ol class="arabic" start="3">
+<li><p class="first">Puis compiler le module <em>geoxygene</em> si ce n&#8217;est pas déjà fait, afin de créer tous les jars nécessaires.</p>
+<div class="chemin container">
+<p>mvn install</p>
+</div>
+</li>
+<li><p class="first">Compiler ensuite le module <em>geoxygene-wps</em> en spécifiant le profil <strong>geoserver</strong> comme présenté ici :</p>
+</li>
+</ol>
+<div class="centerside container">
+<div class="figure" id="id1">
+<a class="reference internal image-reference" href="../../_images/MavenGeoxWps.png"><img alt="../../_images/MavenGeoxWps.png" src="../../_images/MavenGeoxWps.png" style="width: 700px;" /></a>
+<p class="caption"><span class="caption-text">Figure 1 : GeOxygene-Wps Compile</span></p>
+</div>
+</div>
+<ol class="arabic simple" start="5">
+<li>Lancer GeoServer. Les services GeOxygene sont prêts !</li>
+</ol>
+</div>
+<div class="section" id="tester-les-services-geoxygene-wps-dans-geoserver">
+<h2>Tester les services GeOxygene WPS dans GeoServer</h2>
+<p>L&#8217;interface web de GeoServer permet, grâce au <strong>Demo Builder</strong>, de lancer très facilement des requêtes aux WPS services.</p>
+<ol class="arabic">
+<li><p class="first">Aller via votre navigateur favori, sur la page du <em>Demo Builder</em> :</p>
+<div class="chemin container">
+<p><a class="reference external" href="http://localhost:8083/geoserver/web/?wicket:bookmarkablePage=:org.geoserver.wps.web.WPSRequestBuilder">http://localhost:8083/geoserver/web/?wicket:bookmarkablePage=:org.geoserver.wps.web.WPSRequestBuilder</a>.</p>
+</div>
+<p>Cette page est aussi accessible en passant par les liens :</p>
+<div class="chemin container">
+<p>Demos &gt; WPS Request Builder</p>
+</div>
+<div class="centerside container">
+<div class="figure" id="id2">
+<a class="reference internal image-reference" href="../../_images/GeoServerDemoBuilder.png"><img alt="../../_images/GeoServerDemoBuilder.png" src="../../_images/GeoServerDemoBuilder.png" style="width: 800px;" /></a>
+<p class="caption"><span class="caption-text">Figure 2 : Page d&#8217;accueil du GeoServer Demo Builder</span></p>
+</div>
+</div>
+</li>
+<li><p class="first">Les WPS GeOxygene sont accessibles !</p>
+<div class="centerside container">
+<div class="figure" id="id3">
+<a class="reference internal image-reference" href="../../_images/GeOxygeneProcess.png"><img alt="../../_images/GeOxygeneProcess.png" src="../../_images/GeOxygeneProcess.png" style="width: 600px;" /></a>
+<p class="caption"><span class="caption-text">Figure 3 : WPS GeOxygene</span></p>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="maven.html" title="GeOxygene Library for Maven Developer"
+                 >next</a></li>
+            <li class="right" >
+              <a href="openjump.html" title="Installation des plugins OpenJump GeOxygene"
+                 >previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" >Developer Guide</a> &raquo;</li>
+        <li><a href="#">Installation de l&#8217;extension WPS GeOxygene</a></li>
+      </ul>
+    </div> 
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Laboratoire COGIT, IGN.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

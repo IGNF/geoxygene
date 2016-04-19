@@ -1,0 +1,774 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installation des outils pour GeOxygene &mdash; GeOxygene</title>
+    
+    <link rel="stylesheet" href="../../_static/geoxygene.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="GeOxygene" href="../../index.html" />
+    <link rel="up" title="Developer Guide" href="index.html" />
+    <link rel="next" title="Installation de GeOxygene" href="geoxygene.html" />
+    <link rel="prev" title="Developer Guide" href="index.html" /> 
+  </head>
+  <body role="document">
+
+    <div class="header">
+        <div class="wrap">
+            <div id="logo"><a href="http://oxygene-project.sourceforge.net/">GeOxygene</a></div>
+            <h1 id="logo_cogit"><a href="http://recherche.ign.fr/labos/cogit/">COGIT</a></h1>
+            <h1 id="logo_ign" alt="Institut National de l'Information Géographique et Forestière">
+                <a href="http://www.ign.fr" alt="Institut National de l'Information Géographique et Forestière">IGN</a>
+            </h1>
+            <!-- <h1 id="logo_sourceforge"><a href="http://sourceforge.net/projects/oxygene-project/">Sourceforge</a></h1> -->
+            
+            <!-- <div class='top-xleft'><span>Last Published :  | Version :1.6</span></div> -->
+            
+            <ul id="top-nav">
+                <li class="first"><a href="/community/index.html">About</a></li>
+                <li><a href="/download/index.html">Download</a></li>
+                <li><a href="/documentation/index.html">Documentation</a></li>
+            </ul>
+            
+        </div>
+    </div>
+
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="geoxygene.html" title="Installation de GeOxygene"
+                 accesskey="N">next</a></li>
+            <li class="right" >
+              <a href="index.html" title="Developer Guide"
+                 accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Developer Guide</a> &raquo;</li>
+        <li><a href="#">Installation des outils pour GeOxygene</a></li>
+      </ul>
+    </div> 
+
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+	
+	<h4>Navigation</h4><ul style='list-style: none;padding-left:4px;'>
+	<li><a href="https://sourceforge.net/p/oxygene-project">
+	   Sourceforge Home
+	   <span style="padding-left:4px;"><img src="/_static/img/sourceforge.png" /></span>
+	</a></li>
+	<li><a href="http://oxygene-project.sourceforge.net/apidocs/index.html">
+	   Online javadoc
+	</a></li>
+	</ul>
+	
+	<h4>Table Of Contents</h4>
+    <ul>
+<li><a class="reference internal" href="#">Installation des outils pour GeOxygene</a><ul>
+<li><a class="reference internal" href="#java">JAVA</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#certificate">Certificate</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#eclipse-installation">Eclipse installation</a><ul>
+<li><a class="reference internal" href="#id1">Installation</a></li>
+<li><a class="reference internal" href="#eclipse-preferences">Eclipse preferences</a><ul>
+<li><a class="reference internal" href="#jdk">JDK</a></li>
+<li><a class="reference internal" href="#proxy">Proxy</a></li>
+<li><a class="reference internal" href="#encodage">Encodage</a></li>
+<li><a class="reference internal" href="#code-formatting">Code formatting</a></li>
+<li><a class="reference internal" href="#text-editors">Text editors</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#eclipse-plugins">Eclipse Plugins</a><ul>
+<li><a class="reference internal" href="#plugin-subclipse">Plugin Subclipse</a></li>
+<li><a class="reference internal" href="#plugin-m2e">Plugin M2E</a></li>
+<li><a class="reference internal" href="#connector-subclipse-for-maven">Connector Subclipse for Maven</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#maven-preferences">Maven preferences</a><ul>
+<li><a class="reference internal" href="#eclipse-preferences-for-maven">Eclipse Preferences for Maven</a></li>
+<li><a class="reference internal" href="#settings">Settings</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Developer Guide</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="geoxygene.html"
+                        title="next chapter">Installation de GeOxygene</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation/developer/install.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+    <form class="navbar-search pull-right" style="margin-bottom:-3px;" action="../../search.html" method="get">
+        <input type="text" name="q" placeholder="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+    
+    <!-- div>
+        <script type="text/javascript" src="http://www.ohloh.net/p/40483/widgets/project_thin_badge.js"></script>
+    </div -->
+    
+
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="installation-des-outils-pour-geoxygene">
+<h1>Installation des outils pour GeOxygene</h1>
+<p>Cette page a pour objectif de guider le développeur dans son installation de la plateforme de développement de GeOxygene.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>A compter de ce jour, GeOxygene passe en Java 1.7, la version java 1.8 n&#8217;a pas encore été testée ni approuvée.</p>
+<p>Eclipse Luna est recommandé avec les plugins subclipse (1.10.8) et m2 (1.5.0)</p>
+<p class="last"><strong>Attention</strong> : le connector subclipse pour Maven doit être installé à la main comme indiqué plus bas et non pas via le marketplace</p>
+</div>
+<div class="section" id="java">
+<h2>JAVA</h2>
+<p>GeOxygene est un projet Open Source écrit en JAVA, il faut donc l&#8217;installation d&#8217;un <strong>JDK</strong>.</p>
+<div class="section" id="installation">
+<h3>Installation</h3>
+<ol class="arabic">
+<li><p class="first">Télécharger cet environnement sur le site de Sun à l&#8217;adresse suivante :</p>
+<p><a class="reference external" href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">http://www.oracle.com/technetwork/java/javase/downloads/index.html</a></p>
+</li>
+<li><p class="first">Cliquer sur l&#8217;exécutable et accepter l&#8217;accord de licence. Par défaut l&#8217;installation s&#8217;est faites dans :</p>
+<div class="chemin container">
+<p>C:\Program Files\Java\jdk1.7.0\</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="certificate">
+<h3>Certificate</h3>
+<p>Il faut définir certaines propriétés afin de pouvoir télécharger les librairies java depuis un serveur HTTPS.</p>
+<p>La référence de cette approche est détaillée ici : <a class="reference external" href="http://maven.apache.org/guides/mini/guide-repository-ssl.html">http://maven.apache.org/guides/mini/guide-repository-ssl.html</a>.</p>
+<ol class="arabic simple">
+<li>Obtention du certificat</li>
+</ol>
+<p>Télécharger le certificat depuis votre navigateur comme ceci :</p>
+<div class="twocol container">
+<div class="leftside container">
+<p>1.1 Ouvrir votre navigateur et aller sur la page :</p>
+<blockquote>
+<div><div class="svnurl container">
+<a class="reference external" href="https://forge-cogit.ign.fr/nexus/#welcome">https://forge-cogit.ign.fr/nexus/#welcome</a></div>
+</div></blockquote>
+<p>1.2 Dans la barre de navigation, cliquer sur le cadenas</p>
+<p>1.3 Cliquer sur &#8220;More informations&#8221;</p>
+<p>1.4 Cliquer sur &#8220;Display certificate&#8221;</p>
+<p>1.5 Cliquer sur &#8220;détails&#8221;</p>
+<p>1.6 Cliquer sur &#8220;Export&#8221;</p>
+<dl class="docutils">
+<dt>1.7 Sauvegarder votre certificat sur votre disque dur.</dt>
+<dd>Par exemple : <strong>E:\certificat\forge-cogit.crt</strong></dd>
+</dl>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<ul class="last simple">
+<li>Le nom du fichier doit être forge-cogit.crt (et non pas forge-cogit.ign.fr.crt)</li>
+<li>Sous Linux, définissez le chemin en absolu (ne pas utiliser ~/certificat/forge-cogit.crt)</li>
+</ul>
+</div>
+</div>
+<div class="rightside container">
+<div class="centerside container">
+<div class="figure" id="id2">
+<a class="reference internal image-reference" href="../../_images/CertificatJava.png"><img alt="../../_images/CertificatJava.png" src="../../_images/CertificatJava.png" style="width: 400px;" /></a>
+<p class="caption"><span class="caption-text">Figure 1 : Téléchargement du certificat</span></p>
+</div>
+</div>
+</div>
+</div>
+<ol class="arabic" start="2">
+<li><p class="first">La ligne de commande suivante va importer le certificat d&#8217;autorité dans un fichier trust.jks.</p>
+<div class="chemin container">
+<p>keytool -v -alias mavensrv -import -file E:\certificat\forge-cogit.crt -keystore trust.jks</p>
+</div>
+<div class="centerside container">
+<div class="figure" id="id3">
+<a class="reference internal image-reference" href="../../_images/ConfigurerCertificat.png"><img alt="../../_images/ConfigurerCertificat.png" src="../../_images/ConfigurerCertificat.png" style="width: 750px;" /></a>
+<p class="caption"><span class="caption-text">Figure 2 : Importer le certificat dans un trust store</span></p>
+</div>
+</div>
+</li>
+<li><p class="first">Saisir un mot de passe, par exemple &#8220;leschiensaboient&#8221;</p>
+</li>
+<li><p class="first">Accepter le certificat</p>
+</li>
+</ol>
+<blockquote>
+<div><div class="centerside container">
+<div class="figure" id="id4">
+<a class="reference internal image-reference" href="../../_images/AccepterCertificat.png"><img alt="../../_images/AccepterCertificat.png" src="../../_images/AccepterCertificat.png" style="width: 360px;" /></a>
+<p class="caption"><span class="caption-text">Figure 3 : Accepter le certificat</span></p>
+</div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="5">
+<li>Les variables d&#8217;environnement vont être définies plus tard (Eclipse preferences &gt;&gt; JDK).</li>
+</ol>
+</div>
+</div>
+<div class="section" id="eclipse-installation">
+<h2>Eclipse installation</h2>
+<p>L&#8217;environnement de développement utilisé est celui d&#8217;<a class="reference external" href="http://www.eclipse.org/">Eclipse</a>, éditeur très largement utilisé
+aujourd&#8217;hui pour les développements JAVA.</p>
+<div class="section" id="id1">
+<h3>Installation</h3>
+<ul class="simple">
+<li>Vous pouvez télécharger l&#8217;avant-dernière version d&#8217;Eclipse, Kepler(4-3), directement à partir des liens ci-dessous :</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="49%" />
+<col width="51%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference external" href="https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/luna/R/eclipse-standard-luna-R-win32.zip">Windows 32-bit</a></td>
+<td><a class="reference external" href="https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/luna/R/eclipse-standard-luna-R-win32-x86_64.zip">Windows 64-bit</a></td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/luna/R/eclipse-standard-luna-R-macosx-cocoa.tar.gz">Mac OS X(Cocoa 32)</a></td>
+<td><a class="reference external" href="https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/luna/R/eclipse-standard-luna-R-macosx-cocoa-x86_64.tar.gz">Mac OS X(Cocoa 64)</a></td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/luna/R/eclipse-standard-luna-R-linux-gtk.tar.gz">Linux 32-bit</a></td>
+<td><a class="reference external" href="https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/luna/R/eclipse-standard-luna-R-linux-gtk-x86_64.tar.gz">Linux 64-bit</a></td>
+</tr>
+</tbody>
+</table>
+<p>(Attention la dernière version d&#8217;Eclipse Luna (4-4) pose des difficultés dans la gestion des certifcats java).</p>
+<ul>
+<li><p class="first">Décompresser le fichier téléchargé (Eclipse ne fournit pas d&#8217;installeur, juste un répertoire à dézipper).</p>
+</li>
+<li><p class="first">Lancer Eclipse :</p>
+<blockquote>
+<div><div class="chemin container">
+<p><strong>Windows</strong> : eclipse.exe</p>
+<p><strong>Linux</strong> : ./eclipse</p>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">Lors du premier lancement, une boite de dialogue vous demandera de sélectionner le répertoire racine de vos projets Eclipse.
+Soit vous sélectionnez celui proposé, auquel cas il sera créé ou, vous pouvez en choisir un personnalisé.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="eclipse-preferences">
+<h3>Eclipse preferences</h3>
+<div class="section" id="jdk">
+<h4>JDK</h4>
+<ul class="simple">
+<li>Configurer Eclipse pour qu&#8217;il exécute les programmes java avec un jdk et non pas un jre :</li>
+</ul>
+<div class="centerside container">
+<div class="figure" id="id5">
+<a class="reference internal image-reference" href="../../_images/JavaConfiguration.png"><img alt="../../_images/JavaConfiguration.png" src="../../_images/JavaConfiguration.png" style="width: 600px;" /></a>
+<p class="caption"><span class="caption-text">Figure 4 : Java configuration in Eclipse</span></p>
+</div>
+</div>
+<ul class="simple">
+<li>Définir les variables d&#8217;environnement permettant de télécharger les librairies java depuis un serveur https.</li>
+</ul>
+<p>Toujours dans :</p>
+<div class="chemin container">
+Window &gt;&gt; Preferences &gt;&gt; Java &gt;&gt; Installed JRE &gt;&gt;</div>
+<p>Sélectionner le JDK utilisé par défaut et cliquer sur <strong>Edit</strong>. Ajouter la ligne suivante dans <strong>Default VM arguments</strong> en spécifiant bien le répertoire
+où vous avez créé le fichier trust.jks et en remplaçant <em>leschiensaboient</em> par votre mot de passe.</p>
+<blockquote>
+<div><div class="chemin container">
+-Djavax.net.ssl.trustStore=E:\certificat\trust.jks -Djavax.net.ssl.keyStorePassword=leschiensaboient</div>
+<div class="centerside container">
+<div class="figure" id="id6">
+<a class="reference internal image-reference" href="../../_images/CertificatVariableEnvironnement.png"><img alt="../../_images/CertificatVariableEnvironnement.png" src="../../_images/CertificatVariableEnvironnement.png" style="width: 900px;" /></a>
+<p class="caption"><span class="caption-text">Figure 5 : Variables d&#8217;environnement</span></p>
+</div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="proxy">
+<h4>Proxy</h4>
+<p>Pour installer des mises à jour, de nouveaux plugins ou des extensions, il faut qu&#8217;Eclipse puisse accèder
+à internet pour pouvoir les télécharger.  Si vous êtes derrière un proxy, il vous faut configurer Eclipse afin qu&#8217;il en tienne compte.</p>
+<p>Pour ce faire, accéder au menu :</p>
+<div class="chemin container">
+Window &gt;&gt; Preferences &gt;&gt; General &gt;&gt; Network Connection</div>
+<p>Vous pouvez alors séléctionner <strong>Manual</strong> comme <strong>Active Provider</strong></p>
+<div class="centerside container">
+<div class="figure" id="id7">
+<a class="reference internal image-reference" href="../../_images/proxy3.png"><img alt="../../_images/proxy3.png" src="../../_images/proxy3.png" style="width: 600px;" /></a>
+<p class="caption"><span class="caption-text">Figure 6 : Eclipse - Network connections</span></p>
+</div>
+</div>
+<p>Selectionner &#8220;HTTP&#8221; dans la liste des entrées et cliquer sur le bouton &#8220;Edit&#8221;.</p>
+<p>Entrer les coordonnées de votre proxy.
+Pour l&#8217;IGN par exemple, il s&#8217;agit de <strong>proxy.ign.fr</strong> avec le port <strong>3128</strong>.
+Ne remplisser pas les champs d&#8217;authentification.</p>
+<div class="centerside container">
+<div class="figure" id="id8">
+<img alt="../../_images/proxy1.png" src="../../_images/proxy1.png" />
+<p class="caption"><span class="caption-text">Figure 7 : Edit proxy entry</span></p>
+</div>
+</div>
+</div>
+<div class="section" id="encodage">
+<h4>Encodage</h4>
+<p>Tous les modules de GeOxygene doivent être encodés en UTF-8.
+Pour ce faire, dans Eclipse, aller dans :</p>
+<div class="chemin container">
+Preferences &gt;&gt; Workspace &gt;&gt; Text file encoding &gt;&gt; Other</div>
+<p>et choisir UTF-8.</p>
+<div class="centerside container">
+<div class="figure" id="id9">
+<a class="reference internal image-reference" href="../../_images/encodage.png"><img alt="../../_images/encodage.png" src="../../_images/encodage.png" style="width: 450px;" /></a>
+<p class="caption"><span class="caption-text">Figure 8 : Eclipse - Encodage</span></p>
+</div>
+</div>
+</div>
+<div class="section" id="code-formatting">
+<h4>Code formatting</h4>
+<p>Parce qu&#8217;on passe plus de temps à lire du code qu’à en écrire, il faut configurer dans Eclipse la convention de programmation adoptée dans GeOxygene.
+Elle s&#8217;inspire avant tout de la convention de programmation recommandée pour tous les développements JAVA.
+Cette norme est dérivée de celle proposée par SUN à l’adresse :</p>
+<ol class="arabic simple">
+<li>Télécharger la norme du COGIT :</li>
+</ol>
+<div class="svnurl container">
+<a class="reference external" href="http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/src/main/resources/java_cogit_formatting_conventions_v1.xml">http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/src/main/resources/java_cogit_formatting_conventions_v1.xml</a></div>
+<div class="twocol container">
+<div class="leftside container">
+<ol class="arabic" start="2">
+<li><p class="first">Aller dans :</p>
+<div class="chemin container">
+<dl class="docutils">
+<dt>Preferences &gt;&gt; Java</dt>
+<dd><p class="first last">&gt;&gt; Code Style &gt;&gt; Formatter</p>
+</dd>
+</dl>
+</div>
+<p>et cliquer sur &#8220;Import&#8221; :</p>
+<div class="centerside container">
+<div class="figure" id="id10">
+<a class="reference internal image-reference" href="../../_images/ConfigEclipseConventionCodage_1.png"><img alt="../../_images/ConfigEclipseConventionCodage_1.png" src="../../_images/ConfigEclipseConventionCodage_1.png" style="width: 400px;" /></a>
+<p class="caption"><span class="caption-text">Figure 9 : Convention de codage - Import</span></p>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="rightside container">
+<ol class="arabic" start="3">
+<li><dl class="first docutils">
+<dt>Importer ce fichier et choisissez comme &#8220;Active profile&#8221; :</dt>
+<dd><p class="first last">&#8220;Java COGIT Formatting Conventions v1&#8221;</p>
+</dd>
+</dl>
+</li>
+</ol>
+<div class="centerside container">
+<div class="figure" id="id11">
+<a class="reference internal image-reference" href="../../_images/ConfigEclipseConventionCodage_2.png"><img alt="../../_images/ConfigEclipseConventionCodage_2.png" src="../../_images/ConfigEclipseConventionCodage_2.png" style="width: 500px;" /></a>
+<p class="caption"><span class="caption-text">Figure 10 : Convention de codage - Active profile</span></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="text-editors">
+<h4>Text editors</h4>
+<div class="twocol container">
+<div class="leftside container">
+<ol class="arabic simple">
+<li>Aller dans :</li>
+</ol>
+<div class="chemin container">
+Préférences &gt;&gt; General &gt;&gt; Editors &gt;&gt; Text Editors</div>
+<ol class="arabic simple" start="2">
+<li>Cocher :<ul>
+<li>Insert spaces for tabs</li>
+<li>Check Show line numbers</li>
+</ul>
+</li>
+</ol>
+</div>
+<div class="rightside container">
+<div class="centerside container">
+<div class="figure" id="id12">
+<a class="reference internal image-reference" href="../../_images/PreferencesTextEditor.png"><img alt="../../_images/PreferencesTextEditor.png" src="../../_images/PreferencesTextEditor.png" style="width: 450px;" /></a>
+<p class="caption"><span class="caption-text">Figure 11 : Eclipse preferences - Text editors</span></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="eclipse-plugins">
+<h2>Eclipse Plugins</h2>
+<p>Maintenant, Eclipse est prêt pour l&#8217;installation des plugins nécessaires à GeOxygene.
+Vous aurez besoin des plugins Subversion (subclipse) et Maven (m2eclipse).</p>
+<div class="section" id="plugin-subclipse">
+<h3>Plugin Subclipse</h3>
+<p>Subclipse est un plugin Eclipse permettant d&#8217;utiliser Subversion (SVN) directement depuis votre éditeur préféré.</p>
+<div class="twocol container">
+<div class="leftside container">
+<p><strong>Etape 1</strong> : Cliquer dans le menu d&#8217;Eclipse :</p>
+<blockquote>
+<div><div class="chemin container">
+Help &gt;&gt; Eclipse Marketplace ...</div>
+<ol class="arabic simple">
+<li>dans la zone de recherche, saisir <strong>subclipse</strong></li>
+<li>clicker sur <strong>go</strong> afin de rechercher le plugin</li>
+<li>dans la liste des plugins, clicker sur <strong>install</strong> du plugin Subclipse 1.10.8</li>
+</ol>
+</div></blockquote>
+</div>
+<div class="rightside container">
+<div class="centerside container">
+<div class="figure" id="id13">
+<a class="reference internal image-reference" href="../../_images/LunaSubclipse.png"><img alt="../../_images/LunaSubclipse.png" src="../../_images/LunaSubclipse.png" style="width: 350px;" /></a>
+<p class="caption"><span class="caption-text">Figure 12 : Subclipse 1.10.8 in Marketplace</span></p>
+</div>
+</div>
+</div>
+</div>
+<div class="twocol container">
+<div class="leftside container">
+<strong>Etape 2</strong> : Confirmer la sélection des composants à installer.</div>
+<div class="rightside container">
+<div class="centerside container">
+<div class="figure" id="id14">
+<a class="reference internal image-reference" href="../../_images/LunaSubclipse_02.png"><img alt="../../_images/LunaSubclipse_02.png" src="../../_images/LunaSubclipse_02.png" style="width: 500px;" /></a>
+<p class="caption"><span class="caption-text">Figure 13 : Confirm Selected Features</span></p>
+</div>
+</div>
+</div>
+</div>
+<div class="twocol container">
+<div class="leftside container">
+<strong>Etape 3</strong> : Accepter les termes de la licence de subeclipse sur la page &#8220;Review Licences&#8221; et cliquer sur &#8220;Finish&#8221; pour commencer l&#8217;installation.</div>
+<div class="rightside container">
+<div class="centerside container">
+<div class="figure" id="id15">
+<a class="reference internal image-reference" href="../../_images/LunaSubclipse_03.png"><img alt="../../_images/LunaSubclipse_03.png" src="../../_images/LunaSubclipse_03.png" style="width: 450px;" /></a>
+<p class="caption"><span class="caption-text">Figure 14 : Review Licenses</span></p>
+</div>
+</div>
+</div>
+</div>
+<div class="twocol container">
+<div class="leftside container">
+<strong>Etape 4</strong> : Vous allez recevoir un message d&#8217;alerte &#8220;Security Warning&#8221; parce que les jars de subeclipse
+ne sont pas signés. Cliquer sur &#8220;OK&#8221; pour continuer l&#8217;installation.</div>
+<div class="rightside container">
+<div class="centerside container">
+<div class="figure" id="id16">
+<a class="reference internal image-reference" href="../../_images/LunaSubclipse_04.png"><img alt="../../_images/LunaSubclipse_04.png" src="../../_images/LunaSubclipse_04.png" style="width: 350px;" /></a>
+<p class="caption"><span class="caption-text">Figure 15 : Security warning</span></p>
+</div>
+</div>
+</div>
+</div>
+<div class="twocol container">
+<div class="leftside container">
+<p><strong>Etape 5</strong> : Une fois l&#8217;installation terminée, préférer &#8220;Restart Now&#8221; dans la prochaine boite de dialogue.</p>
+<p>Le plugin subeclipse sera opérationnel après le redémarrage d&#8217;Eclipse.</p>
+</div>
+<div class="rightside container">
+<div class="centerside container">
+<div class="figure" id="id17">
+<a class="reference internal image-reference" href="../../_images/pluginRestart.png"><img alt="../../_images/pluginRestart.png" src="../../_images/pluginRestart.png" style="width: 350px;" /></a>
+<p class="caption"><span class="caption-text">Figure 16 : Restart</span></p>
+</div>
+</div>
+</div>
+</div>
+<div class="twocol container">
+<div class="leftside container">
+<p><strong>Etape 6</strong> : Une fois le plugin installé, configurer dans Eclipse l&#8217;interface <strong>SVNKit</strong>.
+En effet, celle-ci semble mieux fonctionner que celle par défaut (JavaHL).
+Pour cela, dans le menu d&#8217;Eclipse :</p>
+<div class="chemin container">
+Window &gt;&gt; Preferences &gt;&gt; Team &gt;&gt; SVN</div>
+<p>sélectionner l’interface SVNKit.</p>
+</div>
+<div class="rightside container">
+<div class="centerside container">
+<div class="figure" id="id18">
+<a class="reference internal image-reference" href="../../_images/subeclipseInterface.png"><img alt="../../_images/subeclipseInterface.png" src="../../_images/subeclipseInterface.png" style="width: 450px;" /></a>
+<p class="caption"><span class="caption-text">Figure 17 : SVN interface</span></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="plugin-m2e">
+<h3>Plugin M2E</h3>
+<p>GeOxygene est construit à partir de Maven. Le projet m2eclipse fournit un support afin d&#8217;utiliser les fonctionnalités de Maven
+dans l&#8217;éditeur Eclipse. L&#8217;intégration Maven pour Eclipse est composé d&#8217;un plugin (le core) et de connectors.
+Pour installer GeOxygene il faut le plugin m2e et le connector subclipse.</p>
+<div class="twocol container">
+<div class="leftside container">
+<p><strong>Etape 1</strong> : Cliquer dans le menu d&#8217;Eclipse :</p>
+<blockquote>
+<div><div class="chemin container">
+Help &gt;&gt; Eclipse Marketplace ...</div>
+<ol class="arabic simple">
+<li>dans la zone de recherche, saisir <strong>maven</strong></li>
+<li>clicker sur <strong>go</strong> afin de rechercher le plugin</li>
+<li>dans la liste des plugins, clicker sur <strong>install</strong> du plugin Maven Integration for Eclipse(Luna) 1.5.0</li>
+</ol>
+</div></blockquote>
+</div>
+<div class="rightside container">
+<div class="centerside container">
+<div class="figure" id="id19">
+<a class="reference internal image-reference" href="../../_images/LunaM2Eclipse.png"><img alt="../../_images/LunaM2Eclipse.png" src="../../_images/LunaM2Eclipse.png" style="width: 350px;" /></a>
+<p class="caption"><span class="caption-text">Figure 18 : Maven Integration for Eclipse(Luna) 1.5.0</span></p>
+</div>
+</div>
+</div>
+</div>
+<div class="twocol container">
+<div class="leftside container">
+<strong>Etape 2</strong> : Confirmer la sélection de l&#8217;unique composant &#8220;Maven Integration for Eclipse&#8221; à installer.</div>
+<div class="rightside container">
+<div class="centerside container">
+<div class="figure" id="id20">
+<a class="reference internal image-reference" href="../../_images/LunaM2Eclipse_02.png"><img alt="../../_images/LunaM2Eclipse_02.png" src="../../_images/LunaM2Eclipse_02.png" style="width: 450px;" /></a>
+<p class="caption"><span class="caption-text">Figure 19 : Confirm Selected Features</span></p>
+</div>
+</div>
+</div>
+</div>
+<div class="twocol container">
+<div class="leftside container">
+<strong>Etape 3</strong> : Accepter les termes de la licence de m2eclipse sur la page &#8220;Review Licences&#8221; et cliquer sur &#8220;Finish&#8221; pour commencer l&#8217;installation.</div>
+<div class="rightside container">
+<div class="centerside container">
+<div class="figure" id="id21">
+<a class="reference internal image-reference" href="../../_images/LunaM2Eclipse_03.png"><img alt="../../_images/LunaM2Eclipse_03.png" src="../../_images/LunaM2Eclipse_03.png" style="width: 450px;" /></a>
+<p class="caption"><span class="caption-text">Figure 20 : Review Licenses</span></p>
+</div>
+</div>
+</div>
+</div>
+<div class="twocol container">
+<div class="leftside container">
+<p><strong>Etape 4</strong> : Une fois l&#8217;installation terminée, préférer &#8220;Restart Now&#8221; dans la prochaine boite de dialogue.</p>
+<p>Le plugin m2eclipse sera opérationnel après le redémarrage d&#8217;Eclipse.</p>
+</div>
+<div class="rightside container">
+<div class="centerside container">
+<div class="figure" id="id22">
+<a class="reference internal image-reference" href="../../_images/pluginRestart.png"><img alt="../../_images/pluginRestart.png" src="../../_images/pluginRestart.png" style="width: 350px;" /></a>
+<p class="caption"><span class="caption-text">Figure 21 : Restart</span></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="connector-subclipse-for-maven">
+<h3>Connector Subclipse for Maven</h3>
+<p>Il faut installer le connector subclipse pour Maven.</p>
+<p><strong>Attention</strong> : le connector n&#8217;est pas à jour dans le catalogue du Marketplace d&#8217;Eclipse.</p>
+<ol class="arabic">
+<li><p class="first">Télécharger le fichier suivant et décompresser-le dans un répertoire sur votre disque local.</p>
+<div class="chemin container">
+<p><a class="reference external" href="http://oxygene-project.sourceforge.net/m2e-subclipse/org.sonatype.m2e.subclipse.feature-0.13.0-SNAPSHOT-site.zip">http://oxygene-project.sourceforge.net/m2e-subclipse/org.sonatype.m2e.subclipse.feature-0.13.0-SNAPSHOT-site.zip</a></p>
+</div>
+</li>
+<li><p class="first">Dans Eclipse :</p>
+<div class="twocol container">
+<div class="leftside container">
+<p>Dans le menu d&#8217;Eclipse, aller à :</p>
+<blockquote>
+<div><div class="chemin container">
+<p>Help &gt;&gt; Install New Software</p>
+</div>
+</div></blockquote>
+</div>
+<div class="rightside container">
+<div class="centerside container">
+<div class="figure" id="id23">
+<a class="reference internal image-reference" href="../../_images/pluginInstall.png"><img alt="../../_images/pluginInstall.png" src="../../_images/pluginInstall.png" style="width: 350px;" /></a>
+<p class="caption"><span class="caption-text">Figure 22 : Install new Software</span></p>
+</div>
+</div>
+</div>
+</div>
+<div class="twocol container">
+<div class="leftside container">
+<p>Cliquer sur <strong>Add ...</strong></p>
+</div>
+<div class="rightside container">
+<div class="centerside container">
+<div class="figure" id="id24">
+<a class="reference internal image-reference" href="../../_images/pluginNewUrl.png"><img alt="../../_images/pluginNewUrl.png" src="../../_images/pluginNewUrl.png" style="width: 500px;" /></a>
+<p class="caption"><span class="caption-text">Figure 23 : Add new update site</span></p>
+</div>
+</div>
+</div>
+</div>
+<div class="twocol container">
+<div class="leftside container">
+<p>Cliquer dans la boite de dialogue sur <strong>Local ...</strong> et choisir le répertoire où a été dézippé le fichier téléchargé précédement.</p>
+</div>
+<div class="rightside container">
+<div class="centerside container">
+<div class="figure" id="id25">
+<a class="reference internal image-reference" href="../../_images/ConnectorM2eSubclipse.png"><img alt="../../_images/ConnectorM2eSubclipse.png" src="../../_images/ConnectorM2eSubclipse.png" style="width: 500px;" /></a>
+<p class="caption"><span class="caption-text">Figure 24 : Add new local site</span></p>
+</div>
+</div>
+</div>
+</div>
+<div class="centerside container">
+<p>Cliquer sur <strong>OK</strong>, cocher le composant à installer et finir l&#8217;installation comme habituellement (securité, licenses, ...).</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="section" id="maven-preferences">
+<h2>Maven preferences</h2>
+<div class="section" id="eclipse-preferences-for-maven">
+<h3>Eclipse Preferences for Maven</h3>
+<p>Afin de voir la javadoc ou les sources des dépendances de vos projets, sélectionner :</p>
+<ul class="simple">
+<li>Download Artifact Sources</li>
+<li>Download Artifact Javadoc</li>
+</ul>
+<div class="centerside container">
+<div class="figure" id="id26">
+<a class="reference internal image-reference" href="../../_images/MavenConfiguration.png"><img alt="../../_images/MavenConfiguration.png" src="../../_images/MavenConfiguration.png" style="width: 500px;" /></a>
+<p class="caption"><span class="caption-text">Figure 29 : Eclipse preferences pour Maven</span></p>
+</div>
+</div>
+<p>Tout est en place pour l&#8217;installation de GeOxygene.</p>
+</div>
+<div class="section" id="settings">
+<h3>Settings</h3>
+<p>Si vous êtes derrière un proxy, la dernière étape consiste à configurer Maven pour utiliser le proxy.
+Pour ce, il faut ajouter un fichier <strong>settings.xml</strong> à la racine de Maven (même niveau que le repository maven).
+Ce répertoire est situé à l&#8217;endroit suivant :</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="76%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">PLATFORM</th>
+<th class="head">LOCAL REPOSITORY</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Windows XP:</td>
+<td><code class="file docutils literal"><span class="pre">C:\Documents</span> <span class="pre">and</span> <span class="pre">Settings\Augusta\.m2\</span></code></td>
+</tr>
+<tr class="row-odd"><td>Windows:</td>
+<td><code class="file docutils literal"><span class="pre">C:\Users\Augusta\.m2\</span></code></td>
+</tr>
+<tr class="row-even"><td>Linux and Mac:</td>
+<td><code class="file docutils literal"><span class="pre">~/.m2/</span></code></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Voici un exemplaire d&#8217;un fichier settings.xml que vous pouvez utiliser à l&#8217;IGN :</p>
+<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="nt">&lt;settings</span> <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/SETTINGS/1.0.0&quot;</span>
+          <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+          <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://maven.apache.org/SETTINGS/1.0.0</span>
+<span class="s">                              http://maven.apache.org/xsd/settings-1.0.0.xsd&quot;</span><span class="nt">&gt;</span>
+    
+    <span class="nt">&lt;interactiveMode&gt;</span>true<span class="nt">&lt;/interactiveMode&gt;</span>
+    <span class="nt">&lt;usePluginRegistry&gt;</span>false<span class="nt">&lt;/usePluginRegistry&gt;</span>
+    <span class="nt">&lt;offline&gt;</span>false<span class="nt">&lt;/offline&gt;</span>
+    
+    <span class="nt">&lt;proxies&gt;</span>
+        <span class="nt">&lt;proxy&gt;</span>
+            <span class="nt">&lt;active&gt;</span>true<span class="nt">&lt;/active&gt;</span>
+            <span class="nt">&lt;port&gt;</span>3128<span class="nt">&lt;/port&gt;</span>
+            <span class="nt">&lt;host&gt;</span>proxy.ign.fr<span class="nt">&lt;/host&gt;</span>
+            <span class="nt">&lt;nonProxyHosts&gt;</span>localhost<span class="nt">&lt;/nonProxyHosts&gt;</span>
+        <span class="nt">&lt;/proxy&gt;</span>
+    <span class="nt">&lt;/proxies&gt;</span>
+    
+    <span class="nt">&lt;profiles&gt;</span>
+        <span class="nt">&lt;profile&gt;</span>
+            <span class="nt">&lt;id&gt;</span>cogit<span class="nt">&lt;/id&gt;</span>
+            <span class="nt">&lt;activation&gt;</span>
+                <span class="nt">&lt;activeByDefault&gt;</span>true<span class="nt">&lt;/activeByDefault&gt;</span>
+            <span class="nt">&lt;/activation&gt;</span>
+        <span class="nt">&lt;/profile&gt;</span>
+    <span class="nt">&lt;/profiles&gt;</span>
+    
+<span class="nt">&lt;/settings&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="geoxygene.html" title="Installation de GeOxygene"
+                 >next</a></li>
+            <li class="right" >
+              <a href="index.html" title="Developer Guide"
+                 >previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" >Developer Guide</a> &raquo;</li>
+        <li><a href="#">Installation des outils pour GeOxygene</a></li>
+      </ul>
+    </div> 
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Laboratoire COGIT, IGN.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

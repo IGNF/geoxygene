@@ -1,0 +1,258 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Appariement de surface &mdash; GeOxygene</title>
+    
+    <link rel="stylesheet" href="../../_static/geoxygene.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="GeOxygene" href="../../index.html" />
+    <link rel="up" title="Appariement de données" href="data-matching.html" />
+    <link rel="next" title="Semiology Tools" href="semiology.html" />
+    <link rel="prev" title="Appariement de réseaux" href="matching-multiscla-network.html" /> 
+  </head>
+  <body role="document">
+
+    <div class="header">
+        <div class="wrap">
+            <div id="logo"><a href="http://oxygene-project.sourceforge.net/">GeOxygene</a></div>
+            <h1 id="logo_cogit"><a href="http://recherche.ign.fr/labos/cogit/">COGIT</a></h1>
+            <h1 id="logo_ign" alt="Institut National de l'Information Géographique et Forestière">
+                <a href="http://www.ign.fr" alt="Institut National de l'Information Géographique et Forestière">IGN</a>
+            </h1>
+            <!-- <h1 id="logo_sourceforge"><a href="http://sourceforge.net/projects/oxygene-project/">Sourceforge</a></h1> -->
+            
+            <!-- <div class='top-xleft'><span>Last Published :  | Version :1.6</span></div> -->
+            
+            <ul id="top-nav">
+                <li class="first"><a href="/community/index.html">About</a></li>
+                <li><a href="/download/index.html">Download</a></li>
+                <li><a href="/documentation/index.html">Documentation</a></li>
+            </ul>
+            
+        </div>
+    </div>
+
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="semiology.html" title="Semiology Tools"
+                 accesskey="N">next</a></li>
+            <li class="right" >
+              <a href="matching-multiscla-network.html" title="Appariement de réseaux"
+                 accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" >Contributions</a> &raquo;</li>
+          <li><a href="data-matching.html" accesskey="U">Appariement de données</a> &raquo;</li>
+        <li><a href="#">Appariement de surface</a></li>
+      </ul>
+    </div> 
+
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+	
+	<h4>Navigation</h4><ul style='list-style: none;padding-left:4px;'>
+	<li><a href="https://sourceforge.net/p/oxygene-project">
+	   Sourceforge Home
+	   <span style="padding-left:4px;"><img src="/_static/img/sourceforge.png" /></span>
+	</a></li>
+	<li><a href="http://oxygene-project.sourceforge.net/apidocs/index.html">
+	   Online javadoc
+	</a></li>
+	</ul>
+	
+	<h4>Table Of Contents</h4>
+    <ul>
+<li><a class="reference internal" href="#">Appariement de surface</a><ul>
+<li><a class="reference internal" href="#lancement-du-processus">Lancement du processus</a></li>
+<li><a class="reference internal" href="#principe-general">Principe général</a></li>
+<li><a class="reference internal" href="#description-du-processus">Description du processus</a></li>
+<li><a class="reference internal" href="#references">Références</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="matching-multiscla-network.html"
+                        title="previous chapter">Appariement de réseaux</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="semiology.html"
+                        title="next chapter">Semiology Tools</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation/application/matching-surface.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+    <form class="navbar-search pull-right" style="margin-bottom:-3px;" action="../../search.html" method="get">
+        <input type="text" name="q" placeholder="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+    
+    <!-- div>
+        <script type="text/javascript" src="http://www.ohloh.net/p/40483/widgets/project_thin_badge.js"></script>
+    </div -->
+    
+
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="appariement-de-surface">
+<h1>Appariement de surface</h1>
+<p>Package concerné : <strong>fr.ign.cogit.geoxygene.contrib.appariement.surfaces</strong></p>
+<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="nt">&lt;properties&gt;</span>
+    <span class="nt">&lt;project.build.sourceEncoding&gt;</span>UTF-8<span class="nt">&lt;/project.build.sourceEncoding&gt;</span>
+    <span class="nt">&lt;geoxygene.version&gt;</span>1.7-SNAPSHOT<span class="nt">&lt;/geoxygene.version&gt;</span>
+<span class="nt">&lt;/properties&gt;</span>
+    
+<span class="nt">&lt;dependencies&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>fr.ign.cogit<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>geoxygene-contrib<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>${geoxygene.version}<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;/dependencies&gt;</span>
+</pre></div>
+</div>
+<div class="section" id="lancement-du-processus">
+<h2>Lancement du processus</h2>
+<p>Le processus se lance par la méthode appariementSurfaces de la classe
+AppariementSurfaces, après avoir fixé les paramètres en créant un objet
+ParametresAppSurfaces.</p>
+</div>
+<div class="section" id="principe-general">
+<h2>Principe général</h2>
+<p>Le processus d’appariement de surfaces a été conçu dans une optique d’évaluation
+de la &#8220;qualité de données&#8221; où une des deux bases à apparier est considérée comme
+une référence, de meilleure qualité que l&#8217;autre. L&#8217;appariement est utilisé comme
+étape préliminaire à la comparaison des objets dans [Bel Hadj Ali 2001]. Les liens
+d&#8217;appariement sont qualifiés plus finement par la suite (e.g. avec des mesures de
+forme des objets), mais ceci n’est pas disponible dans le code présent.</p>
+<p>Ces outils ont été mis au point pour apparier principalement des surfaces isolées
+(e.g. &#8220;bâtiments&#8221;) plus que des partitions ou des surfaces connectées (e.g.
+&#8220;occupation du sol&#8221;), même si des tests relativement fructueux ont été effectués sur
+ce type d&#8217;objets.</p>
+<p>Les principes généraux de l’approche sont les suivants:</p>
+<ul class="simple">
+<li>Apparier des surfaces en comparant les surfaces elles-mêmes plus que les lignes contours.</li>
+<li>Le choix des mesures utilisées s&#8217;appuie sur des principes probabilistes.</li>
+<li>L&#8217;optique générale est 1/ apparier avec des mesures simples (intersections de
+surfaces) puis 2/ qualifier ensuite avec des mesures plus fines (et éventuellement
+rejeter alors l&#8217;appariement), mais cette deuxième étape n’est pas disponible pour
+l’instant. Ceci explique la simplicité des mesures utilisées lors de l&#8217;appariement
+présenté ici.</li>
+<li>Ne tient compte que de la géométrie; les éventuelles relations de connexion entre
+surfaces sont ignorées.</li>
+</ul>
+</div>
+<div class="section" id="description-du-processus">
+<h2>Description du processus</h2>
+<ol class="arabic simple">
+<li>Pré-appariement: Les surfaces des BD1 et BD2 sont associées en faisant des
+comparaisons 1-1 entre les objets des deux jeux de données. Deux objets sont
+associés si ils respectent la mesure d&#8217;association (voir définition des mesures cidessous).</li>
+<li>Regroupement: des liens entre groupes de bâtiments (liens n-m) sont créés à
+partir des liens d&#8217;association (i.e. on identifie les parties connexes du graphe
+reliant les entités grâce au lien d&#8217;association)</li>
+<li>Affinement des liens n-m. Pour 2 groupes G1 et G2 de bâtiments reliés, on
+recherche les meilleurs sous-groupes SG1 et SG2 de G1 et G2 maximisant soit la
+somme Exactitude(SG1,SG2) + Complétude(SG1, SG2), soit minimisant Distance
+surfacique (SG1, SG2) (cette dernière option est conseillée par l&#8217;auteur en cas de
+bases avec des résolutions similaires). Des heuristiques sont proposées par
+l&#8217;auteur pour ne pas tester toutes les configurations possibles.</li>
+<li>Vérification des liens. Ces appariements entre sous-groupes ne sont acceptés
+que si l&#8217;exactitude et la complétude dépassent un certain seuil (ou la distance
+surfacique). Ce seuil est fixé empiriquement par analyse des données dans les
+tests réalisés, de l&#8217;ordre de 0,5 pour l&#8217;exactitude et la complétude, ou 0,6 pour la
+distance surfacique.</li>
+</ol>
+<p>Mesures utilisées</p>
+<p>Soient A et B deux surfaces (chacune connexe ou non) :</p>
+<ul>
+<li><p class="first">Association(A,B) =</p>
+<ul>
+<li><dl class="first docutils">
+<dt>Vrai si Surface(A ∩ B) &gt; min(R1,R2) ;</dt>
+<dd><p class="first last">avec R1 et R2 les résolutions des BDs contenant A et B
+et Surface(A ∩ B) &gt; Surface(A) x 0,2
+et Surface(A ∩ B) &gt; Surface(B) x 0,2</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">Faux sinon</p>
+</li>
+</ul>
+</li>
+<li><p class="first">Distance surfacique = (Surface(A ∪ B) – Surface(A ∩ B)) / Surface(A ∪ B)</p>
+</li>
+<li><p class="first">Exactitude(A,B) = Surface(A ∩ B) / Surface(A)</p>
+</li>
+<li><p class="first">Complétude(A,B) = Surface(A ∩ B) / Surface(B)</p>
+</li>
+</ul>
+</div>
+<div class="section" id="references">
+<h2>Références</h2>
+<ul class="simple">
+<li>[Bel Hadj Ali 2001] :</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="semiology.html" title="Semiology Tools"
+                 >next</a></li>
+            <li class="right" >
+              <a href="matching-multiscla-network.html" title="Appariement de réseaux"
+                 >previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" >Contributions</a> &raquo;</li>
+          <li><a href="data-matching.html" >Appariement de données</a> &raquo;</li>
+        <li><a href="#">Appariement de surface</a></li>
+      </ul>
+    </div> 
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Laboratoire COGIT, IGN.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

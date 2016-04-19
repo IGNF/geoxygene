@@ -1,0 +1,408 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Plugin dans l’interface graphique 2D. &mdash; GeOxygene</title>
+    
+    <link rel="stylesheet" href="../../_static/geoxygene.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="GeOxygene" href="../../index.html" />
+    <link rel="up" title="Tutorial" href="index.html" />
+    <link rel="next" title="Contributions" href="../application/index.html" />
+    <link rel="prev" title="Import et export de données dans GeOxygene" href="import.html" /> 
+  </head>
+  <body role="document">
+
+    <div class="header">
+        <div class="wrap">
+            <div id="logo"><a href="http://oxygene-project.sourceforge.net/">GeOxygene</a></div>
+            <h1 id="logo_cogit"><a href="http://recherche.ign.fr/labos/cogit/">COGIT</a></h1>
+            <h1 id="logo_ign" alt="Institut National de l'Information Géographique et Forestière">
+                <a href="http://www.ign.fr" alt="Institut National de l'Information Géographique et Forestière">IGN</a>
+            </h1>
+            <!-- <h1 id="logo_sourceforge"><a href="http://sourceforge.net/projects/oxygene-project/">Sourceforge</a></h1> -->
+            
+            <!-- <div class='top-xleft'><span>Last Published :  | Version :1.6</span></div> -->
+            
+            <ul id="top-nav">
+                <li class="first"><a href="/community/index.html">About</a></li>
+                <li><a href="/download/index.html">Download</a></li>
+                <li><a href="/documentation/index.html">Documentation</a></li>
+            </ul>
+            
+        </div>
+    </div>
+
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="../application/index.html" title="Contributions"
+                 accesskey="N">next</a></li>
+            <li class="right" >
+              <a href="import.html" title="Import et export de données dans GeOxygene"
+                 accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Tutorial</a> &raquo;</li>
+        <li><a href="#">Plugin dans l&#8217;interface graphique 2D.</a></li>
+      </ul>
+    </div> 
+
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+	
+	<h4>Navigation</h4><ul style='list-style: none;padding-left:4px;'>
+	<li><a href="https://sourceforge.net/p/oxygene-project">
+	   Sourceforge Home
+	   <span style="padding-left:4px;"><img src="/_static/img/sourceforge.png" /></span>
+	</a></li>
+	<li><a href="http://oxygene-project.sourceforge.net/apidocs/index.html">
+	   Online javadoc
+	</a></li>
+	</ul>
+	
+	<h4>Table Of Contents</h4>
+    <ul>
+<li><a class="reference internal" href="#">Plugin dans l&#8217;interface graphique 2D.</a><ul>
+<li><a class="reference internal" href="#plugins-geoxygene">Plugins GeOxygene</a></li>
+<li><a class="reference internal" href="#quickstart">Quickstart</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="import.html"
+                        title="previous chapter">Import et export de données dans GeOxygene</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../application/index.html"
+                        title="next chapter">Contributions</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation/tutorial/plugin.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+    <form class="navbar-search pull-right" style="margin-bottom:-3px;" action="../../search.html" method="get">
+        <input type="text" name="q" placeholder="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+    
+    <!-- div>
+        <script type="text/javascript" src="http://www.ohloh.net/p/40483/widgets/project_thin_badge.js"></script>
+    </div -->
+    
+
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="plugin-dans-l-interface-graphique-2d">
+<span id="plugin"></span><h1>Plugin dans l&#8217;interface graphique 2D.</h1>
+<blockquote>
+<div>... ou comment ajouter de nouvelles fonctionnalités dans l&#8217;interface graphique de GeOxygene.</div></blockquote>
+<p>Les contributions des développeurs ne sont pas incluses dans le module de l&#8217;interface graphique 2D,
+elles sont implémentées à l&#8217;aide de plugins.</p>
+<p>Actuellement les plugins sont regroupés suivant les thèmes de recherche du laboratoire :
+sémiologie, généralisation ou appariement de données.</p>
+<div class="section" id="plugins-geoxygene">
+<h2>Plugins GeOxygene</h2>
+<p>Il existe deux types de plugins :</p>
+<ul class="simple">
+<li>les GeOxygeneApplicationPlugin, qui permettent par exemple d&#8217;ajouter des menus à l&#8217;interface principale (c&#8217;est ceux qui existaient avant).</li>
+<li>les ProjectFramePlugin, qui permettent d&#8217;ajouter des éléments graphiques (toolbar, slider, ...) à un projectFrame afin de le modifier.</li>
+</ul>
+<p>L’initialisation des plugins se fait à différents moments suivant le type choisi.
+Les plugins classiques (GeOxygeneApplicationPlugin) sont initialisés au chargement de l&#8217;interface graphique,
+et les plugins de type ProjectFrame sont initialisés à chaque nouvelle création d&#8217;un projectFrame.</p>
+<p>Ci-dessous le diagramme de classes des plugins implémentés dans le module geoxygene-appli :</p>
+<div class="centerside container">
+<div class="figure" id="id1">
+<a class="reference internal image-reference" href="../../_images/class-diagram01.png"><img alt="../../_images/class-diagram01.png" src="../../_images/class-diagram01.png" style="width: 800px;" /></a>
+<p class="caption"><span class="caption-text">Figure 1 : Diagramme de classe des plugins dans GeOxygene</span></p>
+</div>
+</div>
+<p>En général les plugins sont implémentés dans un module Maven dédié à un thème.</p>
+<p>Les plugins sont configurés dans le fichier <strong>geoxygene-configuration.xml</strong> stocké à la racine de votre module.</p>
+<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;</span>
+<span class="nt">&lt;GeOxygeneApplicationProperties&gt;</span>
+    <span class="nt">&lt;plugin&gt;</span>fr.ign.cogit.geoxygene.appli.plugin.datamatching.NetworkDataMatchingPlugin<span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;plugin&gt;</span>fr.ign.cogit.geoxygene.appli.plugin.datamatching.DataMatchingPlugin<span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;plugin&gt;</span>fr.ign.cogit.geoxygene.appli.plugin.cartetopo.BuildingBlocksCreationPlugin<span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;plugin&gt;</span>fr.ign.cogit.geoxygene.appli.plugin.cartetopo.ImportAsEdgesPlugin<span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;plugin&gt;</span>fr.ign.cogit.geoxygene.appli.plugin.BezierCurvePlugin<span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;plugin&gt;</span>fr.ign.cogit.geoxygene.appli.plugin.TINPlugin<span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;plugin&gt;</span>fr.ign.cogit.geoxygene.appli.plugin.CubicSplinePlugin<span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;plugin&gt;</span>fr.ign.cogit.geoxygene.appli.plugin.TriangulationJTSPlugin<span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;plugin&gt;</span>fr.ign.cogit.geoxygene.appli.plugin.CharacteristicShapeJTSPlugin<span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;plugin&gt;</span>fr.ign.cogit.geoxygene.appli.plugin.VoronoiDiagramJTSPlugin<span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;plugin&gt;</span>fr.ign.cogit.geoxygene.appli.plugin.SwingingArmPlugin<span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;plugin&gt;</span>fr.ign.cogit.geoxygene.appli.plugin.script.GroovyConsolePlugin<span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;plugin&gt;</span>fr.ign.cogit.geoxygene.appli.plugin.semio.SemioPlugin<span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;plugin&gt;</span>fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin<span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;plugin&gt;</span>fr.ign.cogit.geoxygene.appli.plugin.osm.OSMPlugin<span class="nt">&lt;/plugin&gt;</span>
+<span class="nt">&lt;/GeOxygeneApplicationProperties&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="quickstart">
+<h2>Quickstart</h2>
+<p>Ce tutoriel explique comment créer un plugin GeOxygene depuis un nouveau module Maven à partir d&#8217;un exemple.
+Nous voulons ici ajouter un nouveau bouton dans la barre de menu (notre plugin sera donc de type GeOxygeneApplicationPlugin)
+qui permet de lancer un filtre gaussien (lissage) sur un réseau linéaire.</p>
+<ol class="arabic simple">
+<li>Tout d&#8217;abord il faut ajouter la librairie &#8220;geoxygene-appli&#8221; à notre projet. Cette librairie contient les classes de l&#8217;interface graphique GeOxygene 2D.</li>
+</ol>
+<p>Ouvrir le fichier pom.xml de votre module Maven et ajouter une dépendance au module &#8220;geoxygene-appli&#8221; :</p>
+<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="nt">&lt;project&gt;</span>
+
+    <span class="c">&lt;!-- Version number of GeOxygene --&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;geoxygene.noyau.version&gt;</span>1.6-SNAPSHOT<span class="nt">&lt;/geoxygene.noyau.version&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+
+    <span class="c">&lt;!-- ... --&gt;</span>
+
+    <span class="c">&lt;!-- GeOxygene modules which your application will need --&gt;</span>
+    <span class="nt">&lt;dependencies&gt;</span>
+	    <span class="nt">&lt;dependency&gt;</span>
+	        <span class="nt">&lt;groupId&gt;</span>fr.ign.cogit<span class="nt">&lt;/groupId&gt;</span>
+	        <span class="nt">&lt;artifactId&gt;</span>geoxygene-appli<span class="nt">&lt;/artifactId&gt;</span>
+	        <span class="nt">&lt;version&gt;</span>${geoxygene.noyau.version}<span class="nt">&lt;/version&gt;</span>
+	    <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;/dependencies&gt;</span>
+    
+    <span class="c">&lt;!-- ... --&gt;</span>
+    
+    <span class="c">&lt;!-- Repositories to download geoxygene jars --&gt;</span>
+    <span class="nt">&lt;repositories&gt;</span>
+        <span class="nt">&lt;repository&gt;</span>
+            <span class="nt">&lt;id&gt;</span>snapshots<span class="nt">&lt;/id&gt;</span>
+            <span class="nt">&lt;name&gt;</span>Nexus Snapshots Repository<span class="nt">&lt;/name&gt;</span>
+            <span class="nt">&lt;url&gt;</span>https://forge-cogit.ign.fr/nexus/content/repositories/snapshots<span class="nt">&lt;/url&gt;</span>
+        <span class="nt">&lt;/repository&gt;</span>
+        <span class="nt">&lt;repository&gt;</span>
+            <span class="nt">&lt;id&gt;</span>releases<span class="nt">&lt;/id&gt;</span>
+            <span class="nt">&lt;name&gt;</span>Internal Releases<span class="nt">&lt;/name&gt;</span>
+            <span class="nt">&lt;url&gt;</span>https://forge-cogit.ign.fr/nexus/content/repositories/releases/<span class="nt">&lt;/url&gt;</span>
+        <span class="nt">&lt;/repository&gt;</span>
+    <span class="nt">&lt;/repositories&gt;</span>
+    
+<span class="nt">&lt;/project&gt;</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li>Créer une nouvelle classe qui implémente GeOxygeneApplicationPlugin, par exemple GaussianFilterPlugin.java :</li>
+</ol>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">fr.ign.cogit.plugin</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.awt.event.ActionEvent</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.awt.event.ActionListener</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Set</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.swing.JMenuItem</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.swing.JOptionPane</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.log4j.Logger</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">fr.ign.cogit.geoxygene.api.feature.IFeature</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">fr.ign.cogit.geoxygene.appli.GeOxygeneApplication</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">fr.ign.cogit.geoxygene.appli.api.ProjectFrame</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">fr.ign.cogit.geoxygene.feature.DefaultFeature</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">fr.ign.cogit.geoxygene.feature.Population</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">fr.ign.cogit.geoxygene.generalisation.GaussianFilter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">fr.ign.cogit.geoxygene.style.Layer</span><span class="o">;</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * </span>
+<span class="cm"> * </span>
+<span class="cm"> *</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">GaussianFilterPlugin</span> <span class="kd">implements</span> <span class="n">GeOxygeneApplicationPlugin</span><span class="o">,</span> <span class="n">ActionListener</span> <span class="o">{</span>
+
+  <span class="cm">/** Logger. */</span>
+  <span class="kd">private</span> <span class="kd">final</span> <span class="kd">static</span> <span class="n">Logger</span> <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">Logger</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="n">GaussianFilterPlugin</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+  
+  <span class="cm">/** GeOxygeneApplication */</span>
+  <span class="kd">private</span> <span class="n">GeOxygeneApplication</span> <span class="n">application</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+  <span class="c1">// ...</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>3. Puis il faut surcharger la méthode &#8220;initialize&#8221; qui initialise le plugin.
+Dans notre exemple, on ajoute un nouveau bouton et un évènement sur celui-ci.</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span>  <span class="cm">/**</span>
+<span class="cm">   * Initialize the plugin.</span>
+<span class="cm">   * @param application the application</span>
+<span class="cm">   */</span>
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="kd">final</span> <span class="kt">void</span> <span class="nf">initialize</span><span class="o">(</span><span class="kd">final</span> <span class="n">GeOxygeneApplication</span> <span class="n">application</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">application</span> <span class="o">=</span> <span class="n">application</span><span class="o">;</span>
+    
+    <span class="n">JMenu</span> <span class="n">menuExample</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="n">String</span> <span class="n">menuName</span> <span class="o">=</span> <span class="s">&quot;Curve&quot;</span><span class="o">;</span>
+    <span class="k">for</span> <span class="o">(</span><span class="n">Component</span> <span class="n">c</span> <span class="o">:</span> <span class="n">application</span><span class="o">.</span><span class="na">getMainFrame</span><span class="o">().</span><span class="na">getMenuBar</span><span class="o">().</span><span class="na">getComponents</span><span class="o">())</span> <span class="o">{</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">c</span> <span class="k">instanceof</span> <span class="n">JMenu</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">JMenu</span> <span class="n">aMenu</span> <span class="o">=</span> <span class="o">(</span><span class="n">JMenu</span><span class="o">)</span> <span class="n">c</span><span class="o">;</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">aMenu</span><span class="o">.</span><span class="na">getText</span><span class="o">()</span> <span class="o">!=</span> <span class="kc">null</span>
+            <span class="o">&amp;&amp;</span> <span class="n">aMenu</span><span class="o">.</span><span class="na">getText</span><span class="o">().</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="n">menuName</span><span class="o">))</span> <span class="o">{</span>
+          <span class="n">menuExample</span> <span class="o">=</span> <span class="n">aMenu</span><span class="o">;</span>
+        <span class="o">}</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">menuExample</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">menuExample</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JMenu</span><span class="o">(</span><span class="n">menuName</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="n">JMenuItem</span> <span class="n">menuItem</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JMenuItem</span><span class="o">(</span><span class="s">&quot;Gaussian Filter&quot;</span><span class="o">);</span>
+    <span class="n">menuItem</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+    <span class="n">menuExample</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">menuItem</span><span class="o">);</span>
+
+  <span class="o">}</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li>Enfin on définit notre processus dans la fonction qui traite l&#8217;évènement :</li>
+</ol>
+<div class="highlight-java"><div class="highlight"><pre><span></span>  <span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="s">&quot;unchecked&quot;</span><span class="o">)</span>
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionPerformed</span><span class="o">(</span><span class="kd">final</span> <span class="n">ActionEvent</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+
+    <span class="c1">// On récupère la couche sélectionnée</span>
+    <span class="n">ProjectFrame</span> <span class="n">project</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">application</span><span class="o">.</span><span class="na">getMainFrame</span><span class="o">().</span><span class="na">getSelectedProjectFrame</span><span class="o">();</span>
+    <span class="n">Set</span><span class="o">&lt;</span><span class="n">Layer</span><span class="o">&gt;</span> <span class="n">selectedLayers</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="na">getLayerLegendPanel</span><span class="o">().</span><span class="na">getSelectedLayers</span><span class="o">();</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">selectedLayers</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">!=</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">javax</span><span class="o">.</span><span class="na">swing</span><span class="o">.</span><span class="na">JOptionPane</span><span class="o">.</span><span class="na">showMessageDialog</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span> <span class="s">&quot;You need to select one (and only one) layer.&quot;</span><span class="o">);</span>
+      <span class="n">GaussianFilterPlugin</span><span class="o">.</span><span class="na">LOGGER</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">&quot;You need to select one (and only one) layer.&quot;</span><span class="o">);</span>
+      <span class="k">return</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="n">Layer</span> <span class="n">layer</span> <span class="o">=</span> <span class="n">selectedLayers</span><span class="o">.</span><span class="na">iterator</span><span class="o">().</span><span class="na">next</span><span class="o">();</span>
+    
+    <span class="c1">// On propose le champ de saisie du paramètre sigma pour le filtrage gaussien.</span>
+    <span class="kt">double</span> <span class="n">sigma</span> <span class="o">=</span> <span class="n">Double</span><span class="o">.</span><span class="na">parseDouble</span><span class="o">(</span><span class="n">JOptionPane</span><span class="o">.</span><span class="na">showInputDialog</span><span class="o">(</span><span class="n">GaussianFilterPlugin</span><span class="o">.</span><span class="na">this</span><span class="o">.</span><span class="na">application</span><span class="o">.</span><span class="na">getMainFrame</span><span class="o">(),</span> <span class="s">&quot;Sigma&quot;</span><span class="o">));</span>
+    
+    <span class="c1">// On construit une population de DefaultFeature</span>
+    <span class="n">Population</span><span class="o">&lt;</span><span class="n">DefaultFeature</span><span class="o">&gt;</span> <span class="n">pop</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Population</span><span class="o">&lt;</span><span class="n">DefaultFeature</span><span class="o">&gt;(</span><span class="s">&quot;GaussianFilter &quot;</span> <span class="o">+</span> <span class="n">layer</span><span class="o">.</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="n">sigma</span><span class="o">);</span>
+    <span class="n">pop</span><span class="o">.</span><span class="na">setClasse</span><span class="o">(</span><span class="n">DefaultFeature</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+    <span class="n">pop</span><span class="o">.</span><span class="na">setPersistant</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+    <span class="k">for</span> <span class="o">(</span><span class="n">IFeature</span> <span class="n">f</span> <span class="o">:</span> <span class="n">layer</span><span class="o">.</span><span class="na">getFeatureCollection</span><span class="o">())</span> <span class="o">{</span>
+      <span class="n">ILineString</span> <span class="n">line</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">ILineString</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">isAssignableFrom</span><span class="o">(</span><span class="n">f</span><span class="o">.</span><span class="na">getGeom</span><span class="o">().</span><span class="na">getClass</span><span class="o">()))</span> <span class="o">{</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="o">(</span><span class="n">ILineString</span><span class="o">)</span> <span class="n">f</span><span class="o">.</span><span class="na">getGeom</span><span class="o">();</span>
+      <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">IMultiCurve</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">isAssignableFrom</span><span class="o">(</span><span class="n">f</span><span class="o">.</span><span class="na">getGeom</span><span class="o">().</span><span class="na">getClass</span><span class="o">()))</span> <span class="o">{</span>
+          <span class="n">line</span> <span class="o">=</span> <span class="o">((</span><span class="n">IMultiCurve</span><span class="o">&lt;</span><span class="n">ILineString</span><span class="o">&gt;)</span> <span class="n">f</span><span class="o">.</span><span class="na">getGeom</span><span class="o">()).</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+        <span class="o">}</span>
+      <span class="o">}</span>
+      <span class="c1">// On ajoute à la population l&#39;arc lissé</span>
+      <span class="n">pop</span><span class="o">.</span><span class="na">nouvelElement</span><span class="o">(</span><span class="n">GaussianFilter</span><span class="o">.</span><span class="na">gaussianFilter</span><span class="o">(</span><span class="n">line</span><span class="o">,</span> <span class="n">sigma</span><span class="o">,</span> <span class="mi">1</span><span class="o">));</span>
+    <span class="o">}</span>
+    
+    <span class="c1">// Créer les métadonnées du jeu correspondant et on l&#39;ajoute à la population</span>
+    <span class="n">FeatureType</span> <span class="n">newFeatureType</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FeatureType</span><span class="o">();</span>
+    <span class="n">newFeatureType</span><span class="o">.</span><span class="na">setGeometryType</span><span class="o">(</span><span class="n">ILineString</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+    <span class="n">pop</span><span class="o">.</span><span class="na">setFeatureType</span><span class="o">(</span><span class="n">newFeatureType</span><span class="o">);</span>
+    
+    <span class="c1">// On ajoute au ProjectFrame la nouvelle couche créée à partir de la nouvelle population</span>
+    <span class="n">project</span><span class="o">.</span><span class="na">getDataSet</span><span class="o">().</span><span class="na">addPopulation</span><span class="o">(</span><span class="n">pop</span><span class="o">);</span>
+    <span class="n">project</span><span class="o">.</span><span class="na">addFeatureCollection</span><span class="o">(</span><span class="n">pop</span><span class="o">,</span> <span class="n">pop</span><span class="o">.</span><span class="na">getNom</span><span class="o">(),</span> <span class="n">layer</span><span class="o">.</span><span class="na">getCRS</span><span class="o">());</span>
+  <span class="o">}</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li>Fichier de configuration</li>
+</ol>
+<p>Dans votre module, ajouter à la racine du projet un fichier geoxygene-configuration.xml qui contient ces lignes :</p>
+<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;</span>
+<span class="nt">&lt;GeOxygeneApplicationProperties&gt;</span>
+    
+    <span class="nt">&lt;plugin&gt;</span>fr.ign.cogit.geoxygene.appli.plugin.SymubruitExtractionPlugin<span class="nt">&lt;/plugin&gt;</span>
+    
+<span class="nt">&lt;/GeOxygeneApplicationProperties&gt;</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="6">
+<li>Lancement de l&#8217;interface</li>
+</ol>
+<p>Enfin, exécuter une nouvelle java application en spécifiant :</p>
+<div class="chemin container">
+<p><strong>Name</strong> : GaussianFilterPlugin</p>
+<p><strong>Project</strong> : monProjet</p>
+<p><strong>Main class</strong> : fr.ign.cogit.geoxygene.appli.GeOxygeneApplication</p>
+</div>
+<div class="centerside container">
+<div class="figure" id="id2">
+<a class="reference internal image-reference" href="../../_images/LancementInterfaceGeoxAutreModule.png"><img alt="../../_images/LancementInterfaceGeoxAutreModule.png" src="../../_images/LancementInterfaceGeoxAutreModule.png" style="width: 650px;" /></a>
+<p class="caption"><span class="caption-text">Figure 1 : Lancement de l&#8217;interface GeOxygene avec votre nouveau plugin</span></p>
+</div>
+</div>
+<p>Ce qui donne :</p>
+<div class="centerside container">
+<div class="figure" id="id3">
+<a class="reference internal image-reference" href="../../_images/GaussianFilterPluginGUI.png"><img alt="../../_images/GaussianFilterPluginGUI.png" src="../../_images/GaussianFilterPluginGUI.png" style="width: 650px;" /></a>
+<p class="caption"><span class="caption-text">Figure 2 : Gaussian Filter Plugin</span></p>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="../application/index.html" title="Contributions"
+                 >next</a></li>
+            <li class="right" >
+              <a href="import.html" title="Import et export de données dans GeOxygene"
+                 >previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" >Tutorial</a> &raquo;</li>
+        <li><a href="#">Plugin dans l&#8217;interface graphique 2D.</a></li>
+      </ul>
+    </div> 
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Laboratoire COGIT, IGN.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

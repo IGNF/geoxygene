@@ -1,0 +1,805 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Moindres carrés génériques &mdash; GeOxygene</title>
+    
+    <link rel="stylesheet" href="../../_static/geoxygene.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="GeOxygene" href="../../index.html" />
+    <link rel="up" title="Contributions" href="index.html" />
+    <link rel="next" title="3D module" href="3d.html" />
+    <link rel="prev" title="Données OSM" href="osm.html" /> 
+  </head>
+  <body role="document">
+
+    <div class="header">
+        <div class="wrap">
+            <div id="logo"><a href="http://oxygene-project.sourceforge.net/">GeOxygene</a></div>
+            <h1 id="logo_cogit"><a href="http://recherche.ign.fr/labos/cogit/">COGIT</a></h1>
+            <h1 id="logo_ign" alt="Institut National de l'Information Géographique et Forestière">
+                <a href="http://www.ign.fr" alt="Institut National de l'Information Géographique et Forestière">IGN</a>
+            </h1>
+            <!-- <h1 id="logo_sourceforge"><a href="http://sourceforge.net/projects/oxygene-project/">Sourceforge</a></h1> -->
+            
+            <!-- <div class='top-xleft'><span>Last Published :  | Version :1.6</span></div> -->
+            
+            <ul id="top-nav">
+                <li class="first"><a href="/community/index.html">About</a></li>
+                <li><a href="/download/index.html">Download</a></li>
+                <li><a href="/documentation/index.html">Documentation</a></li>
+            </ul>
+            
+        </div>
+    </div>
+
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="3d.html" title="3D module"
+                 accesskey="N">next</a></li>
+            <li class="right" >
+              <a href="osm.html" title="Données OSM"
+                 accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Contributions</a> &raquo;</li>
+        <li><a href="#">Moindres carrés génériques</a></li>
+      </ul>
+    </div> 
+
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+	
+	<h4>Navigation</h4><ul style='list-style: none;padding-left:4px;'>
+	<li><a href="https://sourceforge.net/p/oxygene-project">
+	   Sourceforge Home
+	   <span style="padding-left:4px;"><img src="/_static/img/sourceforge.png" /></span>
+	</a></li>
+	<li><a href="http://oxygene-project.sourceforge.net/apidocs/index.html">
+	   Online javadoc
+	</a></li>
+	</ul>
+	
+	<h4>Table Of Contents</h4>
+    <ul>
+<li><a class="reference internal" href="#">Moindres carrés génériques</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#package-leastsquaresgeneric">Package <em>leastsquaresgeneric</em></a></li>
+<li><a class="reference internal" href="#exemples-d-utilisation">Exemples d&#8217;utilisation</a><ul>
+<li><a class="reference internal" href="#estimation-d-une-fonction-de-transformation">Estimation d&#8217;une fonction de transformation</a></li>
+<li><a class="reference internal" href="#interpolation-d-une-fonction">Interpolation d&#8217;une fonction</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#contraintes-imperatives">Contraintes impératives</a></li>
+<li><a class="reference internal" href="#indicateurs-statistiques">Indicateurs statistiques</a></li>
+<li><a class="reference internal" href="#exemple-complet">Exemple complet</a><ul>
+<li><a class="reference internal" href="#creation-du-jeu-de-test">Création du jeu de test</a></li>
+<li><a class="reference internal" href="#implementation-de-la-solution">Implémentation de la solution</a></li>
+<li><a class="reference internal" href="#ajout-d-une-contrainte">Ajout d&#8217;une contrainte</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="osm.html"
+                        title="previous chapter">Données OSM</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="3d.html"
+                        title="next chapter">3D module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation/application/moindres-carres-generiques.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+    <form class="navbar-search pull-right" style="margin-bottom:-3px;" action="../../search.html" method="get">
+        <input type="text" name="q" placeholder="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+    
+    <!-- div>
+        <script type="text/javascript" src="http://www.ohloh.net/p/40483/widgets/project_thin_badge.js"></script>
+    </div -->
+    
+
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="id1">
+<h1>Moindres carrés génériques</h1>
+<div class="section" id="introduction">
+<h2>Introduction</h2>
+<p>Le package <strong>leastsquaresgeneric</strong> du module <em>geoxygene-contrib</em> regroupe les algorithmes génériques (linéaires et non linéaires) de l&#8217;estimateur des moindres carrés.</p>
+<p>Les calculs sont effectués à partir :</p>
+<ul class="simple">
+<li>des expressions algébriques des contraintes</li>
+<li>des noms des inconnues à estimer</li>
+<li>des paramètres de calcul</li>
+</ul>
+<p>La généricité des algorithmes nécessite en contre-partie de considérer une équation linéaire comme un cas particulier d&#8217;équation non-linéaire.
+La résolution est alors effectuée suivant l&#8217;algorithme itératif de Gauss-Newton (généralisation de la méthode de Newton-Raphson aux systèmes d&#8217;équations).</p>
+<p><strong>Note importante</strong> <strong>:</strong> la dérivation numérique est calculée par une approximation (au mieux limitée à l&#8217;ordre 4).
+En fonction du conditionnement de la matrice N et de l&#8217;amplitude des erreurs introduites par la dérivation numérique,
+la résolution des équations normales peut conduire à des résultats aberrants. De même, dans certains cas,
+un système d&#8217;équations valides (dont une solution au sens des moindres carrés peut être trouvée en théorie)
+peut conduire dès les premières itérations à l&#8217;obtention d&#8217;une matrice singulière. Pour l&#8217;instant,
+le calcul étant réalisé avec la décomposition LU de la bibliothèque <a class="reference external" href="http://math.nist.gov/javanumerics/jama/">Jama</a>, il pourrait être intéressant
+d&#8217;essayer de limiter la propagation des erreurs de dérivation numérique avec la décomposition QR de la
+bibliothèque <a class="reference external" href="https://commons.apache.org/proper/commons-math/">Common-maths</a> .</p>
+</div>
+<div class="section" id="package-leastsquaresgeneric">
+<h2>Package <em>leastsquaresgeneric</em></h2>
+<div class="centerside container">
+<div class="figure" id="id2">
+<a class="reference internal image-reference" href="../../_images/8e80bb59.png"><img alt="../../_images/8e80bb59.png" src="../../_images/8e80bb59.png" style="width: 500px;" /></a>
+<p class="caption"><span class="caption-text">Figure 1 - Diagramme des principales classes du package leastsquaresgeneric</span></p>
+</div>
+</div>
+<p>L&#8217;objet principal du package est le <em>Solver</em> :</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Solver</span> <span class="n">solver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Solver</span><span class="o">();</span>
+</pre></div>
+</div>
+<p>L&#8217;intérêt principal du package est de pouvoir exprimer directement les contraintes
+sous forme algébrique (langage proche de Matlab) en chaine de caractères.
+Par exemple, pour définir une contrainte linéaire en x et y :</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Constraint</span> <span class="n">c1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;2*x + 3*y = 5&quot;</span><span class="o">);</span>
+</pre></div>
+</div>
+<p><em>Attention :</em> les expressions algébriques ne doivent contenir que des valeurs numériques (constantes) ou des paramètres
+à estimer (variables inconnues du problème). Le code ci-dessous est utilisé pour insérer des identificateurs
+Java dans l&#8217;expression des contraintes.</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kt">double</span> <span class="n">coeff1</span> <span class="o">=</span> <span class="mf">2.0</span><span class="o">;</span>
+<span class="kt">double</span> <span class="n">coeff2</span> <span class="o">=</span> <span class="mf">3.0</span><span class="o">;</span>
+
+<span class="n">Constraint</span> <span class="n">c1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="n">coeff1</span> <span class="o">+</span> <span class="s">&quot;*x + &quot;</span> <span class="o">+</span> <span class="n">coeff2</span> <span class="o">+</span> <span class="s">&quot;*y = 2&quot;</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>Dans un deuxième temps, il est possible d&#8217;affecter des poids d&#8217;influence (ou directement des variances ou des écarts-types)
+aux différentes contraintes :</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">c1</span><span class="o">.</span><span class="na">setWeight</span><span class="o">(</span><span class="mf">4.0</span><span class="o">);</span>
+
+<span class="c1">// Ou de manière équivalente</span>
+<span class="n">c1</span><span class="o">.</span><span class="na">setVariance</span><span class="o">(</span><span class="mf">0.25</span><span class="o">);</span>
+<span class="n">c1</span><span class="o">.</span><span class="na">setStddev</span><span class="o">(</span><span class="mf">0.5</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>Les contraintes sont alors ajoutées au <em>Solver</em> (ordre indépendant) :</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">solver</span><span class="o">.</span><span class="na">addConstraint</span><span class="o">(</span><span class="n">constraint</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>Puis chaque variable utilisée dans les contraintes doit être déclarée dans le <em>solver</em>
+et être munie d&#8217;une valeur initiale (valeur approchée) :</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">solver</span><span class="o">.</span><span class="na">addParameter</span><span class="o">(</span><span class="s">&quot;x&quot;</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">addParameter</span><span class="o">(</span><span class="s">&quot;y&quot;</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>Les paramètres sont alors choisis (certains sont optionnels). On peut définir entre autres
+les critères d&#8217;arrêts de l&#8217;algorithme. Dans le code ci-dessous, on spécifie un nombre maximal
+d&#8217;itérations à 100, mais l&#8217;algorithme pourra terminer plus tôt si l&#8217;incrément sur toutes les
+variables entre deux itérations est inférieur à 0.01 (par défaut, ces deux paramètres
+sont fixés à 0, ce qui signifie qu&#8217;ils doivent impérativement être spécifiés).</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// Critère de convergence</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">setConvergenceCriteria</span><span class="o">(</span><span class="mf">0.01</span><span class="o">)</span>
+
+<span class="c1">// Sécurité en cas de non convergence</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">setIterationsNumber</span><span class="o">(</span><span class="mi">100</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>Il est également possible de définir les options de dérivation, i.e. le pas (0.1 par défaut)
+et l&#8217;ordre (2 par défaut) de dérivation :</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// Pour une dérivation plus fine</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">setDerivationStep</span><span class="o">(</span><span class="mf">0.01</span><span class="o">);</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">setDerivationOrder</span><span class="o">(</span><span class="mi">4</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>Enfin, un paramètre qui peut jouer un rôle important en cas de non convergence de l&#8217;algorithme :
+le facteur de réduction (qui réduit l&#8217;incrément entre deux itérations).</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// Pour une dérivation plus fine</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">setreducingFactor</span><span class="o">(</span><span class="mf">0.1</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>Le calcul peut alors être lancé :</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">solver</span><span class="o">.</span><span class="na">compute</span><span class="o">();</span>
+</pre></div>
+</div>
+<p>La fonction <em>displayResult()</em> permet un affichage standardisé des résultats obtenus.</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">solver</span><span class="o">.</span><span class="na">displayResults</span><span class="o">();</span>
+</pre></div>
+</div>
+<p>Sinon, la fonction <em>getParameter()</em> permet de récupérer les variables estimées.
+A noter qu&#8217;un paramètre peut-être adressé par son nom ou par un index (ordre d&#8217;insertion dans le <em>Solver</em>).
+Ainsi, le code suivant permet d&#8217;afficher l&#8217;ensemble des paramètres estimés avec les noms associés,
+indépendamment du code qui précède :</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// Affichage personnalisé des résultats</span>
+
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">solver</span><span class="o">.</span><span class="na">getEffectiveIterationsNumber</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot; itérations ont été effectuées&quot;</span><span class="o">);</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Les paramètres estimés sont : &quot;</span><span class="o">)</span>
+
+<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">solver</span><span class="o">.</span><span class="na">getParametersNumber</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+  <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">solver</span><span class="o">.</span><span class="na">getParameterName</span><span class="o">(</span><span class="n">i</span><span class="o">)+</span><span class="s">&quot; = &quot;</span><span class="o">+</span><span class="n">solver</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="n">i</span><span class="o">))</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="exemples-d-utilisation">
+<h2>Exemples d&#8217;utilisation</h2>
+<div class="section" id="estimation-d-une-fonction-de-transformation">
+<h3>Estimation d&#8217;une fonction de transformation</h3>
+<p>Cette application est tirée du livre &#8220;Estimation par moindres carrés&#8221; (collection ENSG), page 172.
+L&#8217;objectif est de déterminer les paramètres de transformation entre deux jeux de données dont on connaît trois points d&#8217;appuis :</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%" />
+<col width="18%" />
+<col width="18%" />
+<col width="18%" />
+<col width="18%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">&nbsp;</th>
+<th class="head">x1 (jeu 1)</th>
+<th class="head">y1 (jeu 1)</th>
+<th class="head">x2 (jeu 2)</th>
+<th class="head">y2 (jeu 2)</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Point 1</td>
+<td>0.32</td>
+<td>1.50</td>
+<td>261 000</td>
+<td>608 000</td>
+</tr>
+<tr class="row-odd"><td>Point 2</td>
+<td>0.15</td>
+<td>1.25</td>
+<td>256 000</td>
+<td>604 000</td>
+</tr>
+<tr class="row-even"><td>Point 3</td>
+<td>1.02</td>
+<td>0.75</td>
+<td>275 000</td>
+<td>589 000</td>
+</tr>
+</tbody>
+</table>
+<p>Par ailleurs, on nous informe que le rapport d&#8217;échelle pour passer du jeu 1 au jeu 2
+est de l&#8217;ordre de 1/20 000e tandis que l&#8217;angle de rotation est proche de 5° (~ 0.1 rad),
+ce qui va permettre de donner une valeur approchée au vecteur de paramètres à estimer.</p>
+<p>Le modèle de transformation utilisé est un modèle à 4 paramètres (Tx, Ty, k et θ).
+L&#8217;équation de changement de repère pour un point (x1,y1) s&#8217;écrit :</p>
+<div class="math">
+\[x2 = Tx + k*cos(θ)*x1 + k*sin(θ)*y1\]\[y2 = Ty - k*sin(θ)*x1 + k*cos(θ)*y1\]</div>
+<p>On donne ci-dessous le code Java permettant de résoudre ce problème :</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// Expression algébrique des 6 constraintes</span>
+<span class="n">Constraint</span> <span class="n">c11</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;Tx + k*cos(theta)*0.32 + k*sin(theta)*1.50 = 261000&quot;</span><span class="o">);</span>
+<span class="n">Constraint</span> <span class="n">c12</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;Ty - k*sin(theta)*0.32 + k*cos(theta)*1.50 = 608000&quot;</span><span class="o">);</span>
+<span class="n">Constraint</span> <span class="n">c21</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;Tx + k*cos(theta)*0.15 + k*sin(theta)*1.25 = 256000&quot;</span><span class="o">);</span>
+<span class="n">Constraint</span> <span class="n">c22</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;Ty - k*sin(theta)*0.15 + k*cos(theta)*1.25 = 604000&quot;</span><span class="o">);</span>
+<span class="n">Constraint</span> <span class="n">c31</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;Tx + k*cos(theta)*1.02 + k*sin(theta)*0.75 = 275000&quot;</span><span class="o">);</span>
+<span class="n">Constraint</span> <span class="n">c32</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;Ty - k*sin(theta)*1.02 + k*cos(theta)*0.75 = 589000&quot;</span><span class="o">);</span>
+
+<span class="n">Solver</span> <span class="n">solver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Solver</span><span class="o">();</span>
+
+<span class="c1">// Ajout des contraintes</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">addConstraint</span><span class="o">(</span><span class="n">c11</span><span class="o">);</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">addConstraint</span><span class="o">(</span><span class="n">c12</span><span class="o">);</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">addConstraint</span><span class="o">(</span><span class="n">c21</span><span class="o">);</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">addConstraint</span><span class="o">(</span><span class="n">c22</span><span class="o">);</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">addConstraint</span><span class="o">(</span><span class="n">c31</span><span class="o">);</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">addConstraint</span><span class="o">(</span><span class="n">c32</span><span class="o">);</span>
+
+<span class="c1">// Déclaration des 4 paramètres à estimer avec valeurs approchées</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">addParameter</span><span class="o">(</span><span class="s">&quot;Tx&quot;</span><span class="o">,</span> <span class="mi">20000</span><span class="o">);</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">addParameter</span><span class="o">(</span><span class="s">&quot;Ty&quot;</span><span class="o">,</span> <span class="mi">50000</span><span class="o">);</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">addParameter</span><span class="o">(</span><span class="s">&quot;k&quot;</span><span class="o">,</span> <span class="mi">20000</span><span class="o">);</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">addParameter</span><span class="o">(</span><span class="s">&quot;theta&quot;</span><span class="o">,</span> <span class="mf">0.1</span><span class="o">);</span>
+
+<span class="c1">// Paramétrage des critères d&#39;arrêt</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">setIterationsNumber</span><span class="o">(</span><span class="mi">100</span><span class="o">);</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">setConvergenceCriteria</span><span class="o">(</span><span class="mf">0.001</span><span class="o">);</span>
+
+<span class="n">solver</span><span class="o">.</span><span class="na">compute</span><span class="o">();</span>
+
+<span class="c1">// Affichage des résultats</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Apres &quot;</span><span class="o">+</span><span class="n">solver</span><span class="o">.</span><span class="na">getEffectiveIterationsNumber</span><span class="o">()+</span><span class="s">&quot; iterations :&quot;</span><span class="o">);</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Tx  = &quot;</span><span class="o">+</span><span class="n">solver</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&quot;Tx&quot;</span><span class="o">)+</span><span class="s">&quot; m&quot;</span><span class="o">);</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Ty  = &quot;</span><span class="o">+</span><span class="n">solver</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&quot;Ty&quot;</span><span class="o">)+</span><span class="s">&quot; m&quot;</span><span class="o">);</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;k  = &quot;</span><span class="o">+</span><span class="n">solver</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&quot;k&quot;</span><span class="o">));</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;theta  = &quot;</span><span class="o">+</span><span class="n">solver</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&quot;theta&quot;</span><span class="o">)*</span><span class="mi">180</span><span class="o">/</span><span class="n">Math</span><span class="o">.</span><span class="na">PI</span><span class="o">+</span><span class="s">&quot; deg&quot;</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>Le résultat obtenu dans la console est :</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="o">-----------------------------</span>
+ <span class="n">After</span> <span class="mi">4</span> <span class="n">iterations</span>
+<span class="o">-----------------------------</span>
+<span class="n">Tx</span>  <span class="o">=</span> <span class="mf">248716.4310955899</span> <span class="n">m</span>
+<span class="n">Ty</span>  <span class="o">=</span> <span class="mf">574847.5915941315</span> <span class="n">m</span>
+<span class="n">k</span>  <span class="o">=</span> <span class="mf">23436.514058778277</span>
+<span class="n">theta</span>  <span class="o">=</span> <span class="mf">7.890587680637035</span> <span class="n">deg</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="interpolation-d-une-fonction">
+<h3>Interpolation d&#8217;une fonction</h3>
+<p>On considère le problème d&#8217;interpolation suivant :</p>
+<p>Trouver les paramètres p1 et p2 de la fonction :</p>
+<div class="math">
+\[d(t) = (p1*t) / (p2*t+1)\]</div>
+<p>permettant d&#8217;interpoler au mieux l&#8217;échantillon de point ci-dessous.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="16%" />
+<col width="12%" />
+<col width="12%" />
+<col width="12%" />
+<col width="12%" />
+<col width="12%" />
+<col width="12%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">&nbsp;</th>
+<th class="head">1</th>
+<th class="head">2</th>
+<th class="head">3</th>
+<th class="head">4</th>
+<th class="head">5</th>
+<th class="head">6</th>
+<th class="head">7</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>t</td>
+<td>0.038</td>
+<td>0.194</td>
+<td>0.425</td>
+<td>0.626</td>
+<td>1.253</td>
+<td>2.500</td>
+<td>3.740</td>
+</tr>
+<tr class="row-odd"><td>d</td>
+<td>0.050</td>
+<td>0.127</td>
+<td>0.094</td>
+<td>0.212</td>
+<td>0.273</td>
+<td>0.267</td>
+<td>0.332</td>
+</tr>
+</tbody>
+</table>
+<div class="centerside container">
+<div class="figure" id="id3">
+<a class="reference internal image-reference" href="../../_images/im1.png"><img alt="../../_images/im1.png" src="../../_images/im1.png" style="width: 400px;" /></a>
+<p class="caption"><span class="caption-text">Figure 2 - Représentation de l&#8217;échantillon des points</span></p>
+</div>
+</div>
+<p>On donne dans un premier temps le code permettant de recréer les données :</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Double</span><span class="o">&gt;</span> <span class="n">T</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Double</span><span class="o">&gt;();</span>
+<span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Double</span><span class="o">&gt;</span> <span class="n">D</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Double</span><span class="o">&gt;();</span>
+
+<span class="n">T</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mf">0.038</span><span class="o">);</span> <span class="n">D</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mf">0.050</span><span class="o">);</span>
+<span class="n">T</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mf">0.194</span><span class="o">);</span> <span class="n">D</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mf">0.127</span><span class="o">);</span>
+<span class="n">T</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mf">0.425</span><span class="o">);</span> <span class="n">D</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mf">0.094</span><span class="o">);</span>
+<span class="n">T</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mf">0.626</span><span class="o">);</span> <span class="n">D</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mf">0.212</span><span class="o">);</span>
+<span class="n">T</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mf">1.253</span><span class="o">);</span> <span class="n">D</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mf">0.273</span><span class="o">);</span>
+<span class="n">T</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mf">2.500</span><span class="o">);</span> <span class="n">D</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mf">0.267</span><span class="o">);</span>
+<span class="n">T</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mf">3.740</span><span class="o">);</span> <span class="n">D</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mf">0.332</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>Puis le code permettant de trouver une estimation des paramètres de la fonction interpolante :</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Solver</span> <span class="n">solver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Solver</span><span class="o">();</span>
+
+<span class="c1">// Ajout des contraintes</span>
+<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">T</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">i</span><span class="o">++){</span>
+  <span class="kt">double</span> <span class="n">t</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+  <span class="kt">double</span> <span class="n">d</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+  <span class="n">solver</span><span class="o">.</span><span class="na">addConstraint</span><span class="o">(</span><span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;p1*&quot;</span><span class="o">+</span><span class="n">t</span><span class="o">+</span><span class="s">&quot;/(p2*&quot;</span><span class="o">+</span><span class="n">t</span><span class="o">+</span><span class="s">&quot;+1) = &quot;</span><span class="o">+</span><span class="n">d</span><span class="o">+</span><span class="s">&quot;&quot;</span><span class="o">));</span>
+<span class="o">}</span>
+
+<span class="c1">// Déclaration des inconnues</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">addParameter</span><span class="o">(</span><span class="s">&quot;p1&quot;</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">addParameter</span><span class="o">(</span><span class="s">&quot;p2&quot;</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
+
+<span class="c1">// Paramétrage du critère d&#39;arrêt</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">setIterationsNumber</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">setConvergenceCriteria</span><span class="o">(</span><span class="mf">0.001</span><span class="o">);</span>
+
+<span class="c1">// ----------------------------------</span>
+<span class="c1">// Calculs et résultats</span>
+<span class="c1">// ----------------------------------</span>
+
+<span class="n">solver</span><span class="o">.</span><span class="na">compute</span><span class="o">();</span>
+
+<span class="n">solver</span><span class="o">.</span><span class="na">displayResults</span><span class="o">();</span>
+</pre></div>
+</div>
+<p>On obtient les lignes suivantes dans la console :</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="o">-----------------------------</span>
+ <span class="n">After</span> <span class="mi">6</span> <span class="n">iterations</span>
+<span class="o">-----------------------------</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="mf">0.6488940374077881</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="mf">1.7899669235296043</span>
+</pre></div>
+</div>
+<p>On peut alors tracer la fonction <span class="math">\(d(t) = (0.649t) / (1.790t + 1)\)</span> sur l&#8217;échantillon de points :</p>
+<div class="centerside container">
+<div class="figure" id="id4">
+<a class="reference internal image-reference" href="../../_images/im2.png"><img alt="../../_images/im2.png" src="../../_images/im2.png" style="width: 400px;" /></a>
+<p class="caption"><span class="caption-text">Figure 3 - Estimation de la fonction d(t) d&#8217;interpolation</span></p>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="contraintes-imperatives">
+<h2>Contraintes impératives</h2>
+<p>Les <em>contraintes impératives</em> désignent l&#8217;ensemble des contraintes qui doivent être impérativement résolues.
+La solution retenue est alors la solution la plus proche des contraintes indicatives (au sens des moindres carrés)
+parmi l&#8217;ensemble des solutions qui vérifient ces contraintes impératives.</p>
+<p>De manière très pragmatique, la gestion des contraintes impératives peut être implémentée
+simplement par une méthode de pondération forte. Ici, la méthode employée est celle des multiplicateurs de Lagrange,
+permettant d&#8217;aboutir à un résultat en théorie exact (aux erreurs de calcul près dans les cas non-linéaires)
+et qui ne soit pas tributaire des poids choisis. En revanche le nombre des contraintes de chaque type
+(impératif et indicatif) devra être en adéquation avec les nombre de paramètres à estimer.</p>
+<p>Plus formellement, en notant <em>ne</em> le nombre d&#8217;équations de contraintes indicatives, <em>nc</em> le nombre de contraintes impératives
+et <em>np</em> le nombre de paramètres à estimer, une solution pourra être trouvées sous les deux conditions suivantes :</p>
+<div class="math">
+\[np ≤ ne + nc\]\[nc ≤ np\]</div>
+<p>Une contrainte peut-être spécifiée comme étant impérative :</p>
+<ul>
+<li><p class="first">Soit en deux temps, avec la méthode <em>setImperative()</em></p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Constraint</span> <span class="n">c1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;2*x - y = 10&quot;</span><span class="o">);</span>
+<span class="n">c1</span><span class="o">.</span><span class="na">setImperative</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Soit en passant l&#8217;argument booléen _imperative_ dans le constructeur de contrainte</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Constraint</span> <span class="n">c1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;2*x - y = 10&quot;</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Soit directement par l&#8217;emploi du signe &#8221;:=&#8221; dans l&#8217;expression algébrique de la contrainte</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Constraint</span> <span class="n">c1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;2*x - y := 10&quot;</span><span class="o">);</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p>Les méthodes de paramétrage, de lancement du calcul et de récupération des résultats restent inchangées par rapport au cas non contraint.</p>
+<p><strong>Exemple d&#8217;utilisation :</strong> On considère un triangle dont on a mesuré les trois angles : a = 60.27°, b = 40.54°, c = 83.12°.
+Le problème contraint s&#8217;exprime alors de la manière suivante :</p>
+<p><em>Trouver une estimation des trois angles a, b et c sous la contrainte a + b + c = 180°</em></p>
+<p>Le code Java correspondant est le suivant :</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// Contraintes indicatives</span>
+<span class="n">Constraint</span> <span class="n">c1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;a = 60.27&quot;</span><span class="o">);</span>
+<span class="n">Constraint</span> <span class="n">c2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;b = 40.54&quot;</span><span class="o">);</span>
+<span class="n">Constraint</span> <span class="n">c3</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;c = 83.12&quot;</span><span class="o">);</span>
+
+<span class="c1">// Contrainte impérative</span>
+<span class="n">Constraint</span> <span class="n">c4</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;a+b+c = 180&quot;</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
+
+<span class="n">Solver</span> <span class="n">solver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Solver</span><span class="o">();</span>
+
+<span class="n">solver</span><span class="o">.</span><span class="na">addConstraint</span><span class="o">(</span><span class="n">c1</span><span class="o">);</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">addConstraint</span><span class="o">(</span><span class="n">c2</span><span class="o">);</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">addConstraint</span><span class="o">(</span><span class="n">c3</span><span class="o">);</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">addConstraint</span><span class="o">(</span><span class="n">c4</span><span class="o">);</span>
+
+<span class="c1">// Valeurs initiales</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">addParameter</span><span class="o">(</span><span class="s">&quot;a&quot;</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">addParameter</span><span class="o">(</span><span class="s">&quot;b&quot;</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">addParameter</span><span class="o">(</span><span class="s">&quot;c&quot;</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
+
+<span class="n">solver</span><span class="o">.</span><span class="na">setIterationsNumber</span><span class="o">(</span><span class="mi">5</span><span class="o">);</span>
+
+<span class="n">solver</span><span class="o">.</span><span class="na">compute</span><span class="o">();</span>
+
+<span class="n">solver</span><span class="o">.</span><span class="na">displayResults</span><span class="o">();</span>
+
+<span class="c1">// On vérifie que la somme des angles vaut bien 180°</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Somme des angles = &quot;</span><span class="o">+(</span><span class="n">solver</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&quot;a&quot;</span><span class="o">)+</span><span class="n">solver</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&quot;b&quot;</span><span class="o">)+</span><span class="n">solver</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&quot;c&quot;</span><span class="o">)));</span>
+</pre></div>
+</div>
+<p>Le résultat retourné en console est alors :</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="o">-----------------------------</span>
+<span class="n">After</span> <span class="mi">5</span> <span class="n">iterations</span>
+<span class="o">-----------------------------</span>
+<span class="n">a</span> <span class="o">=</span> <span class="mf">58.960000000000065</span>
+<span class="n">b</span> <span class="o">=</span> <span class="mf">39.23000000000006</span>
+<span class="n">c</span> <span class="o">=</span> <span class="mf">81.80999999999987</span>
+<span class="n">Somme</span> <span class="n">des</span> <span class="n">angles</span> <span class="o">=</span> <span class="mf">180.0</span>
+</pre></div>
+</div>
+<p>Dans notre cas de figure, l&#8217;estimation a simplement consisté à retrancher 1.31° (1/3 de l&#8217;excès par
+rapport à la valeur contrainte de 180°) sur chacun des angles. On remarquera que ce problème
+ne présente un réel intérêt pratique que lorsque les écart-types des mesures effectuées sur les angles
+sont sensiblement différents (cf partie suivante &#8220;indicateurs statistiques&#8221;) ou que les contraintes
+indicatives sont plus complexes que de simples affectations de variables.</p>
+</div>
+<div class="section" id="indicateurs-statistiques">
+<h2>Indicateurs statistiques</h2>
+<p>En règle générale, les méthodes et résultats qui suivent n&#8217;ont d&#8217;intérêt particulier que dans le cas ou les
+écart-types sur les mesures sont connus à l&#8217;avance (bien qu&#8217;il soit possible de les fixer &#8220;à l&#8217;aveugle&#8221; avant
+de les ré-estimer a posteriori avec le calcul du facteur unitaire de variance, cf plus loin).</p>
+<p>Chaque équation est munie d&#8217;un poids correspondant :</p>
+<p>Soit à un réel arbitraire :</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">constraint</span><span class="o">.</span><span class="na">setWeight</span><span class="o">(</span><span class="mf">0.01</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>Soit à l&#8217;inverse de son écart-type de mesure au carré (la fonction prend alors en entrée l&#8217;écart-type) :</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">constraint</span><span class="o">.</span><span class="na">setStddev</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>Ou de manière équivalente, le raccourci &#8220;+/-&#8221; directement dans l&#8217;expression algébrique de la contrainte
+permet de spécifier +l&#8217;écart-type+ de l&#8217;observation :</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span>Constraint constraint = new Constraint(&quot;2*x + 3*y = 113 +/- 10)
+</pre></div>
+</div>
+<p>Soit à l&#8217;inverse de sa variance de mesure (la fonction prend alors en entrée la variance) :</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">constraint</span><span class="o">.</span><span class="na">setVariance</span><span class="o">(</span><span class="mi">100</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>Les indicateurs statistiques relatifs à l&#8217;estimation par moindres carrés peuvent être affichés
+dans la console à l&#8217;aide de la fonction <em>displayFullResults()</em> (version étendue de <em>displayResults()</em>).
+Les écart-types sur chaque paramètre estimé sont alors affichés avec le facteur unitaire de variance
+(pour la qualité globale de l&#8217;estimation) et les résidus (simples et normalisés).</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">solver</span><span class="o">.</span><span class="na">displayFullResults</span><span class="o">();</span>
+</pre></div>
+</div>
+<p>Ces résultats peuvent également être obtenus individuellement à l&#8217;aide des méthodes suivantes :</p>
+<p><strong>Méthodes de récupération des résidus (équations indicatives) :</strong></p>
+<ul class="simple">
+<li><em>getResidual(int eq, int iteration)</em> : récupération du résidu (non normalisé) de l&#8217;équation numéro <em>eq</em> à une itération donnée.</li>
+<li><em>getResidual(int eq)</em> : récupération du résidu (non normalisé) de l&#8217;équation numéro <em>eq</em> après l&#8217;itération finale.</li>
+<li><em>getNormalizedResidual(int eq)</em> : récupération du résidu normalisé de l&#8217;équation numéro <em>eq</em> après l&#8217;itération finale.</li>
+<li><em>getTotalResidual(int iteration)</em> : récupération de la somme des résidus sur toutes les équations à une itération donnée.</li>
+<li><em>getMaxResidual(int iteration)</em> : récupération du résidu maximal sur toutes les équations à une itération donnée.</li>
+<li><em>getTotalSquaredResidual(int iteration)</em> : récupération de la somme des résidus au carré sur toutes les équations à une itération donnée.</li>
+</ul>
+<p>Pour chaque équation, un résidu normalisé supérieur à 3 (sous l&#8217;hypothèse d&#8217;une distribution normale des erreurs de mesure)
+indique vraisemblablement une erreur de modèle, une mesure aberrante ou encore une erreur d&#8217;appréciation de l&#8217;écart-type sur la mesure.</p>
+<p><strong>Méthodes de récupération des variances d&#8217;estimation :</strong></p>
+<ul class="simple">
+<li><em>getS02()</em> : récupération du facteur unitaire de variance.</li>
+<li><em>getEstimationStd(int i)</em> : récupération de l&#8217;écart-type d&#8217;estimation du paramètre i.</li>
+<li><em>getEstimationVariance(int i)</em> : récupération de la variance d&#8217;estimation du paramètre i.</li>
+<li><em>getEstimationCovariance(int i, int j)</em> : récupération de la covariance d&#8217;estimation des paramètre i et j.</li>
+<li><em>getEstimationCorrelation(int i, int j)</em> : récupération du coefficient de corrélation entre les paramètre i et j.</li>
+<li><em>getEstimationStd(String si)</em> : récupération de l&#8217;écrat-type d&#8217;estimation du paramètre de nom si.</li>
+<li><em>getEstimationVariance(String si)</em> : récupération de la variance d&#8217;estimation du paramètre de nom si.</li>
+<li><em>getEstimationCovariance(String si, String sj)</em> : récupération de la covariance d&#8217;estimation des paramètre de noms si et sj.</li>
+<li><em>getEstimationCorrelation(String si, String sj)</em> : récupération du coefficient de corrélation entre les paramètre de noms si et sj.</li>
+</ul>
+<p>Un facteur unitaire de variance élevé (relativement à l&#8217;unité) représente une erreur de modèle,
+des mesures aberrantes ou une sous-estimation des écart-types sur les mesures des grandeurs observées.
+Inversement, un facteur inférieur à 1 indique une sous-estimation de la précision des mesures en entrée.</p>
+<p>Dans tous les cas, avant de décider de supprimer des mesures, il peut-être intéressant de relancer le
+calcul après avoir normalisé les variances de mesure par le facteur unitaire de variance (les résultats
+de l&#8217;estimation seront identiques mais les écart-types d&#8217;estimation et les résidus normalisés seront plus représentatifs).</p>
+</div>
+<div class="section" id="exemple-complet">
+<h2>Exemple complet</h2>
+<p>Dans cet exemple, on cherche à déterminer une estimation du centre et du rayon d&#8217;une distribution circulaire de points,
+dont l&#8217;observation des positions a été entachée d&#8217;une erreur de mesures.</p>
+<div class="section" id="creation-du-jeu-de-test">
+<h3>Création du jeu de test</h3>
+<p>Dans un premier temps, simulons cette erreur de mesure. On considérera que le cercle solution est de rayon Rc = 80 m
+et est centré sur le point C avec Xc = 120.0 m et Yc = 50.0 m. On génère une série de points en coordonnées
+polaires par rapport au centre du cercle suivant deux lois uniformes en r et θ. Les coordonnées cartésiennes des points
+sont alors stockées dans deux tables X et Y. Soit N le nombre de points tirés.</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// ------------------------------------------------------------</span>
+<span class="c1">// Cercle solution</span>
+<span class="c1">// ------------------------------------------------------------</span>
+<span class="kt">double</span> <span class="n">Xc</span> <span class="o">=</span> <span class="mi">120</span><span class="o">;</span>
+<span class="kt">double</span> <span class="n">Yc</span> <span class="o">=</span> <span class="mi">50</span><span class="o">;</span>
+<span class="kt">double</span> <span class="n">Rc</span> <span class="o">=</span> <span class="mi">80</span><span class="o">;</span>
+<span class="c1">// ------------------------------------------------------------</span>
+
+<span class="c1">// ------------------------------------------------------------</span>
+<span class="c1">// Simulation de la mesure des points</span>
+<span class="c1">// ------------------------------------------------------------</span>
+<span class="kt">int</span> <span class="n">N</span> <span class="o">=</span> <span class="mi">200</span><span class="o">;</span>
+
+<span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Double</span><span class="o">&gt;</span> <span class="n">X</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Double</span><span class="o">&gt;();</span>
+<span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Double</span><span class="o">&gt;</span> <span class="n">Y</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Double</span><span class="o">&gt;();</span>
+
+<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+    <span class="kt">double</span> <span class="n">r</span> <span class="o">=</span> <span class="n">Rc</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="o">(</span><span class="n">Math</span><span class="o">.</span><span class="na">random</span><span class="o">()</span> <span class="o">-</span> <span class="mf">0.5</span><span class="o">)</span> <span class="o">*</span> <span class="n">Math</span><span class="o">.</span><span class="na">sqrt</span><span class="o">(</span><span class="mi">12</span><span class="o">);</span>
+    <span class="kt">double</span> <span class="n">t</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="na">random</span><span class="o">()</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">Math</span><span class="o">.</span><span class="na">PI</span><span class="o">;</span>
+
+    <span class="n">X</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">Xc</span> <span class="o">+</span> <span class="n">r</span> <span class="o">*</span> <span class="n">Math</span><span class="o">.</span><span class="na">cos</span><span class="o">(</span><span class="n">t</span><span class="o">));</span>
+    <span class="n">Y</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">Yc</span> <span class="o">+</span> <span class="n">r</span> <span class="o">*</span> <span class="n">Math</span><span class="o">.</span><span class="na">sin</span><span class="o">(</span><span class="n">t</span><span class="o">));</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>Remarquer que la loi uniforme sur r est prise d&#8217;amplitude égale à <span class="math">\(3 \sqrt{12}\)</span>, donnant ainsi à sa variable
+aléatoire associée un écart-type égal à 3.</p>
+<p>Ce qui donne :</p>
+<div class="centerside container">
+<div class="figure" id="id5">
+<a class="reference internal image-reference" href="../../_images/points.png"><img alt="../../_images/points.png" src="../../_images/points.png" style="width: 400px;" /></a>
+<p class="caption"><span class="caption-text">Figure 4  - Courbe des observations simulées</span></p>
+</div>
+</div>
+</div>
+<div class="section" id="implementation-de-la-solution">
+<h3>Implémentation de la solution</h3>
+<p>Pour chaque point mesuré (x,y), l&#8217;équation d&#8217;observation associée s&#8217;exprime par :</p>
+<div class="math">
+\[(x-Xc)^2 + (y-Yc)^2 - Rc^2 = 0\]</div>
+<p>Afin d&#8217;éviter d&#8217;obtenir une solution négative pour le rayon, il est préférable de prendre la racine carrée
+de cette équation.</p>
+<p>Choisissons comme écart-type : 1m (correspondant au 3m pris dans la construction du jeu de test).</p>
+<p>Le code suivant permet d&#8217;effectuer une estimation par moindres carrés des paramètres
+du cercle passant au mieux par les points simulés.</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// ------------------------------------------------------------</span>
+<span class="c1">// Estimation par moindres carrés</span>
+<span class="c1">// ------------------------------------------------------------</span>
+
+<span class="n">Solver</span> <span class="n">solver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Solver</span><span class="o">();</span>
+
+<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+    <span class="kt">double</span> <span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+    <span class="kt">double</span> <span class="n">y</span> <span class="o">=</span> <span class="n">Y</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+
+    <span class="n">solver</span><span class="o">.</span><span class="na">addConstraint</span><span class="o">(</span><span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;sqrt((&quot;</span><span class="o">+</span><span class="n">x</span><span class="o">+</span><span class="s">&quot;-Xc)^2 + (&quot;</span><span class="o">+</span><span class="n">y</span><span class="o">+</span><span class="s">&quot;-Yc)^2) - Rc = 0 +/- 1.0&quot;</span><span class="o">));</span>
+<span class="o">}</span>
+
+<span class="n">solver</span><span class="o">.</span><span class="na">addParameter</span><span class="o">(</span><span class="s">&quot;Xc&quot;</span><span class="o">,</span> <span class="mi">100</span><span class="o">);</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">addParameter</span><span class="o">(</span><span class="s">&quot;Yc&quot;</span><span class="o">,</span> <span class="mi">100</span><span class="o">);</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">addParameter</span><span class="o">(</span><span class="s">&quot;Rc&quot;</span><span class="o">,</span> <span class="mi">100</span><span class="o">);</span>
+
+<span class="n">solver</span><span class="o">.</span><span class="na">setIterationsNumber</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+
+<span class="n">solver</span><span class="o">.</span><span class="na">compute</span><span class="o">();</span>
+
+<span class="c1">// Affichage des résultats</span>
+<span class="n">solver</span><span class="o">.</span><span class="na">displayFullResults</span><span class="o">();</span>
+
+<span class="c1">// Affichage des corrélations</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Corrélations : &quot;</span><span class="o">);</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;[Xc,Yc] : &quot;</span> <span class="o">+</span> <span class="n">solver</span><span class="o">.</span><span class="na">getEstimationCorrelation</span><span class="o">(</span><span class="s">&quot;Xc&quot;</span><span class="o">,</span> <span class="s">&quot;Yc&quot;</span><span class="o">));</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;[Xc,Rc] : &quot;</span> <span class="o">+</span> <span class="n">solver</span><span class="o">.</span><span class="na">getEstimationCorrelation</span><span class="o">(</span><span class="s">&quot;Xc&quot;</span><span class="o">,</span> <span class="s">&quot;Rc&quot;</span><span class="o">));</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;[Yc,Rc] : &quot;</span> <span class="o">+</span> <span class="n">solver</span><span class="o">.</span><span class="na">getEstimationCorrelation</span><span class="o">(</span><span class="s">&quot;Yc&quot;</span><span class="o">,</span> <span class="s">&quot;Rc&quot;</span><span class="o">));</span>
+
+<span class="c1">// Récupération des paramètres estimés</span>
+<span class="kt">double</span> <span class="n">XcChap</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&quot;Xc&quot;</span><span class="o">);</span>
+<span class="kt">double</span> <span class="n">YcChap</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&quot;Yc&quot;</span><span class="o">);</span>
+<span class="kt">double</span> <span class="n">RcChap</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&quot;Rc&quot;</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>Les résultats retournés par la console sont alors (sans les résidus) :</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// -----------------------------</span>
+<span class="c1">//  Unit variance factor</span>
+<span class="c1">// -----------------------------</span>
+<span class="n">s02</span> <span class="o">=</span> <span class="mf">8.781224765741552</span>
+<span class="n">s0</span> <span class="o">=</span> <span class="mf">2.9633131400075747</span>
+<span class="c1">// -----------------------------</span>
+<span class="c1">//  After 10 iterations</span>
+<span class="c1">// -----------------------------</span>
+<span class="n">Xc</span> <span class="o">=</span> <span class="mf">120.00251244781892</span> <span class="o">+/-</span> <span class="mf">0.28901794998945496</span>
+<span class="n">Yc</span> <span class="o">=</span> <span class="mf">50.024837173134486</span> <span class="o">+/-</span> <span class="mf">0.30857385695135314</span>
+<span class="n">Rc</span> <span class="o">=</span> <span class="mf">79.6647544277168</span> <span class="o">+/-</span> <span class="mf">0.2117827341653287</span>
+
+<span class="n">Correlations</span> <span class="o">:</span>
+<span class="o">[</span><span class="n">Xc</span><span class="o">,</span><span class="n">Yc</span><span class="o">]</span> <span class="o">:</span> <span class="o">-</span><span class="mf">0.04396946802433635</span>
+<span class="o">[</span><span class="n">Xc</span><span class="o">,</span><span class="n">Rc</span><span class="o">]</span> <span class="o">:</span> <span class="o">-</span><span class="mf">0.11932157505562874</span>
+<span class="o">[</span><span class="n">Yc</span><span class="o">,</span><span class="n">Rc</span><span class="o">]</span> <span class="o">:</span> <span class="o">-</span><span class="mf">0.07743568198742104</span>
+</pre></div>
+</div>
+<p>Remarquons :</p>
+<ol class="arabic simple">
+<li>On retrouve les paramètres (au cm près pour la position et 35 cm près pour le rayon) avec des écart-types d&#8217;estimation évalués à une trentaine de cm.</li>
+<li>La racine du facteur unitaire de variance est proche de 3, correspondant à notre sous-estimation (volontaire pour l&#8217;exemple) d&#8217;un facteur 3 de l&#8217;écart-type sur les observations.</li>
+<li>De manière plus anecdotique, les corrélations entre paramètres estimés sont quasi-négligeables.</li>
+</ol>
+<div class="centerside container">
+<div class="figure" id="id6">
+<a class="reference internal image-reference" href="../../_images/points2.png"><img alt="../../_images/points2.png" src="../../_images/points2.png" style="width: 500px;" /></a>
+<p class="caption"><span class="caption-text">Figure 5 - Estimation du cercle</span></p>
+</div>
+</div>
+</div>
+<div class="section" id="ajout-d-une-contrainte">
+<h3>Ajout d&#8217;une contrainte</h3>
+<p>Modifions l&#8217;ennoncé du problème en y ajoutant une contrainte supplémentaire, de type impérative (ici avec le symbole &#8221;:=&#8221;).
+Ce problème devient un problème d&#8217;optimisation sous contrainte.</p>
+<p>Pour cela, spécifions que le cercle doit <strong>impérativement</strong> passer par un point donné : (0,0) dans notre exemple.</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">solver</span><span class="o">.</span><span class="na">addConstraint</span><span class="o">(</span><span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;sqrt(Xc^2+Yc^2)-Rc := 0&quot;</span><span class="o">));</span>
+</pre></div>
+</div>
+<p>Les résultats retournés sont alors :</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// -----------------------------</span>
+<span class="c1">//  Unit variance factor</span>
+<span class="c1">// -----------------------------</span>
+<span class="n">s02</span> <span class="o">=</span> <span class="mf">752.6993782519672</span>
+<span class="n">s0</span> <span class="o">=</span> <span class="mf">27.435367288446628</span>
+<span class="c1">// -----------------------------</span>
+<span class="c1">// After 10 iterations</span>
+<span class="c1">// -----------------------------</span>
+<span class="n">Xc</span> <span class="o">=</span> <span class="mf">88.31928892956398</span> <span class="o">+/-</span> <span class="mf">1.7325705904573305</span>
+<span class="n">Yc</span> <span class="o">=</span> <span class="mf">36.73112200860588</span> <span class="o">+/-</span> <span class="mf">2.5262655403439744</span>
+<span class="n">Rc</span> <span class="o">=</span> <span class="mf">95.6528730411946</span> <span class="o">+/-</span> <span class="mf">1.4294983796618161</span>
+
+<span class="n">Correlations</span> <span class="o">:</span>
+<span class="o">[</span><span class="n">Xc</span><span class="o">,</span><span class="n">Yc</span><span class="o">]</span> <span class="o">:</span> <span class="o">-</span><span class="mf">0.4693535665330969</span>
+<span class="o">[</span><span class="n">Xc</span><span class="o">,</span><span class="n">Rc</span><span class="o">]</span> <span class="o">:</span> <span class="mf">0.8005732688257923</span>
+<span class="o">[</span><span class="n">Yc</span><span class="o">,</span><span class="n">Rc</span><span class="o">]</span> <span class="o">:</span> <span class="mf">0.15337866550455684</span>
+</pre></div>
+</div>
+<p>On remarque cette fois-ci que :</p>
+<ol class="arabic simple">
+<li>Les paramètres estimés sont plus éloignés de la vérité terrain (avec des écart-types associés plus importants).</li>
+<li>Le facteur unitaire de variance est plus élevé que dans le cas libre, traduisant ici en particulier un problème de modèle (en pratique le cercle ne passe pas par l&#8217;origine, comme on peut le voir sur la figure ci-dessous).</li>
+<li>Les corrélations entre paramètres ne sont plus négligeables (ce qui est naturel puisque, sachant à présent que le cercle doit passer par l&#8217;origine, plus le centre est loin de O, plus le rayon doit être important pour &#8220;compenser&#8221;. Si la contrainte était une relation explicite entre Xc et Yc par exemple, on aurait [Xc,Yc] ≈ 1;</li>
+</ol>
+<div class="centerside container">
+<div class="figure" id="id7">
+<a class="reference internal image-reference" href="../../_images/points3.png"><img alt="../../_images/points3.png" src="../../_images/points3.png" style="width: 500px;" /></a>
+<p class="caption"><span class="caption-text">Figure 6 - Estimation du cercle avec la nouvelle contrainte</span></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="3d.html" title="3D module"
+                 >next</a></li>
+            <li class="right" >
+              <a href="osm.html" title="Données OSM"
+                 >previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" >Contributions</a> &raquo;</li>
+        <li><a href="#">Moindres carrés génériques</a></li>
+      </ul>
+    </div> 
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Laboratoire COGIT, IGN.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

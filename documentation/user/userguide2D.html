@@ -1,0 +1,299 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Prise en main de l’interface graphique 2D &mdash; GeOxygene</title>
+    
+    <link rel="stylesheet" href="../../_static/geoxygene.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="GeOxygene" href="../../index.html" />
+    <link rel="up" title="Guide de l’utilisateur" href="index.html" />
+    <link rel="next" title="Getting Started with GeOxygene Plugin for OpenJUMP" href="pluginoj.html" />
+    <link rel="prev" title="Guide de l’utilisateur" href="index.html" /> 
+  </head>
+  <body role="document">
+
+    <div class="header">
+        <div class="wrap">
+            <div id="logo"><a href="http://oxygene-project.sourceforge.net/">GeOxygene</a></div>
+            <h1 id="logo_cogit"><a href="http://recherche.ign.fr/labos/cogit/">COGIT</a></h1>
+            <h1 id="logo_ign" alt="Institut National de l'Information Géographique et Forestière">
+                <a href="http://www.ign.fr" alt="Institut National de l'Information Géographique et Forestière">IGN</a>
+            </h1>
+            <!-- <h1 id="logo_sourceforge"><a href="http://sourceforge.net/projects/oxygene-project/">Sourceforge</a></h1> -->
+            
+            <!-- <div class='top-xleft'><span>Last Published :  | Version :1.6</span></div> -->
+            
+            <ul id="top-nav">
+                <li class="first"><a href="/community/index.html">About</a></li>
+                <li><a href="/download/index.html">Download</a></li>
+                <li><a href="/documentation/index.html">Documentation</a></li>
+            </ul>
+            
+        </div>
+    </div>
+
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="pluginoj.html" title="Getting Started with GeOxygene Plugin for OpenJUMP"
+                 accesskey="N">next</a></li>
+            <li class="right" >
+              <a href="index.html" title="Guide de l’utilisateur"
+                 accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Guide de l&#8217;utilisateur</a> &raquo;</li>
+        <li><a href="#">Prise en main de l&#8217;interface graphique 2D</a></li>
+      </ul>
+    </div> 
+
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+	
+	<h4>Navigation</h4><ul style='list-style: none;padding-left:4px;'>
+	<li><a href="https://sourceforge.net/p/oxygene-project">
+	   Sourceforge Home
+	   <span style="padding-left:4px;"><img src="/_static/img/sourceforge.png" /></span>
+	</a></li>
+	<li><a href="http://oxygene-project.sourceforge.net/apidocs/index.html">
+	   Online javadoc
+	</a></li>
+	</ul>
+	
+	<h4>Table Of Contents</h4>
+    <ul>
+<li><a class="reference internal" href="#">Prise en main de l&#8217;interface graphique 2D</a><ul>
+<li><a class="reference internal" href="#chargement-d-un-jeu-de-donnees-geographiques-shape">Chargement d&#8217;un jeu de données géographiques shape</a></li>
+<li><a class="reference internal" href="#gestionnaire-de-couches">Gestionnaire de couches</a></li>
+<li><a class="reference internal" href="#style">Style</a></li>
+<li><a class="reference internal" href="#sauvegarde">Sauvegarde</a></li>
+<li><a class="reference internal" href="#chargement-d-un-jeu-de-donnees-osm">Chargement d&#8217;un jeu de données OSM</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Guide de l&#8217;utilisateur</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pluginoj.html"
+                        title="next chapter">Getting Started with GeOxygene Plugin for OpenJUMP</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation/user/userguide2D.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+    <form class="navbar-search pull-right" style="margin-bottom:-3px;" action="../../search.html" method="get">
+        <input type="text" name="q" placeholder="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+    
+    <!-- div>
+        <script type="text/javascript" src="http://www.ohloh.net/p/40483/widgets/project_thin_badge.js"></script>
+    </div -->
+    
+
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="prise-en-main-de-l-interface-graphique-2d">
+<span id="userguide2d"></span><h1>Prise en main de l&#8217;interface graphique 2D</h1>
+<div class="section" id="chargement-d-un-jeu-de-donnees-geographiques-shape">
+<h2>Chargement d&#8217;un jeu de données géographiques shape</h2>
+<p>Il existe 2 méthodes pour charger des fichiers shapes dans l&#8217;interface :</p>
+<ol class="arabic">
+<li><p class="first">En sélectionnant les fichiers sur votre système</p>
+<div class="chemin container">
+<p>Fichier &gt;&gt; Ouvrir un fichier</p>
+</div>
+<p>Une fenêtre s&#8217;ouvre, sélectionnez des fichiers sur votre système. Par exemple vous pouvez prendre les fichiers fournis
+dans le dépôt GeOxygene-data (<a class="reference internal" href="datadirectory.html#datadirectory"><span>jeu de données</span></a>).</p>
+<div class="centerside container">
+<div class="figure" id="id1">
+<a class="reference internal image-reference" href="../../_images/ouvrir.png"><img alt="../../_images/ouvrir.png" src="../../_images/ouvrir.png" style="width: 400px;" /></a>
+<p class="caption"><span class="caption-text">Figure 1 : Ouvrir une couche de données (format Shapefile)</span></p>
+</div>
+</div>
+</li>
+<li><p class="first">En les pré-chargeant au démarrage du lancement de l&#8217;interface.</p>
+<p>Modifier le fichier <strong>geoxygene-configuration.xml</strong> à la racine du repertoire d&#8217;installation de GeOxygene et ajouter sous les <strong>plugins</strong> :</p>
+<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="nt">&lt;preload&gt;</span>D:\ign-echantillon\bdtopo\72_BDTOPO_shp\BDT_2-0_SHP_LAMB93_X062-ED111\H_ADMINISTRATIF\COMMUNE.SHP<span class="nt">&lt;/preload&gt;</span>
+<span class="nt">&lt;preload&gt;</span>D:\ign-echantillon\bdtopo\72_BDTOPO_shp\BDT_2-0_SHP_LAMB93_X062-ED111\F_VEGETATION\ZONE_VEGETATION.SHP<span class="nt">&lt;/preload&gt;</span>
+<span class="nt">&lt;preload&gt;</span>D:\ign-echantillon\bdtopo\72_BDTOPO_shp\BDT_2-0_SHP_LAMB93_X062-ED111\D_HYDROGRAPHIE\SURFACE_EAU.SHP<span class="nt">&lt;/preload&gt;</span>
+<span class="nt">&lt;preload&gt;</span>D:\ign-echantillon\bdtopo\72_BDTOPO_shp\BDT_2-0_SHP_LAMB93_X062-ED111\E_BATI\BATI_INDUSTRIEL.SHP<span class="nt">&lt;/preload&gt;</span>
+<span class="nt">&lt;preload&gt;</span>D:\ign-echantillon\bdtopo\72_BDTOPO_shp\BDT_2-0_SHP_LAMB93_X062-ED111\E_BATI\BATI_INDIFFERENCIE.SHP<span class="nt">&lt;/preload&gt;</span>
+<span class="nt">&lt;preload&gt;</span>D:\ign-echantillon\bdtopo\72_BDTOPO_shp\BDT_2-0_SHP_LAMB93_X062-ED111\E_BATI\TERRAIN_SPORT.SHP<span class="nt">&lt;/preload&gt;</span>
+<span class="nt">&lt;preload&gt;</span>D:\ign-echantillon\bdtopo\72_BDTOPO_shp\BDT_2-0_SHP_LAMB93_X062-ED111\E_BATI\CIMETIERE.SHP<span class="nt">&lt;/preload&gt;</span>
+<span class="nt">&lt;preload&gt;</span>D:\ign-echantillon\bdtopo\72_BDTOPO_shp\BDT_2-0_SHP_LAMB93_X062-ED111\A_RESEAU_ROUTIER\ROUTE.SHP<span class="nt">&lt;/preload&gt;</span>
+<span class="nt">&lt;preload&gt;</span>D:\ign-echantillon\bdtopo\72_BDTOPO_shp\BDT_2-0_SHP_LAMB93_X062-ED111\A_RESEAU_ROUTIER\CHEMIN.SHP<span class="nt">&lt;/preload&gt;</span>
+<span class="nt">&lt;preload&gt;</span>D:\ign-echantillon\bdtopo\72_BDTOPO_shp\BDT_2-0_SHP_LAMB93_X062-ED111\D_HYDROGRAPHIE\TRONCON_COURS_EAU.SHP<span class="nt">&lt;/preload&gt;</span>
+<span class="nt">&lt;preload&gt;</span>D:\ign-echantillon\bdtopo\72_BDTOPO_shp\BDT_2-0_SHP_LAMB93_X062-ED111\H_ADMINISTRATIF\CHEF_LIEU.SHP<span class="nt">&lt;/preload&gt;</span>
+</pre></div>
+</div>
+<p>où <strong>D:\ign-echantillon</strong> est le répertoire où vous avez téléchargé les fichiers (<a class="reference internal" href="datadirectory.html#datadirectory"><span>jeu de données</span></a>).</p>
+</li>
+</ol>
+<p>Les couches s&#8217;affichent dans l&#8217;ordre de leur sélection.</p>
+<div class="centerside container">
+<div class="figure" id="id2">
+<a class="reference internal image-reference" href="../../_images/IMG06.png"><img alt="../../_images/IMG06.png" src="../../_images/IMG06.png" style="width: 700px;" /></a>
+<p class="caption"><span class="caption-text">Figure 2 : Interface de GeOxygene</span></p>
+</div>
+</div>
+</div>
+<div class="section" id="gestionnaire-de-couches">
+<h2>Gestionnaire de couches</h2>
+<p>Le bloc à gauche de l&#8217;interface cartographique fournit un gestionnaire de couches (Cf. Figure ci-dessous) :</p>
+<div class="centerside container">
+<div class="figure" id="id3">
+<a class="reference internal image-reference" href="../../_images/IMG05.png"><img alt="../../_images/IMG05.png" src="../../_images/IMG05.png" style="width: 250px;" /></a>
+<p class="caption"><span class="caption-text">Figure 3 : Gestionnaire de couches - <em>LayerLegendPanel</em></span></p>
+</div>
+</div>
+<p>On sélectionne une couche en cliquant dessus, on peut ensuite modifier différentes propriétés de cette couche :</p>
+<ul class="simple">
+<li>la rendre sélectionnable (= pouvoir sélectionner les objets dans l&#8217;interface carto ou dans la table attributaire),</li>
+<li>modifiable (=éditer, modifier les objets),</li>
+<li>gérer son niveau de transparence,</li>
+<li>modifier son style et son nom.</li>
+</ul>
+<p>Les flèches flèches en haut de ce bloc permettent d&#8217;ordonner correctement les couches, afin qu&#8217;elles soient visibles.</p>
+<p>Pour visualiser les données attributaires d&#8217;une couche, on clique sur la l&#8217;icone <em>table</em> (dernière à droite du bloc).
+On accède à l&#8217;ensemble des couches et à leurs tables attributaires :</p>
+<div class="centerside container">
+<div class="figure" id="id4">
+<a class="reference internal image-reference" href="../../_images/table.png"><img alt="../../_images/table.png" src="../../_images/table.png" style="width: 700px;" /></a>
+<p class="caption"><span class="caption-text">Figure 4 : Tables attributaires - <em>AttributeTable</em></span></p>
+</div>
+</div>
+<p>Il est possible d&#8217;éditer les attributs (si la couche correspondante est rendue modifiable),
+on peut sélectionner un objet et faire zoomer dessus, ou faire afficher uniquement des objets sélectionnés.</p>
+</div>
+<div class="section" id="style">
+<h2>Style</h2>
+<p>Une fois les couches chargées et superposées dans le bon ordre pour être visualisées,</p>
+<ol class="arabic">
+<li><p class="first">Panel de style</p>
+<p>On peut modifier leur symbolisation par défaut : il suffit de cliquer sur le carré de la colonne Styles
+devant le nom de la couche à représenter. Le premier onglet concerne la symbologie de la couche;
+un deuxième onglet permet de gérer l&#8217;affichage des toponymes.</p>
+<div class="twocol container">
+<div class="leftside container">
+<div class="centerside container">
+<div class="figure">
+<a class="reference internal image-reference" href="../../_images/IMG02.png"><img alt="../../_images/IMG02.png" src="../../_images/IMG02.png" style="width: 400px;" /></a>
+</div>
+</div>
+</div>
+<div class="rightside container">
+<div class="centerside container">
+<div class="figure">
+<a class="reference internal image-reference" href="../../_images/IMG04.png"><img alt="../../_images/IMG04.png" src="../../_images/IMG04.png" style="width: 400px;" /></a>
+</div>
+</div>
+</div>
+</div>
+<div class="centerside container">
+<p>Figure 5 : Modifier le style de la couche Commune  (onglet symbologie et toponymes) - <em>StyleEditionFrame</em></p>
+</div>
+</li>
+<li><p class="first">Fichier SLD</p>
+<p>On peut modifier le style directement par un fichier SLD (dans le menu ou 3ème icone dans le bloc <em>LayerLegendPanel</em></p>
+<p>Pour le jeu de données <em>échantillon BD TOPO® IGN</em> vous pouvez essayer le style suivant :</p>
+<div class="chemin container">
+<p><a class="reference external" href="https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/geoxygene-appli/src/main/resources/sld/style_topo_basique.xml">https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/geoxygene-appli/src/main/resources/sld/style_topo_basique.xml</a></p>
+</div>
+<div class="centerside container">
+<div class="figure" id="id5">
+<a class="reference internal image-reference" href="../../_images/IMG01.png"><img alt="../../_images/IMG01.png" src="../../_images/IMG01.png" style="width: 700px;" /></a>
+<p class="caption"><span class="caption-text">Figure 6 : Style très basique IGN dans l&#8217;interface GeOxygene 2D</span></p>
+</div>
+</div>
+</li>
+<li><p class="first">Editeur SLD</p>
+<p>Pour les connaisseurs du langage SLD, on peut modifier directement le style dans un éditeur :</p>
+<div class="centerside container">
+<div class="figure" id="id6">
+<a class="reference internal image-reference" href="../../_images/IMG08.png"><img alt="../../_images/IMG08.png" src="../../_images/IMG08.png" style="width: 700px;" /></a>
+<p class="caption"><span class="caption-text">Figure 7 : Editeur SLD</span></p>
+</div>
+</div>
+</li>
+</ol>
+<p>Le style peut être sauvegardé en cliquant dans le menu <em>Exporter SLD</em></p>
+</div>
+<div class="section" id="sauvegarde">
+<h2>Sauvegarde</h2>
+<p>On peut sauver la visualisation sous la forme d&#8217;une image PNG :</p>
+<div class="chemin container">
+Fichier &gt;&gt; Sauver comme image</div>
+<div class="centerside container">
+<div class="figure" id="id7">
+<a class="reference internal image-reference" href="../../_images/ImageRecordGeOxygene.png"><img alt="../../_images/ImageRecordGeOxygene.png" src="../../_images/ImageRecordGeOxygene.png" style="width: 700px;" /></a>
+<p class="caption"><span class="caption-text">Figure 8 : Image de la carte sauvegardée</span></p>
+</div>
+</div>
+</div>
+<div class="section" id="chargement-d-un-jeu-de-donnees-osm">
+<h2>Chargement d&#8217;un jeu de données OSM</h2>
+<p>A venir, sinon le guide du développeur est accessible <a class="reference internal" href="../application/osm.html#osm"><span>ici</span></a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="pluginoj.html" title="Getting Started with GeOxygene Plugin for OpenJUMP"
+                 >next</a></li>
+            <li class="right" >
+              <a href="index.html" title="Guide de l’utilisateur"
+                 >previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" >Guide de l&#8217;utilisateur</a> &raquo;</li>
+        <li><a href="#">Prise en main de l&#8217;interface graphique 2D</a></li>
+      </ul>
+    </div> 
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Laboratoire COGIT, IGN.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

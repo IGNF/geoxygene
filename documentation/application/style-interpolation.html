@@ -1,0 +1,678 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Styles Interpolation &mdash; GeOxygene</title>
+    
+    <link rel="stylesheet" href="../../_static/geoxygene.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="GeOxygene" href="../../index.html" /> 
+  </head>
+  <body role="document">
+
+    <div class="header">
+        <div class="wrap">
+            <div id="logo"><a href="http://oxygene-project.sourceforge.net/">GeOxygene</a></div>
+            <h1 id="logo_cogit"><a href="http://recherche.ign.fr/labos/cogit/">COGIT</a></h1>
+            <h1 id="logo_ign" alt="Institut National de l'Information Géographique et Forestière">
+                <a href="http://www.ign.fr" alt="Institut National de l'Information Géographique et Forestière">IGN</a>
+            </h1>
+            <!-- <h1 id="logo_sourceforge"><a href="http://sourceforge.net/projects/oxygene-project/">Sourceforge</a></h1> -->
+            
+            <!-- <div class='top-xleft'><span>Last Published :  | Version :1.6</span></div> -->
+            
+            <ul id="top-nav">
+                <li class="first"><a href="/community/index.html">About</a></li>
+                <li><a href="/download/index.html">Download</a></li>
+                <li><a href="/documentation/index.html">Documentation</a></li>
+            </ul>
+            
+        </div>
+    </div>
+
+    <div class="related">
+      <ul id="breadcrumbs">
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+        <li><a href="#">Styles Interpolation</a></li>
+      </ul>
+    </div> 
+
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+	
+	<h4>Navigation</h4><ul style='list-style: none;padding-left:4px;'>
+	<li><a href="https://sourceforge.net/p/oxygene-project">
+	   Sourceforge Home
+	   <span style="padding-left:4px;"><img src="/_static/img/sourceforge.png" /></span>
+	</a></li>
+	<li><a href="http://oxygene-project.sourceforge.net/apidocs/index.html">
+	   Online javadoc
+	</a></li>
+	</ul>
+	
+	<h4>Table Of Contents</h4>
+    <ul>
+<li><a class="reference internal" href="#">Styles Interpolation</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#stroke-interpolation">Stroke interpolation</a><ul>
+<li><a class="reference internal" href="#example-basic-stroke">Example basic stroke</a></li>
+<li><a class="reference internal" href="#example-expressive-stroke">Example expressive stroke</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#filling-interpolation">Filling interpolation</a><ul>
+<li><a class="reference internal" href="#example-basic-polygon-style">Example basic polygon style</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#graphic-user-interface">Graphic User Interface</a></li>
+<li><a class="reference internal" href="#advanced-control">Advanced Control</a><ul>
+<li><a class="reference internal" href="#partial-interpolation-example">Partial interpolation example</a></li>
+<li><a class="reference internal" href="#concurrent-interpolation-example">Concurrent interpolation example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#automatic-sld-pairing">Automatic SLD pairing</a></li>
+<li><a class="reference internal" href="#sld-validation-and-automatic-style-interpolation">SLD validation and automatic style interpolation</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation/application/style-interpolation.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+    <form class="navbar-search pull-right" style="margin-bottom:-3px;" action="../../search.html" method="get">
+        <input type="text" name="q" placeholder="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+    
+    <!-- div>
+        <script type="text/javascript" src="http://www.ohloh.net/p/40483/widgets/project_thin_badge.js"></script>
+    </div -->
+    
+
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="styles-interpolation">
+<h1>Styles Interpolation</h1>
+<p>Style interpolation have been developed during the ANR project <a class="reference external" href="http://mapstyle.ign.fr/">Mapstyle</a>, by Nicolas Mellado. It can be used either using GL an AWT projects.</p>
+<p>Last Update: 3rd March 2015</p>
+<div class="section" id="introduction">
+<h2>Introduction</h2>
+<p>Style interpolation has been implemented as SLD extensions, and is based on the new symbolizers <code class="docutils literal"><span class="pre">&lt;PolygonInterpolationSymbolizer&gt;</span></code> and <code class="docutils literal"><span class="pre">&lt;LineInterpolationSymbolizer&gt;</span></code>, structured as follow:</p>
+<blockquote>
+<div><div class="highlight-xml"><div class="highlight"><pre><span></span>&lt;LineInterpolationSymbolizer uom=&quot;http://www.opengeospatial.org/se/units/metre&quot;&gt;
+    &lt; *Interpolated style* &gt;
+    &lt;FirstSymbolizer uom=&quot;http://www.opengeospatial.org/se/units/metre&quot;&gt;
+        &lt; *First style definition* &gt;
+    &lt;/FirstSymbolizer&gt;
+    &lt;SecondSymbolizer uom=&quot;http://www.opengeospatial.org/se/units/metre&quot;&gt;
+        &lt; *Second style definition* &gt;
+    &lt;/SecondSymbolizer&gt;
+    &lt;alpha&gt;0.5&lt;/alpha&gt;
+&lt;/LineInterpolationSymbolizer&gt;
+</pre></div>
+</div>
+</div></blockquote>
+<p>The first part of the interpolation symbolizer <code class="docutils literal"><span class="pre">&lt;</span> <span class="pre">*Interpolated</span> <span class="pre">style*</span> <span class="pre">&gt;</span></code> describes the result of the interpolation. There is no need to edit this part, which is <strong>automatically</strong> updated each time any of the input styles is modified. More details are given at the end of this document about the technical aspects of this automatic procedure.</p>
+<p>The <code class="docutils literal"><span class="pre">&lt;FirstSymbolizer&gt;</span></code> and <code class="docutils literal"><span class="pre">&lt;SecondSymbolizer&gt;</span></code> tags define the input symbolizers to be interpolated. Their type is deduced from the main symbolizer type, as <code class="docutils literal"><span class="pre">LineSymbolizer</span></code> for <code class="docutils literal"><span class="pre">LineInterpolationSymbolizer</span></code> and <code class="docutils literal"><span class="pre">PolygonSymbolizer</span></code> for <code class="docutils literal"><span class="pre">PolygonInterpolationSymbolizer</span></code>.</p>
+<p>The parameter <code class="docutils literal"><span class="pre">alpha</span></code> is defined as <span class="math">\(\alpha \in [0:1]\)</span> and controls the interpolation between the two symbolizers.</p>
+<p>Symbolizers are interpolated parameter-wise, ie. each parameter is interpolated independently. In the current status only linear interpolation is available, and all the parameters of a symbolizer are interpolated using the same <span class="math">\(\alpha\)</span> (see section <a class="reference internal" href="#id2">advanced_control</a> for advanced control techniques). When an Stroke or a Fill element is defined only for one of the two input symbolizers, its alpha value is interpolated from the defined value to <span class="math">\(0\)</span>.</p>
+<p>Samples are available in <code class="docutils literal"><span class="pre">geoxygene-appli/samples/interpolation</span></code>.</p>
+</div>
+<div class="section" id="stroke-interpolation">
+<h2>Stroke interpolation</h2>
+<p id="id1">Many parameters of a classical stroke can be interpolated, except the colormap fields.</p>
+<p>Current supported parameter list:</p>
+<ul class="simple">
+<li>Color: interpolation in RGB space,</li>
+<li>Opacity,</li>
+<li>Width,</li>
+<li>Cap and Join: use first style value when <span class="math">\(\alpha &lt; 0.5\)</span>, and second one otherwise</li>
+<li>Expressive Stroke: requires to use the same shader and identical parameter set (different value). Textures can be interpolated if they share the same color space. GL viewer is required.</li>
+</ul>
+<div class="section" id="example-basic-stroke">
+<h3>Example basic stroke</h3>
+<p>This example can be reproduced using <code class="docutils literal"><span class="pre">samples/interpolation/SLD/stroke_interpolation.sld.xml</span></code>. We interpolate both the color and the thickness of the stroke:</p>
+<div class="highlight-xml"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;</span>
+<span class="nt">&lt;StyledLayerDescriptor</span> <span class="na">xmlns:ogc=</span><span class="s">&quot;http://www.opengis.net/ogc&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;NamedLayer&gt;</span>
+        <span class="nt">&lt;Name&gt;</span>linear<span class="nt">&lt;/Name&gt;</span>
+        <span class="nt">&lt;UserStyle&gt;</span>
+            <span class="nt">&lt;Name&gt;</span>Style créé pour le layer linear<span class="nt">&lt;/Name&gt;</span>
+            <span class="nt">&lt;IsDefault&gt;</span>false<span class="nt">&lt;/IsDefault&gt;</span>
+            <span class="nt">&lt;FeatureTypeStyle&gt;</span>
+                <span class="nt">&lt;Rule&gt;</span>
+                    <span class="nt">&lt;LineInterpolationSymbolizer</span> <span class="na">uom=</span><span class="s">&quot;http://www.opengeospatial.org/se/units/metre&quot;</span><span class="nt">&gt;</span>
+                        <span class="nt">&lt;Stroke&gt;</span>
+                            <span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke&quot;</span><span class="nt">&gt;</span>#ff0000<span class="nt">&lt;/CssParameter&gt;</span>
+<span class="hll">                            <span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke-opacity&quot;</span><span class="nt">&gt;</span>1.0<span class="nt">&lt;/CssParameter&gt;</span>
+</span><span class="hll">                            <span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke-width&quot;</span><span class="nt">&gt;</span>100.0<span class="nt">&lt;/CssParameter&gt;</span>
+</span>                            <span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke-linecap&quot;</span><span class="nt">&gt;</span>round<span class="nt">&lt;/CssParameter&gt;</span>
+                            <span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke-linejoin&quot;</span><span class="nt">&gt;</span>round<span class="nt">&lt;/CssParameter&gt;</span>
+                        <span class="nt">&lt;/Stroke&gt;</span>
+                        <span class="nt">&lt;GeometryPropertyName&gt;</span>geom<span class="nt">&lt;/GeometryPropertyName&gt;</span>
+                        <span class="nt">&lt;PerpendicularOffset&gt;</span>0.0<span class="nt">&lt;/PerpendicularOffset&gt;</span>
+                        <span class="nt">&lt;FirstSymbolizer</span> <span class="na">uom=</span><span class="s">&quot;http://www.opengeospatial.org/se/units/metre&quot;</span><span class="nt">&gt;</span>
+                            <span class="nt">&lt;Stroke&gt;</span>
+<span class="hll"><span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke&quot;</span><span class="nt">&gt;</span>#517d80<span class="nt">&lt;/CssParameter&gt;</span>
+</span><span class="hll"><span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke-width&quot;</span><span class="nt">&gt;</span>20.0<span class="nt">&lt;/CssParameter&gt;</span>
+</span>                            <span class="nt">&lt;/Stroke&gt;</span>
+                            <span class="nt">&lt;GeometryPropertyName&gt;</span>geom<span class="nt">&lt;/GeometryPropertyName&gt;</span>
+                            <span class="nt">&lt;PerpendicularOffset&gt;</span>0.0<span class="nt">&lt;/PerpendicularOffset&gt;</span>
+                        <span class="nt">&lt;/FirstSymbolizer&gt;</span>
+                        <span class="nt">&lt;SecondSymbolizer</span> <span class="na">uom=</span><span class="s">&quot;http://www.opengeospatial.org/se/units/metre&quot;</span><span class="nt">&gt;</span>
+                            <span class="nt">&lt;Stroke&gt;</span>
+<span class="hll"><span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke&quot;</span><span class="nt">&gt;</span>#ff0000<span class="nt">&lt;/CssParameter&gt;</span>
+</span><span class="hll"><span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke-width&quot;</span><span class="nt">&gt;</span>100.0<span class="nt">&lt;/CssParameter&gt;</span>
+</span>                            <span class="nt">&lt;/Stroke&gt;</span>
+                            <span class="nt">&lt;GeometryPropertyName&gt;</span>geom<span class="nt">&lt;/GeometryPropertyName&gt;</span>
+                            <span class="nt">&lt;PerpendicularOffset&gt;</span>0.0<span class="nt">&lt;/PerpendicularOffset&gt;</span>
+                        <span class="nt">&lt;/SecondSymbolizer&gt;</span>
+<span class="hll">                        <span class="nt">&lt;alpha&gt;</span>1.0<span class="nt">&lt;/alpha&gt;</span>
+</span>                    <span class="nt">&lt;/LineInterpolationSymbolizer&gt;</span>
+                <span class="nt">&lt;/Rule&gt;</span>
+            <span class="nt">&lt;/FeatureTypeStyle&gt;</span>
+        <span class="nt">&lt;/UserStyle&gt;</span>
+    <span class="nt">&lt;/NamedLayer&gt;</span>
+<span class="nt">&lt;/StyledLayerDescriptor&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<p>Which leads to the following transition:</p>
+<div class="align-center figure" id="id3">
+<a class="reference internal image-reference" href="../../_images/simple-stroke.gif"><img alt="Transition between two simple strokes" src="../../_images/simple-stroke.gif" style="width: 40%;" /></a>
+<p class="caption"><span class="caption-text">Interpolating from a thin blueish stroke (<span class="math">\(\alpha = 0\)</span>) to a thick red stroke (<span class="math">\(\alpha = 1\)</span>).
+Click to enlarge.</span></p>
+</div>
+</div>
+<div class="section" id="example-expressive-stroke">
+<h3>Example expressive stroke</h3>
+<p id="expressivestroke">The syntax used to describe expressive strokes is not stable yet. However, in the current status it is possible to interpolate between two ExpressiveStroke, leading to the following result:</p>
+<div class="align-center figure" id="id4">
+<a class="reference internal image-reference" href="../../_images/expressiveStroke.gif"><img alt="Transition between two expressive strokes" src="../../_images/expressiveStroke.gif" style="width: 40%;" /></a>
+<p class="caption"><span class="caption-text">ExpressiveStroke interpolation. Top: interpolation result, bottom: interpolated paint brush.</span></p>
+</div>
+<p>The sample used to generate this file is available at <code class="docutils literal"><span class="pre">samples/interpolation/SLD/expressiveStroke_interpolation.sld.xml</span></code>.</p>
+</div>
+</div>
+<div class="section" id="filling-interpolation">
+<h2>Filling interpolation</h2>
+<p>Current supported parameter list:</p>
+<ul class="simple">
+<li>Color: interpolation in RGB space,</li>
+<li>Opacity,</li>
+<li>Stroke (see section <a class="reference internal" href="#id1">stroke_interpolation</a>)</li>
+</ul>
+<div class="section" id="example-basic-polygon-style">
+<h3>Example basic polygon style</h3>
+<p>This example can be reproduced using <code class="docutils literal"><span class="pre">samples/interpolation/SLD/fill_interpolation.sld.xml</span></code>. We interpolate both the color used to fill the polygon and its stroke:</p>
+<div class="highlight-xml"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;</span>
+<span class="nt">&lt;StyledLayerDescriptor</span> <span class="na">xmlns:ogc=</span><span class="s">&quot;http://www.opengis.net/ogc&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;NamedLayer&gt;</span>
+        <span class="nt">&lt;Name&gt;</span>test<span class="nt">&lt;/Name&gt;</span>
+        <span class="nt">&lt;UserStyle&gt;</span>
+            <span class="nt">&lt;Name&gt;</span>Style créé pour le layer test<span class="nt">&lt;/Name&gt;</span>
+            <span class="nt">&lt;IsDefault&gt;</span>false<span class="nt">&lt;/IsDefault&gt;</span>
+            <span class="nt">&lt;FeatureTypeStyle&gt;</span>
+                <span class="nt">&lt;Rule&gt;</span>
+                    <span class="nt">&lt;PolygonInterpolationSymbolizer</span> <span class="na">uom=</span><span class="s">&quot;http://www.opengeospatial.org/se/units/metre&quot;</span><span class="nt">&gt;</span>
+                        <span class="nt">&lt;Stroke&gt;</span>
+                            <span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke&quot;</span><span class="nt">&gt;</span>#252525<span class="nt">&lt;/CssParameter&gt;</span>
+                            <span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke-opacity&quot;</span><span class="nt">&gt;</span>0.8<span class="nt">&lt;/CssParameter&gt;</span>
+                            <span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke-width&quot;</span><span class="nt">&gt;</span>0.1<span class="nt">&lt;/CssParameter&gt;</span>
+                            <span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke-linecap&quot;</span><span class="nt">&gt;</span>round<span class="nt">&lt;/CssParameter&gt;</span>
+                        <span class="nt">&lt;/Stroke&gt;</span>
+                        <span class="nt">&lt;GeometryPropertyName&gt;</span>geom<span class="nt">&lt;/GeometryPropertyName&gt;</span>
+                        <span class="nt">&lt;Fill&gt;</span>
+<span class="hll">                            <span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;fill&quot;</span><span class="nt">&gt;</span>#7ac36a<span class="nt">&lt;/CssParameter&gt;</span>
+</span><span class="hll">                            <span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;fill-opacity&quot;</span><span class="nt">&gt;</span>1.0<span class="nt">&lt;/CssParameter&gt;</span>
+</span>                        <span class="nt">&lt;/Fill&gt;</span>
+                        <span class="nt">&lt;FirstSymbolizer</span> <span class="na">uom=</span><span class="s">&quot;http://www.opengeospatial.org/se/units/metre&quot;</span><span class="nt">&gt;</span>
+                            <span class="nt">&lt;Stroke&gt;</span>
+<span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke&quot;</span><span class="nt">&gt;</span>#252525<span class="nt">&lt;/CssParameter&gt;</span>
+<span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke-opacity&quot;</span><span class="nt">&gt;</span>0.8<span class="nt">&lt;/CssParameter&gt;</span>
+<span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke-width&quot;</span><span class="nt">&gt;</span>0.1<span class="nt">&lt;/CssParameter&gt;</span>
+                            <span class="nt">&lt;/Stroke&gt;</span>
+                            <span class="nt">&lt;GeometryPropertyName&gt;</span>geom<span class="nt">&lt;/GeometryPropertyName&gt;</span>
+                            <span class="nt">&lt;Fill&gt;</span>
+<span class="hll"><span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;fill&quot;</span><span class="nt">&gt;</span>#bf9e0a<span class="nt">&lt;/CssParameter&gt;</span>
+</span><span class="hll"><span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;fill-opacity&quot;</span><span class="nt">&gt;</span>1.0<span class="nt">&lt;/CssParameter&gt;</span>
+</span>                            <span class="nt">&lt;/Fill&gt;</span>
+                        <span class="nt">&lt;/FirstSymbolizer&gt;</span>
+                        <span class="nt">&lt;SecondSymbolizer</span> <span class="na">uom=</span><span class="s">&quot;http://www.opengeospatial.org/se/units/metre&quot;</span><span class="nt">&gt;</span>
+                            <span class="nt">&lt;GeometryPropertyName&gt;</span>geom<span class="nt">&lt;/GeometryPropertyName&gt;</span>
+                            <span class="nt">&lt;Fill&gt;</span>
+<span class="hll"><span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;fill&quot;</span><span class="nt">&gt;</span>#7ac36a<span class="nt">&lt;/CssParameter&gt;</span>
+</span><span class="hll"><span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;fill-opacity&quot;</span><span class="nt">&gt;</span>1.0<span class="nt">&lt;/CssParameter&gt;</span>
+</span>                            <span class="nt">&lt;/Fill&gt;</span>
+                        <span class="nt">&lt;/SecondSymbolizer&gt;</span>
+                        <span class="nt">&lt;alpha&gt;</span>1.0<span class="nt">&lt;/alpha&gt;</span>
+                    <span class="nt">&lt;/PolygonInterpolationSymbolizer&gt;</span>
+                <span class="nt">&lt;/Rule&gt;</span>
+            <span class="nt">&lt;/FeatureTypeStyle&gt;</span>
+        <span class="nt">&lt;/UserStyle&gt;</span>
+    <span class="nt">&lt;/NamedLayer&gt;</span>
+<span class="nt">&lt;/StyledLayerDescriptor&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<p>Note that the stoke is not defined in the second style, so the final interpolated style is defined using the first style stroke, with an opacity computed according to <span class="math">\(\alpha\)</span>.
+Which leads to the following transition:</p>
+<div class="align-center figure" id="id5">
+<a class="reference internal image-reference" href="../../_images/simple-fill.gif"><img alt="Transition between two polygon styles" src="../../_images/simple-fill.gif" style="width: 40%;" /></a>
+<p class="caption"><span class="caption-text">Transition between two polygon styles.
+Click to enlarge.</span></p>
+</div>
+</div>
+</div>
+<div class="section" id="graphic-user-interface">
+<h2>Graphic User Interface</h2>
+<p>Interpolated styles cannot be edited from the style edition frame. Modifying the style from this window will edit only the result of the interpolation, which is recomputed when clicking on the Apply or Ok buttons.</p>
+<p>It is however possible to edit the parameter <span class="math">\(\alpha\)</span> for the selected layer, using the slider(s) located in the <em>Style Interpolation</em> tab. Multiple sliders can be used when multiple interpolation symbolizers are used alongside in a single layer (see section <a class="reference internal" href="#id2">advanced_control</a>)</p>
+<div class="align-center figure" id="id6">
+<a class="reference internal image-reference" href="../../_images/gui.png"><img alt="Using GUI to manipulate interpolation" src="../../_images/gui.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-text">Using GUI to manipulate interpolation.
+Click to enlarge.</span></p>
+</div>
+</div>
+<div class="section" id="advanced-control">
+<h2>Advanced Control</h2>
+<p id="id2">Multiple symbolizers can be used side by side to use different alpha for different set of parameters, or define constant parameters.</p>
+<div class="section" id="partial-interpolation-example">
+<h3>Partial interpolation example</h3>
+<p>The sample <code class="docutils literal"><span class="pre">samples/interpolation/SLD/advanced_partial_interpolation.sld.xml</span></code> is an example of partial interpolation, where the filling properties are interpolated and the stroke style kept uniform using a dedicated PolygonSymbolizer.</p>
+<div class="highlight-xml"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;</span>
+<span class="nt">&lt;StyledLayerDescriptor</span> <span class="na">xmlns:ogc=</span><span class="s">&quot;http://www.opengis.net/ogc&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;NamedLayer&gt;</span>
+        <span class="nt">&lt;Name&gt;</span>test<span class="nt">&lt;/Name&gt;</span>
+        <span class="nt">&lt;UserStyle&gt;</span>
+            <span class="nt">&lt;Name&gt;</span>Style créé pour le layer test<span class="nt">&lt;/Name&gt;</span>
+            <span class="nt">&lt;IsDefault&gt;</span>false<span class="nt">&lt;/IsDefault&gt;</span>
+            <span class="nt">&lt;FeatureTypeStyle&gt;</span>
+                <span class="nt">&lt;Rule&gt;</span>
+<span class="hll">                    <span class="nt">&lt;PolygonInterpolationSymbolizer</span> <span class="na">uom=</span><span class="s">&quot;http://www.opengeospatial.org/se/units/metre&quot;</span><span class="nt">&gt;</span>
+</span>                        <span class="nt">&lt;GeometryPropertyName&gt;</span>geom<span class="nt">&lt;/GeometryPropertyName&gt;</span>
+                        <span class="nt">&lt;Fill&gt;</span>
+                            <span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;fill&quot;</span><span class="nt">&gt;</span>#bf9e0a<span class="nt">&lt;/CssParameter&gt;</span>
+                            <span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;fill-opacity&quot;</span><span class="nt">&gt;</span>1.0<span class="nt">&lt;/CssParameter&gt;</span>
+                        <span class="nt">&lt;/Fill&gt;</span>
+                        <span class="nt">&lt;FirstSymbolizer</span> <span class="na">uom=</span><span class="s">&quot;http://www.opengeospatial.org/se/units/metre&quot;</span><span class="nt">&gt;</span>
+                            <span class="nt">&lt;GeometryPropertyName&gt;</span>geom<span class="nt">&lt;/GeometryPropertyName&gt;</span>
+                            <span class="nt">&lt;Fill&gt;</span>
+<span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;fill&quot;</span><span class="nt">&gt;</span>#bf9e0a<span class="nt">&lt;/CssParameter&gt;</span>
+<span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;fill-opacity&quot;</span><span class="nt">&gt;</span>1.0<span class="nt">&lt;/CssParameter&gt;</span>
+                            <span class="nt">&lt;/Fill&gt;</span>
+                        <span class="nt">&lt;/FirstSymbolizer&gt;</span>
+                        <span class="nt">&lt;SecondSymbolizer</span> <span class="na">uom=</span><span class="s">&quot;http://www.opengeospatial.org/se/units/metre&quot;</span><span class="nt">&gt;</span>
+                            <span class="nt">&lt;GeometryPropertyName&gt;</span>geom<span class="nt">&lt;/GeometryPropertyName&gt;</span>
+                            <span class="nt">&lt;Fill&gt;</span>
+<span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;fill&quot;</span><span class="nt">&gt;</span>#7ac36a<span class="nt">&lt;/CssParameter&gt;</span>
+<span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;fill-opacity&quot;</span><span class="nt">&gt;</span>1.0<span class="nt">&lt;/CssParameter&gt;</span>
+                            <span class="nt">&lt;/Fill&gt;</span>
+                        <span class="nt">&lt;/SecondSymbolizer&gt;</span>
+                        <span class="nt">&lt;alpha&gt;</span>0.0<span class="nt">&lt;/alpha&gt;</span>
+<span class="hll">                    <span class="nt">&lt;/PolygonInterpolationSymbolizer&gt;</span>
+</span><span class="hll">                    <span class="nt">&lt;PolygonSymbolizer</span> <span class="na">uom=</span><span class="s">&quot;http://www.opengeospatial.org/se/units/metre&quot;</span><span class="nt">&gt;</span>
+</span>                        <span class="nt">&lt;Stroke&gt;</span>
+                            <span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke&quot;</span><span class="nt">&gt;</span>#252525<span class="nt">&lt;/CssParameter&gt;</span>
+                            <span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke-opacity&quot;</span><span class="nt">&gt;</span>1.0<span class="nt">&lt;/CssParameter&gt;</span>
+                            <span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke-width&quot;</span><span class="nt">&gt;</span>0.1<span class="nt">&lt;/CssParameter&gt;</span>
+                            <span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke-linecap&quot;</span><span class="nt">&gt;</span>round<span class="nt">&lt;/CssParameter&gt;</span>
+                        <span class="nt">&lt;/Stroke&gt;</span>
+                        <span class="nt">&lt;GeometryPropertyName&gt;</span>geom<span class="nt">&lt;/GeometryPropertyName&gt;</span>
+<span class="hll">                    <span class="nt">&lt;/PolygonSymbolizer&gt;</span>
+</span>                <span class="nt">&lt;/Rule&gt;</span>
+            <span class="nt">&lt;/FeatureTypeStyle&gt;</span>
+        <span class="nt">&lt;/UserStyle&gt;</span>
+    <span class="nt">&lt;/NamedLayer&gt;</span>
+<span class="nt">&lt;/StyledLayerDescriptor&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<div class="align-center figure" id="id7">
+<a class="reference internal image-reference" href="../../_images/partial.gif"><img alt="Partial interpolation" src="../../_images/partial.gif" style="width: 40%;" /></a>
+<p class="caption"><span class="caption-text">Use constant stroke properties and interpolates only filling parameters.
+Click to enlarge.</span></p>
+</div>
+</div>
+<div class="section" id="concurrent-interpolation-example">
+<h3>Concurrent interpolation example</h3>
+<p>In this example there are two interpolation symbolizers: one to interpolate the polygon color, and another one for the stroke parameters.</p>
+<div class="highlight-xml"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;</span>
+<span class="nt">&lt;StyledLayerDescriptor</span> <span class="na">xmlns:ogc=</span><span class="s">&quot;http://www.opengis.net/ogc&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;NamedLayer&gt;</span>
+        <span class="nt">&lt;Name&gt;</span>test<span class="nt">&lt;/Name&gt;</span>
+        <span class="nt">&lt;UserStyle&gt;</span>
+            <span class="nt">&lt;Name&gt;</span>Style créé pour le layer test<span class="nt">&lt;/Name&gt;</span>
+            <span class="nt">&lt;IsDefault&gt;</span>false<span class="nt">&lt;/IsDefault&gt;</span>
+            <span class="nt">&lt;FeatureTypeStyle&gt;</span>
+                <span class="nt">&lt;Rule&gt;</span>
+<span class="hll">                    <span class="nt">&lt;PolygonInterpolationSymbolizer</span> <span class="na">uom=</span><span class="s">&quot;http://www.opengeospatial.org/se/units/metre&quot;</span><span class="nt">&gt;</span>
+</span>                        <span class="nt">&lt;GeometryPropertyName&gt;</span>geom<span class="nt">&lt;/GeometryPropertyName&gt;</span>
+                        <span class="nt">&lt;Fill&gt;</span>
+                            <span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;fill&quot;</span><span class="nt">&gt;</span>#bf9e0a<span class="nt">&lt;/CssParameter&gt;</span>
+                            <span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;fill-opacity&quot;</span><span class="nt">&gt;</span>1.0<span class="nt">&lt;/CssParameter&gt;</span>
+                        <span class="nt">&lt;/Fill&gt;</span>
+                        <span class="nt">&lt;FirstSymbolizer</span> <span class="na">uom=</span><span class="s">&quot;http://www.opengeospatial.org/se/units/metre&quot;</span><span class="nt">&gt;</span>
+                            <span class="nt">&lt;GeometryPropertyName&gt;</span>geom<span class="nt">&lt;/GeometryPropertyName&gt;</span>
+                            <span class="nt">&lt;Fill&gt;</span>
+<span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;fill-opacity&quot;</span><span class="nt">&gt;</span>1.0<span class="nt">&lt;/CssParameter&gt;</span>
+<span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;fill&quot;</span><span class="nt">&gt;</span>#bf9e0a<span class="nt">&lt;/CssParameter&gt;</span>
+                            <span class="nt">&lt;/Fill&gt;</span>
+                        <span class="nt">&lt;/FirstSymbolizer&gt;</span>
+                        <span class="nt">&lt;SecondSymbolizer</span> <span class="na">uom=</span><span class="s">&quot;http://www.opengeospatial.org/se/units/metre&quot;</span><span class="nt">&gt;</span>
+                            <span class="nt">&lt;GeometryPropertyName&gt;</span>geom<span class="nt">&lt;/GeometryPropertyName&gt;</span>
+                            <span class="nt">&lt;Fill&gt;</span>
+<span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;fill-opacity&quot;</span><span class="nt">&gt;</span>1.0<span class="nt">&lt;/CssParameter&gt;</span>
+<span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;fill&quot;</span><span class="nt">&gt;</span>#7ac36a<span class="nt">&lt;/CssParameter&gt;</span>
+                            <span class="nt">&lt;/Fill&gt;</span>
+                        <span class="nt">&lt;/SecondSymbolizer&gt;</span>
+<span class="hll">                        <span class="nt">&lt;alpha&gt;</span>0.0<span class="nt">&lt;/alpha&gt;</span>
+</span><span class="hll">                    <span class="nt">&lt;/PolygonInterpolationSymbolizer&gt;</span>
+</span><span class="hll">                    <span class="nt">&lt;PolygonInterpolationSymbolizer</span> <span class="na">uom=</span><span class="s">&quot;http://www.opengeospatial.org/se/units/metre&quot;</span><span class="nt">&gt;</span>
+</span>                        <span class="nt">&lt;Stroke&gt;</span>
+                            <span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke&quot;</span><span class="nt">&gt;</span>#252525<span class="nt">&lt;/CssParameter&gt;</span>
+                            <span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke-opacity&quot;</span><span class="nt">&gt;</span>1.0<span class="nt">&lt;/CssParameter&gt;</span>
+                            <span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke-width&quot;</span><span class="nt">&gt;</span>0.05<span class="nt">&lt;/CssParameter&gt;</span>
+                            <span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke-linecap&quot;</span><span class="nt">&gt;</span>round<span class="nt">&lt;/CssParameter&gt;</span>
+                            <span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke-linejoin&quot;</span><span class="nt">&gt;</span>round<span class="nt">&lt;/CssParameter&gt;</span>
+                        <span class="nt">&lt;/Stroke&gt;</span>
+                        <span class="nt">&lt;GeometryPropertyName&gt;</span>geom<span class="nt">&lt;/GeometryPropertyName&gt;</span>
+                        <span class="nt">&lt;FirstSymbolizer</span> <span class="na">uom=</span><span class="s">&quot;http://www.opengeospatial.org/se/units/metre&quot;</span><span class="nt">&gt;</span>
+                            <span class="nt">&lt;Stroke&gt;</span>
+<span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke&quot;</span><span class="nt">&gt;</span>#252525<span class="nt">&lt;/CssParameter&gt;</span>
+<span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke-opacity&quot;</span><span class="nt">&gt;</span>1.0<span class="nt">&lt;/CssParameter&gt;</span>
+<span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke-width&quot;</span><span class="nt">&gt;</span>0.05<span class="nt">&lt;/CssParameter&gt;</span>
+                            <span class="nt">&lt;/Stroke&gt;</span>
+                            <span class="nt">&lt;GeometryPropertyName&gt;</span>geom<span class="nt">&lt;/GeometryPropertyName&gt;</span>
+                        <span class="nt">&lt;/FirstSymbolizer&gt;</span>
+                        <span class="nt">&lt;SecondSymbolizer</span> <span class="na">uom=</span><span class="s">&quot;http://www.opengeospatial.org/se/units/metre&quot;</span><span class="nt">&gt;</span>
+                            <span class="nt">&lt;Stroke&gt;</span>
+<span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke&quot;</span><span class="nt">&gt;</span>#252525<span class="nt">&lt;/CssParameter&gt;</span>
+<span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke-opacity&quot;</span><span class="nt">&gt;</span>1.0<span class="nt">&lt;/CssParameter&gt;</span>
+<span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke-width&quot;</span><span class="nt">&gt;</span>0.1<span class="nt">&lt;/CssParameter&gt;</span>
+                            <span class="nt">&lt;/Stroke&gt;</span>
+                            <span class="nt">&lt;GeometryPropertyName&gt;</span>geom<span class="nt">&lt;/GeometryPropertyName&gt;</span>
+                        <span class="nt">&lt;/SecondSymbolizer&gt;</span>
+<span class="hll">                        <span class="nt">&lt;alpha&gt;</span>0.0<span class="nt">&lt;/alpha&gt;</span>
+</span><span class="hll">                    <span class="nt">&lt;/PolygonInterpolationSymbolizer&gt;</span>
+</span>                <span class="nt">&lt;/Rule&gt;</span>
+            <span class="nt">&lt;/FeatureTypeStyle&gt;</span>
+        <span class="nt">&lt;/UserStyle&gt;</span>
+    <span class="nt">&lt;/NamedLayer&gt;</span>
+<span class="nt">&lt;/StyledLayerDescriptor&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<p>Hence two sliders are available to manipulate each parameter independently:</p>
+<div class="align-center figure" id="id8">
+<a class="reference internal image-reference" href="../../_images/split.gif"><img alt="Concurrent interpolation" src="../../_images/split.gif" style="width: 80%;" /></a>
+<p class="caption"><span class="caption-text">Use different interpolation values for the stroke and filling parameters.
+Click to enlarge.</span></p>
+</div>
+</div>
+</div>
+<div class="section" id="automatic-sld-pairing">
+<h2>Automatic SLD pairing</h2>
+<p>Two SLD sharing the same structure can be automatically parsed and merged using interpolation symbolizers.</p>
+<p>During the mixing procedure, layers are matched by name. For each couple of layers, we traverse the styles, features, and rules to pair the symbolizers and put them in interpolation symbolizers. When a different number of symbolizers is available on each side, only the shared one are interpolated and the others discarded.</p>
+<p>To use this functionality you need to:</p>
+<div class="right figure align-right">
+<img alt="Concurrent interpolation" src="../../_images/mix.png" />
+</div>
+<ul class="simple">
+<li>Load a first SLD (right inset: green button)</li>
+<li>Load a second SLD for automatic mixing (right inset: red button)</li>
+</ul>
+<p>The two inputs are processed and a new SLD generated.
+This resulting SLD can be mixed with another one by using a same procedure twice.</p>
+</div>
+<div class="section" id="sld-validation-and-automatic-style-interpolation">
+<h2>SLD validation and automatic style interpolation</h2>
+<p>Interpolating between two symbolizers requires to read there definition, interpolate, and put the result back to the SLD. By construction the SLD is purely static and do not include any logic.</p>
+<p>We have implemented the interpolation as a validation step, which occurs each time a SLD is modified. During this stage the modified SLD is parsed, and depending on its content eventually modified. Further processing can be used, for instance for raster interpolation (see <a class="reference internal" href="#expressivestroke">expressiveStroke</a>). In that case a new raster is generated on the fly according to input parameters, then saved to the disk, and linked in the SLD as an usual raster file.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The generated file is temporary and not saved alongside the SLD. Each time the SLD is loaded and validated, a new interpolated raster is generated and used for visualization. Exporting such SLD outside of Geoxygen would require to manually edit it to refer to a copy of the interpolated raster stored in a known asset folder.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <ul id="breadcrumbs">
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+        <li><a href="#">Styles Interpolation</a></li>
+      </ul>
+    </div> 
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Laboratoire COGIT, IGN.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

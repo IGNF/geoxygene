@@ -1,0 +1,354 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Geometrie dans GeOxygene &mdash; GeOxygene</title>
+    
+    <link rel="stylesheet" href="../../_static/geoxygene.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="GeOxygene" href="../../index.html" />
+    <link rel="up" title="Tutorial" href="index.html" />
+    <link rel="next" title="Feature : structure et manipulation" href="feature.html" />
+    <link rel="prev" title="Architecture - GeOxygene Plateform" href="architecture.html" /> 
+  </head>
+  <body role="document">
+
+    <div class="header">
+        <div class="wrap">
+            <div id="logo"><a href="http://oxygene-project.sourceforge.net/">GeOxygene</a></div>
+            <h1 id="logo_cogit"><a href="http://recherche.ign.fr/labos/cogit/">COGIT</a></h1>
+            <h1 id="logo_ign" alt="Institut National de l'Information Géographique et Forestière">
+                <a href="http://www.ign.fr" alt="Institut National de l'Information Géographique et Forestière">IGN</a>
+            </h1>
+            <!-- <h1 id="logo_sourceforge"><a href="http://sourceforge.net/projects/oxygene-project/">Sourceforge</a></h1> -->
+            
+            <!-- <div class='top-xleft'><span>Last Published :  | Version :1.6</span></div> -->
+            
+            <ul id="top-nav">
+                <li class="first"><a href="/community/index.html">About</a></li>
+                <li><a href="/download/index.html">Download</a></li>
+                <li><a href="/documentation/index.html">Documentation</a></li>
+            </ul>
+            
+        </div>
+    </div>
+
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="feature.html" title="Feature : structure et manipulation"
+                 accesskey="N">next</a></li>
+            <li class="right" >
+              <a href="architecture.html" title="Architecture - GeOxygene Plateform"
+                 accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Tutorial</a> &raquo;</li>
+        <li><a href="#">Geometrie dans GeOxygene</a></li>
+      </ul>
+    </div> 
+
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+	
+	<h4>Navigation</h4><ul style='list-style: none;padding-left:4px;'>
+	<li><a href="https://sourceforge.net/p/oxygene-project">
+	   Sourceforge Home
+	   <span style="padding-left:4px;"><img src="/_static/img/sourceforge.png" /></span>
+	</a></li>
+	<li><a href="http://oxygene-project.sourceforge.net/apidocs/index.html">
+	   Online javadoc
+	</a></li>
+	</ul>
+	
+	<h4>Table Of Contents</h4>
+    <ul>
+<li><a class="reference internal" href="#">Geometrie dans GeOxygene</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#implementation-dans-geoxygene">Implémentation dans GeOxygene</a></li>
+<li><a class="reference internal" href="#diagramme-de-classes">Diagramme de classes</a></li>
+<li><a class="reference internal" href="#mise-en-pratique">Mise en pratique</a></li>
+<li><a class="reference internal" href="#references">Références</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="architecture.html"
+                        title="previous chapter">Architecture - GeOxygene Plateform</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="feature.html"
+                        title="next chapter">Feature : structure et manipulation</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation/tutorial/geometry.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+    <form class="navbar-search pull-right" style="margin-bottom:-3px;" action="../../search.html" method="get">
+        <input type="text" name="q" placeholder="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+    
+    <!-- div>
+        <script type="text/javascript" src="http://www.ohloh.net/p/40483/widgets/project_thin_badge.js"></script>
+    </div -->
+    
+
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="geometrie-dans-geoxygene">
+<span id="geometry"></span><h1>Geometrie dans GeOxygene</h1>
+<div class="section" id="introduction">
+<h2>Introduction</h2>
+<p>Dans GeOxygene la dimension spatiale des objets géographiques repose sur la large gamme de primitives géométriques
+et topologiques spécifiée par la norme ISO 19107.</p>
+<p>La géométrie est implémentée dans le module <strong>geoxygene-spatial</strong>,
+et les interfaces sont implémentées dans le module <strong>geoxygene-api</strong></p>
+</div>
+<div class="section" id="implementation-dans-geoxygene">
+<h2>Implémentation dans GeOxygene</h2>
+<ul>
+<li><p class="first">GM_Object est la classe mère des objets géographiques. Un GM_Object peut-être soit une primitive (GM_Primitive),
+un agrégat (GM_Agregate) ou un complexe (GM_Complex). Agrégats et complexes sont des collections de primitives
+plus ou moins particulières (cf. plus bas).</p>
+</li>
+<li><p class="first">La géométrie est implémentée dans le package fr.ign.cogit.geoxyegene.spatial lui-même découpé en sous-packages.</p>
+<blockquote>
+<div><ul class="simple">
+<li>Le package fr.ign.cogit.geoxyegene.spatial.geomroot ne contient que la classe mère GM_Object.</li>
+<li>Le package fr.ign.cogit.geoxyegene.spatial.geomaggr contient les classes géométriques d’agrégats.</li>
+<li>Le package fr.ign.cogit.geoxyegene.spatial.geomcomp contient les classes de complexes géométriques.</li>
+<li>Le package fr.ign.cogit.geoxyegene.spatial.geomprim contient les classes de primitives qui ne stockent
+pas directement de coordonnées (dont GM_Point, GM_Curve et GM_Surface).</li>
+<li>Le package fr.ign.cogit.geoxyegene.spatial.coordgeom contient les classes de primitives qui stockent
+des coordonnées (dont DirectPosition, GM_LineString, GM_Polygon).</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">Un agrégat est une collection de GM_Object sans aucune structure interne.
+On peut trouver des agrégats hétérogènes (GM_Aggregate) c’est-à-dire composés de primitives de différents types,
+ou des agrégats homogènes (GM_MultiPrimitive et ses sous-classes) c’est-à-dire composés de primitives
+du même type (point, ligne, surface).</p>
+</li>
+<li><p class="first">Un complexe est une collection structurée de GM_Primitive. On impose en particulier aux primitives d’être connectées.
+La classe GM_Complex rassemble des primitives hétérogènes ; on ne l’utilise pas pour le moment.
+On utilise la sous-classe GM_Composite et ses sous-classes : c’est une collection de primitives, homogène à une primitive.
+Ceci signifie :</p>
+<blockquote>
+<div><ul class="simple">
+<li>Un GM_CompositePoint est homogène à un GM_Point, donc est composé d’un et d’un seul point (ça ne sert pas à grand chose ! ☺)</li>
+<li>Une GM_CompositeCurve est homogène à une courbe : elle est composée de primitives linéaires connectées telles que le point final
+de l’une soit le point initial de la suivante.</li>
+<li>Un GM_Ring est une GM_CompositeCurve particulière : elle se referme (point initial de la première primitive = point final de la dernière primitive).</li>
+<li>Une GM_CompositeSurface est homogène à une surface : elle est composée de primitives surfaciques adjacentes qui ne se recouvrent pas.</li>
+<li>Un GM_Shell est une GM_CompositeSurface particulière : elle se referme.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">La primitive linéaire de base s’appelle GM_Curve. Une GM_Curve est composée d’un ou plusieurs GM_CurveSegment.
+Un GM_CurveSegment peut être une polyligne (GM_LineString), une suite d’arcs de cercles (GM_ArcString),
+une spline (GM_SplineCurve), etc… Un nombre conséquent de GM_CurveSegment est prévu par le modèle.</p>
+</li>
+<li><p class="first">Le seul GM_CurveSegment implémenté dans GeOxygene est la polyligne GM_LineString. En effet, les SGBD et SIG actuels
+n’offrent pas beaucoup d’autres alternatives pour le stockage des primitives linéaires.
+La GM_LineString est de surcroît une GM_Curve particulière, composée d’un et d’un seul segment qui est lui-même (extension de la norme ISO).
+Cette extension à la norme permet de travailler directement et facilement sur les instances de la classe GM_LineString, qui est le cas le plus courant.
+Malgré tout, la classe GM_Curve existe et est utilisable.</p>
+</li>
+<li><p class="first">La frontière d’un GM_Polygon est un GM_Ring.</p>
+</li>
+<li><p class="first">On retrouve, pour les surfaces, une modélisation analogue à celle sur les linéaires.
+La primitive surfacique de base s’appelle dans la norme GM_Surface. Elle est composée de GM_SurfacePatch.
+Un GM_SurfacePatch peut être un polygone (GM_Polygon) ou quelque chose de plus compliqué pour permettre de travailler
+en 3D (cylindre, sphère, etc.). GM_Polygon est ici une GM_Surface particulière composée d’un et d’un seul GM_SurfacePatch qui est lui-même.
+Ceci permet là aussi de travailler directement sur GM_Polygon. En pratique, dans la version actuelle de GeOxygene,
+seule la classe GM_Polygon est utilisable (GM_Surface ne l’est pas).</p>
+</li>
+<li><p class="first">Il existe des classes de primitives orientées (GM_OrientableCurve, GM_OrientableSurface).
+On appelle « primitive » la primitive orientée positivement (GM_Curve, GM_Polygon).
+Chaque primitive orientée est liée à sa primitive orientée positivement via le lien primitive.
+En fait, la primitive orientée positivement et la primitive sont le même objet.
+C’est elle qui est éventuellement liée à une primitive topologique.
+La primitive est liée à ses deux primitives orientées via le lien proxy (sachant que la primitive orientée positivement est elle-même …).</p>
+</li>
+<li><p class="first">La classe DirectPosition représente un tableau de X,Y,Z, avec certaines méthodes associées (non détaillées ici).
+Si on travaille en 2D, le Z n’est pas renseigné. On ne parle pas des primitives 3D dans ce document.</p>
+</li>
+<li><p class="first">À noter qu’il existe des classes qui sont des structures pour représenter les frontières des objets géométriques
+(GM_CurveBoundary pour représenter la frontière d’une GM_Curve, GM_SurfaceBoundary pour représenter la frontière d’un GM_Polygon).
+Leur utilisation n’est pas fondamentale.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="diagramme-de-classes">
+<h2>Diagramme de classes</h2>
+<div class="centerside container">
+<div class="figure" id="id2">
+<a class="reference internal image-reference" href="../../_images/DC_Geometrie.png"><img alt="../../_images/DC_Geometrie.png" src="../../_images/DC_Geometrie.png" style="width: 800px;" /></a>
+<p class="caption"><span class="caption-text">Figure 1 : Diagramme de classe relatif à la géométrie</span></p>
+</div>
+</div>
+<div class="centerside container">
+<div class="figure" id="id3">
+<a class="reference internal image-reference" href="../../_images/DC_GM_Point.png"><img alt="../../_images/DC_GM_Point.png" src="../../_images/DC_GM_Point.png" style="width: 350px;" /></a>
+<p class="caption"><span class="caption-text">Figure 2 : Diagramme de classe <em>GM_Point</em></span></p>
+</div>
+</div>
+</div>
+<div class="section" id="mise-en-pratique">
+<h2>Mise en pratique</h2>
+<p>Apprendre par l&#8217;exemple !</p>
+<div class="chemin container">
+Problème : le but est de réaliser une carte à l&#8217;échelle du monde et de la centrer sur une longitude particulière
+dans l&#8217;interface graphique 2D de GeOxygene.
+Par exemple, à partir de la projection WGS84, on va « déplacer » la carte vers l&#8217;est,
+afin d&#8217;avoir pour les Etats-Unis une emprise complète entièrement à gauche de la carte ....</div>
+<p>Le code source de cet exemple est disponible dans GeOxygene
+<a class="reference external" href="http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/geoxygene-appli/src/main/java/fr/ign/cogit/geoxygene/appli/example/ChangementProjectionShape.java">ici</a></p>
+<p>Le jeu de données est disponible
+<a class="reference external" href="http://www.naturalearthdata.com/about/">ici</a></p>
+<div class="centerside container">
+<div class="figure">
+<a class="reference internal image-reference" href="../../_images/ChangementProjectionShape.png"><img alt="../../_images/ChangementProjectionShape.png" src="../../_images/ChangementProjectionShape.png" style="width: 500px;" /></a>
+</div>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// On charge le ShapeFile dans une FeatureCollection, </span>
+<span class="n">IFeatureCollection</span><span class="o">&lt;</span><span class="n">IFeature</span><span class="o">&gt;</span> <span class="n">featCollInitiale</span> <span class="o">=</span> 
+        <span class="n">ShapefileReader</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">&quot;\\ne_10m_admin_0_countries\\ne_10m_admin_0_countries.shp&quot;</span><span class="o">).</span><span class="na">getAbsolutePath</span><span class="o">());</span>
+		
+<span class="c1">// On va stocker le Feature sélectionner dans une nouvelle Population</span>
+<span class="n">Population</span><span class="o">&lt;</span><span class="n">DefaultFeature</span><span class="o">&gt;</span> <span class="n">popEtatsUnis</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Population</span><span class="o">&lt;</span><span class="n">DefaultFeature</span><span class="o">&gt;(</span><span class="kc">false</span><span class="o">,</span> <span class="s">&quot;EtatsUnis0&quot;</span><span class="o">,</span> <span class="n">DefaultFeature</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
+		
+<span class="c1">// On recherche le code ISO sur 2 chiffres du pays dans le ShapeFile</span>
+<span class="k">for</span> <span class="o">(</span><span class="n">IFeature</span> <span class="n">feat</span> <span class="o">:</span> <span class="n">featCollInitiale</span><span class="o">)</span> <span class="o">{</span>
+  <span class="c1">// On sélectionne uniquement le polygone des Etats-unis</span>
+	<span class="k">if</span><span class="o">(</span><span class="n">feat</span><span class="o">.</span><span class="na">getAttribute</span><span class="o">(</span><span class="s">&quot;iso_a2&quot;</span><span class="o">).</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;US&quot;</span><span class="o">)){</span>
+		<span class="c1">// On stocke le Feature sélectionné dans une nouvelle Population</span>
+		<span class="n">popEtatsUnis</span><span class="o">.</span><span class="na">setFeatureType</span><span class="o">(</span><span class="n">featCollInitiale</span><span class="o">.</span><span class="na">getFeatureType</span><span class="o">());</span>
+		<span class="n">popEtatsUnis</span><span class="o">.</span><span class="na">add</span><span class="o">((</span><span class="n">DefaultFeature</span><span class="o">)</span> <span class="n">feat</span><span class="o">);</span>
+	<span class="o">}</span>
+<span class="o">}</span>		
+
+<span class="c1">// On crée une nouvelle population qui sera peuplée par les Feature qui auront été translatés</span>
+<span class="n">Population</span><span class="o">&lt;</span><span class="n">IFeature</span><span class="o">&gt;</span> <span class="n">popTranslation</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Population</span><span class="o">&lt;</span><span class="n">IFeature</span><span class="o">&gt;();</span>
+<span class="n">popTranslation</span><span class="o">.</span><span class="na">setFeatureType</span><span class="o">(</span><span class="n">popEtatsUnis</span><span class="o">.</span><span class="na">getFeatureType</span><span class="o">());</span>
+				
+<span class="c1">// On parcourt la population initiale (il n&#39;y en a qu&#39;une seule en fait)</span>
+<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">popEtatsUnis</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+			
+	<span class="c1">// On caste le Feature de la population (qui est un MultiPolygon en plusieurs polygones simples</span>
+	<span class="n">DefaultFeature</span> <span class="n">ancienFeature</span> <span class="o">=</span> <span class="n">popEtatsUnis</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+	<span class="n">GM_MultiSurface</span> <span class="n">multiSurface</span> <span class="o">=</span> <span class="o">(</span><span class="n">GM_MultiSurface</span><span class="o">)</span> <span class="n">ancienFeature</span><span class="o">.</span><span class="na">getGeom</span><span class="o">();</span>
+						
+	<span class="c1">// On parcourt tous les polygones</span>
+	<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">multiSurface</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+				
+		<span class="c1">// On récupère les coordonnées du polygone courant</span>
+		<span class="n">IDirectPositionList</span> <span class="n">coordsInitiales</span> <span class="o">=</span> <span class="n">multiSurface</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">j</span><span class="o">).</span><span class="na">coord</span><span class="o">();</span>
+				
+		<span class="c1">// On crée une liste qui contiendra les coordonnées du polygone translaté</span>
+		<span class="n">List</span><span class="o">&lt;</span><span class="n">IDirectPosition</span><span class="o">&gt;</span> <span class="n">listeCoordTranslatees</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">IDirectPosition</span><span class="o">&gt;();</span>
+				
+		<span class="c1">// On parcourt toutes les coordonnées du polygone courant</span>
+		<span class="k">for</span><span class="o">(</span><span class="n">IDirectPosition</span> <span class="n">coordAncienne</span> <span class="o">:</span> <span class="n">coordsInitiales</span><span class="o">.</span><span class="na">getList</span><span class="o">())</span> <span class="o">{</span>
+					
+			<span class="c1">// On translate l&#39;ancienne coordonnée X de 40</span>
+			<span class="kt">double</span> <span class="n">ancienneLongitude</span> <span class="o">=</span> <span class="n">coordAncienne</span><span class="o">.</span><span class="na">getX</span><span class="o">();</span>
+			<span class="kt">double</span> <span class="n">nouvelleLongitude</span> <span class="o">=</span> <span class="n">ancienneLongitude</span> <span class="o">+</span> <span class="mi">40</span><span class="o">;</span>
+										
+			<span class="c1">// Si l&#39;ancienne longitude est supérieure à la limite Est du WGS84, </span>
+			<span class="c1">//    la nouvelle longitude est replacée toute à l&#39;ouest</span>
+			<span class="k">if</span><span class="o">(</span><span class="n">nouvelleLongitude</span> <span class="o">&gt;</span> <span class="mf">180.0</span><span class="o">){</span>
+			  <span class="kt">double</span> <span class="n">diff</span> <span class="o">=</span> <span class="n">nouvelleLongitude</span> <span class="o">-</span> <span class="mf">180.0</span><span class="o">;</span>
+			  <span class="n">nouvelleLongitude</span> <span class="o">=</span> <span class="o">-</span><span class="mi">180</span> <span class="o">+</span><span class="n">diff</span><span class="o">;</span>
+			<span class="o">}</span>
+					
+			<span class="c1">// On ajoute la nouvelle paire de coordonnées à la liste de coordonnées</span>
+			<span class="n">IDirectPosition</span> <span class="n">coordNouvelle</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DirectPosition</span><span class="o">(</span><span class="n">nouvelleLongitude</span><span class="o">,</span> <span class="n">coordAncienne</span><span class="o">.</span><span class="na">getY</span><span class="o">());</span>
+			<span class="n">listeCoordTranslatees</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">coordNouvelle</span><span class="o">);</span>
+		<span class="o">}</span>
+			
+		<span class="c1">// On crée un nouveau Feature qui contiendra le nouveau polygone créé</span>
+		<span class="n">DefaultFeature</span> <span class="n">nouveauFeature</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DefaultFeature</span><span class="o">();</span>
+		<span class="n">nouveauFeature</span><span class="o">.</span><span class="na">setFeatureType</span><span class="o">(</span><span class="n">ancienFeature</span><span class="o">.</span><span class="na">getFeatureType</span><span class="o">());</span>
+				
+		<span class="c1">// On crée un polygone à partir de cette nouvelle liste de coordonnées</span>
+		<span class="n">GM_LineString</span> <span class="n">lineString</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GM_LineString</span><span class="o">(</span><span class="n">listeCoordTranslatees</span><span class="o">);</span>
+		<span class="n">GM_Polygon</span> <span class="n">nouveauPolygone</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GM_Polygon</span><span class="o">(</span><span class="n">lineString</span><span class="o">);</span>
+						
+		<span class="c1">// On ajoute le polygone au nouveau Feature, puis ce dernier à la nouvelle Population</span>
+		<span class="n">nouveauFeature</span><span class="o">.</span><span class="na">setGeom</span><span class="o">(</span><span class="n">nouveauPolygone</span><span class="o">);</span>
+		<span class="n">popTranslation</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">nouveauFeature</span><span class="o">);</span>
+				
+	<span class="o">}</span>
+
+<span class="o">}</span>
+		
+</pre></div>
+</div>
+</div>
+<div class="section" id="references">
+<h2>Références</h2>
+<ul class="simple">
+<li>Norme ISO 19107.</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="feature.html" title="Feature : structure et manipulation"
+                 >next</a></li>
+            <li class="right" >
+              <a href="architecture.html" title="Architecture - GeOxygene Plateform"
+                 >previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" >Tutorial</a> &raquo;</li>
+        <li><a href="#">Geometrie dans GeOxygene</a></li>
+      </ul>
+    </div> 
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Laboratoire COGIT, IGN.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

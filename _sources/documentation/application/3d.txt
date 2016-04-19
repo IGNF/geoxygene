@@ -1,0 +1,18 @@
+.. _3d:
+
+
+3D module
+================================
+                                
+
+coming soon
+
+Guide utilisateur
++++++++++++++++++++++++
+The French version of user guide of the GeOyxgene 3D module can be downloaded :download:`here </documentation/resources/doc/geoxygene3D-Utilisateur-V3.pdf>`, 
+in PDF file format.
+
+Guide du développeur
++++++++++++++++++++++++++
+The French version of developer guide of the GeOyxgene 3D module can be downloaded :download:`here </documentation/resources/doc/geoxygene3D-Developpeur_V3.pdf>`, 
+in PDF file format.

@@ -1,0 +1,285 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>La Carte Topologique &mdash; GeOxygene</title>
+    
+    <link rel="stylesheet" href="../../_static/geoxygene.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="GeOxygene" href="../../index.html" />
+    <link rel="up" title="Contributions" href="index.html" />
+    <link rel="next" title="Appariement de données" href="data-matching.html" />
+    <link rel="prev" title="Contributions" href="index.html" /> 
+  </head>
+  <body role="document">
+
+    <div class="header">
+        <div class="wrap">
+            <div id="logo"><a href="http://oxygene-project.sourceforge.net/">GeOxygene</a></div>
+            <h1 id="logo_cogit"><a href="http://recherche.ign.fr/labos/cogit/">COGIT</a></h1>
+            <h1 id="logo_ign" alt="Institut National de l'Information Géographique et Forestière">
+                <a href="http://www.ign.fr" alt="Institut National de l'Information Géographique et Forestière">IGN</a>
+            </h1>
+            <!-- <h1 id="logo_sourceforge"><a href="http://sourceforge.net/projects/oxygene-project/">Sourceforge</a></h1> -->
+            
+            <!-- <div class='top-xleft'><span>Last Published :  | Version :1.6</span></div> -->
+            
+            <ul id="top-nav">
+                <li class="first"><a href="/community/index.html">About</a></li>
+                <li><a href="/download/index.html">Download</a></li>
+                <li><a href="/documentation/index.html">Documentation</a></li>
+            </ul>
+            
+        </div>
+    </div>
+
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="data-matching.html" title="Appariement de données"
+                 accesskey="N">next</a></li>
+            <li class="right" >
+              <a href="index.html" title="Contributions"
+                 accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Contributions</a> &raquo;</li>
+        <li><a href="#">La Carte Topologique</a></li>
+      </ul>
+    </div> 
+
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+	
+	<h4>Navigation</h4><ul style='list-style: none;padding-left:4px;'>
+	<li><a href="https://sourceforge.net/p/oxygene-project">
+	   Sourceforge Home
+	   <span style="padding-left:4px;"><img src="/_static/img/sourceforge.png" /></span>
+	</a></li>
+	<li><a href="http://oxygene-project.sourceforge.net/apidocs/index.html">
+	   Online javadoc
+	</a></li>
+	</ul>
+	
+	<h4>Table Of Contents</h4>
+    <ul>
+<li><a class="reference internal" href="#">La Carte Topologique</a><ul>
+<li><a class="reference internal" href="#objectif-de-la-carte-topologique">Objectif de la carte topologique</a></li>
+<li><a class="reference internal" href="#grands-principes">Grands principes</a></li>
+<li><a class="reference internal" href="#le-package-carte-topologique">Le package Carte Topologique</a><ul>
+<li><a class="reference internal" href="#classe-cartetopo">Classe CarteTopo</a></li>
+<li><a class="reference internal" href="#relations-arcs-noeuds-faces">Relations arcs/noeuds/faces</a></li>
+<li><a class="reference internal" href="#chargeur">Chargeur</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Contributions</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="data-matching.html"
+                        title="next chapter">Appariement de données</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation/application/topological-map.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+    <form class="navbar-search pull-right" style="margin-bottom:-3px;" action="../../search.html" method="get">
+        <input type="text" name="q" placeholder="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+    
+    <!-- div>
+        <script type="text/javascript" src="http://www.ohloh.net/p/40483/widgets/project_thin_badge.js"></script>
+    </div -->
+    
+
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="la-carte-topologique">
+<h1>La Carte Topologique</h1>
+<div class="section" id="objectif-de-la-carte-topologique">
+<h2>Objectif de la carte topologique</h2>
+<p>L&#8217;objectif de la carte topologique est de fournir un schéma simple que les utilisateurs
+peuvent éventuellement étendre par héritage pour :</p>
+<ul class="simple">
+<li>Créer facilement des classes d&#8217;objets géographiques structurées avec une
+topologie de réseau ou une topologie de carte topologique. L&#8217;utilisateur accède
+alors directement à la topologie entre les objets de la carte topologique (ex: un
+noeud a des arcs entrants).</li>
+<li>Coder et récupérer dans ce schéma commun tous les algorithmes qui s&#8217;appuient
+sur de telles structures, en entrée comme en sortie. Exemples : plus court chemin
+entre deux noeuds, décomposition d&#8217;un graphe en composantes connexes,
+création d&#8217;une triangulation de Delaunay, appariement entre deux graphes.</li>
+</ul>
+<p>Les objectifs de la carte topologique sont volontairement restreints pour privilégier la
+simplicité qui est suffisante à beaucoup d&#8217;applications. En particulier, le but n&#8217;est
+pas :</p>
+<ul class="simple">
+<li>De gérer la multi-représentation.</li>
+<li>De permettre l&#8217;utilisation de primitives géométriques relativement complexes
+comme les surfaces à trou, ou les combinaisons de segments et d&#8217;arcs de cercle.</li>
+</ul>
+<p>Elle est cependant extensible, par le mécanisme classique d&#8217;héritage.</p>
+</div>
+<div class="section" id="grands-principes">
+<h2>Grands principes</h2>
+<div class="centerside container">
+<div class="figure">
+<img alt="../../_images/cartetopo-grand-principe.png" src="../../_images/cartetopo-grand-principe.png" />
+</div>
+</div>
+<p>Dans GeOxygene, les classes dites géographiques (qui héritent de « FT_Feature » :
+routes, rivières…) ne sont pas structurées topologiquement. Ces classes
+géographiques, issues des bases de données utilisées ne portent pas ou peu de
+relations entre elles, et contiennent des objets de géométrie non typée : chaque objet
+est relié à un objet de type GM_Object.</p>
+<p>Pour développer une application géographique avec la carte topologique, l&#8217;utilisateur
+peut s&#8217;appuyer sur la structure de carte topologique existante ou commence par
+créer par héritage un schéma applicatif de type carte topologique (voir la carte
+topologique du package carteTopo et l&#8217;exemple de la triangulation qui est une carte
+topologique particulière). L&#8217;utilisateur instancie alors une sa carte topologique à partir
+de ses données géographiques. Une classe « chargeur » permet de réaliser des
+chargements typiques (ex : à chaque ligne des données géographiques de base correspond un arc de la carte topologique).
+La présence à la fois de noeuds, d&#8217;arcs et
+de faces n&#8217;est pas obligatoire, et les relations topologiques ne sont pas forcément
+toutes renseignées. Des outils permettent de copier une carte topologique avec
+toutes ses relations, ou d&#8217;effacer une carte.</p>
+<p>Les avantages de charger les données dans un schéma de type carte topologique, et
+ensuite de coder tous les algorithmes dans ce schéma, sont multiples :</p>
+<ul class="simple">
+<li>Les classes rattachées à la carte topologique ont une géométrie qui est typée :
+les classes de type Noeud ont une géométrie de GM_Point, celles de type Arc ont
+une géométrie de type GM_LineString, et celles de type Face ont une géométrie
+de GM_Polygon. On évite ainsi dans le code de nombreux transtypages, et on
+rend le code plus robuste en imposant la vérification des types à la compilation.
+De plus, l&#8217;utilisateur n&#8217;a besoin de connaître qu&#8217;une partie très réduite du modèle
+ISO du noyau de la plate-forme.</li>
+<li>La topologie porte directement sur les objets de la carte topologique. Un Arc a un
+noeud initial de type Noeud, et la fonction qui renvoie son noeud initial renvoie un
+objet correctement typé.</li>
+<li>Les fonctions utilisant la topologie peuvent être codées de manière claire et
+générique, et organisées logiquement. Un calcul de plus court chemin peut ainsi
+être codé sur la carte topologique, et réutilisé par tous.</li>
+<li>L&#8217;API de la carte topologique est très compacte, assez intuitive, et reprend un
+mode de représentation classique de la topologie (l&#8217;ISO propose également un
+modèle de description de la topologie à travers les « TP_Object » ; ce modèle est
+prévu dans GéOxygène, mais en pratique il s&#8217;est révélé trop complexe à
+manipuler pour beaucoup d&#8217;applications).</li>
+</ul>
+</div>
+<div class="section" id="le-package-carte-topologique">
+<h2>Le package Carte Topologique</h2>
+<p>Le schéma UML en fin de ce document donne les principes de la carte topologique.
+Pour retrouver les relations en Java, voir la documentation du code et la
+documentation de l&#8217;API.</p>
+<p>Ce package contient les classes nécessaires à l&#8217;utilisateur pour qu&#8217;il puisse
+manipuler la topologie et y raccrocher ses propres classes applicatives si il veut
+raffiner la carte topologique.</p>
+<div class="section" id="classe-cartetopo">
+<h3>Classe CarteTopo</h3>
+<p>C&#8217;est la classe qui représente l&#8217;ensemble de la carte topologique. Cette carte peut
+n&#8217;être qu&#8217;un réseau (pas de faces) ou un graphe. Notons que l&#8217;on peut gérer des
+graphes orientés grâce à l&#8217;attribut &#8220;orientation&#8221; des arcs.
+Cette classe est le point d&#8217;entrée de toute carte topologique. Elle contient des
+méthodes qui permettent de la gérer : &#8220;efface&#8221;, &#8220;copie&#8221;...</p>
+<p>Cette classe contient également des méthodes d&#8217;analyse spatiale qui s&#8217;appliquent
+sur toute une carte topo, et non sur un élément particulier (ex : décomposer en
+groupes connexes).</p>
+</div>
+<div class="section" id="relations-arcs-noeuds-faces">
+<h3>Relations arcs/noeuds/faces</h3>
+<p>La topologie modélisée est la topologie classique d&#8217;une carte topologique : un arc a
+des noeuds initiaux et finaux, une face à droite et une face à gauche, une face est
+entourée d&#8217;arcs, etc.
+Pour simplifier le schéma UML on a regroupé plusieurs relations topologiques en une
+seule. Ainsi, à partir d&#8217;un noeud on peut retrouver :</p>
+<ul class="simple">
+<li>soit tous les arcs entrants [resp. sortants] d&#8217;un noeud au sens de la géométrie
+(logique de stockage),</li>
+<li>soit tous les arcs entrants [resp. sortants] d&#8217;un noeud au sens de l&#8217;orientation
+(logique de circulation),</li>
+<li>soit tous les arcs en une fois (entrants et sortants).</li>
+</ul>
+<p>De plus, ces arcs peuvent être soit retournés en vrac, soit ordonnés selon leur
+géométrie de manière à tourner autour du noeud.</p>
+</div>
+<div class="section" id="chargeur">
+<h3>Chargeur</h3>
+<p>Le chargeur permet de remplir une carte topo à partir des instances d&#8217;une classe
+géographique. Par exemple le chargeur crée un &#8220;noeud&#8221; pour chacune des instances
+de la classe &#8220;bâtiment ponctuel BDTopo&#8221;.</p>
+<p>Pour faire des chargements plus spécifiques, on peut créer son propre chargeur.
+Exemple : créer un noeud pour chacune des instances des classes géo A et B qui ont
+tel attribut avec telle valeur. Le chargeur de la carte topologique gère les cas
+simples, et a valeur d&#8217;exemple.</p>
+<div class="centerside container">
+<div class="figure" id="id1">
+<img alt="../../_images/ModeleTopologique.png" src="../../_images/ModeleTopologique.png" />
+<p class="caption"><span class="caption-text">Figure 2 : Modèle topologique raffiné spécifié par l’utilisateur (éventuellement)</span></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="data-matching.html" title="Appariement de données"
+                 >next</a></li>
+            <li class="right" >
+              <a href="index.html" title="Contributions"
+                 >previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" >Contributions</a> &raquo;</li>
+        <li><a href="#">La Carte Topologique</a></li>
+      </ul>
+    </div> 
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Laboratoire COGIT, IGN.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

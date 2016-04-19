@@ -1,0 +1,454 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Introduction &mdash; GeOxygene</title>
+    
+    <link rel="stylesheet" href="_static/geoxygene.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="GeOxygene" href="#" />
+    <link rel="next" title="About GeOxygene" href="community/index.html" /> 
+  </head>
+  <body role="document">
+    <script src="http://oxygene-project.sourceforge.net/js/jssor/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="http://oxygene-project.sourceforge.net/js/jssor/jssor.js" type="text/javascript"></script>
+    <script src="http://oxygene-project.sourceforge.net/js/jssor/jssor.slider.js" type="text/javascript"></script>
+    <script src="http://oxygene-project.sourceforge.net/js/jssor/jssor.player.ytiframe.js" type="text/javascript"></script>
+
+    <div class="header">
+        <div class="wrap">
+            <div id="logo"><a href="http://oxygene-project.sourceforge.net/">GeOxygene</a></div>
+            <h1 id="logo_cogit"><a href="http://recherche.ign.fr/labos/cogit/">COGIT</a></h1>
+            <h1 id="logo_ign" alt="Institut National de l'Information Géographique et Forestière">
+                <a href="http://www.ign.fr" alt="Institut National de l'Information Géographique et Forestière">IGN</a>
+            </h1>
+            <!-- <h1 id="logo_sourceforge"><a href="http://sourceforge.net/projects/oxygene-project/">Sourceforge</a></h1> -->
+            
+            <!-- <div class='top-xleft'><span>Last Published :  | Version :1.6</span></div> -->
+            
+            <ul id="top-nav">
+                <li class="first"><a href="/community/index.html">About</a></li>
+                <li><a href="/download/index.html">Download</a></li>
+                <li><a href="/documentation/index.html">Documentation</a></li>
+            </ul>
+            
+        </div>
+    </div>
+
+
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+	
+	<h4>Navigation</h4><ul style='list-style: none;padding-left:4px;'>
+	<li><a href="https://sourceforge.net/p/oxygene-project">
+	   Sourceforge Home
+	   <span style="padding-left:4px;"><img src="/_static/img/sourceforge.png" /></span>
+	</a></li>
+	<li><a href="http://oxygene-project.sourceforge.net/apidocs/index.html">
+	   Online javadoc
+	</a></li>
+	</ul>
+	
+	<h4>Table Of Contents</h4>
+    <ul>
+<li><a class="reference internal" href="#">Introduction</a><ul>
+<li><a class="reference internal" href="#demo">Démo</a></li>
+<li><a class="reference internal" href="#news">News</a></li>
+<li><a class="reference internal" href="#screenshots">Screenshots</a></li>
+<li><a class="reference internal" href="#navigation">Navigation</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="community/index.html"
+                        title="next chapter">About GeOxygene</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+    <form class="navbar-search pull-right" style="margin-bottom:-3px;" action="search.html" method="get">
+        <input type="text" name="q" placeholder="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+    
+    <!-- div>
+        <script type="text/javascript" src="http://www.ohloh.net/p/40483/widgets/project_thin_badge.js"></script>
+    </div -->
+    
+
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="introduction">
+<h1>Introduction</h1>
+<p>GeOxygene aims at providing an open framework which implements
+<a class="reference external" href="http://www.opengeospatial.org/">OGC</a> / <a class="reference external" href="http://www.isotc211.org/">ISO</a>
+specifications for the development and deployment of geographic (GIS) applications.
+It is a open source contribution of the <a class="reference external" href="http://recherche.ign.fr/labos/cogit/accueilCOGIT.php">COGIT laboratory</a> at the
+<a class="reference external" href="http://www.ign.fr/">IGN</a> (Institut Géographique National), the French National Mapping Agency.</p>
+<p>GeOxygene is based on Java and open source technologies and provides users with an extensible
+object data model (geographic features, geometry, topology and metadata) which implements
+OGC specifications and ISO standards in the geographic information domain.
+The support of the Java interfaces developped by the open source
+<a class="reference external" href="http://geoapi.sourceforge.net/">GeoAPI project</a> is planned.</p>
+<p>GeOxygene is an open source project made available to you using an open source license described <a class="reference internal" href="community/license.html#geoxlicense"><span>here</span></a>.</p>
+<div class="section" id="demo">
+<h2>Démo</h2>
+<br/>
+
+<script>
+jQuery(document).ready(function ($) {
+        var options = {
+            $AutoPlay: true,                    //[Optional] Whether to auto play, to enable slideshow, this option must be set to true, default value is false
+            $DragOrientation: 3,                //[Optional] Orientation to drag slide, 0 no drag, 1 horizental, 2 vertical, 3 either, default value is 1 (Note that the $DragOrientation should be the same as $PlayOrientation when $DisplayPieces is greater than 1, or parking position is not 0)
+            $AutoPlayInterval: 4000,            //[Optional] Interval (in milliseconds) to go for next slide since the previous stopped if the slider is auto playing, default value is 3000
+            $PauseOnHover: 1,                   //[Optional] Whether to pause when mouse over if a slider is auto playing, 0 no pause, 1 pause for desktop, 2 pause for touch device, 3 pause for desktop and touch device, 4 freeze for desktop, 8 freeze for touch device, 12 freeze for desktop and touch device, default value is 1
+            $ArrowKeyNavigation: true,          //[Optional] Allows keyboard (arrow key) navigation or not, default value is false
+
+            $BulletNavigatorOptions: {                //[Optional] Options to specify and enable navigator or not
+                $Class: $JssorBulletNavigator$,       //[Required] Class to create navigator instance
+                $ChanceToShow: 2,               //[Required] 0 Never, 1 Mouse Over, 2 Always
+                $ActionMode: 1,                 //[Optional] 0 None, 1 act by click, 2 act by mouse hover, 3 both, default value is 1
+                $AutoCenter: 1,                 //[Optional] Auto center navigator in parent container, 0 None, 1 Horizontal, 2 Vertical, 3 Both, default value is 0
+                $Steps: 1,                      //[Optional] Steps to go for each navigation request, default value is 1
+                $Lanes: 1,                      //[Optional] Specify lanes to arrange items, default value is 1
+                $SpacingX: 10,                   //[Optional] Horizontal space between each item in pixel, default value is 0
+                $SpacingY: 0,                   //[Optional] Vertical space between each item in pixel, default value is 0
+                $Orientation: 1                 //[Optional] The orientation of the navigator, 1 horizontal, 2 vertical, default value is 1
+            }
+        };
+
+        var jssor_slider1 = new $JssorSlider$("slider1_container", options);
+
+        //responsive code begin
+        //you can remove responsive code if you don't want the slider scales while window resizes
+        function ScaleSlider() {
+            var parentWidth = jssor_slider1.$Elmt.parentNode.clientWidth;
+            if (parentWidth)
+                jssor_slider1.$ScaleWidth(Math.min(parentWidth, 640));
+            else
+                window.setTimeout(ScaleSlider, 30);
+        }
+
+        //Scale slider immediately
+        ScaleSlider();
+
+        $(window).bind("load", ScaleSlider);
+        $(window).bind("resize", ScaleSlider);
+        $(window).bind("orientationchange", ScaleSlider);
+        //responsive code end
+
+        //fetch and initialize youtube players
+        $JssorPlayer$.$FetchPlayers(document.body);
+    });
+</script>
+<style>
+    /* jssor slider bullet navigator skin 03 css */
+    /*
+        .jssorb03 div           (normal)
+        .jssorb03 div:hover     (normal mouseover)
+        .jssorb03 .av           (active)
+        .jssorb03 .av:hover     (active mouseover)
+        .jssorb03 .dn           (mousedown)
+    */
+    .jssorb03 div, .jssorb03 div:hover, .jssorb03 .av
+    {
+       background: url(_images/b03.png) no-repeat;
+       overflow:hidden;
+       cursor: pointer;
+    }
+    .jssorb03 div { background-position: -5px -4px; }
+    .jssorb03 div:hover, .jssorb03 .av:hover { background-position: -35px -4px; }
+    .jssorb03 .av { background-position: -65px -4px; }
+    .jssorb03 .dn, .jssorb03 .dn:hover { background-position: -95px -4px; }
+</style>
+
+<center>
+<div id="slider1_container" style="position: relative; top: 0px; left: 0px; width: 640px;
+    height: 390px;">
+    <!-- Slides Container -->
+    <div u="slides" style="cursor: move; position: absolute; left: 0px; top: 0px; width: 640px; height: 390px;
+        overflow: hidden;">
+        <div>
+            <div u="player" style="position: relative; top: 0px; left: 0px; width: 640px; height: 390px; overflow: hidden;">
+
+                <!-- Charlotte Hoarau -->
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/OzlMcKwFRRs" frameborder="0" allowfullscreen></iframe>
+
+                <!-- play cover begin (optional, can remove play cover) -->
+                <div u="cover" class="videoCover" style="position: absolute; top: 0px; left: 0px; background-color: #000; background-image: url(_images/play.png); background-position: center center; background-repeat: no-repeat; filter: alpha(opacity=40); opacity: .4; cursor: pointer; display: none; z-index: 1;"></div>
+                <!-- play cover end -->
+                <!-- close button begin (optional, can remove close button) -->
+                <style>
+                    .closeButton { background-image: url(_images/close.png); }
+                    .closeButton:hover { background-position: -30px 0px; }
+                </style>
+                <div u="close" class="closeButton" style="position: absolute; top: 0px; right: 1px;
+                    width: 30px; height: 30px; background-color: #000; cursor: pointer; display: none; z-index: 2;">
+                </div>
+                <!-- close button end -->
+            </div>
+        </div>
+        <div>
+            <div u="player" style="position: relative; top: 0px; left: 0px; width: 640px; height: 390px; overflow: hidden;">
+
+                <!-- Antoine Masse -->
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/DhZP6XjCukk" frameborder="0" allowfullscreen></iframe>
+
+                <!-- play cover begin (optional, can remove play cover) -->
+                <div u="cover" class="videoCover" style="position: absolute; top: 0px; left: 0px; background-color: #000; background-image: url(_images/play.png); background-position: center center; background-repeat: no-repeat; filter: alpha(opacity=40); opacity: .4; cursor: pointer; display: none; z-index: 1;"></div>
+                <!-- play cover end -->
+                <!-- close button begin (optional, can remove close button) -->
+                <style>
+                    .closeButton { background-image: url(_images/close.png); }
+                    .closeButton:hover { background-position: -30px 0px; }
+                </style>
+                <div u="close" class="closeButton" style="position: absolute; top: 0px; right: 1px;
+                    width: 30px; height: 30px; background-color: #000; cursor: pointer; display: none; z-index: 2;">
+                </div>
+                <!-- close button end -->
+            </div>
+        </div>
+        <div>
+            <div u="player" style="position: relative; top: 0px; left: 0px; width: 640px; height: 390px; overflow: hidden;">
+
+                <!-- Guillaume Touya -->
+                <iframe width="480" height="270" src="//www.dailymotion.com/embed/video/x2cu8tx" frameborder="0" allowfullscreen></iframe>
+
+                <!-- play cover begin (optional, can remove play cover) -->
+                <div u="cover" class="videoCover" style="position: absolute; top: 0px; left: 0px; background-color: #000; background-image: url(_images/play.png); background-position: center center; background-repeat: no-repeat; filter: alpha(opacity=40); opacity: .4; cursor: pointer; display: none; z-index: 1;"></div>
+                <!-- play cover end -->
+                <!-- close button begin (optional, can remove close button) -->
+                <style>
+                    .closeButton { background-image: url(_images/close.png); }
+                    .closeButton:hover { background-position: -30px 0px; }
+                </style>
+                <div u="close" class="closeButton" style="position: absolute; top: 0px; right: 1px;
+                    width: 30px; height: 30px; background-color: #000; cursor: pointer; display: none; z-index: 2;">
+                </div>
+                <!-- close button end -->
+            </div>
+        </div>
+        <div>
+            <div u="player" style="position: relative; top: 0px; left: 0px; width: 640px; height: 390px; overflow: hidden;">
+
+                <!-- Mickael Brasebin -->
+                <iframe width="420" height="315" src="https://www.youtube.com/embed/dH9woKexsVw" frameborder="0" allowfullscreen></iframe>
+
+                <!-- play cover begin (optional, can remove play cover) -->
+                <div u="cover" class="videoCover" style="position: absolute; top: 0px; left: 0px; background-color: #000; background-image: url(_images/play.png); background-position: center center; background-repeat: no-repeat; filter: alpha(opacity=40); opacity: .4; cursor: pointer; display: none; z-index: 1;"></div>
+                <!-- play cover end -->
+                <!-- close button begin (optional, can remove close button) -->
+                <style>
+                    .closeButton { background-image: url(_images/close.png); }
+                    .closeButton:hover { background-position: -30px 0px; }
+                </style>
+                <div u="close" class="closeButton" style="position: absolute; top: 0px; right: 1px;
+                    width: 30px; height: 30px; background-color: #000; cursor: pointer; display: none; z-index: 2;">
+                </div>
+                <!-- close button end -->
+            </div>
+        </div>
+
+        <div>
+            <div u="player" style="position: relative; top: 0px; left: 0px; width: 640px; height: 390px; overflow: hidden;">
+
+                <!-- Guillaume Touya - GAEL -->
+                <iframe width="420" height="315" src="https://www.youtube.com/embed/wkMZnOnFxgY" frameborder="0" allowfullscreen></iframe>
+
+                <!-- play cover begin (optional, can remove play cover) -->
+                <div u="cover" class="videoCover" style="position: absolute; top: 0px; left: 0px; background-color: #000; background-image: url(_images/play.png); background-position: center center; background-repeat: no-repeat; filter: alpha(opacity=40); opacity: .4; cursor: pointer; display: none; z-index: 1;"></div>
+                <!-- play cover end -->
+                <!-- close button begin (optional, can remove close button) -->
+                <style>
+                    .closeButton { background-image: url(_images/close.png); }
+                    .closeButton:hover { background-position: -30px 0px; }
+                </style>
+                <div u="close" class="closeButton" style="position: absolute; top: 0px; right: 1px;
+                    width: 30px; height: 30px; background-color: #000; cursor: pointer; display: none; z-index: 2;">
+                </div>
+                <!-- close button end -->
+            </div>
+        </div>
+
+
+
+        <!-- bullet navigator container -->
+        <div u="navigator" class="jssorb03" style="position: absolute; bottom: 6px; left: 6px;">
+            <!-- bullet navigator item prototype -->
+            <div u="prototype" style="POSITION: absolute; WIDTH: 21px; HEIGHT: 21px; text-align:center; line-height:21px; color:White; font-size:12px;"><div u="numbertemplate"></div></div>
+        </div>
+        <!-- Bullet Navigator Skin End -->
+        <a style="display: none" href="http://www.jssor.com">jQuery Slider</a>
+    </div>
+    </center></div>
+<div class="section" id="news">
+<h2>News</h2>
+<ul>
+<li><p class="first">October 19, 2015 - <strong>Version 1.7 released</strong></p>
+<blockquote>
+<div><p>Among the novelties :</p>
+<ul class="simple">
+<li>Students works : dot density analysis, measures of complexity of map.</li>
+<li>Minkowski 2D operations (sum between two polygons A and B, subtraction of A and B with reference to the center of mass B, etc.)</li>
+<li>Generic algorithms (linear and nonlinear) of the least squares estimator</li>
+<li>Polygons squaring by least squares compensation</li>
+<li>A &#8220;lenses&#8221; plugin that can : show a more detailed view over a less detailed layer, view a portion of the raster layer over the vector one, etc.</li>
+<li>OpenGL rendered 2D GUI added.</li>
+<li>Probably last version using java 7</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">October 1, 2015 - <strong>Mapstyle demonstration</strong></p>
+<blockquote>
+<div><p>Two demonstrations of using GeOxygene library at the GeoVIS Workshop, ISPRS GeoSpatial Week. Watch the video above !</p>
+</div></blockquote>
+</li>
+<li><p class="first">June 5, 2014 - <strong>CartAGen demonstration</strong></p>
+<blockquote>
+<div><p>CartAGen is a component-based research platform dedicated to generalisation. It based on GeOxygene library. A demonstration entitled
+<em>Multi-Agent Multi-Level Cartographic Generalisation in CartAGen</em> will be held at <a class="reference external" href="http://www.paams.net">PAAMS&#8216;14</a></p>
+</div></blockquote>
+</li>
+<li><p class="first">February 26, 2014 - <strong>A presentation tools to estimate imprecision on geographical data</strong></p>
+<blockquote>
+<div><p>Jean-François Girres intervention at <em>Géoséminaire</em> entitled <a class="reference external" href="http://geoseminaire2014.teledetection.fr/index.php/programme/menu-downloads-presentations-2014/file/2-download-fondements-theoriques-et-methodologiques-de-la-qualification.html">Fondements théoriques et méthodologiques de la qualification des données géographiques</a>
+showcased tools developed in his thesis to estimate geometric measurements imprecision on geographical data.</p>
+</div></blockquote>
+</li>
+<li><p class="first">January, 2014 - <strong>Version 1.6 released</strong></p>
+<blockquote>
+<div><p>This new version includes the EstIM model developed during the Jean-François Girres PhD (2012), a new OSM module,
+new tools for managing style (editor, import and export SLD).
+The old GeOxygene 2D graphical interface and CartaGen graphical interface merge.</p>
+</div></blockquote>
+</li>
+<li><p class="first">June 10, 2013 - <strong>What’s New in GeOxygene 1.5</strong></p>
+<blockquote>
+<div><p>The presentation on GeOxygene 1.5 at <a class="reference external" href="http://frog.osgeo.fr">FROG 2013</a> in Saint-Mandé will focus
+on the new features, including a description of the three new modules : geoxygene-semio (semiology),
+geoxygene-sig3d (3D) and geoxygene-cartagen (generalization).</p>
+<p>Presentation Slides : <a class="reference external" href="https://github.com/OSGeo-fr/frog2013/raw/master/presentations/technique/01-van_damme/FROG13-GeOxygene.pdf">&#8220;GeOxygene : une plate-forme de recherche pour le développement d&#8217;applications SIG&#8221;</a></p>
+</div></blockquote>
+</li>
+<li><p class="first">January, 2013 - <strong>Version 1.5 released</strong></p>
+<blockquote>
+<div><p>This new version includes :</p>
+<ul class="simple">
+<li>a new semiology module with a model of legend detailed <a class="reference internal" href="documentation/application/semiology.html#semiology"><span>here</span></a>.</li>
+<li>a new 3D module provides a dedicated GUI mapping tool that is optimized to manipulate 3D geometry, to import special format like CityGML, postgis 3D, ..., to use objects and algorithms dedicated to 3D</li>
+<li>a new generalization module provides generalization algorithms, spatial analysis api (Multi-criteria decision analysis, ...), methods for calculating compactness, curves, congestion</li>
+<li>data matching process using theory of Evidence</li>
+</ul>
+<p>Technically, the project has adopted a new multi-module Maven architecture.</p>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="screenshots">
+<h2>Screenshots</h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="34%" />
+<col width="34%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><div class="first last figure">
+<img alt="_images/geox2D_ign_style.png" src="_images/geox2D_ign_style.png" />
+</div>
+</td>
+<td><div class="first last figure">
+<img alt="_images/ecrangeoxygene1.png" src="_images/ecrangeoxygene1.png" />
+</div>
+</td>
+<td><div class="first last figure">
+<img alt="_images/geox3d.png" src="_images/geox3d.png" />
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><div class="first last figure">
+<img alt="_images/QUALITE-Estimation-Echelle.png" src="_images/QUALITE-Estimation-Echelle.png" />
+</div>
+</td>
+<td><div class="first last figure">
+<img alt="_images/geoxygene_thematiqueSymbolizer.png" src="_images/geoxygene_thematiqueSymbolizer.png" />
+</div>
+</td>
+<td><div class="first last figure">
+<img alt="_images/interfacecartagen.png" src="_images/interfacecartagen.png" />
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><div class="first last figure">
+<img alt="_images/geoxygenegeopensim.png" src="_images/geoxygenegeopensim.png" />
+</div>
+</td>
+<td><div class="first last figure">
+<img alt="_images/InterfaceGraphiqueGeOxygene.png" src="_images/InterfaceGraphiqueGeOxygene.png" />
+</div>
+</td>
+<td><div class="first last figure">
+<img alt="_images/bdtopo.jpg" src="_images/bdtopo.jpg" />
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="navigation">
+<h2>Navigation</h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="community/index.html">About GeOxygene</a></li>
+<li class="toctree-l1"><a class="reference internal" href="download/index.html">Download GeOxygene</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation/index.html">GeOxygene Documentation</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Laboratoire COGIT, IGN.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

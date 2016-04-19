@@ -1,0 +1,357 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Données OSM &mdash; GeOxygene</title>
+    
+    <link rel="stylesheet" href="../../_static/geoxygene.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="GeOxygene" href="../../index.html" />
+    <link rel="up" title="Contributions" href="index.html" />
+    <link rel="next" title="Moindres carrés génériques" href="moindres-carres-generiques.html" />
+    <link rel="prev" title="Semiology Tools" href="semiology.html" /> 
+  </head>
+  <body role="document">
+
+    <div class="header">
+        <div class="wrap">
+            <div id="logo"><a href="http://oxygene-project.sourceforge.net/">GeOxygene</a></div>
+            <h1 id="logo_cogit"><a href="http://recherche.ign.fr/labos/cogit/">COGIT</a></h1>
+            <h1 id="logo_ign" alt="Institut National de l'Information Géographique et Forestière">
+                <a href="http://www.ign.fr" alt="Institut National de l'Information Géographique et Forestière">IGN</a>
+            </h1>
+            <!-- <h1 id="logo_sourceforge"><a href="http://sourceforge.net/projects/oxygene-project/">Sourceforge</a></h1> -->
+            
+            <!-- <div class='top-xleft'><span>Last Published :  | Version :1.6</span></div> -->
+            
+            <ul id="top-nav">
+                <li class="first"><a href="/community/index.html">About</a></li>
+                <li><a href="/download/index.html">Download</a></li>
+                <li><a href="/documentation/index.html">Documentation</a></li>
+            </ul>
+            
+        </div>
+    </div>
+
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="moindres-carres-generiques.html" title="Moindres carrés génériques"
+                 accesskey="N">next</a></li>
+            <li class="right" >
+              <a href="semiology.html" title="Semiology Tools"
+                 accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Contributions</a> &raquo;</li>
+        <li><a href="#">Données OSM</a></li>
+      </ul>
+    </div> 
+
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+	
+	<h4>Navigation</h4><ul style='list-style: none;padding-left:4px;'>
+	<li><a href="https://sourceforge.net/p/oxygene-project">
+	   Sourceforge Home
+	   <span style="padding-left:4px;"><img src="/_static/img/sourceforge.png" /></span>
+	</a></li>
+	<li><a href="http://oxygene-project.sourceforge.net/apidocs/index.html">
+	   Online javadoc
+	</a></li>
+	</ul>
+	
+	<h4>Table Of Contents</h4>
+    <ul>
+<li><a class="reference internal" href="#">Données OSM</a><ul>
+<li><a class="reference internal" href="#utilisation-via-le-plugin-osm">Utilisation via le plugin OSM</a></li>
+<li><a class="reference internal" href="#structure-d-un-fichier-osm">Structure d&#8217;un fichier .osm</a></li>
+<li><a class="reference internal" href="#schema-de-donnees-de-cartagen">Schéma de données de CartAGen</a></li>
+<li><a class="reference internal" href="#principes-du-chargement">Principes du chargement</a><ul>
+<li><a class="reference internal" href="#mapping-osm-cartagen">Mapping OSM/CartAGen</a></li>
+<li><a class="reference internal" href="#factory-d-objets-cartagen-osm">Factory d&#8217;objets Cartagen &#8220;OSM&#8221;</a></li>
+<li><a class="reference internal" href="#conservation-des-tags-osm">Conservation des tags OSM</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="semiology.html"
+                        title="previous chapter">Semiology Tools</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="moindres-carres-generiques.html"
+                        title="next chapter">Moindres carrés génériques</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation/application/osm.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+    <form class="navbar-search pull-right" style="margin-bottom:-3px;" action="../../search.html" method="get">
+        <input type="text" name="q" placeholder="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+    
+    <!-- div>
+        <script type="text/javascript" src="http://www.ohloh.net/p/40483/widgets/project_thin_badge.js"></script>
+    </div -->
+    
+
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="donnees-osm">
+<span id="osm"></span><h1>Données OSM</h1>
+<p>Cette page documente le chargement de données OpenStreetMap dans GeOxygene implémenté dans le module <strong>geoxygene-osm</strong>.</p>
+<div class="section" id="utilisation-via-le-plugin-osm">
+<h2>Utilisation via le plugin OSM</h2>
+<p>La première entrée du menu OSM permet d&#8217;importer un fichier de données .osm. Ce format est dérivé de XML et
+contient les données OSM sous forme de triplets RDF. Parser ce fichier et convertir les informations est un processus
+long (plusieurs minutes pour de gros fichiers), le déroulement du chargement s&#8217;affiche dans la barre
+de progression ci-dessous. L&#8217;étape la plus longue est la lecture de l&#8217;ensemble des points du fichier,
+puis le chargeur lit les lignes et les relations, et enfin convertit toute l&#8217;information parsée en objets CartAGen.</p>
+<div class="centerside container">
+<div class="figure" id="id1">
+<a class="reference internal image-reference" href="../../_images/OsmProgressBar.png"><img alt="../../_images/OsmProgressBar.png" src="../../_images/OsmProgressBar.png" style="width: 330px;" /></a>
+<p class="caption"><span class="caption-text">Figure 1 : OSM progress bar in GeOxygene application</span></p>
+</div>
+</div>
+<p>Ces objets sont affichés après chargement avec un style par défaut qui reproduit le style OpenStreetMap
+par défaut (voir exemple ci-dessous). Ce style par défaut n&#8217;est pas complet, et il est possible de le compléter
+en modifiant les fichiers sld présents dans le répertoire resources/sld.</p>
+<div class="centerside container">
+<div class="figure" id="id2">
+<a class="reference internal image-reference" href="../../_images/Style_osm.png"><img alt="../../_images/Style_osm.png" src="../../_images/Style_osm.png" style="width: 450px;" /></a>
+<p class="caption"><span class="caption-text">Figure 2 : OSM Style</span></p>
+</div>
+</div>
+</div>
+<div class="section" id="structure-d-un-fichier-osm">
+<h2>Structure d&#8217;un fichier .osm</h2>
+<p>Le fichier commence par lister l&#8217;ensemble des points de la zone, notamment ceux qui constituent les objets
+linéaires et surfaciques (voir exemples ci-dessous). Les coordonnées sont données en <strong>WGS84</strong>.</p>
+<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&#39;1.0&#39; encoding=&#39;UTF-8&#39;?&gt;</span>
+<span class="nt">&lt;osm</span> <span class="na">version=</span><span class="s">&quot;0.6&quot;</span> <span class="na">generator=</span><span class="s">&quot;osmconvert 0.7P&quot;</span> <span class="na">timestamp=</span><span class="s">&quot;2013-12-12T20:55:02Z&quot;</span><span class="nt">&gt;</span>
+
+	<span class="nt">&lt;node</span> <span class="na">id=</span><span class="s">&quot;354718511&quot;</span> <span class="na">visible=</span><span class="s">&quot;true&quot;</span> <span class="na">version=</span><span class="s">&quot;3&quot;</span> <span class="na">changeset=</span><span class="s">&quot;525232&quot;</span> <span class="na">timestamp=</span><span class="s">&quot;2009-04-13T22:51:35Z&quot;</span> 
+		<span class="na">user=</span><span class="s">&quot;RedFox&quot;</span> <span class="na">uid=</span><span class="s">&quot;10610&quot;</span> <span class="na">lat=</span><span class="s">&quot;42.8837240&quot;</span> <span class="na">lon=</span><span class="s">&quot;-0.4035712&quot;</span><span class="nt">/&gt;</span>
+	<span class="nt">&lt;node</span> <span class="na">id=</span><span class="s">&quot;354718548&quot;</span> <span class="na">visible=</span><span class="s">&quot;true&quot;</span> <span class="na">version=</span><span class="s">&quot;3&quot;</span> <span class="na">changeset=</span><span class="s">&quot;525232&quot;</span> <span class="na">timestamp=</span><span class="s">&quot;2009-04-13T22:52:28Z&quot;</span> 
+		<span class="na">user=</span><span class="s">&quot;RedFox&quot;</span> <span class="na">uid=</span><span class="s">&quot;10610&quot;</span> <span class="na">lat=</span><span class="s">&quot;42.8847835&quot;</span> <span class="na">lon=</span><span class="s">&quot;-0.4043782&quot;</span><span class="nt">/&gt;</span>
+	<span class="nt">&lt;node</span> <span class="na">id=</span><span class="s">&quot;354718549&quot;</span> <span class="na">visible=</span><span class="s">&quot;true&quot;</span> <span class="na">version=</span><span class="s">&quot;3&quot;</span> <span class="na">changeset=</span><span class="s">&quot;525232&quot;</span> <span class="na">timestamp=</span><span class="s">&quot;2009-04-13T22:52:26Z&quot;</span> 
+		<span class="na">user=</span><span class="s">&quot;RedFox&quot;</span> <span class="na">uid=</span><span class="s">&quot;10610&quot;</span> <span class="na">lat=</span><span class="s">&quot;42.8848781&quot;</span> <span class="na">lon=</span><span class="s">&quot;-0.4049507&quot;</span><span class="nt">/&gt;</span>
+</pre></div>
+</div>
+<p>Ces nœuds peuvent également être &#8220;taggés&#8221; (on leur a ajouté des propriétés par un tag RDF) s&#8217;ils
+représentent un objet géographique ponctuel comme le repère géodésique ci-dessous. Ces tags correspondent
+la plupart du temps aux recommandations du projet OpenStreetMap que l&#8217;on peut retrouver sur ce
+<a class="reference external" href="http://wiki.openstreetmap.org/wiki/Map_Features">wiki</a>. Dans cet exemple, on retrouve des tags de nature
+métadonnées comme &#8220;source&#8221; et d&#8217;autres de nature attributaire comme &#8220;ele&#8221; qui donne l&#8217;altitude du point.</p>
+<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&#39;1.0&#39; encoding=&#39;UTF-8&#39;?&gt;</span>
+<span class="nt">&lt;osm</span> <span class="na">version=</span><span class="s">&quot;0.6&quot;</span> <span class="na">generator=</span><span class="s">&quot;osmconvert 0.7P&quot;</span> <span class="na">timestamp=</span><span class="s">&quot;2013-12-12T20:55:02Z&quot;</span><span class="nt">&gt;</span>
+	
+  <span class="nt">&lt;node</span> <span class="na">id=</span><span class="s">&quot;670195943&quot;</span> <span class="na">visible=</span><span class="s">&quot;true&quot;</span> <span class="na">version=</span><span class="s">&quot;1&quot;</span> <span class="na">changeset=</span><span class="s">&quot;4176402&quot;</span> <span class="na">timestamp=</span><span class="s">&quot;2010-03-20T05:58:55Z&quot;</span> 
+		<span class="na">user=</span><span class="s">&quot;Eric S&quot;</span> <span class="na">uid=</span><span class="s">&quot;45284&quot;</span> <span class="na">lat=</span><span class="s">&quot;42.8959309&quot;</span> <span class="na">lon=</span><span class="s">&quot;-0.4054379&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;tag</span> <span class="na">k=</span><span class="s">&quot;description&quot;</span> <span class="na">v=</span><span class="s">&quot;Table d&#39;orientation : Axe et sommet - Point vu en place en 1949&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;tag</span> <span class="na">k=</span><span class="s">&quot;ele&quot;</span> <span class="na">v=</span><span class="s">&quot;2031.91&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;tag</span> <span class="na">k=</span><span class="s">&quot;man_made&quot;</span> <span class="na">v=</span><span class="s">&quot;survey_point&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;tag</span> <span class="na">k=</span><span class="s">&quot;note&quot;</span> <span class="na">v=</span><span class="s">&quot;Ne pas déplacer ce point, cf. - Do not move this node, see - </span>
+<span class="s">  		http://wiki.openstreetmap.org/wiki/WikiProject_France/Repères_Géodésiques#Permanence_des_rep.C3.A8res&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;tag</span> <span class="na">k=</span><span class="s">&quot;ref&quot;</span> <span class="na">v=</span><span class="s">&quot;6432013 - 1&quot;</span><span class="nt">/&gt;</span>
+  	<span class="nt">&lt;tag</span> <span class="na">k=</span><span class="s">&quot;source&quot;</span> <span class="na">v=</span><span class="s">&quot;©IGN 2010 dans le cadre de la cartographie réglementaire&quot;</span><span class="nt">/&gt;</span>
+  	<span class="nt">&lt;tag</span> <span class="na">k=</span><span class="s">&quot;url&quot;</span>
+  		<span class="na">v=</span><span class="s">&quot;http://ancien-geodesie.ign.fr/fiche_point.asp?num_site=6432013&amp;amp;no_ptg=01&amp;amp;numero_f50=1547&quot;</span><span class="nt">/&gt;</span>
+  <span class="nt">&lt;/node&gt;</span>
+ 	
+</pre></div>
+</div>
+<p>Une fois tous les points de la zone décrits, le fichier contient la liste de toutes les
+lignes avec leurs tags associés. Un polygone est ici une ligne dont le point final est identique
+au point initial. Les points sont listés par la identifiant unique (voir exemple ci-dessous).
+Les données géographiques ont en général un tag principal (dont la liste est disponible sur le wiki,
+voir plus haut), qui correspond au nom de la classe dans une modélisation relationnelle ou orientée-objet.
+Dans notre exemple ci-dessous, le tag principal est &#8220;highway&#8221; (qui correspond aux routes)
+avec la valeur &#8220;track&#8221; : c&#8217;est une route de type piste.</p>
+<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&#39;1.0&#39; encoding=&#39;UTF-8&#39;?&gt;</span>
+<span class="nt">&lt;osm</span> <span class="na">version=</span><span class="s">&quot;0.6&quot;</span> <span class="na">generator=</span><span class="s">&quot;osmconvert 0.7P&quot;</span> <span class="na">timestamp=</span><span class="s">&quot;2013-12-12T20:55:02Z&quot;</span><span class="nt">&gt;</span>
+	
+	<span class="nt">&lt;way</span> <span class="na">id=</span><span class="s">&quot;167651914&quot;</span> <span class="na">visible=</span><span class="s">&quot;true&quot;</span> <span class="na">version=</span><span class="s">&quot;1&quot;</span> <span class="na">changeset=</span><span class="s">&quot;11918076&quot;</span> <span class="na">timestamp=</span><span class="s">&quot;2012-06-16T18:39:15Z&quot;</span> 
+						<span class="na">user=</span><span class="s">&quot;Slyan&quot;</span> <span class="na">uid=</span><span class="s">&quot;342924&quot;</span><span class="nt">&gt;</span>
+  		<span class="nt">&lt;nd</span> <span class="na">ref=</span><span class="s">&quot;1790350049&quot;</span><span class="nt">/&gt;</span>
+  		<span class="nt">&lt;nd</span> <span class="na">ref=</span><span class="s">&quot;1790350043&quot;</span><span class="nt">/&gt;</span>
+ 		<span class="nt">&lt;nd</span> <span class="na">ref=</span><span class="s">&quot;1790350064&quot;</span><span class="nt">/&gt;</span>
+  		<span class="nt">&lt;nd</span> <span class="na">ref=</span><span class="s">&quot;1790350066&quot;</span><span class="nt">/&gt;</span>
+  		<span class="nt">&lt;nd</span> <span class="na">ref=</span><span class="s">&quot;1790350070&quot;</span><span class="nt">/&gt;</span>
+  		<span class="nt">&lt;nd</span> <span class="na">ref=</span><span class="s">&quot;1790350072&quot;</span><span class="nt">/&gt;</span>
+  		<span class="nt">&lt;tag</span> <span class="na">k=</span><span class="s">&quot;highway&quot;</span> <span class="na">v=</span><span class="s">&quot;track&quot;</span><span class="nt">/&gt;</span>
+ 	<span class="nt">&lt;/way&gt;</span>
+</pre></div>
+</div>
+<p>Enfin, le fichier contient la liste des relations, qui sont des relations sémantiques reliant deux (ou plus)
+objets (nœud ou ligne) du fichier. L&#8217;exemple ci-dessous montre une relation précisant que deux lignes forment
+le cours principal du cours d&#8217;eau appelé &#8220;Le Soussouéou Gave&#8221;. Les autres cours d&#8217;eau portant ce nom sont
+alors considérés comme bras annexes du cours d&#8217;eau. Ces relations permettent aussi de définir des partages
+topologiques. Pour l&#8217;instant, les relations sont parsées et chargées, mais elles ne sont pas utilisées
+dans la construction des objets géographiques.</p>
+<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&#39;1.0&#39; encoding=&#39;UTF-8&#39;?&gt;</span>
+<span class="nt">&lt;osm</span> <span class="na">version=</span><span class="s">&quot;0.6&quot;</span> <span class="na">generator=</span><span class="s">&quot;osmconvert 0.7P&quot;</span> <span class="na">timestamp=</span><span class="s">&quot;2013-12-12T20:55:02Z&quot;</span><span class="nt">&gt;</span>
+	
+	<span class="nt">&lt;relation</span> <span class="na">id=</span><span class="s">&quot;2108120&quot;</span> <span class="na">visible=</span><span class="s">&quot;true&quot;</span> <span class="na">version=</span><span class="s">&quot;3&quot;</span> <span class="na">changeset=</span><span class="s">&quot;16345406&quot;</span> <span class="na">timestamp=</span><span class="s">&quot;2013-05-29T23:38:22Z&quot;</span> 
+							<span class="na">user=</span><span class="s">&quot;RedFox&quot;</span> <span class="na">uid=</span><span class="s">&quot;10610&quot;</span><span class="nt">&gt;</span>
+  		<span class="nt">&lt;member</span> <span class="na">type=</span><span class="s">&quot;way&quot;</span> <span class="na">ref=</span><span class="s">&quot;155642448&quot;</span> <span class="na">role=</span><span class="s">&quot;main_stream&quot;</span><span class="nt">/&gt;</span>
+  		<span class="nt">&lt;member</span> <span class="na">type=</span><span class="s">&quot;way&quot;</span> <span class="na">ref=</span><span class="s">&quot;223612562&quot;</span> <span class="na">role=</span><span class="s">&quot;main_stream&quot;</span><span class="nt">/&gt;</span>
+  		<span class="nt">&lt;tag</span> <span class="na">k=</span><span class="s">&quot;name&quot;</span> <span class="na">v=</span><span class="s">&quot;Le Soussouéou Gave&quot;</span><span class="nt">/&gt;</span>
+  		<span class="nt">&lt;tag</span> <span class="na">k=</span><span class="s">&quot;ref:sandre&quot;</span> <span class="na">v=</span><span class="s">&quot;Q6040500&quot;</span><span class="nt">/&gt;</span>
+  		<span class="nt">&lt;tag</span> <span class="na">k=</span><span class="s">&quot;type&quot;</span> <span class="na">v=</span><span class="s">&quot;waterway&quot;</span><span class="nt">/&gt;</span>
+  		<span class="nt">&lt;tag</span> <span class="na">k=</span><span class="s">&quot;waterway&quot;</span> <span class="na">v=</span><span class="s">&quot;stream&quot;</span><span class="nt">/&gt;</span>
+ 	<span class="nt">&lt;/relation&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="schema-de-donnees-de-cartagen">
+<h2>Schéma de données de CartAGen</h2>
+<p>Dans CartAGen, les données géographiques sont gérées de manière plus complexe que dans une utilisation
+simple de GeOxygene. Les bâtiments sont placés dans une classe de bâtiments qui implémente l&#8217;interface
+des bâtiments qui modélise l&#8217;ensemble des propriétés et relations classiques d&#8217;un bâtiment dans une BD
+géographique (par exemple, sa hauteur, sa nature et l&#8217;îlot auquel il appartient). Ainsi, cela autorise
+les traitements sur les données géographiques qui sont spécifiques aux bâtiments de prendre en paramètre
+cette interface, et toutes les implémentations possibles de cette interface vont pouvoir utiliser ce traitement.</p>
+<div class="centerside container">
+<div class="figure" id="id3">
+<a class="reference internal image-reference" href="../../_images/Architecture_donnees_cartagen.png"><img alt="../../_images/Architecture_donnees_cartagen.png" src="../../_images/Architecture_donnees_cartagen.png" style="width: 600px;" /></a>
+<p class="caption"><span class="caption-text">Figure 3 : Architecture de stockage des données dans CartAGen</span></p>
+</div>
+</div>
+<p>Dans le cas d&#8217;OSM, une implémentation spécifique de toutes ces interfaces géographiques (voir figure ci-dessous)
+a été réalisée et les données OSM sont chargées dans ces classes implémentant les interfaces de CartAGen
+(OsmBuilding implémente IBuilding).</p>
+<div class="centerside container">
+<div class="figure" id="id4">
+<a class="reference internal image-reference" href="../../_images/Cartagen_schema_gene_simplifie.png"><img alt="../../_images/Cartagen_schema_gene_simplifie.png" src="../../_images/Cartagen_schema_gene_simplifie.png" style="width: 800px;" /></a>
+<p class="caption"><span class="caption-text">Figure 4 : Version simplifiée du schéma de données de généralisation de CartAGen</span></p>
+</div>
+</div>
+<p>Le chargeur va s&#8217;occuper de ces classes de manière transparente et l&#8217;utilisateur aura une couche par classe nommée par le nom de la population associée à la classe (par exemple &#8220;buildings pour les objets qui implémentent IBuilding).</p>
+</div>
+<div class="section" id="principes-du-chargement">
+<h2>Principes du chargement</h2>
+<div class="section" id="mapping-osm-cartagen">
+<h3>Mapping OSM/CartAGen</h3>
+<p>Le schéma de données CartAGen est un schéma orienté-objets avec des classes géographiques prédéfinies,
+chacune possédant un type de géométrie, alors que le schéma OSM se contente de mettre des tags sur des points
+ou des lignes. Le passage de l&#8217;un à l&#8217;autre n&#8217;est donc pas direct. En effet, suivant ni les types de géométries,
+ni le tag principal ne permettent d&#8217;apparier directement à des classes : le tag highway peut décrire une route
+linéaire (à mettre dans la classe OsmRoadLine) ou un parking surfacique (à mettre dans la classe OsmRoadArea)
+suivant le type de géométrie taguée. Nous proposons donc pour réaliser cet appariement d&#8217;utiliser un objet
+Mapping composant d&#8217;une liste d&#8217;appariement (objets de la classe OsmMatching) dont le diagramme de classes
+UML est présenté ci-dessous. Un &#8220;matching&#8221; énumère les combinaisons de tag permettant de peupler une classe du schéma CartAGen.</p>
+<div class="centerside container">
+<div class="figure" id="id5">
+<a class="reference internal image-reference" href="../../_images/MappingOsmCartagen.png"><img alt="../../_images/MappingOsmCartagen.png" src="../../_images/MappingOsmCartagen.png" style="width: 670px;" /></a>
+<p class="caption"><span class="caption-text">Figure 5</span></p>
+</div>
+</div>
+<p>Un mapping par défaut est fourni dans le module mais il ne gère pas encore tous les types
+d&#8217;objets présents dans OSM et doit donc être complété au besoin. Un extrait ci-dessous montre
+comment on décrit l&#8217;appariement pour la classe WaterArea.</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">OsmMatching</span> <span class="n">lakematching</span> <span class="o">=</span> <span class="k">new</span> <span class="n">OsmMatching</span><span class="o">(</span><span class="s">&quot;natural&quot;</span><span class="o">,</span> <span class="n">IWaterArea</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">GeometryType</span><span class="o">.</span><span class="na">POLYGON</span><span class="o">);</span>
+<span class="n">lakematching</span><span class="o">.</span><span class="na">addTagValue</span><span class="o">(</span><span class="s">&quot;water&quot;</span><span class="o">);</span>
+<span class="n">lakematching</span><span class="o">.</span><span class="na">addTagValue</span><span class="o">(</span><span class="s">&quot;lake&quot;</span><span class="o">);</span>
+<span class="k">this</span><span class="o">.</span><span class="na">matchings</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">lakematching</span><span class="o">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="factory-d-objets-cartagen-osm">
+<h3>Factory d&#8217;objets Cartagen &#8220;OSM&#8221;</h3>
+<p>Chaque implémentation du schéma de données CartAGen est muni d&#8217;une factory (au sens des design patterns) qui permet de créer les objets géographiques de manière générique. On ne fait pas new OsmRoadLine(line) mais getSchemaFactory().createRoadLine(line) en récupérant la factory de l&#8217;implémentation courante, stockée sur le plugin CartAGen. Si on charge des données OSM, la factory courante du plugin sera bien celle d&#8217;OSM qui créera de manière transparente un objet de la classe OsmRoadLine.
+Dans le cas du chargement OSM, la factory est dotée d&#8217;une méthode createGeneObj(...) qui est capable d&#8217;appeler la bonne méthode de création à partir des informations parsées (les nœuds et les tags OSM) et des informations du mapping (le nom de la classe CartAGen et le type de géométrie).</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kd">public</span> <span class="n">OsmGeneObj</span> <span class="nf">createGeneObj</span><span class="o">(</span><span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">classObj</span><span class="o">,</span> <span class="n">OSMResource</span> <span class="n">resource</span><span class="o">,</span> <span class="n">Collection</span><span class="o">&lt;</span><span class="n">OSMResource</span><span class="o">&gt;</span> <span class="n">nodes</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">IRoadLine</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">isAssignableFrom</span><span class="o">(</span><span class="n">classObj</span><span class="o">))</span> <span class="o">{</span>
+      <span class="n">ILineString</span> <span class="n">line</span> <span class="o">=</span> <span class="n">OsmGeometryConversion</span><span class="o">.</span><span class="na">convertOSMLine</span><span class="o">((</span><span class="n">OSMWay</span><span class="o">)</span> <span class="n">resource</span><span class="o">.</span><span class="na">getGeom</span><span class="o">(),</span> <span class="n">nodes</span><span class="o">);</span>
+      <span class="k">return</span> <span class="o">(</span><span class="n">OsmGeneObj</span><span class="o">)</span> <span class="k">this</span><span class="o">.</span><span class="na">createRoadLine</span><span class="o">(</span><span class="n">line</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">ICable</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">isAssignableFrom</span><span class="o">(</span><span class="n">classObj</span><span class="o">))</span> <span class="o">{</span>
+      <span class="n">ILineString</span> <span class="n">line</span> <span class="o">=</span> <span class="n">OsmGeometryConversion</span><span class="o">.</span><span class="na">convertOSMLine</span><span class="o">((</span><span class="n">OSMWay</span><span class="o">)</span> <span class="n">resource</span><span class="o">.</span><span class="na">getGeom</span><span class="o">(),</span> <span class="n">nodes</span><span class="o">);</span>
+      <span class="k">return</span> <span class="o">(</span><span class="n">OsmGeneObj</span><span class="o">)</span> <span class="k">this</span><span class="o">.</span><span class="na">createCable</span><span class="o">(</span><span class="n">line</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="c1">// ...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="conservation-des-tags-osm">
+<h3>Conservation des tags OSM</h3>
+<p>Si certains tags sont utilisés pour remplir des attributs des objets Java, tous sont conservés dans une map
+définie sur la classe OsmGeneObj, ce qui permet de les interroger. L&#8217;appel à la méthode générique des
+IFeature getAttribute(String name) va chercher les valeurs dans ces tags pour les objets OSM contrairement
+au fonctionnement générique de la méthode.</p>
+<p>De plus, il est possible de visualiser tous les tags des objets sélectionnés en cliquant sur l&#8217;entrée &#8220;Browse tags&#8221;
+du menu ajouté par le plugin OSM.</p>
+<div class="centerside container">
+<div class="figure" id="id6">
+<a class="reference internal image-reference" href="../../_images/OsmTagBrowser.png"><img alt="../../_images/OsmTagBrowser.png" src="../../_images/OsmTagBrowser.png" style="width: 500px;" /></a>
+<p class="caption"><span class="caption-text">Figure 6 : OSM Tag Browser</span></p>
+</div>
+</div>
+<p>Attention, pour l&#8217;instant, le chargeur convertit les coordonnées en Lambert93 et ne projette donc correctement
+que des données situées en France métropolitaine. Une version améliorée du chargeur gérant plusieurs projections
+est prévue car des données OSM sont disponibles partout dans le monde.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="moindres-carres-generiques.html" title="Moindres carrés génériques"
+                 >next</a></li>
+            <li class="right" >
+              <a href="semiology.html" title="Semiology Tools"
+                 >previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" >Contributions</a> &raquo;</li>
+        <li><a href="#">Données OSM</a></li>
+      </ul>
+    </div> 
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Laboratoire COGIT, IGN.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

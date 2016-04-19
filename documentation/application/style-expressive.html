@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Expressive Styles &mdash; GeOxygene</title>
+    
+    <link rel="stylesheet" href="../../_static/geoxygene.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="GeOxygene" href="../../index.html" /> 
+  </head>
+  <body role="document">
+
+    <div class="header">
+        <div class="wrap">
+            <div id="logo"><a href="http://oxygene-project.sourceforge.net/">GeOxygene</a></div>
+            <h1 id="logo_cogit"><a href="http://recherche.ign.fr/labos/cogit/">COGIT</a></h1>
+            <h1 id="logo_ign" alt="Institut National de l'Information Géographique et Forestière">
+                <a href="http://www.ign.fr" alt="Institut National de l'Information Géographique et Forestière">IGN</a>
+            </h1>
+            <!-- <h1 id="logo_sourceforge"><a href="http://sourceforge.net/projects/oxygene-project/">Sourceforge</a></h1> -->
+            
+            <!-- <div class='top-xleft'><span>Last Published :  | Version :1.6</span></div> -->
+            
+            <ul id="top-nav">
+                <li class="first"><a href="/community/index.html">About</a></li>
+                <li><a href="/download/index.html">Download</a></li>
+                <li><a href="/documentation/index.html">Documentation</a></li>
+            </ul>
+            
+        </div>
+    </div>
+
+    <div class="related">
+      <ul id="breadcrumbs">
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+        <li><a href="#">Expressive Styles</a></li>
+      </ul>
+    </div> 
+
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+	
+	<h4>Navigation</h4><ul style='list-style: none;padding-left:4px;'>
+	<li><a href="https://sourceforge.net/p/oxygene-project">
+	   Sourceforge Home
+	   <span style="padding-left:4px;"><img src="/_static/img/sourceforge.png" /></span>
+	</a></li>
+	<li><a href="http://oxygene-project.sourceforge.net/apidocs/index.html">
+	   Online javadoc
+	</a></li>
+	</ul>
+	
+	<h4>Table Of Contents</h4>
+    <ul>
+<li><a class="reference internal" href="#">Expressive Styles</a><ul>
+<li><a class="reference internal" href="#background">Background</a></li>
+<li><a class="reference internal" href="#stroke-styles">Stroke styles</a><ul>
+<li><a class="reference internal" href="#expressive-stroke">Expressive stroke</a></li>
+<li><a class="reference internal" href="#parameters">Parameters</a></li>
+<li><a class="reference internal" href="#shaders">Shaders</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fill-styles">Fill styles</a><ul>
+<li><a class="reference internal" href="#texture-filling">Texture filling</a></li>
+<li><a class="reference internal" href="#perlin-noise-texture">Perlin Noise Texture</a></li>
+<li><a class="reference internal" href="#tile-distribution-texture">Tile Distribution Texture</a></li>
+<li><a class="reference internal" href="#gradient-texture">Gradient Texture</a></li>
+<li><a class="reference internal" href="#expressive-gradient">Expressive Gradient</a></li>
+<li><a class="reference internal" href="#bibliographie">Bibliographie</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation/application/style-expressive.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+    <form class="navbar-search pull-right" style="margin-bottom:-3px;" action="../../search.html" method="get">
+        <input type="text" name="q" placeholder="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+    
+    <!-- div>
+        <script type="text/javascript" src="http://www.ohloh.net/p/40483/widgets/project_thin_badge.js"></script>
+    </div -->
+    
+
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="expressive-styles">
+<h1>Expressive Styles</h1>
+<p>Expressive styles have been developed during the ANR project <a class="reference external" href="http://mapstyle.ign.fr/">Mapstyle</a>, by Jeremie Turbet.</p>
+<p>Expressive styles extend the SLD norm to introduce brush and texture-based appearance using OpenGL+GLSL rendering. They can be visualized in GeOxygene using the OpenGL project window:</p>
+<div class="align-center figure" id="id2">
+<img alt="Open OpenGL Project" src="../../_images/openGLproject.png" />
+<p class="caption"><span class="caption-text">Use OpenGL to render your map using the GL Project window</span></p>
+</div>
+<p>This page covers the definition of expressive <em>Stroke</em> and <em>Fill</em> styles.</p>
+<div class="section" id="background">
+<h2>Background</h2>
+<p>Background textures can be defined using the <code class="docutils literal"><span class="pre">&lt;Background&gt;</span></code> tag:</p>
+<blockquote>
+<div><div class="highlight-xml"><div class="highlight"><pre><span></span><span class="nt">&lt;StyledLayerDescriptor</span> <span class="na">xmlns:ogc=</span><span class="s">&quot;http://www.opengis.net/ogc&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;Background&gt;</span>
+     <span class="nt">&lt;url&gt;</span>./samples/expressive samples/images/canvas-bg.png<span class="nt">&lt;/url&gt;</span>
+     <span class="nt">&lt;PaperHeightInCm&gt;</span>4.0<span class="nt">&lt;/PaperHeightInCm&gt;</span>
+     <span class="nt">&lt;PaperReferenceMapScale&gt;</span>100000.0<span class="nt">&lt;/PaperReferenceMapScale&gt;</span>
+     <span class="nt">&lt;Color&gt;</span>#FF0000<span class="nt">&lt;/Color&gt;</span>
+ <span class="nt">&lt;/Background&gt;</span>
+ <span class="nt">&lt;NamedLayer&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>with:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">url</span></code>: Path of the image file</dt>
+<dd><div class="first last admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The tag <code class="docutils literal"><span class="pre">&lt;url&gt;</span></code> is not internally used as an url but as a ==path==.</p>
+</div>
+</dd>
+</dl>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">PaperHeightInCm</span></code>: paper size according to the reference scale</p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">PaperReferenceMapScale</span></code>: reference scale</p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">Color</span></code>: alternative color used when the image cannot be loaded/displayed</p>
+</li>
+</ul>
+</div>
+<div class="section" id="stroke-styles">
+<h2>Stroke styles</h2>
+<div class="section" id="expressive-stroke">
+<h3>Expressive stroke</h3>
+</div>
+<div class="section" id="parameters">
+<h3>Parameters</h3>
+<p><a class="reference internal" href="#domdd2001" id="id1">[DOMDD2001]</a></p>
+</div>
+<div class="section" id="shaders">
+<h3>Shaders</h3>
+</div>
+</div>
+<div class="section" id="fill-styles">
+<h2>Fill styles</h2>
+<div class="section" id="texture-filling">
+<h3>Texture filling</h3>
+</div>
+<div class="section" id="perlin-noise-texture">
+<h3>Perlin Noise Texture</h3>
+</div>
+<div class="section" id="tile-distribution-texture">
+<h3>Tile Distribution Texture</h3>
+</div>
+<div class="section" id="gradient-texture">
+<h3>Gradient Texture</h3>
+</div>
+<div class="section" id="expressive-gradient">
+<h3>Expressive Gradient</h3>
+</div>
+<div class="section" id="bibliographie">
+<h3>Bibliographie</h3>
+<table class="docutils citation" frame="void" id="domdd2001" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[DOMDD2001]</a></td><td><p class="first">Frédo Durand, Victor Ostromoukhov, Mathieu Miller, Francois Duranleau, and Julie Dorsey. 2001.</p>
+<p>Decoupling strokes and high-level attributes for interactive traditional drawing.</p>
+<p>In Proceedings of the 12th Eurographics conference on Rendering (EGWR&#8216;01).</p>
+<p class="last"><a class="reference external" href="http://dx.doi.org/10.2312/EGWR/EGWR01/071-082">http://dx.doi.org/10.2312/EGWR/EGWR01/071-082</a></p>
+</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <ul id="breadcrumbs">
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+        <li><a href="#">Expressive Styles</a></li>
+      </ul>
+    </div> 
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Laboratoire COGIT, IGN.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

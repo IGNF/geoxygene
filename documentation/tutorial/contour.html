@@ -1,0 +1,388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Style : gestion des contours &mdash; GeOxygene</title>
+    
+    <link rel="stylesheet" href="../../_static/geoxygene.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="GeOxygene" href="../../index.html" />
+    <link rel="up" title="Tutorial" href="index.html" />
+    <link rel="next" title="Import et export de données dans GeOxygene" href="import.html" />
+    <link rel="prev" title="Style : motifs &amp; poncifs" href="motif.html" /> 
+  </head>
+  <body role="document">
+
+    <div class="header">
+        <div class="wrap">
+            <div id="logo"><a href="http://oxygene-project.sourceforge.net/">GeOxygene</a></div>
+            <h1 id="logo_cogit"><a href="http://recherche.ign.fr/labos/cogit/">COGIT</a></h1>
+            <h1 id="logo_ign" alt="Institut National de l'Information Géographique et Forestière">
+                <a href="http://www.ign.fr" alt="Institut National de l'Information Géographique et Forestière">IGN</a>
+            </h1>
+            <!-- <h1 id="logo_sourceforge"><a href="http://sourceforge.net/projects/oxygene-project/">Sourceforge</a></h1> -->
+            
+            <!-- <div class='top-xleft'><span>Last Published :  | Version :1.6</span></div> -->
+            
+            <ul id="top-nav">
+                <li class="first"><a href="/community/index.html">About</a></li>
+                <li><a href="/download/index.html">Download</a></li>
+                <li><a href="/documentation/index.html">Documentation</a></li>
+            </ul>
+            
+        </div>
+    </div>
+
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="import.html" title="Import et export de données dans GeOxygene"
+                 accesskey="N">next</a></li>
+            <li class="right" >
+              <a href="motif.html" title="Style : motifs & poncifs"
+                 accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Tutorial</a> &raquo;</li>
+        <li><a href="#">Style : gestion des contours</a></li>
+      </ul>
+    </div> 
+
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+	
+	<h4>Navigation</h4><ul style='list-style: none;padding-left:4px;'>
+	<li><a href="https://sourceforge.net/p/oxygene-project">
+	   Sourceforge Home
+	   <span style="padding-left:4px;"><img src="/_static/img/sourceforge.png" /></span>
+	</a></li>
+	<li><a href="http://oxygene-project.sourceforge.net/apidocs/index.html">
+	   Online javadoc
+	</a></li>
+	</ul>
+	
+	<h4>Table Of Contents</h4>
+    <ul>
+<li><a class="reference internal" href="#">Style : gestion des contours</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#lattribut-join">L’attribut Join</a></li>
+<li><a class="reference internal" href="#lattribut-cap">L’attribut Cap</a></li>
+<li><a class="reference internal" href="#cas-des-polygones">Cas des polygones</a></li>
+<li><a class="reference internal" href="#cas-des-lignes">Cas des lignes</a></li>
+<li><a class="reference internal" href="#cas-des-points">Cas des points</a></li>
+<li><a class="reference internal" href="#implementation-dans-geoxygene">Implémentation dans GeOxygene</a></li>
+<li><a class="reference internal" href="#bibliographie">Bibliographie</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="motif.html"
+                        title="previous chapter">Style : motifs &amp; poncifs</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="import.html"
+                        title="next chapter">Import et export de données dans GeOxygene</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation/tutorial/contour.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+    <form class="navbar-search pull-right" style="margin-bottom:-3px;" action="../../search.html" method="get">
+        <input type="text" name="q" placeholder="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+    
+    <!-- div>
+        <script type="text/javascript" src="http://www.ohloh.net/p/40483/widgets/project_thin_badge.js"></script>
+    </div -->
+    
+
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="style-gestion-des-contours">
+<h1>Style : gestion des contours</h1>
+<div class="section" id="introduction">
+<h2>Introduction</h2>
+<p>Dans GeOxygene, c’est la norme SLD qui est implémentée pour représenter les objets (géo-)graphiques.</p>
+<p>L’implémentation est réalisée en Java, la représentation se fait donc grâce à java2D.</p>
+<p>Deux attributs sont utilisés pour définir la forme des contours : Join et Cap.</p>
+</div>
+<div class="section" id="lattribut-join">
+<h2>L’attribut Join</h2>
+<p>Join est utilisé pour définir les jointures entre segments. Il a trois valeurs possibles :</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="34%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Mitre - BasicStroke.JOIN_MITER = 0</strong></td>
+<td><strong>Round - BasicStroke.JOIN_ROUND = 1</strong></td>
+<td><strong>Bevel - BasicStroke.JOIN_BEVEL = 2</strong></td>
+</tr>
+<tr class="row-even"><td><div class="first last figure">
+<a class="reference internal image-reference" href="../../_images/ContourPolygoneBasicStrokeJOINMITER0_.png"><img alt="../../_images/ContourPolygoneBasicStrokeJOINMITER0_.png" src="../../_images/ContourPolygoneBasicStrokeJOINMITER0_.png" style="width: 250px;" /></a>
+</div>
+</td>
+<td><div class="first last figure">
+<a class="reference internal image-reference" href="../../_images/ContourPolygoneBasicStrokeJOINMITER1.png"><img alt="../../_images/ContourPolygoneBasicStrokeJOINMITER1.png" src="../../_images/ContourPolygoneBasicStrokeJOINMITER1.png" style="width: 250px;" /></a>
+</div>
+</td>
+<td><div class="first last figure">
+<a class="reference internal image-reference" href="../../_images/ContourPolygoneBasicStrokeJOINMITER2.png"><img alt="../../_images/ContourPolygoneBasicStrokeJOINMITER2.png" src="../../_images/ContourPolygoneBasicStrokeJOINMITER2.png" style="width: 250px;" /></a>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="lattribut-cap">
+<h2>L’attribut Cap</h2>
+<p>Cap est utilise pour définir les extrémités des segments. Il a trois valeurs possibles :</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="34%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Butt - BasicStroke.CAP_BUTT = 0</strong></td>
+<td><strong>Round - BasicStroke.CAP_ROUND = 1</strong></td>
+<td><strong>Square - BasicStroke.CAP_SQUARE = 2</strong></td>
+</tr>
+<tr class="row-even"><td><div class="first last figure">
+<a class="reference internal image-reference" href="../../_images/ContourPolygoneBasicStrokeCAP_BUTT=0.png"><img alt="../../_images/ContourPolygoneBasicStrokeCAP_BUTT=0.png" src="../../_images/ContourPolygoneBasicStrokeCAP_BUTT=0.png" style="width: 250px;" /></a>
+</div>
+</td>
+<td><div class="first last figure">
+<a class="reference internal image-reference" href="../../_images/ContourPolygoneBasicStrokeCAP_ROUND=1.png"><img alt="../../_images/ContourPolygoneBasicStrokeCAP_ROUND=1.png" src="../../_images/ContourPolygoneBasicStrokeCAP_ROUND=1.png" style="width: 250px;" /></a>
+</div>
+</td>
+<td><div class="first last figure">
+<a class="reference internal image-reference" href="../../_images/ContourPolygoneBasicStrokeCAP_SQUARE=2.png"><img alt="../../_images/ContourPolygoneBasicStrokeCAP_SQUARE=2.png" src="../../_images/ContourPolygoneBasicStrokeCAP_SQUARE=2.png" style="width: 250px;" /></a>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="cas-des-polygones">
+<h2>Cas des polygones</h2>
+<p>Le paramètre Cap est défini en fonction de la valeur du paramètre Join pour que le point de « fermeture » du polygone soit géré correctement même
+s’il n’est pas utilisé en pratique pour afficher le contour du polygone qui est considéré comme une forme fermée, sans extrémité donc.</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Valeur de Join</th>
+<th class="head">Valeur de Cap</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Mitre  (=0)</td>
+<td>Square  (=2)</td>
+</tr>
+<tr class="row-odd"><td>Round  (=1)</td>
+<td>Round   (=1)</td>
+</tr>
+<tr class="row-even"><td>Bevel  (=2)</td>
+<td>Butt    (=0)</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="cas-des-lignes">
+<h2>Cas des lignes</h2>
+<p>Pour les lignes, il doit être possible de modifier les deux paramètres Join et Cap afin de disposer des six variantes possibles.</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="30%" />
+<col width="30%" />
+<col width="30%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Join</th>
+<th class="head">Mitre</th>
+<th class="head">Round</th>
+<th class="head">Bevel</th>
+</tr>
+<tr class="row-even"><th class="head">Round</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td>Square</td>
+<td><div class="first last figure">
+<img alt="../../_images/ContourPolygoneSquareMitre.png" src="../../_images/ContourPolygoneSquareMitre.png" />
+</div>
+</td>
+<td><div class="first last figure">
+<img alt="../../_images/ContourPolygoneSquareRound.png" src="../../_images/ContourPolygoneSquareRound.png" />
+</div>
+</td>
+<td><div class="first last figure">
+<img alt="../../_images/ContourPolygoneSquareBevel.png" src="../../_images/ContourPolygoneSquareBevel.png" />
+</div>
+</td>
+</tr>
+<tr class="row-even"><td>Butt</td>
+<td><div class="first last figure">
+<img alt="../../_images/ContourPolygoneButtMitre.png" src="../../_images/ContourPolygoneButtMitre.png" />
+</div>
+</td>
+<td><div class="first last figure">
+<img alt="../../_images/ContourPolygoneButtRound.png" src="../../_images/ContourPolygoneButtRound.png" />
+</div>
+</td>
+<td><div class="first last figure">
+<img alt="../../_images/ContourPolygoneButtBevel.png" src="../../_images/ContourPolygoneButtBevel.png" />
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td>Round</td>
+<td><div class="first last figure">
+<img alt="../../_images/ContourPolygoneRoundMitre.png" src="../../_images/ContourPolygoneRoundMitre.png" />
+</div>
+</td>
+<td><div class="first last figure">
+<img alt="../../_images/ContourPolygoneRoundRound.png" src="../../_images/ContourPolygoneRoundRound.png" />
+</div>
+</td>
+<td><div class="first last figure">
+<img alt="../../_images/ContourPolygoneRoundBevel.png" src="../../_images/ContourPolygoneRoundBevel.png" />
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="cas-des-points">
+<h2>Cas des points</h2>
+<p>A traiter ...   -&gt;  Gestion différente si le symbole est plutôt « polygonale » (carré, étoile…) ou « linéaire » (tirets, croix) ??</p>
+</div>
+<div class="section" id="implementation-dans-geoxygene">
+<h2>Implémentation dans GeOxygene</h2>
+<p>Tout cela est implémenté dans la classe Stroke de GeOxygene qui est commune au PolygonSymbolizer et au LineSymbolizer.</p>
+<p>Le Stroke est en fait définit dans la classe AbstractSymboliser.</p>
+<p>L’implémentation utilise Java2D et son système d’objet graphique avec contour.</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="25%" />
+<col width="26%" />
+<col width="25%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><div class="first last figure">
+<a class="reference internal image-reference" href="../../_images/ContourPolygoneShape.png"><img alt="../../_images/ContourPolygoneShape.png" src="../../_images/ContourPolygoneShape.png" style="width: 97px;" /></a>
+</div>
+</td>
+<td><div class="first last figure">
+<a class="reference internal image-reference" href="../../_images/ContourPolygoneShapeFill.png"><img alt="../../_images/ContourPolygoneShapeFill.png" src="../../_images/ContourPolygoneShapeFill.png" style="width: 106px;" /></a>
+</div>
+</td>
+<td><div class="first last figure">
+<a class="reference internal image-reference" href="../../_images/ContourPolygoneShapeStroke.png"><img alt="../../_images/ContourPolygoneShapeStroke.png" src="../../_images/ContourPolygoneShapeStroke.png" style="width: 107px;" /></a>
+</div>
+</td>
+<td><div class="first last figure">
+<a class="reference internal image-reference" href="../../_images/ContourPolygoneShapeOutline.png"><img alt="../../_images/ContourPolygoneShapeOutline.png" src="../../_images/ContourPolygoneShapeOutline.png" style="width: 106px;" /></a>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td colspan="2">Shape pentagon = createRegularPolygon(5,75);</td>
+<td colspan="2"><p class="first">BasicStroke wideline = new BasicStroke(10.0f);</p>
+<p class="last">Shape outline = wideline.createStrokedShape(pentagon);</p>
+</td>
+</tr>
+<tr class="row-odd"><td>g.draw(pentagon);</td>
+<td>g.fill(pentagon);</td>
+<td>g.draw(outline);</td>
+<td>g.fill(outline);</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p><a class="reference external" href="http://flylib.com/books/en/2.428.1.134/1/">Source : flylib.com</a></p>
+</div>
+<div class="section" id="bibliographie">
+<h2>Bibliographie</h2>
+<ul class="simple">
+<li><a class="reference external" href="http://www.opengeospatial.org/standards/sld">OpenGIS Styled Layer Descriptor Profile of the Web Map Service Implementation Specification, Version 1.1.0, Norme de l’Open Geospatial Consortium (OGC)</a></li>
+<li><a class="reference external" href="http://www.opengeospatial.org/standards/se">OpenGIS Symbology Encoding Implementation Specification , Version 1.1.0, Norme de l’Open Geospatial Consortium (OGC)</a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="import.html" title="Import et export de données dans GeOxygene"
+                 >next</a></li>
+            <li class="right" >
+              <a href="motif.html" title="Style : motifs & poncifs"
+                 >previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" >Tutorial</a> &raquo;</li>
+        <li><a href="#">Style : gestion des contours</a></li>
+      </ul>
+    </div> 
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Laboratoire COGIT, IGN.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

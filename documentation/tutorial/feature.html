@@ -1,0 +1,404 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Feature : structure et manipulation &mdash; GeOxygene</title>
+    
+    <link rel="stylesheet" href="../../_static/geoxygene.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="GeOxygene" href="../../index.html" />
+    <link rel="up" title="Tutorial" href="index.html" />
+    <link rel="next" title="Expression de filtres" href="filter.html" />
+    <link rel="prev" title="Geometrie dans GeOxygene" href="geometry.html" /> 
+  </head>
+  <body role="document">
+
+    <div class="header">
+        <div class="wrap">
+            <div id="logo"><a href="http://oxygene-project.sourceforge.net/">GeOxygene</a></div>
+            <h1 id="logo_cogit"><a href="http://recherche.ign.fr/labos/cogit/">COGIT</a></h1>
+            <h1 id="logo_ign" alt="Institut National de l'Information Géographique et Forestière">
+                <a href="http://www.ign.fr" alt="Institut National de l'Information Géographique et Forestière">IGN</a>
+            </h1>
+            <!-- <h1 id="logo_sourceforge"><a href="http://sourceforge.net/projects/oxygene-project/">Sourceforge</a></h1> -->
+            
+            <!-- <div class='top-xleft'><span>Last Published :  | Version :1.6</span></div> -->
+            
+            <ul id="top-nav">
+                <li class="first"><a href="/community/index.html">About</a></li>
+                <li><a href="/download/index.html">Download</a></li>
+                <li><a href="/documentation/index.html">Documentation</a></li>
+            </ul>
+            
+        </div>
+    </div>
+
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="filter.html" title="Expression de filtres"
+                 accesskey="N">next</a></li>
+            <li class="right" >
+              <a href="geometry.html" title="Geometrie dans GeOxygene"
+                 accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Tutorial</a> &raquo;</li>
+        <li><a href="#">Feature : structure et manipulation</a></li>
+      </ul>
+    </div> 
+
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+	
+	<h4>Navigation</h4><ul style='list-style: none;padding-left:4px;'>
+	<li><a href="https://sourceforge.net/p/oxygene-project">
+	   Sourceforge Home
+	   <span style="padding-left:4px;"><img src="/_static/img/sourceforge.png" /></span>
+	</a></li>
+	<li><a href="http://oxygene-project.sourceforge.net/apidocs/index.html">
+	   Online javadoc
+	</a></li>
+	</ul>
+	
+	<h4>Table Of Contents</h4>
+    <ul>
+<li><a class="reference internal" href="#">Feature : structure et manipulation</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#schema-geographique-definitions">Schéma géographique : définitions</a></li>
+<li><a class="reference internal" href="#quelques-exemples-d-application">Quelques exemples d&#8217;application</a></li>
+<li><a class="reference internal" href="#references">Références</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="geometry.html"
+                        title="previous chapter">Geometrie dans GeOxygene</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="filter.html"
+                        title="next chapter">Expression de filtres</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation/tutorial/feature.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+    <form class="navbar-search pull-right" style="margin-bottom:-3px;" action="../../search.html" method="get">
+        <input type="text" name="q" placeholder="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+    
+    <!-- div>
+        <script type="text/javascript" src="http://www.ohloh.net/p/40483/widgets/project_thin_badge.js"></script>
+    </div -->
+    
+
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="feature-structure-et-manipulation">
+<span id="feature"></span><h1>Feature : structure et manipulation</h1>
+<div class="section" id="introduction">
+<h2>Introduction</h2>
+<p>GeOxygene propose un schéma logique générique pour l&#8217;exploitation des données. Il est basé sur le concept OGC d&#8217;objets géographiques.</p>
+<p>En réalité il existe 2 schémas logiques indépendants, implémentés dans GeOxygene :</p>
+<ul class="simple">
+<li>Le premier est basé sur des objets géographiques métiers héritant de <em>FT_Feature</em></li>
+<li>Le second est générique, les objets géographiques sont implémentés dans un même objet <em>DefaultFeature</em></li>
+</ul>
+<p>À cela s’ajoutent les concepts de jeu de données (DataSet), de populations d&#8217;objets d&#8217;un même type (Population), de collections d&#8217;objets
+quelconques (FT_FeatureCollection).</p>
+<p><strong>Remarque importante</strong> : si les FT_Feature et FT_FeatureCollection sont conformes au modèle de l&#8217;OGC,
+ce n&#8217;est pas le cas des classes DataSet et Population. Ces classes sont un enrichissement des spécifications <strong>OGC</strong>.</p>
+<div class="centerside container">
+<div class="figure" id="id1">
+<a class="reference internal image-reference" href="../../_images/DC-FeatureType02.png"><img alt="../../_images/DC-FeatureType02.png" src="../../_images/DC-FeatureType02.png" style="width: 800px;" /></a>
+<p class="caption"><span class="caption-text">Figure 1 : Diagramme de classe Feature</span></p>
+</div>
+</div>
+<p>Le module <strong>geoxygene-feature</strong> contient l&#8217;implémentation des objets géographiques.</p>
+<p>Cette page présente les <em>Feature</em> dans GeOxygene, d&#8217;abord en définissant précisément les objets
+puis en donnant quelques exemples d&#8217;utilisation.</p>
+</div>
+<div class="section" id="schema-geographique-definitions">
+<h2>Schéma géographique : définitions</h2>
+<p><strong>1. Feature</strong></p>
+<blockquote>
+<div><p>Un <em>Feature</em> est un objet géographique qui a, en particulier, des attributs et une géométrie.
+La définition exacte d&#8217;un feature, d&#8217;après la norme ISO 19101 est :</p>
+<div class="chemin container">
+A feature is an abstraction of a real world phenomenon; it is a geographic feature if it is associated with a location relative to the Earth.</div>
+<p>Par exemple on peut avoir comme Feature : TRONCON_ROUTE, NOEUD_ROUTIER, ZONE_ACTIVITE</p>
+<div class="centerside container">
+<div class="figure" id="id2">
+<a class="reference internal image-reference" href="../../_images/TronconRoute.png"><img alt="../../_images/TronconRoute.png" src="../../_images/TronconRoute.png" style="width: 250px;" /></a>
+<p class="caption"><span class="caption-text">Figure 2 : Feature <em>Tronçon de route</em></span></p>
+</div>
+</div>
+<p>Les classes dites géographiques (routes, rivières, …) héritent soit de « FT_Feature » soit de « DefaultFeature », autrement dit
+FT_Feature &amp; DefaultFeature sont les classes mères des classes géographiques.</p>
+<p><strong>1.1. DefaultFeature</strong></p>
+<blockquote>
+<div><p>Un <em>DefaultFeature</em> est un Feature générique. Les attributs sont représentés dans une table et ne
+peuvent pas être accédés autrement dit il n&#8217;y a pas de getter ni de setter spécifique à un attribut.
+L&#8217;objet géométrique doit être casté suivant son type.</p>
+<p>Un defaultFeature est cependant associé à un FeatureType avec toutes les descriptions de ses attributs,
+types de valeurs etc. C&#8217;est au développeur de s&#8217;assurer que le defaultFeature reste conforme à la définition de son
+featureType.</p>
+<p>Au premier chargement, s&#8217;il n&#8217;y a pas de featuretype renseigné, un nouveau featureType est généré automatiquement grâce aux colonnes de la
+table. Mais cela ne constitue pas un schéma conceptuel (voir point n°5), il doit donc être précisé manuellement
+dès que possible pour les utilisations ultérieures (notamment pour identifier les relations entre objets etc.)</p>
+</div></blockquote>
+<p><strong>1.2. FT_Feature</strong></p>
+<blockquote>
+<div><p>Un <em>FT_Feature</em> est un Feature qui correspond à un objet géographique métier, le type de la géométrie et les attributs sont connus.
+Chaque attribut de l&#8217;objet géographique devient un attribut de l&#8217;objet java. La classe FT_Feature étant abstraite,
+les nouveaux features doivent donc étendre cette classe.</p>
+<p>Les classes sont construites en général par un mapping sur des données stockées dans un SGBD relationel.
+Le mapping entre les environnements objet et relationnel est assuré par des librairies de persistance open source, Hibernate ou/et OJB.
+Cette technique est utilisée pour la généralisation, car elle permet de sauvegarder les « états » intermédiaires des features.</p>
+<div class="centerside container">
+<div class="figure" id="id3">
+<a class="reference internal image-reference" href="../../_images/MappingFtFeature.png"><img alt="../../_images/MappingFtFeature.png" src="../../_images/MappingFtFeature.png" style="width: 500px;" /></a>
+<p class="caption"><span class="caption-text">Figure 3 : Mapping relationnel / objet</span></p>
+</div>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">fr.ign.cogit.geoxygene.feature.FT_Feature</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TronconDeRoute</span> <span class="kd">extends</span> <span class="n">FT_Feature</span> <span class="o">{</span>
+  
+  <span class="cm">/** Renvoie la géométrie de l&#39;objet, castée plus précisément qu&#39;avec la méthode getGeom() */</span>
+  <span class="kd">public</span> <span class="n">GM_LineString</span> <span class="nf">getGeometrie</span><span class="o">()</span> <span class="o">{</span><span class="k">return</span> <span class="o">(</span><span class="n">GM_LineString</span><span class="o">)</span><span class="n">geom</span><span class="o">;}</span>
+  <span class="cm">/** Définit la géométrie de l&#39;objet, castée plus précisément qu&#39;avec la méthode setGeom() */</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setGeometrie</span><span class="o">(</span><span class="n">GM_LineString</span> <span class="n">G</span><span class="o">)</span> <span class="o">{</span><span class="k">this</span><span class="o">.</span><span class="na">geom</span> <span class="o">=</span> <span class="n">G</span><span class="o">;}</span>
+  
+  <span class="kd">protected</span> <span class="kt">double</span> <span class="n">nb_voies</span><span class="o">;</span>
+  <span class="kd">public</span> <span class="kt">double</span> <span class="nf">getNb_voies</span><span class="o">()</span> <span class="o">{</span><span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">nb_voies</span><span class="o">;</span> <span class="o">}</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setNb_voies</span> <span class="o">(</span><span class="kt">double</span> <span class="n">Nb_voies</span><span class="o">)</span> <span class="o">{</span><span class="n">nb_voies</span> <span class="o">=</span> <span class="n">Nb_voies</span><span class="o">;</span> <span class="o">}</span>
+  
+  <span class="kd">protected</span> <span class="n">String</span> <span class="n">revetement</span><span class="o">;</span>
+  <span class="kd">public</span> <span class="n">String</span> <span class="nf">getRevetement</span><span class="o">()</span> <span class="o">{</span><span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">revetement</span><span class="o">;</span> <span class="o">}</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setRevetement</span> <span class="o">(</span><span class="n">String</span> <span class="n">revetement</span><span class="o">)</span> <span class="o">{</span><span class="n">revetement</span> <span class="o">=</span> <span class="n">revetement</span><span class="o">;</span> <span class="o">}</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div></blockquote>
+<p><strong>2. FeatureType</strong></p>
+<blockquote>
+<div><p>Un <em>FeatureType</em> fournit les métadonnées d&#8217;un Feature, c&#8217;est à dire une description des informations d&#8217;un objet géographique.</p>
+<p>Ci-dessous un exemple de FeatureType pour un Feature <em>TRONCON_ROUTE</em></p>
+<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="nt">&lt;FeatureType</span> <span class="na">id=</span><span class="s">&quot;1&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;typeName&gt;</span>route<span class="nt">&lt;/typeName&gt;</span>
+    <span class="nt">&lt;definition&gt;</span>les routes sur lesquelles on roule<span class="nt">&lt;/definition&gt;</span>
+    <span class="nt">&lt;positionInitiale&gt;</span>10,10<span class="nt">&lt;/positionInitiale&gt;</span>
+    <span class="nt">&lt;nomClasse&gt;</span>donnees.sandrine.classesGenerees.Route<span class="nt">&lt;/nomClasse&gt;</span>
+    <span class="nt">&lt;isExplicite&gt;</span>1<span class="nt">&lt;/isExplicite&gt;</span>
+    <span class="nt">&lt;AttributeType</span> <span class="na">id=</span><span class="s">&quot;1&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;memberName&gt;</span>revêtement<span class="nt">&lt;/memberName&gt;</span>
+        <span class="nt">&lt;valueType&gt;</span>text<span class="nt">&lt;/valueType&gt;</span>
+    <span class="nt">&lt;/AttributeType&gt;</span>
+    <span class="nt">&lt;AttributeType</span> <span class="na">id=</span><span class="s">&quot;2&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;memberName&gt;</span>geom<span class="nt">&lt;/memberName&gt;</span>
+        <span class="nt">&lt;valueType&gt;</span>polyligne<span class="nt">&lt;/valueType&gt;</span>        
+    <span class="nt">&lt;/AttributeType&gt;</span>
+<span class="nt">&lt;/FeatureType&gt;</span>
+</pre></div>
+</div>
+<p>Le FeatureType peut être utilisé :</p>
+<ul class="simple">
+<li>pour accéder à la liste des attributs disponibles d&#8217;un Feature</li>
+<li>à la création d&#8217;un nouveau Feature, les métadonnées permettent de définir l&#8217;ensemble des informations à saisir.</li>
+</ul>
+</div></blockquote>
+<p><strong>3. AttributeType</strong></p>
+<blockquote>
+<div><p>Les attributs d&#8217;un Feature décrivent ses propriétés qualitatives et quantitatives.</p>
+<p>Par exemple : classement_administratif, nb_voies, numéro, ...</p>
+<div class="centerside container">
+<div class="figure" id="id4">
+<a class="reference internal image-reference" href="../../_images/DC-Attribute.png"><img alt="../../_images/DC-Attribute.png" src="../../_images/DC-Attribute.png" style="width: 500px;" /></a>
+<p class="caption"><span class="caption-text">Figure 4 : DC - Attribute</span></p>
+</div>
+</div>
+</div></blockquote>
+<p><strong>4. FeatureCollection, Population, DataSet</strong></p>
+<blockquote>
+<div><p>Des <em>FT_Feature</em> peuvent s&#8217;agréger en <em>FT_FeatureCollection</em>, classe qui représente donc un groupe de <em>FT_Feature</em>
+et qui porte des méthodes d&#8217;indexation spatiale.</p>
+<div class="centerside container">
+<div class="figure" id="id5">
+<a class="reference internal image-reference" href="../../_images/Collection.png"><img alt="../../_images/Collection.png" src="../../_images/Collection.png" style="width: 550px;" /></a>
+<p class="caption"><span class="caption-text">Figure 5 : Collection, DataSet et Population</span></p>
+</div>
+</div>
+<p>La classe <em>DataSet</em> représente un jeu de données. Par exemple :</p>
+<ul class="simple">
+<li>un extrait de bases de données sur une zone géographique limitée, datant de l&#8217;année 2003</li>
+<li>thème hydrographie d&#8217;une base de données topographiques</li>
+</ul>
+<p>Un « thème » sous-ensemble d&#8217;un jeu de données, est lui-même un DataSet.</p>
+<p>Un DataSet porte quelques métadonnées (zone, année, ...).</p>
+<p>Un DataSet se compose de plusieurs <em>Populations</em>. La classe Population représente une FT_FeatureCollection particulière :
+il s&#8217;agit de TOUS les FT_Feature d&#8217;un <em>DataSet</em>, de même type.</p>
+</div></blockquote>
+<p><strong>5. Schema</strong></p>
+<blockquote>
+<div><p>Le schéma dans GeOxygene est le schéma conceptuel d&#8217;un jeu de données.
+Il correspond à la notion &#8220;Application schema&#8221; dans les normes ISO.
+Nous définissons ici ce type comme un ensemble de classes et de relations (associations et héritage)
+comportant des proprietés (attributs, rôles, opérations) et des contraintes.</p>
+<p>Dans GeoTools un &#8220;schema&#8221; designe la structure d&#8217;un feature et non pas un jeu de données.</p>
+<p><strong>SchemaDefaultFeature</strong> : Description du schéma logique d&#8217;un DefaultFeature (table de SGBD).
+Ce schéma contient le nom de la table (ou du fichier GML ou autre...) et une lookup table indiquant le nom des attributs
+et leur emplacement dans la table attributes[] du defaultFeature.
+Dans le cas où une métadonnée de structure est disponible (soit stockée quelque part soit donnée par l&#8217;utilisateur lors du chargement),
+ce schéma contient aussi une référence vers le schéma conceptuel : le featureType correspondant au DefaultFeature.</p>
+<div class="centerside container">
+<div class="figure" id="id6">
+<a class="reference internal image-reference" href="../../_images/DC-Schema.png"><img alt="../../_images/DC-Schema.png" src="../../_images/DC-Schema.png" style="width: 550px;" /></a>
+<p class="caption"><span class="caption-text">Figure 6 : Diagramme de classes : Schema, Collection, DataSet et Population</span></p>
+</div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="quelques-exemples-d-application">
+<h2>Quelques exemples d&#8217;application</h2>
+<ol class="arabic">
+<li><p class="first">Afficher la valeur de l&#8217;attribut <strong>OBJECTID</strong> :</p>
+<blockquote>
+<div><div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// IFeature feature = itCollection.next();</span>
+<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">feature</span><span class="o">.</span><span class="na">getFeatureType</span><span class="o">().</span><span class="na">getFeatureAttributes</span><span class="o">().</span><span class="na">size</span><span class="o">();</span> <span class="n">k</span><span class="o">++)</span> <span class="o">{</span>
+  <span class="n">GF_AttributeType</span> <span class="n">attributeType</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="na">getFeatureType</span><span class="o">().</span><span class="na">getFeatureAttributes</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">k</span><span class="o">);</span>
+  <span class="k">if</span> <span class="o">(</span><span class="n">attributeType</span><span class="o">.</span><span class="na">getMemberName</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;OBJECTID&quot;</span><span class="o">))</span> <span class="o">{</span>
+      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">feature</span><span class="o">.</span><span class="na">getAttribute</span><span class="o">(</span><span class="s">&quot;OBJECTID&quot;</span><span class="o">));</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">Ajouter un élément à une collection de DefaultFeature (le Schéma et le FeatureType sont déjà renseignés) :</p>
+<blockquote>
+<div><div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">DefaultFeature</span> <span class="n">n</span> <span class="o">=</span> <span class="n">entrees</span><span class="o">.</span><span class="na">nouvelElement</span><span class="o">(</span><span class="n">first</span><span class="o">.</span><span class="na">toGM_Point</span><span class="o">());</span>
+<span class="n">Object</span><span class="o">[]</span> <span class="n">attributes</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Object</span><span class="o">[]</span> <span class="o">{</span> <span class="n">t</span><span class="o">.</span><span class="na">getId</span><span class="o">(),</span> <span class="n">t</span><span class="o">.</span><span class="na">getLargeurVoie</span><span class="o">(),</span> <span class="k">new</span> <span class="n">Integer</span><span class="o">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span> <span class="o">};</span>
+<span class="n">n</span><span class="o">.</span><span class="na">setAttributes</span><span class="o">(</span><span class="n">attributes</span><span class="o">);</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">Création d&#8217;une collection de features, du schéma et du featureType</p>
+<blockquote>
+<div><div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// Créer un featuretype du jeu correspondant</span>
+<span class="n">FeatureType</span> <span class="n">newFeatureType</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FeatureType</span><span class="o">();</span>
+<span class="n">newFeatureType</span><span class="o">.</span><span class="na">setTypeName</span><span class="o">(</span><span class="s">&quot;troncon&quot;</span><span class="o">);</span>
+<span class="n">newFeatureType</span><span class="o">.</span><span class="na">setGeometryType</span><span class="o">(</span><span class="n">ILineString</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+                
+<span class="n">AttributeType</span> <span class="n">idTroncon</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AttributeType</span><span class="o">(</span><span class="s">&quot;idTroncon&quot;</span><span class="o">,</span> <span class="s">&quot;String&quot;</span><span class="o">);</span>
+<span class="n">AttributeType</span> <span class="n">typeLargeurVoie</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AttributeType</span><span class="o">(</span><span class="s">&quot;largeurV&quot;</span><span class="o">,</span> <span class="s">&quot;double&quot;</span><span class="o">);</span>
+<span class="n">AttributeType</span> <span class="n">numVoie</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AttributeType</span><span class="o">(</span><span class="s">&quot;numVoie&quot;</span><span class="o">,</span> <span class="s">&quot;int&quot;</span><span class="o">);</span>
+<span class="n">newFeatureType</span><span class="o">.</span><span class="na">addFeatureAttribute</span><span class="o">(</span><span class="n">idTroncon</span><span class="o">);</span>
+<span class="n">newFeatureType</span><span class="o">.</span><span class="na">addFeatureAttribute</span><span class="o">(</span><span class="n">typeLargeurVoie</span><span class="o">);</span>
+<span class="n">newFeatureType</span><span class="o">.</span><span class="na">addFeatureAttribute</span><span class="o">(</span><span class="n">numVoie</span><span class="o">);</span>
+    
+<span class="c1">// Création d&#39;un schéma associé au featureType</span>
+<span class="n">SchemaDefaultFeature</span> <span class="n">schema</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SchemaDefaultFeature</span><span class="o">();</span>
+<span class="n">schema</span><span class="o">.</span><span class="na">setFeatureType</span><span class="o">(</span><span class="n">newFeatureType</span><span class="o">);</span>
+    
+<span class="n">newFeatureType</span><span class="o">.</span><span class="na">setSchema</span><span class="o">(</span><span class="n">schema</span><span class="o">);</span>
+                
+<span class="n">Map</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">[]&gt;</span> <span class="n">attLookup</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">[]&gt;(</span><span class="mi">0</span><span class="o">);</span>
+<span class="n">attLookup</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="k">new</span> <span class="n">Integer</span><span class="o">(</span><span class="mi">0</span><span class="o">),</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="o">{</span> <span class="n">idTroncon</span><span class="o">.</span><span class="na">getNomField</span><span class="o">(),</span> <span class="n">idTroncon</span><span class="o">.</span><span class="na">getMemberName</span><span class="o">()</span> <span class="o">});</span>
+<span class="n">attLookup</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="k">new</span> <span class="n">Integer</span><span class="o">(</span><span class="mi">1</span><span class="o">),</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="o">{</span> <span class="n">typeLargeurVoie</span><span class="o">.</span><span class="na">getNomField</span><span class="o">(),</span> <span class="n">typeLargeurVoie</span><span class="o">.</span><span class="na">getMemberName</span><span class="o">()</span> <span class="o">});</span>
+<span class="n">attLookup</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="k">new</span> <span class="n">Integer</span><span class="o">(</span><span class="mi">2</span><span class="o">),</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="o">{</span> <span class="n">numVoie</span><span class="o">.</span><span class="na">getNomField</span><span class="o">(),</span> <span class="n">numVoie</span><span class="o">.</span><span class="na">getMemberName</span><span class="o">()</span> <span class="o">});</span>
+<span class="n">schema</span><span class="o">.</span><span class="na">setAttLookup</span><span class="o">(</span><span class="n">attLookup</span><span class="o">);</span>
+    
+<span class="c1">// Création de la population</span>
+<span class="n">Population</span><span class="o">&lt;</span><span class="n">DefaultFeature</span><span class="o">&gt;</span> <span class="n">entrees</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Population</span><span class="o">&lt;</span><span class="n">DefaultFeature</span><span class="o">&gt;(</span><span class="kc">false</span><span class="o">,</span> <span class="s">&quot;entrees&quot;</span><span class="o">,</span> <span class="n">DefaultFeature</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
+<span class="n">entrees</span><span class="o">.</span><span class="na">setFeatureType</span><span class="o">(</span><span class="n">newFeatureType</span><span class="o">);</span>
+    
+<span class="c1">// On ajoute les defaults features à la collection</span>
+<span class="k">for</span> <span class="o">()</span> <span class="o">{</span>
+  <span class="n">DefaultFeature</span> <span class="n">n</span> <span class="o">=</span> <span class="n">entrees</span><span class="o">.</span><span class="na">nouvelElement</span><span class="o">(</span><span class="n">first</span><span class="o">.</span><span class="na">toGM_Point</span><span class="o">());</span>
+  <span class="n">n</span><span class="o">.</span><span class="na">setSchema</span><span class="o">(</span><span class="n">schema</span><span class="o">);</span>
+  <span class="n">Object</span><span class="o">[]</span> <span class="n">attributes</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Object</span><span class="o">[]</span> <span class="o">{</span> <span class="n">t</span><span class="o">.</span><span class="na">getId</span><span class="o">(),</span> <span class="n">t</span><span class="o">.</span><span class="na">getLargeurVoie</span><span class="o">(),</span> <span class="k">new</span> <span class="n">Integer</span><span class="o">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span> <span class="o">};</span>
+  <span class="n">n</span><span class="o">.</span><span class="na">setAttributes</span><span class="o">(</span><span class="n">attributes</span><span class="o">);</span>
+<span class="o">}</span>
+    
+    
+<span class="c1">// Export en fichier shape par exemple</span>
+<span class="n">CoordinateReferenceSystem</span> <span class="n">crs</span> <span class="o">=</span> <span class="n">CRS</span><span class="o">.</span><span class="na">decode</span><span class="o">(</span><span class="s">&quot;EPSG:3035&quot;</span><span class="o">);</span>
+<span class="n">ShapefileWriter</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">entrees</span><span class="o">,</span> <span class="s">&quot;D:\\DATA\\entrees.shp&quot;</span><span class="o">,</span> <span class="n">crs</span><span class="o">);</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</div>
+<div class="section" id="references">
+<h2>Références</h2>
+<ul class="simple">
+<li>OGC, <a class="reference external" href="http://www.opengeospatial.org/standards/sfa">Simple Feature Access - Part 1: Common Architecture</a></li>
+<li>OGC, <a class="reference external" href="http://www.opengeospatial.org/standards/as">Abstract Specifications, Topic 5 - Features</a></li>
+<li>Sandrine Balley, <a class="reference external" href="http://recherche.ign.fr/labos/cogit/pdf/THESES/BALLEY/memoire_Sandrine_Balley.pdf">Aide à la restructuration de données géographiques sur le Web - Vers la diffusion à la carte d&#8217;information géographique</a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="filter.html" title="Expression de filtres"
+                 >next</a></li>
+            <li class="right" >
+              <a href="geometry.html" title="Geometrie dans GeOxygene"
+                 >previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" >Tutorial</a> &raquo;</li>
+        <li><a href="#">Feature : structure et manipulation</a></li>
+      </ul>
+    </div> 
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Laboratoire COGIT, IGN.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

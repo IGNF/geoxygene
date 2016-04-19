@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installation des plugins OpenJump GeOxygene &mdash; GeOxygene</title>
+    
+    <link rel="stylesheet" href="../../_static/geoxygene.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="GeOxygene" href="../../index.html" />
+    <link rel="up" title="Developer Guide" href="index.html" />
+    <link rel="next" title="Installation de l’extension WPS GeOxygene" href="wps.html" />
+    <link rel="prev" title="Lancement des interfaces graphiques" href="launching.html" /> 
+  </head>
+  <body role="document">
+
+    <div class="header">
+        <div class="wrap">
+            <div id="logo"><a href="http://oxygene-project.sourceforge.net/">GeOxygene</a></div>
+            <h1 id="logo_cogit"><a href="http://recherche.ign.fr/labos/cogit/">COGIT</a></h1>
+            <h1 id="logo_ign" alt="Institut National de l'Information Géographique et Forestière">
+                <a href="http://www.ign.fr" alt="Institut National de l'Information Géographique et Forestière">IGN</a>
+            </h1>
+            <!-- <h1 id="logo_sourceforge"><a href="http://sourceforge.net/projects/oxygene-project/">Sourceforge</a></h1> -->
+            
+            <!-- <div class='top-xleft'><span>Last Published :  | Version :1.6</span></div> -->
+            
+            <ul id="top-nav">
+                <li class="first"><a href="/community/index.html">About</a></li>
+                <li><a href="/download/index.html">Download</a></li>
+                <li><a href="/documentation/index.html">Documentation</a></li>
+            </ul>
+            
+        </div>
+    </div>
+
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="wps.html" title="Installation de l’extension WPS GeOxygene"
+                 accesskey="N">next</a></li>
+            <li class="right" >
+              <a href="launching.html" title="Lancement des interfaces graphiques"
+                 accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Developer Guide</a> &raquo;</li>
+        <li><a href="#">Installation des plugins OpenJump GeOxygene</a></li>
+      </ul>
+    </div> 
+
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+	
+	<h4>Navigation</h4><ul style='list-style: none;padding-left:4px;'>
+	<li><a href="https://sourceforge.net/p/oxygene-project">
+	   Sourceforge Home
+	   <span style="padding-left:4px;"><img src="/_static/img/sourceforge.png" /></span>
+	</a></li>
+	<li><a href="http://oxygene-project.sourceforge.net/apidocs/index.html">
+	   Online javadoc
+	</a></li>
+	</ul>
+	
+	<h4>Table Of Contents</h4>
+    <ul>
+<li><a class="reference internal" href="#">Installation des plugins OpenJump GeOxygene</a><ul>
+<li><a class="reference internal" href="#importer-le-projet-geoxygene-ojplugin">Importer le projet geoxygene-ojplugin</a></li>
+<li><a class="reference internal" href="#compilation">Compilation</a></li>
+<li><a class="reference internal" href="#lancement-des-plugins-geoxygene-d-openjump-a-partir-d-eclipse">Lancement des plugins Geoxygene d&#8217;OpenJump à partir d&#8217;Eclipse</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="launching.html"
+                        title="previous chapter">Lancement des interfaces graphiques</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="wps.html"
+                        title="next chapter">Installation de l&#8217;extension WPS GeOxygene</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation/developer/openjump.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+    <form class="navbar-search pull-right" style="margin-bottom:-3px;" action="../../search.html" method="get">
+        <input type="text" name="q" placeholder="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+    
+    <!-- div>
+        <script type="text/javascript" src="http://www.ohloh.net/p/40483/widgets/project_thin_badge.js"></script>
+    </div -->
+    
+
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="installation-des-plugins-openjump-geoxygene">
+<h1>Installation des plugins OpenJump GeOxygene</h1>
+<p>Les plugins GeOxygene pour OpenJump sont dans un module dédié et dans un projet différent de celui de GeOxygene.
+Ils ne nécessitent pas forcément l&#8217;installation du projet GeOxygene ni du logiciel OpenJump.</p>
+<div class="section" id="importer-le-projet-geoxygene-ojplugin">
+<h2>Importer le projet geoxygene-ojplugin</h2>
+<p>Suivez les mêmes étapes que l&#8217;import du projet GeOxygene. En revanche, les URLS du serveur SVN sont à choisir parmi celles-ci :</p>
+<p>Si vous êtes enregistré sur <a class="reference external" href="http://sourceforge.net/">Sourceforge</a>  et si vous avez des droits en tant que développeur ou administrateur sur le projet geoxygene :</p>
+<div class="svnurl container">
+<a class="reference external" href="https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene-extension/geoxygene-ojplugin/">https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene-extension/geoxygene-ojplugin/</a></div>
+<p>Sinon :</p>
+<div class="svnurl container">
+<a class="reference external" href="http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene-extension/geoxygene-ojplugin/">http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene-extension/geoxygene-ojplugin/</a></div>
+</div>
+<div class="section" id="compilation">
+<h2>Compilation</h2>
+<p>Suivez les mêmes étapes que la compilation du projet GeOxygene. Dans la nouvelle fenêtre &#8220;Run configuration&#8221; configurer :</p>
+<blockquote>
+<div><div class="field container">
+<p><strong>Name</strong> : geoxygene-ojplugin</p>
+<dl class="docutils">
+<dt><strong>Base directory</strong> <span class="classifier-delimiter">:</span> <span class="classifier">saisir le chemin d&#8217;installation de geoxygene-ojplugin</span></dt>
+<dd>(c&#8217;est celui de votre Workspace auquel il faut ajouter geoxygene-ojplugin)</dd>
+</dl>
+<p><strong>Goal</strong> : clean install. Vous définissez la phase du cycle (clean, install, package, compile, test, site, ...)</p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="lancement-des-plugins-geoxygene-d-openjump-a-partir-d-eclipse">
+<h2>Lancement des plugins Geoxygene d&#8217;OpenJump à partir d&#8217;Eclipse</h2>
+<p>Cette méthode ne nécessite pas d&#8217;avoir installé OpenJump sur sa machine.</p>
+<ol class="arabic">
+<li><p class="first">Click droit dans l&#8217;explorateur d&#8217;Eclipse, puis &#8220;Run As&#8221;, puis &#8220;Java Application&#8221;</p>
+</li>
+<li><p class="first">Dans le premier onglet saisissez comme MainClass :</p>
+<div class="chemin container">
+<p>com.vividsolutions.jump.workbench.JUMPWorkbench</p>
+</div>
+</li>
+</ol>
+<div class="centerside container">
+<div class="figure">
+<a class="reference internal image-reference" href="../../_images/LancerOJEclipse01.png"><img alt="../../_images/LancerOJEclipse01.png" src="../../_images/LancerOJEclipse01.png" style="width: 600px;" /></a>
+</div>
+</div>
+<ol class="arabic" start="3">
+<li><p class="first">Dans le second onglet, ajouter comme Program arguments de la ligne de commande :</p>
+<div class="chemin container">
+<p>-properties ./src/main/resources/workbench-properties.xml
+-I18n fr</p>
+</div>
+</li>
+</ol>
+<div class="centerside container">
+<div class="figure">
+<a class="reference internal image-reference" href="../../_images/LancerOJEclipse02.png"><img alt="../../_images/LancerOJEclipse02.png" src="../../_images/LancerOJEclipse02.png" style="width: 600px;" /></a>
+</div>
+</div>
+<ol class="arabic" start="4">
+<li><p class="first">Pour lancer les plugins &#8220;quality&#8221;, ceux-ci nécessitent la librairie java3d. Une version des dll est stockée dans le module &#8220;geoxygene-sig3d&#8221;.</p>
+<p>Ajouter comme VM arguments de la ligne de commande :</p>
+<div class="chemin container">
+<p>-Xmx1536M
+-Djava.library.path=D:/Workspace/geoxygene/geoxygene-sig3d/lib/native_libraries/windows-i586/</p>
+</div>
+</li>
+<li><p class="first">Clicker sur le bouton &#8220;Run&#8221; et openjump se lance, avec les plugins GeOxygene.</p>
+</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="wps.html" title="Installation de l’extension WPS GeOxygene"
+                 >next</a></li>
+            <li class="right" >
+              <a href="launching.html" title="Lancement des interfaces graphiques"
+                 >previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" >Developer Guide</a> &raquo;</li>
+        <li><a href="#">Installation des plugins OpenJump GeOxygene</a></li>
+      </ul>
+    </div> 
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Laboratoire COGIT, IGN.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

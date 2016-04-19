@@ -1,0 +1,251 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Semiology Tools &mdash; GeOxygene</title>
+    
+    <link rel="stylesheet" href="../../_static/geoxygene.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="GeOxygene" href="../../index.html" />
+    <link rel="up" title="Contributions" href="index.html" />
+    <link rel="next" title="Données OSM" href="osm.html" />
+    <link rel="prev" title="Appariement de surface" href="matching-surface.html" /> 
+  </head>
+  <body role="document">
+
+    <div class="header">
+        <div class="wrap">
+            <div id="logo"><a href="http://oxygene-project.sourceforge.net/">GeOxygene</a></div>
+            <h1 id="logo_cogit"><a href="http://recherche.ign.fr/labos/cogit/">COGIT</a></h1>
+            <h1 id="logo_ign" alt="Institut National de l'Information Géographique et Forestière">
+                <a href="http://www.ign.fr" alt="Institut National de l'Information Géographique et Forestière">IGN</a>
+            </h1>
+            <!-- <h1 id="logo_sourceforge"><a href="http://sourceforge.net/projects/oxygene-project/">Sourceforge</a></h1> -->
+            
+            <!-- <div class='top-xleft'><span>Last Published :  | Version :1.6</span></div> -->
+            
+            <ul id="top-nav">
+                <li class="first"><a href="/community/index.html">About</a></li>
+                <li><a href="/download/index.html">Download</a></li>
+                <li><a href="/documentation/index.html">Documentation</a></li>
+            </ul>
+            
+        </div>
+    </div>
+
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="osm.html" title="Données OSM"
+                 accesskey="N">next</a></li>
+            <li class="right" >
+              <a href="matching-surface.html" title="Appariement de surface"
+                 accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Contributions</a> &raquo;</li>
+        <li><a href="#">Semiology Tools</a></li>
+      </ul>
+    </div> 
+
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+	
+	<h4>Navigation</h4><ul style='list-style: none;padding-left:4px;'>
+	<li><a href="https://sourceforge.net/p/oxygene-project">
+	   Sourceforge Home
+	   <span style="padding-left:4px;"><img src="/_static/img/sourceforge.png" /></span>
+	</a></li>
+	<li><a href="http://oxygene-project.sourceforge.net/apidocs/index.html">
+	   Online javadoc
+	</a></li>
+	</ul>
+	
+	<h4>Table Of Contents</h4>
+    <ul>
+<li><a class="reference internal" href="#">Semiology Tools</a><ul>
+<li><a class="reference internal" href="#a-model-of-legend">A model of legend</a></li>
+<li><a class="reference internal" href="#chromatic-wheels-and-color-contrasts">Chromatic Wheels and Color Contrasts</a></li>
+<li><a class="reference internal" href="#application-automatic-contrast-improvement-of-a-map">Application : Automatic Contrast Improvement of a map</a></li>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="matching-surface.html"
+                        title="previous chapter">Appariement de surface</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="osm.html"
+                        title="next chapter">Données OSM</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation/application/semiology.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+    <form class="navbar-search pull-right" style="margin-bottom:-3px;" action="../../search.html" method="get">
+        <input type="text" name="q" placeholder="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+    
+    <!-- div>
+        <script type="text/javascript" src="http://www.ohloh.net/p/40483/widgets/project_thin_badge.js"></script>
+    </div -->
+    
+
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="semiology-tools">
+<h1>Semiology Tools</h1>
+<p>A documentation is available concerning these tools and application for users and developers,
+<a class="reference download internal" href="../../_downloads/geoxygene-semiology-0.4.pdf" download=""><code class="xref download docutils literal"><span class="pre">here</span></code></a>,  in PDF file format.</p>
+<div class="section" id="a-model-of-legend">
+<h2>A model of legend</h2>
+<p>A base model is proposed to represent the legend of a map as a tree. This model
+describes symbolization and allows manipulating map features symbolised with
+those symbols. More originally, this model describes metadata on the legend,
+such as semantic relationships between map layers (order, association or
+difference) related to Bertin’s work [B67].</p>
+<p>In the proposed framework (see Figure 1), the legend is thought of as a mediator
+between what has to be represented (which features?), how they are represented
+(which signs?), and what is the intended/perceived relations between represented
+features (which message?).</p>
+<div class="twocol container">
+<div class="leftside container">
+<div class="figure" id="id1">
+<img alt="../../_images/modele-legende-overview.png" src="../../_images/modele-legende-overview.png" />
+<p class="caption"><span class="caption-text">Figure 1 - Overview of the model</span></p>
+</div>
+</div>
+<div class="rightside container">
+<p>This theoretical framework is organized in four main packages:</p>
+<ul class="simple">
+<li>The main package is legendContent: it describes which components are contained
+in the map legend of the map (names and symbol choices of each line of the key),
+and how they are organized (which lines are gathered  in a theme).</li>
+<li>The package mapContent describes, for a given map, the set of features that are
+to be represented (features organized in feature collections).</li>
+<li>The package symbol describes the symbols used to draw features on the map (color, size…).</li>
+<li>The package metadata describes messages to be conveyed by the map (concretely
+restricted to relations between set of symbolised features for the time being,
+like ‘association’, ‘difference’ or ‘order’). It could be extended after time
+(Cf. paragraph 1.6 Foreseen extensions).</li>
+</ul>
+</div>
+</div>
+<div class="centerside container">
+<p>Main elements of the model are described in Figure 2 :</p>
+<blockquote>
+<div><div class="figure" id="id2">
+<img alt="../../_images/modele-legende-detaille.png" src="../../_images/modele-legende-detaille.png" />
+<p class="caption"><span class="caption-text">Figure 2 : Main classes of the model</span></p>
+</div>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="chromatic-wheels-and-color-contrasts">
+<h2>Chromatic Wheels and Color Contrasts</h2>
+<p>A color Reference system have been designed at COGIT laboratory, dedicated to
+map design. User tests have been proceed to evaluate hue and lightness contrasts
+between the colors of this color reference system.</p>
+<div class="centerside container">
+<div class="figure" id="id3">
+<img alt="../../_images/cercles-geoxygene.png" src="../../_images/cercles-geoxygene.png" />
+<p class="caption"><span class="caption-text">Figure 3 : COGIT Chromatic Wheels</span></p>
+</div>
+</div>
+</div>
+<div class="section" id="application-automatic-contrast-improvement-of-a-map">
+<h2>Application : Automatic Contrast Improvement of a map</h2>
+<p>The goal of the contrast improvement process is to modify colors of a given
+legend in order to improve contrasts between objects on a given map. The global
+idea is that two features close enough on the map should have sufficiently different
+colors to be distinguished. Another idea guiding the process is that relations between
+colors (‘same hue but darker’, ‘same lightness but different hue’…) should be consistent
+with relations between legend leaves that the map may convey (e.g. : colors of phenomena
+‘low risk’, ‘medium risk’ and ‘high risk’ should have similar hue but different lightness
+to express an order relationship).</p>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation</h2>
+<p>A documentation is available concerning these tools and application for users and developers,
+<a class="reference download internal" href="../../_downloads/geoxygene-semiology-0.4.pdf" download=""><code class="xref download docutils literal"><span class="pre">here</span></code></a>,  in PDF file format.</p>
+<p>The ‘semiology’ module originates from various works at COGIT lab. Most of the module
+originates from the works of Elodie Buard and Elisabeth Chesneau on the improvement
+of contrasts between symbolised features in maps. Other works on map legends have
+influenced the module, even if the related codes are not yet included in this version
+of the module.</p>
+<p>Main publications directly linked to the module :</p>
+<ul class="simple">
+<li>Buard E., Ruas A., 2009, <a class="reference external" href="http://icaci.org/documents/ICC_proceedings/ICC2009/html/refer/30_2.pdf">Processes for improving the colours of topographic maps
+in the context of Map-on-Demand</a>,
+24th International Cartographic Conference (ICC&#8216;09), 15-21 november, Santiago (Chile)</li>
+<li>Buard E., Ruas A., 2007, <a class="reference external" href="http://cartography.tuwien.ac.at/ica/documents/ICC_proceedings/ICC2007/documents/doc/THEME%203/oral%201-2/3.1-2.4%20EVALUATION%20OF%20COLOUR%20CONTRASTS%20BY%20MEANS%20OF%20EXPERT%20KN.doc">Evaluation of colour contrasts by means of expert knowledge for on-demand mapping</a>,
+23rd International Cartographic Conference (ICC&#8216;07), 4-10 August, Moscow (Russia)</li>
+<li>Chesneau E., 2007, <a class="reference external" href="http://people.plan.aau.dk/~enc/AGILE2007/PDF/32_PDF.pdf">Improvement of Colour Contrasts in Maps : Application to Risk Maps</a>,
+10th International Conference on Geographic Information Science (AGILE&#8216;07), 8-11 may, Aalborg (Denmark)</li>
+<li>Chesneau E., 2007, <a class="reference external" href="http://thema.univ-fcomte.fr/theoq/pdf/2007/TQ2007%20ARTICLE%2061.pdf">Etude des contrastes de couleur pour améliorer la lisibilité des cartes</a>,
+8èmes rencontres ThéoQuant, 10-12 janvier, Besançon (France)</li>
+<li>Chesneau E. 2006, <a class="reference external" href="http://recherche.ign.fr/labos/cogit/pdf/THESES/CHESNEAU/These_Chesneau_2006.zip">Modèle d&#8217;amélioration automatique des contrastes de couleur en cartographie</a>,
+Application aux cartes de risques. PhD, Univ. Marne-La-Vallée.</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="osm.html" title="Données OSM"
+                 >next</a></li>
+            <li class="right" >
+              <a href="matching-surface.html" title="Appariement de surface"
+                 >previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene</a> &raquo;</li>
+          <li><a href="../index.html" >GeOxygene Documentation</a> &raquo;</li>
+          <li><a href="index.html" >Contributions</a> &raquo;</li>
+        <li><a href="#">Semiology Tools</a></li>
+      </ul>
+    </div> 
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Laboratoire COGIT, IGN.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>
