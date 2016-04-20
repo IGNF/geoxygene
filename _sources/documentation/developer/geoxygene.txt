@@ -14,7 +14,7 @@ Importer le projet GeOxygene
 
 Dans Eclipse la création d'un nouveau projet s'effectue via l'assistant "Import". 
 Celui-ci offre en effet une pléthore de modèles. Il suffit donc pour importer GeOxygene de choisir 
-celui qui va extraire un projet Maven depuis un SCM (dans notre cas SVN). 
+celui qui va extraire un projet Maven depuis un SCM (dans notre cas git). 
 
 Comme décrits dans les deux captures d’écran ci-dessous, cliquer :
 
@@ -52,25 +52,19 @@ Comme décrits dans les deux captures d’écran ci-dessous, cliquer :
             Figure 2 : Check out Maven Projects from SCM
 
 
-3. Ensuite comme l'indique la figure suivante, sélectionner **svn** dans la première liste comme SCM URL et indiquer l'adresse du svn de GeOxygene :
+3. Ensuite comme l'indique la figure suivante, sélectionner **git** dans la première liste comme SCM URL et indiquer l'adresse du git de GeOxygene :
 
 .. container:: centerside
      
-   .. figure:: /documentation/resources/img/geoxygene/geoxygeneEtape3.png
+   .. figure:: /documentation/resources/img/geoxygene/geoxygenegitEtape3.png
        
       Figure 3 : SCM URL for check out GeOxygene
 
-* Si vous êtes enregistré sur `Sourceforge <http://sourceforge.net/>`_  et si vous avez des droits en tant que développeur ou administrateur sur le projet geoxygene : 
 
-  .. container:: svnurl
-    
-     https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene 
 
-* Sinon :
-
-  .. container:: svnurl
+.. container:: svnurl
    
-     http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/ 
+   https://github.com/IGNF/geoxygene.git
 
 
 4. puis cliquer sur "Next".

@@ -7,19 +7,11 @@ Ils ne nécessitent pas forcément l'installation du projet GeOxygene ni du logi
 
 Importer le projet geoxygene-ojplugin
 ****************************************
-Suivez les mêmes étapes que l'import du projet GeOxygene. En revanche, les URLS du serveur SVN sont à choisir parmi celles-ci :
-
-Si vous êtes enregistré sur `Sourceforge <http://sourceforge.net/>`_  et si vous avez des droits en tant que développeur ou administrateur sur le projet geoxygene : 
-
-.. container:: svnurl
-    
-   https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene-extension/geoxygene-ojplugin/ 
-
-Sinon :
+Suivez les mêmes étapes que l'import du projet GeOxygene. En revanche, l'URL GitHub est :
 
 .. container:: svnurl
    
-   http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene-extension/geoxygene-ojplugin/
+   https://github.com/IGNF/geoxygene-ojplugin.git
 
 
 Compilation

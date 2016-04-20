@@ -101,9 +101,10 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#eclipse-plugins">Eclipse Plugins</a><ul>
-<li><a class="reference internal" href="#plugin-subclipse">Plugin Subclipse</a></li>
-<li><a class="reference internal" href="#plugin-m2e">Plugin M2E</a></li>
-<li><a class="reference internal" href="#connector-subclipse-for-maven">Connector Subclipse for Maven</a></li>
+<li><a class="reference internal" href="#plugin-subclipse-optionnel-pour-la-partie-publique-de-geoxygene">Plugin Subclipse (optionnel pour la partie publique de GeOxygene)</a></li>
+<li><a class="reference internal" href="#plugin-m2e-optionnel-car-deja-installe-si-eclipse-mars">Plugin M2E (optionnel car déjà installé si Eclipse Mars)</a></li>
+<li><a class="reference internal" href="#connector-subclipse-for-maven-optionnel-pour-la-partie-publique-de-geoxygene">Connector Subclipse for Maven (optionnel pour la partie publique de GeOxygene)</a></li>
+<li><a class="reference internal" href="#connector-egit-for-maven">Connector EGit for Maven</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#maven-preferences">Maven preferences</a><ul>
@@ -154,8 +155,8 @@
 <p>Cette page a pour objectif de guider le développeur dans son installation de la plateforme de développement de GeOxygene.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>A compter de ce jour, GeOxygene passe en Java 1.7, la version java 1.8 n&#8217;a pas encore été testée ni approuvée.</p>
-<p>Eclipse Luna est recommandé avec les plugins subclipse (1.10.8) et m2 (1.5.0)</p>
+<p>A compter de ce jour, GeOxygene passe au minimum en Java 1.7, la version Java 1.8 est recommandée.</p>
+<p>Eclipse Mars est recommandé avec les plugins subclipse (&gt;1.10.8) et m2 (&gt;1.5.0), sachant que le plugin m2 est déjà installé dans Eclipse Mars.</p>
 <p class="last"><strong>Attention</strong> : le connector subclipse pour Maven doit être installé à la main comme indiqué plus bas et non pas via le marketplace</p>
 </div>
 <div class="section" id="java">
@@ -169,7 +170,7 @@
 </li>
 <li><p class="first">Cliquer sur l&#8217;exécutable et accepter l&#8217;accord de licence. Par défaut l&#8217;installation s&#8217;est faites dans :</p>
 <div class="chemin container">
-<p>C:\Program Files\Java\jdk1.7.0\</p>
+<p>C:\Program Files\Java\jdk1.8.0\</p>
 </div>
 </li>
 </ol>
@@ -252,26 +253,25 @@ aujourd&#8217;hui pour les développements JAVA.</p>
 <div class="section" id="id1">
 <h3>Installation</h3>
 <ul class="simple">
-<li>Vous pouvez télécharger l&#8217;avant-dernière version d&#8217;Eclipse, Kepler(4-3), directement à partir des liens ci-dessous :</li>
+<li>Vous pouvez télécharger Eclipse Mars(4.5.2), directement à partir des liens ci-dessous :</li>
 </ul>
 <table border="1" class="docutils">
 <colgroup>
-<col width="49%" />
-<col width="51%" />
+<col width="100%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference external" href="https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/luna/R/eclipse-standard-luna-R-win32.zip">Windows 32-bit</a></td>
-<td><a class="reference external" href="https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/luna/R/eclipse-standard-luna-R-win32-x86_64.zip">Windows 64-bit</a></td>
+<tr class="row-odd"><td><a class="reference external" href="http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/mars/2/eclipse-java-mars-2-win32.zip">Windows 32-bit</a></td>
 </tr>
-<tr class="row-even"><td><a class="reference external" href="https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/luna/R/eclipse-standard-luna-R-macosx-cocoa.tar.gz">Mac OS X(Cocoa 32)</a></td>
-<td><a class="reference external" href="https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/luna/R/eclipse-standard-luna-R-macosx-cocoa-x86_64.tar.gz">Mac OS X(Cocoa 64)</a></td>
+<tr class="row-even"><td><a class="reference external" href="http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/mars/2/eclipse-java-mars-2-win32-x86_64.zip">Windows 64-bit</a></td>
 </tr>
-<tr class="row-odd"><td><a class="reference external" href="https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/luna/R/eclipse-standard-luna-R-linux-gtk.tar.gz">Linux 32-bit</a></td>
-<td><a class="reference external" href="https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/luna/R/eclipse-standard-luna-R-linux-gtk-x86_64.tar.gz">Linux 64-bit</a></td>
+<tr class="row-odd"><td><a class="reference external" href="http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/mars/2/eclipse-java-mars-2-macosx-cocoa-x86_64.tar.gz">Mac OS X(Cocoa 64)</a></td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/mars/2/eclipse-java-mars-2-linux-gtk.tar.gz">Linux 32-bit</a></td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/mars/2/eclipse-java-mars-2-linux-gtk-x86_64.tar.gz">Linux 64-bit</a></td>
 </tr>
 </tbody>
 </table>
-<p>(Attention la dernière version d&#8217;Eclipse Luna (4-4) pose des difficultés dans la gestion des certifcats java).</p>
 <ul>
 <li><p class="first">Décompresser le fichier téléchargé (Eclipse ne fournit pas d&#8217;installeur, juste un répertoire à dézipper).</p>
 </li>
@@ -350,7 +350,7 @@ Ne remplisser pas les champs d&#8217;authentification.</p>
 <p>Tous les modules de GeOxygene doivent être encodés en UTF-8.
 Pour ce faire, dans Eclipse, aller dans :</p>
 <div class="chemin container">
-Preferences &gt;&gt; Workspace &gt;&gt; Text file encoding &gt;&gt; Other</div>
+Preferences &gt;&gt; General &gt;&gt; Workspace &gt;&gt; Text file encoding &gt;&gt; Other</div>
 <p>et choisir UTF-8.</p>
 <div class="centerside container">
 <div class="figure" id="id9">
@@ -368,7 +368,7 @@ Cette norme est dérivée de celle proposée par SUN à l’adresse :</p>
 <li>Télécharger la norme du COGIT :</li>
 </ol>
 <div class="svnurl container">
-<a class="reference external" href="http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/src/main/resources/java_cogit_formatting_conventions_v1.xml">http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/src/main/resources/java_cogit_formatting_conventions_v1.xml</a></div>
+<a class="reference external" href="https://github.com/IGNF/geoxygene/blob/master/src/main/resources/java_cogit_formatting_conventions_v1.xml">https://github.com/IGNF/geoxygene/blob/master/src/main/resources/java_cogit_formatting_conventions_v1.xml</a></div>
 <div class="twocol container">
 <div class="leftside container">
 <ol class="arabic" start="2">
@@ -439,10 +439,11 @@ Préférences &gt;&gt; General &gt;&gt; Editors &gt;&gt; Text Editors</div>
 </div>
 <div class="section" id="eclipse-plugins">
 <h2>Eclipse Plugins</h2>
-<p>Maintenant, Eclipse est prêt pour l&#8217;installation des plugins nécessaires à GeOxygene.
-Vous aurez besoin des plugins Subversion (subclipse) et Maven (m2eclipse).</p>
-<div class="section" id="plugin-subclipse">
-<h3>Plugin Subclipse</h3>
+<p>Maintenant, Eclipse est prêt pour l&#8217;installation des plugins nécessaires à GeOxygene.</p>
+<p>Vous aurez besoin essentiellement des plugins EGit, Subversion (subclipse) et Maven (m2eclipse) ainsi que de ses connecteurs pour git et svn.</p>
+<p>Les plugin EGit et m2e sont déja installés dans Eclipse Mars, il ne reste qu&#8217;à installer éventuellement Subclipse (si on accès au SVN privé du COGIT), ainsi que les connecteurs m2e pour Subclipse et EGit.</p>
+<div class="section" id="plugin-subclipse-optionnel-pour-la-partie-publique-de-geoxygene">
+<h3>Plugin Subclipse (optionnel pour la partie publique de GeOxygene)</h3>
 <p>Subclipse est un plugin Eclipse permettant d&#8217;utiliser Subversion (SVN) directement depuis votre éditeur préféré.</p>
 <div class="twocol container">
 <div class="leftside container">
@@ -453,7 +454,7 @@ Help &gt;&gt; Eclipse Marketplace ...</div>
 <ol class="arabic simple">
 <li>dans la zone de recherche, saisir <strong>subclipse</strong></li>
 <li>clicker sur <strong>go</strong> afin de rechercher le plugin</li>
-<li>dans la liste des plugins, clicker sur <strong>install</strong> du plugin Subclipse 1.10.8</li>
+<li>dans la liste des plugins, clicker sur <strong>install</strong> du plugin Subclipse 1.10.13 (au moment de  l&#8217;écriture de cette doc)</li>
 </ol>
 </div></blockquote>
 </div>
@@ -536,8 +537,10 @@ Window &gt;&gt; Preferences &gt;&gt; Team &gt;&gt; SVN</div>
 </div>
 </div>
 </div>
-<div class="section" id="plugin-m2e">
-<h3>Plugin M2E</h3>
+<div class="section" id="plugin-m2e-optionnel-car-deja-installe-si-eclipse-mars">
+<h3>Plugin M2E (optionnel car déjà installé si Eclipse Mars)</h3>
+<p><strong>Attention</strong>
+Le plugin est sans doute déja installé pour une version récente d&#8217;Eclipse ( &gt; Luna), passer directement à l&#8217;installation des connecteurs subclipse (si besoin) et egit dans ce cas.</p>
 <p>GeOxygene est construit à partir de Maven. Le projet m2eclipse fournit un support afin d&#8217;utiliser les fonctionnalités de Maven
 dans l&#8217;éditeur Eclipse. L&#8217;intégration Maven pour Eclipse est composé d&#8217;un plugin (le core) et de connectors.
 Pour installer GeOxygene il faut le plugin m2e et le connector subclipse.</p>
@@ -602,14 +605,14 @@ Help &gt;&gt; Eclipse Marketplace ...</div>
 </div>
 </div>
 </div>
-<div class="section" id="connector-subclipse-for-maven">
-<h3>Connector Subclipse for Maven</h3>
-<p>Il faut installer le connector subclipse pour Maven.</p>
+<div class="section" id="connector-subclipse-for-maven-optionnel-pour-la-partie-publique-de-geoxygene">
+<h3>Connector Subclipse for Maven (optionnel pour la partie publique de GeOxygene)</h3>
+<p>Il faut installer le connector subclipse pour Maven si on veut pouvoir importer directement le code du SVN privé du COGIT depuis Eclipse.</p>
 <p><strong>Attention</strong> : le connector n&#8217;est pas à jour dans le catalogue du Marketplace d&#8217;Eclipse.</p>
 <ol class="arabic">
 <li><p class="first">Télécharger le fichier suivant et décompresser-le dans un répertoire sur votre disque local.</p>
 <div class="chemin container">
-<p><a class="reference external" href="http://oxygene-project.sourceforge.net/m2e-subclipse/org.sonatype.m2e.subclipse.feature-0.13.0-SNAPSHOT-site.zip">http://oxygene-project.sourceforge.net/m2e-subclipse/org.sonatype.m2e.subclipse.feature-0.13.0-SNAPSHOT-site.zip</a></p>
+<p><a class="reference external" href="http://ignf.github.io/geoxygene/m2e-subclipse/org.sonatype.m2e.subclipse.feature-0.13.0-SNAPSHOT-site.zip">http://ignf.github.io/geoxygene/m2e-subclipse/org.sonatype.m2e.subclipse.feature-0.13.0-SNAPSHOT-site.zip</a></p>
 </div>
 </li>
 <li><p class="first">Dans Eclipse :</p>
@@ -663,6 +666,54 @@ Help &gt;&gt; Eclipse Marketplace ...</div>
 </li>
 </ol>
 </div>
+<div class="section" id="connector-egit-for-maven">
+<h3>Connector EGit for Maven</h3>
+<p>Pour installer le connector EGit on pourra faire dans le menu d&#8217;Eclipse</p>
+<div class="chemin container">
+File &gt;&gt; Import</div>
+<div class="twocol container">
+<div class="leftside container">
+<p>Puis dans la fenêtre qui s&#8217;ouvre</p>
+<div class="chemin container">
+Maven &gt;&gt; Check out Maven Projects from SCM</div>
+<p>Faire &#8220;Next&#8221;</p>
+</div>
+<div class="rightside container">
+<div class="centerside container">
+<div class="figure" id="id26">
+<a class="reference internal image-reference" href="../../_images/fileImport.png"><img alt="../../_images/fileImport.png" src="../../_images/fileImport.png" style="width: 350px;" /></a>
+<p class="caption"><span class="caption-text">Figure 25 : Import</span></p>
+</div>
+</div>
+</div>
+</div>
+<div class="twocol container">
+<div class="leftside container">
+Cliquer sur &#8220;Find more SCM connectors in the m2e Marketplace&#8221;</div>
+<div class="rightside container">
+<div class="centerside container">
+<div class="figure" id="id27">
+<a class="reference internal image-reference" href="../../_images/m2eMarketplace.png"><img alt="../../_images/m2eMarketplace.png" src="../../_images/m2eMarketplace.png" style="width: 350px;" /></a>
+<p class="caption"><span class="caption-text">Figure 26 : m2e Marketplace</span></p>
+</div>
+</div>
+</div>
+</div>
+<div class="twocol container">
+<div class="leftside container">
+Chercher dans <strong>m2e Team providers</strong> le connecteur <strong>m2e-egit</strong> et le sélectionner, puis faire &#8220;Finish&#8221;</div>
+<div class="rightside container">
+<div class="centerside container">
+<div class="figure" id="id28">
+<a class="reference internal image-reference" href="../../_images/m2e-egit.png"><img alt="../../_images/m2e-egit.png" src="../../_images/m2e-egit.png" style="width: 350px;" /></a>
+<p class="caption"><span class="caption-text">Figure 26 : m2e Marketplace</span></p>
+</div>
+</div>
+</div>
+</div>
+<div class="centerside container">
+Cliquer sur <strong>OK</strong>, cocher le composant à installer et finir l&#8217;installation comme habituellement (securité, licenses, restart Eclipse...).</div>
+</div>
 </div>
 <div class="section" id="maven-preferences">
 <h2>Maven preferences</h2>
@@ -674,7 +725,7 @@ Help &gt;&gt; Eclipse Marketplace ...</div>
 <li>Download Artifact Javadoc</li>
 </ul>
 <div class="centerside container">
-<div class="figure" id="id26">
+<div class="figure" id="id29">
 <a class="reference internal image-reference" href="../../_images/MavenConfiguration.png"><img alt="../../_images/MavenConfiguration.png" src="../../_images/MavenConfiguration.png" style="width: 500px;" /></a>
 <p class="caption"><span class="caption-text">Figure 29 : Eclipse preferences pour Maven</span></p>
 </div>

@@ -39,22 +39,11 @@ Suivre les instructions pour l'installation de
 
 Importer le projet geoxygene-wps
 ************************************
-Suivre les mêmes étapes que l'import du projet GeOxygene. 
-
-
-En revanche, les URLS du serveur SVN sont à choisir parmi celles-ci. 
-Si vous êtes enregistré sur `Sourceforge <http://sourceforge.net/>`_  et si vous avez des droits en tant que développeur  
-sur le projet geoxygene : 
+Suivre les mêmes étapes que l'import du projet GeOxygene avec cette url : 
 
 .. container:: svnurl
     
-   https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene-extension/geoxygene-wps/ 
-
-Sinon :
-
-.. container:: svnurl
-   
-   http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene-extension/geoxygene-wps/
+   https://github.com/IGNF/geoxygene-wps.git 
    
 
 Compilation du module geoxygene-wps
