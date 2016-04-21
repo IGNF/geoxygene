@@ -4,12 +4,14 @@
 GeOxygene library
 ==================
 
+Disponible ici :
+	https://github.com/IGNF/geoxygene/releases/tag/1.7
 
-* Binaries (jar) :
-    http://sourceforge.net/projects/oxygene-project/files/GeOxygene/1.7/binaries/
+* Binaries (zip contenant les jar) :
+    https://github.com/IGNF/geoxygene/releases/download/1.7/binaries.zip
             
-* Sources (jar) :
-    http://sourceforge.net/projects/oxygene-project/files/GeOxygene/1.7/sources/
+* Sources (zip) :
+    https://github.com/IGNF/geoxygene/archive/1.7.zip
             
-* Javadoc (jar) :
-    http://sourceforge.net/projects/oxygene-project/files/GeOxygene/1.7/javadoc/
+* Javadoc (zip contenant les jar) :
+    https://github.com/IGNF/geoxygene/releases/download/1.7/javadoc.zip
