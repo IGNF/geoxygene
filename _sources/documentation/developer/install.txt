@@ -117,6 +117,20 @@ Télécharger le certificat depuis votre navigateur comme ceci :
 
 5. Les variables d'environnement vont être définies plus tard (Eclipse preferences >> JDK).
 
+Refaire la même chose (sauvegarder le certificat depuis le navigateur, et l'importer dans le fichier trust.jks précédemment crée) avec 
+
+.. container:: svnurl
+    
+	https://repo.maven.apache.org/
+
+en changeant le nom de l'alias, par exemple :
+
+   .. container:: chemin
+ 
+         keytool -v -alias mavenHttps -import -file E:\\certificat\\repo.maven.apache.org.crt -keystore trust.jks
+
+et en entrant le mot de passe précédemment défini (ici c'était "leschiensaboient")
+
 
 
 
@@ -225,6 +239,8 @@ Selectionner "HTTP" dans la liste des entrées et cliquer sur le bouton "Edit".
 Entrer les coordonnées de votre proxy. 
 Pour l'IGN par exemple, il s'agit de **proxy.ign.fr** avec le port **3128**. 
 Ne remplisser pas les champs d'authentification.
+
+Faire la même chose pour "HTTPS" comme indiqué sur la figure 7.
   
 .. container:: centerside
      
@@ -686,7 +702,7 @@ Pour installer le connector EGit on pourra faire dans le menu d'Eclipse
 	      .. figure:: /documentation/resources/img/install/m2e-egit.png
 	         :width: 350px
 		      
-	         Figure 26 : m2e Marketplace
+	         Figure 27 : m2e-egit connector
 
 .. container:: centerside
 

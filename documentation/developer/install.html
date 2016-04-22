@@ -244,6 +244,15 @@
 <ol class="arabic simple" start="5">
 <li>Les variables d&#8217;environnement vont être définies plus tard (Eclipse preferences &gt;&gt; JDK).</li>
 </ol>
+<p>Refaire la même chose (sauvegarder le certificat depuis le navigateur, et l&#8217;importer dans le fichier trust.jks précédemment crée) avec</p>
+<div class="svnurl container">
+<a class="reference external" href="https://repo.maven.apache.org/">https://repo.maven.apache.org/</a></div>
+<p>en changeant le nom de l&#8217;alias, par exemple :</p>
+<blockquote>
+<div><div class="chemin container">
+keytool -v -alias mavenHttps -import -file E:\certificat\repo.maven.apache.org.crt -keystore trust.jks</div>
+</div></blockquote>
+<p>et en entrant le mot de passe précédemment défini (ici c&#8217;était &#8220;leschiensaboient&#8221;)</p>
 </div>
 </div>
 <div class="section" id="eclipse-installation">
@@ -338,6 +347,7 @@ Window &gt;&gt; Preferences &gt;&gt; General &gt;&gt; Network Connection</div>
 <p>Entrer les coordonnées de votre proxy.
 Pour l&#8217;IGN par exemple, il s&#8217;agit de <strong>proxy.ign.fr</strong> avec le port <strong>3128</strong>.
 Ne remplisser pas les champs d&#8217;authentification.</p>
+<p>Faire la même chose pour &#8220;HTTPS&#8221; comme indiqué sur la figure 7.</p>
 <div class="centerside container">
 <div class="figure" id="id8">
 <img alt="../../_images/proxy1.png" src="../../_images/proxy1.png" />
@@ -706,7 +716,7 @@ Chercher dans <strong>m2e Team providers</strong> le connecteur <strong>m2e-egit
 <div class="centerside container">
 <div class="figure" id="id28">
 <a class="reference internal image-reference" href="../../_images/m2e-egit.png"><img alt="../../_images/m2e-egit.png" src="../../_images/m2e-egit.png" style="width: 350px;" /></a>
-<p class="caption"><span class="caption-text">Figure 26 : m2e Marketplace</span></p>
+<p class="caption"><span class="caption-text">Figure 27 : m2e-egit connector</span></p>
 </div>
 </div>
 </div>
