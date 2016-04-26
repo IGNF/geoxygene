@@ -35,6 +35,7 @@ import fr.ign.cogit.geoxygene.sig3d.gui.actionpanelmenu.RayTracingMenu;
 import fr.ign.cogit.geoxygene.sig3d.gui.actionpanelmenu.TetraedrisationMenu;
 import fr.ign.cogit.geoxygene.sig3d.gui.navigation3D.Picking;
 import fr.ign.cogit.geoxygene.sig3d.gui.table.featurestable.FeaturesListTable;
+import fr.ign.cogit.geoxygene.sig3d.gui.toolbar.IOToolBar;
 import fr.ign.cogit.geoxygene.sig3d.gui.window.io.LoadingWindow;
 import fr.ign.cogit.geoxygene.sig3d.gui.window.io.PostGISLoadingWindow;
 import fr.ign.cogit.geoxygene.sig3d.gui.window.io.SavingWindow;
@@ -90,6 +91,10 @@ public class MainMenuBar extends JMenuBar implements ActionListener {
   private JButton butCopy, butInformation, butSup, boutonZoomOn;
 
   public MainMenuBar(MainWindow mainWindow) {
+	    // Association a la JFrame
+	    mainWindow.setJMenuBar(this);
+	    
+	
 
     // Recuperation de la JFrame
     this.mainWindow = mainWindow;
@@ -154,7 +159,9 @@ public class MainMenuBar extends JMenuBar implements ActionListener {
     this.file.add(this.prop_close);
 
     this.add(this.file);
-
+this.add(
+ 
+    new IOToolBar(mainWindow));
     // Menu vue
 
     this.view = new JMenu(Messages.getString("3DGIS.Vue"));
@@ -282,8 +289,7 @@ public class MainMenuBar extends JMenuBar implements ActionListener {
     this.boutonZoomOn.addActionListener(this);
     this.add(this.boutonZoomOn);
 
-    // Association a la JFrame
-    mainWindow.setJMenuBar(this);
+
   }
 
   /**
