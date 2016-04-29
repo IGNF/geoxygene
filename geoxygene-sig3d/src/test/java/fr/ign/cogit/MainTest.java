@@ -15,8 +15,6 @@ import fr.ign.cogit.geometry.TestTriangle;
 import fr.ign.cogit.geometry.TestVertex;
 import fr.ign.cogit.io.vector.TestShapeFileLoader;
 import fr.ign.cogit.sample.TestSample;
-import fr.ign.cogit.semantic.TestDTM;
-import fr.ign.cogit.semantic.TestDTM2;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
@@ -29,11 +27,10 @@ import junit.textui.TestRunner;
 
 public class MainTest {
 
+	public static Test suite() {
 
-	public static Test suite(){
-		
 		TestSuite suite = new TestSuite("All 3D tests");
-		
+
 		suite.addTestSuite(TestBooleanOperators.class);
 		suite.addTestSuite(TestCalculation3D.class);
 		suite.addTestSuite(TestProximity.class);
@@ -47,19 +44,17 @@ public class MainTest {
 		suite.addTestSuite(TestApproximatedPlanEquation.class);
 		suite.addTestSuite(TestBox3D.class);
 		suite.addTestSuite(TestSample.class);
-		suite.addTestSuite(TestDTM.class);
-		suite.addTestSuite(TestDTM2.class);
 		suite.addTestSuite(TestVertex.class);
 		suite.addTestSuite(TestTriangle.class);
-		
+
 		return suite;
-		
+
 	}
-	
-	public static void main(final String[] args){
-		
+
+	public static void main(final String[] args) {
+
 		TestRunner.run(suite());
-		
+
 	}
-		
+
 }

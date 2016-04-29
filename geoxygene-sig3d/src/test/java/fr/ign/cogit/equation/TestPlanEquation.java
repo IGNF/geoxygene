@@ -5,6 +5,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ITriangle;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
 import fr.ign.cogit.geoxygene.sig3d.equation.PlanEquation;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
@@ -19,7 +22,7 @@ public class TestPlanEquation extends TestCase {
 
 	// ---------------------------------- ATTRIBUTES ----------------------------------
 
-	private static double epsilon = Math.pow(10,-10);
+	private static double epsilon = Math.pow(10,-3);
 	
 	private static Logger log = Logger.getLogger(TestPlanEquation.class);
 
@@ -725,7 +728,8 @@ public class TestPlanEquation extends TestCase {
 	public void testPlanEquation20() {
 		
 		log.info("Test for method to process intersection between plane and triangle");
-
+		
+		DirectPosition.PRECISION = 15;
 		// Creating points
 		DirectPosition p1 = new DirectPosition(0,0,0);
 		DirectPosition p2 = new DirectPosition(1,0,0);
@@ -746,12 +750,15 @@ public class TestPlanEquation extends TestCase {
 		GM_LineString line = (GM_LineString) eq.triangleIntersection(triangle);
 
 		// Expected result
-		GM_LineString lineExp = new GM_LineString();
-		lineExp.addControlPoint(new DirectPosition(-2.5,-2.5,0));
-		lineExp.addControlPoint(new DirectPosition(2.5,2.5,0));
 
+		IDirectPosition dpIni = new DirectPosition(-2.5,-2.5,0);
+		IDirectPosition dpEnd = new DirectPosition(2.5,2.5,0);
+
+	
+		
 		// Comparison
-		assertTrue("Triangle intersection with plane is incorrect", line.equals(lineExp));
+		assertTrue("Triangle intersection with plane is incorrect", line.coord().get(0).distance(dpIni) < epsilon);
+		assertTrue("Triangle intersection with plane is incorrect", line.coord().get(1).distance(dpEnd) < epsilon);
 
 	}
 
@@ -777,10 +784,10 @@ public class TestPlanEquation extends TestCase {
 		DirectPosition pt2 = new DirectPosition(-5,-5,10);
 		DirectPosition pt3 = new DirectPosition(5,5,10);
 
-		GM_Triangle triangle = new GM_Triangle(pt1, pt2, pt3);
+		 ITriangle triangle = new GM_Triangle(pt1, pt2, pt3);
 
 		// Processing intersection
-		GM_LineString line = (GM_LineString) eq.triangleIntersection(triangle);
+		ILineString line = (GM_LineString) eq.triangleIntersection(triangle);
 
 		// Comparison
 		assertNull("There should be no intersection", line);
