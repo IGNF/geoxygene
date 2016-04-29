@@ -50,10 +50,10 @@ public class SquarePolygonLS {
   private List<Integer> indicesHrAig;
   private List<Integer> indicesHrObt;
   private final int MAX_ITER = 1000;
-  private final double NORM_DIFF_TOL = 0.0001;
+  private final double NORM_DIFF_TOL = 0.001;
   private Matrix y, p, xCurrent;
   private double poidsPtfFixe = 5;
-  private double poids90 = 100;
+  private double poids90 = 50;
   private double poids0 = 15;
   private double poids45 = 10;
   private int nbIters;
@@ -145,10 +145,10 @@ public class SquarePolygonLS {
 
     if (logger.isDebugEnabled()) {
       System.out.println("nombre angles :" + vecs.length);
-      System.out.println("nombre angles potentiellement droits :"
-          + indicesRight.size());
-      System.out.println("nombre angles potentiellement plats :"
-          + indicesFlat.size());
+      System.out.println(
+          "nombre angles potentiellement droits :" + indicesRight.size());
+      System.out.println(
+          "nombre angles potentiellement plats :" + indicesFlat.size());
       System.out.println("nombre angles potentiellement  à 45 :"
           + (indicesHrAig.size() + indicesHrObt.size()));
     }
@@ -191,13 +191,13 @@ public class SquarePolygonLS {
         int indicePoint = indices.get(i);
         int[] pointsAround = getPointsAround(indicePoint);
         // df/xn = xn+1 - 2xn + xn-1
-        double df = points.get(pointsAround[0]).getX() - 2
-            * points.get(indicePoint).getX()
+        double df = points.get(pointsAround[0]).getX()
+            - 2 * points.get(indicePoint).getX()
             + points.get(pointsAround[1]).getX();
         m.set(i, indicePoint * 2, df);
         // df/yn = yn+1 - 2yn + yn-1
-        df = points.get(pointsAround[0]).getY() - 2
-            * points.get(indicePoint).getY()
+        df = points.get(pointsAround[0]).getY()
+            - 2 * points.get(indicePoint).getY()
             + points.get(pointsAround[1]).getY();
         m.set(i, indicePoint * 2 + 1, df);
         // df/xn-1 = -xn+1 + xn
@@ -273,18 +273,19 @@ public class SquarePolygonLS {
     int scHr1NbRows = scalHr.getRowDimension();
     int scHr2NbRows = scalHr2.getRowDimension();
 
-    Matrix a = new Matrix(2 * nb_edges + scalNbRows + crosNbRows + scHr1NbRows
-        + scHr2NbRows, 2 * nb_edges);
+    Matrix a = new Matrix(
+        2 * nb_edges + scalNbRows + crosNbRows + scHr1NbRows + scHr2NbRows,
+        2 * nb_edges);
     a.setMatrix(0, 2 * nb_edges - 1, 0, 2 * nb_edges - 1, id);
     a.setMatrix(2 * nb_edges, 2 * nb_edges + scalNbRows - 1, 0,
         2 * nb_edges - 1, scal);
-    a.setMatrix(2 * nb_edges + scalNbRows, 2 * nb_edges + scalNbRows
-        + crosNbRows - 1, 0, 2 * nb_edges - 1, cross);
-    a.setMatrix(2 * nb_edges + scalNbRows + crosNbRows, 2 * nb_edges
-        + scalNbRows + crosNbRows + scHr1NbRows - 1, 0, 2 * nb_edges - 1,
-        scalHr);
-    a.setMatrix(2 * nb_edges + scalNbRows + crosNbRows + scHr1NbRows, 2
-        * nb_edges + scalNbRows + crosNbRows + scHr1NbRows + scHr2NbRows - 1,
+    a.setMatrix(2 * nb_edges + scalNbRows,
+        2 * nb_edges + scalNbRows + crosNbRows - 1, 0, 2 * nb_edges - 1, cross);
+    a.setMatrix(2 * nb_edges + scalNbRows + crosNbRows,
+        2 * nb_edges + scalNbRows + crosNbRows + scHr1NbRows - 1, 0,
+        2 * nb_edges - 1, scalHr);
+    a.setMatrix(2 * nb_edges + scalNbRows + crosNbRows + scHr1NbRows,
+        2 * nb_edges + scalNbRows + crosNbRows + scHr1NbRows + scHr2NbRows - 1,
         0, 2 * nb_edges - 1, scalHr2);
     return a;
   }
@@ -335,9 +336,10 @@ public class SquarePolygonLS {
     // angles 3pi/4 (Xn-1 Xn).(Xn Xn+1)
     for (int i = 0; i < indicesHrObt.size(); ++i) {
       int[] pointsAround = getPointsAround(indicesHrObt.get(i));
-      s.set(2 * nb_edges + indicesRight.size() + indicesFlat.size()
-          + indicesHrAig.size() + i, 0,
-          dotProduct(pointsAround[0], indicesHrObt.get(i), pointsAround[1]));
+      s.set(
+          2 * nb_edges + indicesRight.size() + indicesFlat.size()
+              + indicesHrAig.size() + i,
+          0, dotProduct(pointsAround[0], indicesHrObt.get(i), pointsAround[1]));
     }
     return y.minus(s);
   }
@@ -354,7 +356,8 @@ public class SquarePolygonLS {
     for (int i = 2 * nb_edges + indicesRight.size(); i < 2 * nb_edges
         + indicesRight.size() + indicesFlat.size(); ++i)
       p.set(i, i, poids0);
-    for (int i = 2 * nb_edges + indicesRight.size() + indicesFlat.size(); i < n; ++i)
+    for (int i = 2 * nb_edges + indicesRight.size()
+        + indicesFlat.size(); i < n; ++i)
       p.set(i, i, poids45);
     return p;
   }
@@ -383,6 +386,7 @@ public class SquarePolygonLS {
     Matrix x = this.xCurrent;
     Matrix dx;
     int i = 0;
+    long begin = System.nanoTime();
     do {
       // System.out.println("iter " + i);
       this.xCurrent = x.copy();
@@ -399,6 +403,10 @@ public class SquarePolygonLS {
     for (int j = 0; j < pointsoriginal.size(); ++j)
       points.get(j).setZ(pointsoriginal.get(j).getZ());
     AbstractGeomFactory factory = AbstractGeometryEngine.getFactory();
+    long end = System.nanoTime();
+    System.out.println();
+    System.out.println("computed in " + (end - begin) / 1000000 + " ms");
+    System.out.println("nb iters : " + nbIters);
     return factory.createIPolygon(points);
   }
 
@@ -441,8 +449,8 @@ public class SquarePolygonLS {
     // 32.45786315594498,24.873046875 41.82372918453599,24.169921875
     // 47.088076832429145,9.404296875 46.12198680728803))");
 
-    IPolygon pol = (IPolygon) WktGeOxygene
-        .makeGeOxygene("POLYGON((342763.66688345832517371 7685320.84001446887850761,342763.66688345832517371 7685308.73941662814468145,342772.06036172935273498 7685309.01919923722743988,342770.17182911833515391 7685320.42034055478870869,342763.66688345832517371 7685320.84001446887850761))");
+    IPolygon pol = (IPolygon) WktGeOxygene.makeGeOxygene(
+        "POLYGON((342763.66688345832517371 7685320.84001446887850761,342763.66688345832517371 7685308.73941662814468145,342772.06036172935273498 7685309.01919923722743988,342770.17182911833515391 7685320.42034055478870869,342763.66688345832517371 7685320.84001446887850761))");
 
     // IPolygon pol = (IPolygon) WktGeOxygene
     // .makeGeOxygene("POLYGON((638185.80000000004656613
