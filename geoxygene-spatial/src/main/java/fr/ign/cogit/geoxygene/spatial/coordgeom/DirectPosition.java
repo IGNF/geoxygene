@@ -65,7 +65,7 @@ public class DirectPosition implements IDirectPosition {
   protected int dimension = 3;
 
   /** Le nombre de chiffres après la virgule pour les coordonnées du point. */
-  private int precision = 6;
+  public static int PRECISION = 6;
 
   /**
    * Constructeur par défaut (3D): crée un tableau de coordonées à 3 dimensions,
@@ -143,13 +143,14 @@ public class DirectPosition implements IDirectPosition {
 
   @Override
   public void setCoordinate(final double[] coord) {
-    this.coordinate[0] = Math.round(coord[0] * Math.pow(10, precision))
-        / Math.pow(10, precision);
-    this.coordinate[1] = Math.round(coord[1] * Math.pow(10, precision))
-        / Math.pow(10, precision);
-    this.coordinate[2] = (coord.length == 3) ? Math.round(coord[2]
-        * Math.pow(10, precision))
-        / Math.pow(10, precision) : Double.NaN;
+    this.coordinate[0] = Math.round(coord[0] * Math.pow(10, PRECISION))
+        / Math.pow(10, PRECISION);
+    this.coordinate[1] = Math.round(coord[1] * Math.pow(10, PRECISION))
+        / Math.pow(10, PRECISION);
+    this.coordinate[2] = (coord.length == 3)
+        ? Math.round(coord[2] * Math.pow(10, PRECISION))
+            / Math.pow(10, PRECISION)
+        : Double.NaN;
   }
 
   @Override
@@ -161,45 +162,45 @@ public class DirectPosition implements IDirectPosition {
 
   @Override
   public void setCoordinate(final int i, final double x) {
-    this.coordinate[i] = Math.round(x * Math.pow(10, precision))
-        / Math.pow(10, precision);
+    this.coordinate[i] = Math.round(x * Math.pow(10, PRECISION))
+        / Math.pow(10, PRECISION);
   }
 
   @Override
   public void setCoordinate(final double x, final double y) {
-    this.coordinate[0] = Math.round(x * Math.pow(10, precision))
-        / Math.pow(10, precision);
-    this.coordinate[1] = Math.round(y * Math.pow(10, precision))
-        / Math.pow(10, precision);
+    this.coordinate[0] = Math.round(x * Math.pow(10, PRECISION))
+        / Math.pow(10, PRECISION);
+    this.coordinate[1] = Math.round(y * Math.pow(10, PRECISION))
+        / Math.pow(10, PRECISION);
     this.coordinate[2] = Double.NaN;
   }
 
   @Override
   public void setCoordinate(final double x, final double y, final double z) {
-    this.coordinate[0] = Math.round(x * Math.pow(10, precision))
-        / Math.pow(10, precision);
-    this.coordinate[1] = Math.round(y * Math.pow(10, precision))
-        / Math.pow(10, precision);
-    this.coordinate[2] = Math.round(z * Math.pow(10, precision))
-        / Math.pow(10, precision);
+    this.coordinate[0] = Math.round(x * Math.pow(10, PRECISION))
+        / Math.pow(10, PRECISION);
+    this.coordinate[1] = Math.round(y * Math.pow(10, PRECISION))
+        / Math.pow(10, PRECISION);
+    this.coordinate[2] = Math.round(z * Math.pow(10, PRECISION))
+        / Math.pow(10, PRECISION);
   }
 
   @Override
   public void setX(final double x) {
-    this.coordinate[0] = Math.round(x * Math.pow(10, precision))
-        / Math.pow(10, precision);
+    this.coordinate[0] = Math.round(x * Math.pow(10, PRECISION))
+        / Math.pow(10, PRECISION);
   }
 
   @Override
   public void setY(final double y) {
-    this.coordinate[1] = Math.round(y * Math.pow(10, precision))
-        / Math.pow(10, precision);
+    this.coordinate[1] = Math.round(y * Math.pow(10, PRECISION))
+        / Math.pow(10, PRECISION);
   }
 
   @Override
   public void setZ(final double z) {
-    this.coordinate[2] = Math.round(z * Math.pow(10, precision))
-        / Math.pow(10, precision);
+    this.coordinate[2] = Math.round(z * Math.pow(10, PRECISION))
+        / Math.pow(10, PRECISION);
   }
 
   // ////////////////////////////////////////////////////////////////////////////////////////
@@ -345,7 +346,8 @@ public class DirectPosition implements IDirectPosition {
     if (Double.isNaN(this.getZ())) {
       return "DirectPosition - X : " + this.getX() + "     Y : " + this.getY(); //$NON-NLS-1$ //$NON-NLS-2$
     }
-    return "DirectPosition - X : " + this.getX() + "     Y : " + this.getY() + "     Z : " + this.getZ(); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
+    return "DirectPosition - X : " + this.getX() + "     Y : " + this.getY() //$NON-NLS-1$ //$NON-NLS-2$
+        + "     Z : " + this.getZ(); //$NON-NLS-1$
   }
 
   @Override
