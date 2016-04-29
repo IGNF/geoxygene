@@ -50,10 +50,10 @@ public class SquarePolygonLS {
   private List<Integer> indicesHrAig;
   private List<Integer> indicesHrObt;
   private final int MAX_ITER = 1000;
-  private final double NORM_DIFF_TOL = 0.001;
-  private Matrix y, p, xCurrent;
+  private final double NORM_DIFF_TOL = 0.0001;
+  private Matrix y, p, xCurrent, idMatrix;
   private double poidsPtfFixe = 5;
-  private double poids90 = 50;
+  private double poids90 = 100;
   private double poids0 = 15;
   private double poids45 = 10;
   private int nbIters;
@@ -110,29 +110,25 @@ public class SquarePolygonLS {
         indicesRight.add((i + 1) % nb_edges);
 
         if (logger.isDebugEnabled())
-          System.out.println((i + 1) + " angle droit : "
-              + vecs[i].vectorAngle(vecs[(i + 1) % nb_edges]));
+          System.out.println((i + 1) + " angle droit : " + vecs[i].vectorAngle(vecs[(i + 1) % nb_edges]));
       }
       // getting list of vertices with quasi flat angles
       else if (cross <= flatTol) {
         indicesFlat.add((i + 1) % nb_edges);
 
         if (logger.isDebugEnabled())
-          System.out.println((i + 1) + " angle plat: "
-              + vecs[i].vectorAngle(vecs[(i + 1) % nb_edges]));
+          System.out.println((i + 1) + " angle plat: " + vecs[i].vectorAngle(vecs[(i + 1) % nb_edges]));
       }
       // getting list of vertices with quasi semi-right angles
       else if (dot <= hrTol1 && dot >= hrTol2) {
         indicesHrAig.add((i + 1) % nb_edges);
         if (logger.isDebugEnabled())
-          System.out.println((i + 1) + " angle hr aig: "
-              + vecs[i].vectorAngle(vecs[(i + 1) % nb_edges]));
+          System.out.println((i + 1) + " angle hr aig: " + vecs[i].vectorAngle(vecs[(i + 1) % nb_edges]));
 
       } else if (dot >= -hrTol1 && dot <= -hrTol2) {
         indicesHrObt.add((i + 1) % nb_edges);
         if (logger.isDebugEnabled())
-          System.out.println((i + 1) + " angle hr obt: "
-              + vecs[i].vectorAngle(vecs[(i + 1) % nb_edges]));
+          System.out.println((i + 1) + " angle hr obt: " + vecs[i].vectorAngle(vecs[(i + 1) % nb_edges]));
       }
     }
     // observations matrix Y
@@ -142,15 +138,14 @@ public class SquarePolygonLS {
     // Weight matrix P
     this.p = getP();
     // this.p.print(5, 2);
+    // identity Matrix
+    this.idMatrix = Matrix.identity(nb_edges * 2, nb_edges * 2);
 
     if (logger.isDebugEnabled()) {
       System.out.println("nombre angles :" + vecs.length);
-      System.out.println(
-          "nombre angles potentiellement droits :" + indicesRight.size());
-      System.out.println(
-          "nombre angles potentiellement plats :" + indicesFlat.size());
-      System.out.println("nombre angles potentiellement  à 45 :"
-          + (indicesHrAig.size() + indicesHrObt.size()));
+      System.out.println("nombre angles potentiellement droits :" + indicesRight.size());
+      System.out.println("nombre angles potentiellement plats :" + indicesFlat.size());
+      System.out.println("nombre angles potentiellement  à 45 :" + (indicesHrAig.size() + indicesHrObt.size()));
     }
   }
 
@@ -178,6 +173,7 @@ public class SquarePolygonLS {
   }
 
   private Matrix getIdentityMatrix() {
+    // return this.idMatrix;
     return Matrix.identity(nb_edges * 2, nb_edges * 2);
   }
 
@@ -191,30 +187,24 @@ public class SquarePolygonLS {
         int indicePoint = indices.get(i);
         int[] pointsAround = getPointsAround(indicePoint);
         // df/xn = xn+1 - 2xn + xn-1
-        double df = points.get(pointsAround[0]).getX()
-            - 2 * points.get(indicePoint).getX()
+        double df = points.get(pointsAround[0]).getX() - 2 * points.get(indicePoint).getX()
             + points.get(pointsAround[1]).getX();
         m.set(i, indicePoint * 2, df);
         // df/yn = yn+1 - 2yn + yn-1
-        df = points.get(pointsAround[0]).getY()
-            - 2 * points.get(indicePoint).getY()
+        df = points.get(pointsAround[0]).getY() - 2 * points.get(indicePoint).getY()
             + points.get(pointsAround[1]).getY();
         m.set(i, indicePoint * 2 + 1, df);
         // df/xn-1 = -xn+1 + xn
-        df = points.get(indicePoint).getX()
-            - points.get(pointsAround[1]).getX();
+        df = points.get(indicePoint).getX() - points.get(pointsAround[1]).getX();
         m.set(i, pointsAround[0] * 2, df);
         // df/yn-1 = -yn+1 + yn
-        df = points.get(indicePoint).getY()
-            - points.get(pointsAround[1]).getY();
+        df = points.get(indicePoint).getY() - points.get(pointsAround[1]).getY();
         m.set(i, pointsAround[0] * 2 + 1, df);
         // df/xn+1 = xn - xn-1
-        df = points.get(indicePoint).getX()
-            - points.get(pointsAround[0]).getX();
+        df = points.get(indicePoint).getX() - points.get(pointsAround[0]).getX();
         m.set(i, pointsAround[1] * 2, df);
         // df/yn+1 = yn - yn-1
-        df = points.get(indicePoint).getY()
-            - points.get(pointsAround[0]).getY();
+        df = points.get(indicePoint).getY() - points.get(pointsAround[0]).getY();
         m.set(i, pointsAround[1] * 2 + 1, df);
       }
     }
@@ -229,28 +219,22 @@ public class SquarePolygonLS {
         int indicePoint = indicesFlat.get(i);
         int[] pointsAround = getPointsAround(indicePoint);
         // dg/xn
-        double dg = points.get(pointsAround[1]).getY()
-            - points.get(pointsAround[0]).getY();
+        double dg = points.get(pointsAround[1]).getY() - points.get(pointsAround[0]).getY();
         m.set(i, indicePoint * 2, dg);
         // dg/yn
-        dg = points.get(pointsAround[0]).getX()
-            - points.get(pointsAround[1]).getX();
+        dg = points.get(pointsAround[0]).getX() - points.get(pointsAround[1]).getX();
         m.set(i, indicePoint * 2 + 1, dg);
         // dg/xn-1
-        dg = points.get(indicePoint).getY()
-            - points.get(pointsAround[1]).getY();
+        dg = points.get(indicePoint).getY() - points.get(pointsAround[1]).getY();
         m.set(i, pointsAround[0] * 2, dg);
         // dg/yn-1
-        dg = points.get(pointsAround[1]).getX()
-            - points.get(indicePoint).getX();
+        dg = points.get(pointsAround[1]).getX() - points.get(indicePoint).getX();
         m.set(i, pointsAround[0] * 2 + 1, dg);
         // dg/xn+1
-        dg = points.get(pointsAround[0]).getY()
-            - points.get(indicePoint).getY();
+        dg = points.get(pointsAround[0]).getY() - points.get(indicePoint).getY();
         m.set(i, pointsAround[1] * 2, dg);
         // dg/yn+1
-        dg = points.get(indicePoint).getX()
-            - points.get(pointsAround[0]).getX();
+        dg = points.get(indicePoint).getX() - points.get(pointsAround[0]).getX();
         m.set(i, pointsAround[1] * 2 + 1, dg);
       }
     }
@@ -263,7 +247,7 @@ public class SquarePolygonLS {
     for (int i = 0; i < nb_edges; ++i)
       vecs[i] = new Vector2D(points.get(i), points.get((i + 1) % nb_edges));
     // getting sub matrixes
-    Matrix id = getIdentityMatrix();
+    // Matrix id = getIdentityMatrix();
     Matrix scal = getDotProductSubMatrix(indicesRight);
     Matrix cross = getCrossProductSubMatrix();
     Matrix scalHr = getDotProductSubMatrix(indicesHrAig);
@@ -273,44 +257,37 @@ public class SquarePolygonLS {
     int scHr1NbRows = scalHr.getRowDimension();
     int scHr2NbRows = scalHr2.getRowDimension();
 
-    Matrix a = new Matrix(
-        2 * nb_edges + scalNbRows + crosNbRows + scHr1NbRows + scHr2NbRows,
-        2 * nb_edges);
-    a.setMatrix(0, 2 * nb_edges - 1, 0, 2 * nb_edges - 1, id);
-    a.setMatrix(2 * nb_edges, 2 * nb_edges + scalNbRows - 1, 0,
-        2 * nb_edges - 1, scal);
-    a.setMatrix(2 * nb_edges + scalNbRows,
-        2 * nb_edges + scalNbRows + crosNbRows - 1, 0, 2 * nb_edges - 1, cross);
-    a.setMatrix(2 * nb_edges + scalNbRows + crosNbRows,
-        2 * nb_edges + scalNbRows + crosNbRows + scHr1NbRows - 1, 0,
+    Matrix a = new Matrix(2 * nb_edges + scalNbRows + crosNbRows + scHr1NbRows + scHr2NbRows, 2 * nb_edges);
+    a.setMatrix(0, 2 * nb_edges - 1, 0, 2 * nb_edges - 1, idMatrix);
+    a.setMatrix(2 * nb_edges, 2 * nb_edges + scalNbRows - 1, 0, 2 * nb_edges - 1, scal);
+    a.setMatrix(2 * nb_edges + scalNbRows, 2 * nb_edges + scalNbRows + crosNbRows - 1, 0, 2 * nb_edges - 1, cross);
+    a.setMatrix(2 * nb_edges + scalNbRows + crosNbRows, 2 * nb_edges + scalNbRows + crosNbRows + scHr1NbRows - 1, 0,
         2 * nb_edges - 1, scalHr);
     a.setMatrix(2 * nb_edges + scalNbRows + crosNbRows + scHr1NbRows,
-        2 * nb_edges + scalNbRows + crosNbRows + scHr1NbRows + scHr2NbRows - 1,
-        0, 2 * nb_edges - 1, scalHr2);
+        2 * nb_edges + scalNbRows + crosNbRows + scHr1NbRows + scHr2NbRows - 1, 0, 2 * nb_edges - 1, scalHr2);
     return a;
   }
 
   // Obs Matrix (xo yo..xn yn 0..0 cos(pi/4)..cos(pi/4) cos(3pi/4)..cos(3pi/4))
   private Matrix getY() {
-    Matrix y = new Matrix(2 * nb_edges + indicesRight.size()
-        + indicesFlat.size() + indicesHrAig.size() + indicesHrObt.size(), 1);
+    Matrix y = new Matrix(
+        2 * nb_edges + indicesRight.size() + indicesFlat.size() + indicesHrAig.size() + indicesHrObt.size(), 1);
     for (int i = 0; i < nb_edges; ++i) {
       y.set(2 * i, 0, points.get(i).getX());
       y.set((2 * i) + 1, 0, points.get(i).getY());
     }
     for (int i = 0; i < indicesHrAig.size(); ++i)
-      y.set(2 * nb_edges + indicesRight.size() + indicesFlat.size() + i, 0,
-          Math.cos(Math.PI / 4));
+      y.set(2 * nb_edges + indicesRight.size() + indicesFlat.size() + i, 0, Math.cos(Math.PI / 4));
     for (int i = 0; i < indicesHrObt.size(); ++i)
-      y.set(2 * nb_edges + indicesRight.size() + indicesFlat.size()
-          + indicesHrAig.size() + i, 0, Math.cos(Math.PI * 3 / 4));
+      y.set(2 * nb_edges + indicesRight.size() + indicesFlat.size() + indicesHrAig.size() + i, 0,
+          Math.cos(Math.PI * 3 / 4));
     return y;
   }
 
   // B = Y - S(Xcourant)
   public Matrix getB() {
-    Matrix s = new Matrix(2 * nb_edges + indicesRight.size()
-        + indicesFlat.size() + indicesHrAig.size() + indicesHrObt.size(), 1);
+    Matrix s = new Matrix(
+        2 * nb_edges + indicesRight.size() + indicesFlat.size() + indicesHrAig.size() + indicesHrObt.size(), 1);
     for (int i = 0; i < nb_edges; ++i) {
       s.set(2 * i, 0, points.get(i).getX());
       s.set((2 * i) + 1, 0, points.get(i).getY());
@@ -318,8 +295,7 @@ public class SquarePolygonLS {
     // F(i-1,i,i+1) (Xn-1 Xn).(Xn Xn+1)
     for (int i = 0; i < indicesRight.size(); ++i) {
       int[] pointsAround = getPointsAround(indicesRight.get(i));
-      s.set(2 * nb_edges + i, 0,
-          dotProduct(pointsAround[0], indicesRight.get(i), pointsAround[1]));
+      s.set(2 * nb_edges + i, 0, dotProduct(pointsAround[0], indicesRight.get(i), pointsAround[1]));
     }
     // G(i-1,i,i+1) (Xn-1 Xn)^(Xn Xn+1)
     for (int i = 0; i < indicesFlat.size(); ++i) {
@@ -336,28 +312,23 @@ public class SquarePolygonLS {
     // angles 3pi/4 (Xn-1 Xn).(Xn Xn+1)
     for (int i = 0; i < indicesHrObt.size(); ++i) {
       int[] pointsAround = getPointsAround(indicesHrObt.get(i));
-      s.set(
-          2 * nb_edges + indicesRight.size() + indicesFlat.size()
-              + indicesHrAig.size() + i,
-          0, dotProduct(pointsAround[0], indicesHrObt.get(i), pointsAround[1]));
+      s.set(2 * nb_edges + indicesRight.size() + indicesFlat.size() + indicesHrAig.size() + i, 0,
+          dotProduct(pointsAround[0], indicesHrObt.get(i), pointsAround[1]));
     }
     return y.minus(s);
   }
 
   // Weight Matrix
   public Matrix getP() {
-    int n = 2 * nb_edges + indicesRight.size() + indicesFlat.size()
-        + indicesHrAig.size() + indicesHrObt.size();
+    int n = 2 * nb_edges + indicesRight.size() + indicesFlat.size() + indicesHrAig.size() + indicesHrObt.size();
     Matrix p = new Matrix(n, n);
     for (int i = 0; i < 2 * nb_edges; ++i)
       p.set(i, i, poidsPtfFixe);
     for (int i = 2 * nb_edges; i < 2 * nb_edges + indicesRight.size(); ++i)
       p.set(i, i, poids90);
-    for (int i = 2 * nb_edges + indicesRight.size(); i < 2 * nb_edges
-        + indicesRight.size() + indicesFlat.size(); ++i)
+    for (int i = 2 * nb_edges + indicesRight.size(); i < 2 * nb_edges + indicesRight.size() + indicesFlat.size(); ++i)
       p.set(i, i, poids0);
-    for (int i = 2 * nb_edges + indicesRight.size()
-        + indicesFlat.size(); i < n; ++i)
+    for (int i = 2 * nb_edges + indicesRight.size() + indicesFlat.size(); i < n; ++i)
       p.set(i, i, poids45);
     return p;
   }
@@ -366,8 +337,14 @@ public class SquarePolygonLS {
   private Matrix computeDx() {
     Matrix a = getA();
     Matrix atp = a.transpose().times(p);
-    Matrix dx = (atp).times(a).inverse().times(atp.times(getB()));
-
+    // Matrix atpa = atp.times(a);
+    // for (int i = 0; i < atpa.getColumnDimension(); i++) {
+    //
+    // atpa.set(i, i, atpa.get(i, i) * (1 + l0));
+    //
+    // }
+    // Matrix dx = (atp).times(a).inverse().times(atp.times(getB()));
+    Matrix dx = atp.times(a).solve(atp.times(getB()));
     return dx;
   }
 
@@ -394,9 +371,17 @@ public class SquarePolygonLS {
       x = x.plus(dx);
       setNewPoints(x);
       ++i;
-      // System.out.println(i + " " + this.asWKT());
-      // System.out.println("epsi " + x.minus(xCurrent).normF());
-    } while (i < MAX_ITER && x.minus(xCurrent).normF() > NORM_DIFF_TOL);
+      // v = getB().minus(getA().times(x));
+      // vtpvCurrent = v.transpose().times(this.p).times(v);
+      // res = Math.abs((vtpvCurrent.minus(vtpv)).get(0, 0));
+      // System.out.println("vtpvCurr " + vtpvCurrent.get(0, 0));
+      // System.out.println("vtpv " + vtpv.get(0, 0));
+      // vtpv = vtpvCurrent;
+      if (logger.isDebugEnabled()) {
+        logger.debug("iter nb " + i);
+        logger.debug("variation of dx norm2 with last iter " + dx.norm2());
+      }
+    } while (i < MAX_ITER && dx.norm2() > NORM_DIFF_TOL);
     nbIters = i;
     points.set(points.size() - 1, points.get(0));
     IDirectPositionList pointsoriginal = pOriginal.exteriorCoord();
@@ -429,8 +414,7 @@ public class SquarePolygonLS {
    * @param poids0 for flat angles
    * @param poids45 for 45 degrees angles
    */
-  public void setWeights(double poidsPtfFixe, double poids90, double poids0,
-      double poids45) {
+  public void setWeights(double poidsPtfFixe, double poids90, double poids0, double poids45) {
     this.poidsPtfFixe = poidsPtfFixe;
     this.poids90 = poids90;
     this.poids0 = poids0;
