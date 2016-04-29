@@ -96,15 +96,15 @@ public class SquarePolygonLS {
     // getting vectors from polygon vertices
     for (int i = 0; i < nb_edges; ++i) {
       vecs[i] = new Vector2D(points.get(i), points.get((i + 1) % nb_edges));
-      vecs[i].normalise();
+      // vecs[i].normalise();
     }
     indicesRight = new ArrayList<>();
     indicesFlat = new ArrayList<>();
     indicesHrAig = new ArrayList<>();
     indicesHrObt = new ArrayList<>();
     for (int i = 0; i < vecs.length; ++i) {
-      double dot = vecs[i].prodScalaire(vecs[(i + 1) % nb_edges]);
-      double cross = vecs[i].prodVectoriel(vecs[(i + 1) % nb_edges]).norme();
+      double dot = (vecs[i]).getNormalised().prodScalaire((vecs[(i + 1) % nb_edges]).getNormalised());
+      double cross = (vecs[i]).getNormalised().prodVectoriel((vecs[(i + 1) % nb_edges]).getNormalised()).norme();
       // getting list of vertices with quasi right angles
       if (Math.abs(dot) <= rTol) {
         indicesRight.add((i + 1) % nb_edges);
@@ -160,8 +160,8 @@ public class SquarePolygonLS {
   private double dotProduct(int a, int b, int c) {
     Vector2D v1 = new Vector2D(points.get(a), points.get(b));
     Vector2D v2 = new Vector2D(points.get(b), points.get(c));
-    v1.normalise();
-    v2.normalise();
+    // v1.normalise();
+    // v2.normalise();
     return v1.prodScalaire(v2);
   }
 
@@ -276,11 +276,19 @@ public class SquarePolygonLS {
       y.set(2 * i, 0, points.get(i).getX());
       y.set((2 * i) + 1, 0, points.get(i).getY());
     }
-    for (int i = 0; i < indicesHrAig.size(); ++i)
-      y.set(2 * nb_edges + indicesRight.size() + indicesFlat.size() + i, 0, Math.cos(Math.PI / 4));
-    for (int i = 0; i < indicesHrObt.size(); ++i)
+    for (int i = 0; i < indicesHrAig.size(); ++i) {
+      int v1 = indicesHrAig.get(i);
+      int v0 = v1 == 0 ? vecs.length - 1 : v1 - 1;
+      double d = vecs[v0].norme() * vecs[v1].norme();
+      y.set(2 * nb_edges + indicesRight.size() + indicesFlat.size() + i, 0, Math.cos(Math.PI / 4) * d);
+    }
+    for (int i = 0; i < indicesHrObt.size(); ++i) {
+      int v1 = indicesHrObt.get(i);
+      int v0 = v1 == 0 ? vecs.length - 1 : v1 - 1;
+      double d = vecs[v0].norme() * vecs[v1].norme();
       y.set(2 * nb_edges + indicesRight.size() + indicesFlat.size() + indicesHrAig.size() + i, 0,
-          Math.cos(Math.PI * 3 / 4));
+          Math.cos(Math.PI * 3 / 4) * d);
+    }
     return y;
   }
 
@@ -382,9 +390,9 @@ public class SquarePolygonLS {
       // vtpv = vtpvCurrent;
       if (logger.isDebugEnabled()) {
         logger.debug("iter nb " + i);
-        logger.debug("variation of dx norm2 with last iter " + dx.norm2());
+        logger.debug("variation of dx norm2 with last iter " + dx.normInf());
       }
-    } while (i < MAX_ITER && dx.norm2() > NORM_DIFF_TOL);
+    } while (i < MAX_ITER && dx.normInf() > NORM_DIFF_TOL);
     nbIters = i;
     points.set(points.size() - 1, points.get(0));
     IDirectPositionList pointsoriginal = pOriginal.exteriorCoord();
