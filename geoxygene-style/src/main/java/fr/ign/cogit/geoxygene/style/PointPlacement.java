@@ -29,132 +29,131 @@ import javax.xml.bind.annotation.XmlElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PointPlacement implements Placement {
 
-    @XmlElement(name = "AnchorPoint")
-    private AnchorPoint anchorPoint = null;
+  @XmlElement(name = "AnchorPoint")
+  private AnchorPoint anchorPoint = null;
 
-    /**
-     * Renvoie la valeur de l'attribut anchorPoint.
-     * 
-     * @return la valeur de l'attribut anchorPoint
-     */
-    public AnchorPoint getAnchorPoint() {
-        return this.anchorPoint;
+  /**
+   * Renvoie la valeur de l'attribut anchorPoint.
+   * 
+   * @return la valeur de l'attribut anchorPoint
+   */
+  public AnchorPoint getAnchorPoint() {
+    return this.anchorPoint;
+  }
+
+  /**
+   * Affecte la valeur de l'attribut anchorPoint.
+   * 
+   * @param anchorPoint l'attribut anchorPoint à affecter
+   */
+  public void setAnchorPoint(AnchorPoint anchorPoint) {
+    this.anchorPoint = anchorPoint;
+  }
+
+  @XmlElement(name = "Displacement")
+  private Displacement displacement = null;
+
+  /**
+   * Renvoie la valeur de l'attribut displacement.
+   * 
+   * @return la valeur de l'attribut displacement
+   */
+  public Displacement getDisplacement() {
+    return this.displacement;
+  }
+
+  /**
+   * Affecte la valeur de l'attribut displacement.
+   * 
+   * @param displacement l'attribut displacement à affecter
+   */
+  public void setDisplacement(Displacement displacement) {
+    this.displacement = displacement;
+  }
+
+  @XmlElement(name = "Rotation")
+  private RotationLabel rotation = null;
+
+  /**
+   * Renvoie la valeur de l'attribut rotation.
+   * 
+   * @return la valeur de l'attribut rotation
+   */
+  public RotationLabel getRotation() {
+    return this.rotation;
+  }
+
+  /**
+   * Affecte la valeur de l'attribut rotation.
+   * 
+   * @param rotation l'attribut rotation à affecter
+   */
+  public void setRotation(RotationLabel rotation) {
+    System.out.println("setRotation" + rotation);
+    this.rotation = rotation;
+  }
+
+  @Override
+  public String toString() {
+    return this.getClass().getSimpleName();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result
+        + ((this.anchorPoint == null) ? 0 : this.anchorPoint.hashCode());
+    result = prime * result
+        + ((this.displacement == null) ? 0 : this.displacement.hashCode());
+    result = prime * result
+        + ((this.rotation == null) ? 0 : this.rotation.hashCode());
+    return result;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
     }
-
-    /**
-     * Affecte la valeur de l'attribut anchorPoint.
-     * 
-     * @param anchorPoint
-     *            l'attribut anchorPoint à affecter
-     */
-    public void setAnchorPoint(AnchorPoint anchorPoint) {
-        this.anchorPoint = anchorPoint;
+    if (obj == null) {
+      return false;
     }
-
-    @XmlElement(name = "Displacement")
-    private Displacement displacement = null;
-
-    /**
-     * Renvoie la valeur de l'attribut displacement.
-     * 
-     * @return la valeur de l'attribut displacement
-     */
-    public Displacement getDisplacement() {
-        return this.displacement;
+    if (this.getClass() != obj.getClass()) {
+      return false;
     }
-
-    /**
-     * Affecte la valeur de l'attribut displacement.
-     * 
-     * @param displacement
-     *            l'attribut displacement à affecter
-     */
-    public void setDisplacement(Displacement displacement) {
-        this.displacement = displacement;
+    PointPlacement other = (PointPlacement) obj;
+    if (this.anchorPoint == null) {
+      if (other.anchorPoint != null) {
+        return false;
+      }
+    } else if (!this.anchorPoint.equals(other.anchorPoint)) {
+      return false;
     }
-
-    @XmlElement(name = "Rotation")
-    private float rotation = 0.0f;
-
-    /**
-     * Renvoie la valeur de l'attribut rotation.
-     * 
-     * @return la valeur de l'attribut rotation
-     */
-    public float getRotation() {
-        return this.rotation;
+    if (this.displacement == null) {
+      if (other.displacement != null) {
+        return false;
+      }
+    } else if (!this.displacement.equals(other.displacement)) {
+      return false;
     }
-
-    /**
-     * Affecte la valeur de l'attribut rotation.
-     * 
-     * @param rotation
-     *            l'attribut rotation à affecter
-     */
-    public void setRotation(float rotation) {
-        this.rotation = rotation;
+    if (this.rotation == null) {
+      if (other.rotation != null) {
+        return false;
+      }
+    } else if (!this.rotation.equals(other.rotation)) {
+      return false;
     }
-
-    @Override
-    public String toString() {
-        return this.getClass().getSimpleName();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime
-                * result
-                + ((this.anchorPoint == null) ? 0 : this.anchorPoint.hashCode());
-        result = prime
-                * result
-                + ((this.displacement == null) ? 0 : this.displacement
-                        .hashCode());
-        result = prime * result + Float.floatToIntBits(this.rotation);
-        return result;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (this.getClass() != obj.getClass()) {
-            return false;
-        }
-        PointPlacement other = (PointPlacement) obj;
-        if (this.anchorPoint == null) {
-            if (other.anchorPoint != null) {
-                return false;
-            }
-        } else if (!this.anchorPoint.equals(other.anchorPoint)) {
-            return false;
-        }
-        if (this.displacement == null) {
-            if (other.displacement != null) {
-                return false;
-            }
-        } else if (!this.displacement.equals(other.displacement)) {
-            return false;
-        }
-        if (Float.floatToIntBits(this.rotation) != Float
-                .floatToIntBits(other.rotation)) {
-            return false;
-        }
-        return true;
-    }
+    return true;
+  }
 }

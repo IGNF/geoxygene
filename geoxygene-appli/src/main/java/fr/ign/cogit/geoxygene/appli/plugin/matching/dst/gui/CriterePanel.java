@@ -38,6 +38,7 @@ import fr.ign.cogit.geoxygene.style.Fill;
 import fr.ign.cogit.geoxygene.style.LabelPlacement;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.PointPlacement;
+import fr.ign.cogit.geoxygene.style.RotationLabel;
 import fr.ign.cogit.geoxygene.style.Rule;
 import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
@@ -403,7 +404,8 @@ public class CriterePanel extends JPanel implements ActionListener {
   public void remiseAZero() {
     updateAvailableLayers();
     // supprime le layer lien
-    this.evidencePanel.getProjectFrame().removeLayers(this.evidencePanel.getListLayer());
+    this.evidencePanel.getProjectFrame().removeLayers(
+        this.evidencePanel.getListLayer());
 
     // on rafraichit le tableau des liens
     Population<DefaultFeature> popLien = new Population<DefaultFeature>(false,
@@ -426,8 +428,10 @@ public class CriterePanel extends JPanel implements ActionListener {
    */
   private void configLayer() {
 
-    Layer layerRef = this.evidencePanel.getProjectFrame().getLayer(getLayerNameDataset1());
-    Layer layerPoint = this.evidencePanel.getProjectFrame().getLayer(getLayerNameDataset2());
+    Layer layerRef = this.evidencePanel.getProjectFrame().getLayer(
+        getLayerNameDataset1());
+    Layer layerPoint = this.evidencePanel.getProjectFrame().getLayer(
+        getLayerNameDataset2());
 
     if (!affTopo) {
 
@@ -449,9 +453,11 @@ public class CriterePanel extends JPanel implements ActionListener {
       txtFill.setColor(new Color(0, 90, 50));
       LabelPlacement placement = new LabelPlacement();
       PointPlacement ptPlacement = new PointPlacement();
+      RotationLabel rotationL = new RotationLabel();
+      rotationL.setRotationValue(0.0f);
 
       placement.setPlacement(ptPlacement);
-      ptPlacement.setRotation(0.0f);
+      ptPlacement.setRotation(rotationL);
       txtSymbolizer.setLabelPlacement(placement);
 
       FeatureTypeStyle ftStyle2 = new FeatureTypeStyle();
@@ -480,7 +486,7 @@ public class CriterePanel extends JPanel implements ActionListener {
       placement = new LabelPlacement();
       ptPlacement = new PointPlacement();
       placement.setPlacement(ptPlacement);
-      ptPlacement.setRotation(0.0f);
+      ptPlacement.setRotation(rotationL);
       txtSymbolizer.setLabelPlacement(placement);
 
       ftStyle2 = new FeatureTypeStyle();
@@ -520,7 +526,8 @@ public class CriterePanel extends JPanel implements ActionListener {
     if (this.comboListeJeu1.getSelectedItem().toString().equals("--")) {
       return null;
     } else {
-      Layer layerJeu1 =this.evidencePanel.getProjectFrame().getLayer(this.comboListeJeu1.getSelectedItem().toString());
+      Layer layerJeu1 = this.evidencePanel.getProjectFrame().getLayer(
+          this.comboListeJeu1.getSelectedItem().toString());
       return (IPopulation<IFeature>) layerJeu1.getFeatureCollection();
     }
   }
@@ -530,8 +537,8 @@ public class CriterePanel extends JPanel implements ActionListener {
     if (this.comboListeJeu2.getSelectedItem().toString().equals("--")) {
       return null;
     } else {
-      Layer layerJeu2 = this.evidencePanel.getProjectFrame()
-          .getLayer(this.comboListeJeu2.getSelectedItem().toString());
+      Layer layerJeu2 = this.evidencePanel.getProjectFrame().getLayer(
+          this.comboListeJeu2.getSelectedItem().toString());
       return (IPopulation<IFeature>) layerJeu2.getFeatureCollection();
     }
   }
