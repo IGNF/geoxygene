@@ -886,13 +886,6 @@ public abstract class AbstractCreationFactory {
     return null;
   }
 
-  @SuppressWarnings("unused")
-  public IWaterArea createWaterArea(IPolygon poly, WaterAreaNature nature) {
-    AbstractCreationFactory.logger
-        .error("Non implemented creation factory method for IWaterArea");
-    return null;
-  }
-
   // /////////////////
   // RELIEF
   // /////////////////
@@ -1346,6 +1339,12 @@ public abstract class AbstractCreationFactory {
 
   @SuppressWarnings("unused")
   public ISquareArea createSquareArea(IPolygon poly) {
+    AbstractCreationFactory.logger
+        .error("Non implemented creation factory method for ICoastLine");
+    return null;
+  }
+
+  public IWaterArea createWaterArea(IPolygon poly, WaterAreaNature nature) {
     AbstractCreationFactory.logger
         .error("Non implemented creation factory method for ICoastLine");
     return null;
