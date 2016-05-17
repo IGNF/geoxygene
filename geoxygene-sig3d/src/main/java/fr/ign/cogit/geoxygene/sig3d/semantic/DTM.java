@@ -703,7 +703,7 @@ public class DTM extends AbstractDTMLayer {
 
       numligne = 0;
       // On traite le fichier ligne par ligne
-      for (int j = 0; j < nrows; j++) {
+      for (int j = 1; j < nrows; j++) {
 
         if (ligne == null) {
           break;
@@ -717,6 +717,7 @@ public class DTM extends AbstractDTMLayer {
         // Pour chaque colonne que l'on souhaite récupèrer
         for (int i = 0; i < ncols; i++) {
 
+        //	System.out.println("row : " + j + " col : " + i  );
           // On récupère le Z du point que l'on traite actuellement
           // Le Z du point en dessous
           double nouvZ = Double.parseDouble(result[i * this.echantillonage]);
