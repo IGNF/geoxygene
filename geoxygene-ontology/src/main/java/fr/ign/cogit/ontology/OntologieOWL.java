@@ -26,6 +26,7 @@ import edu.stanford.smi.protegex.owl.model.OWLDatatypeProperty;
 import edu.stanford.smi.protegex.owl.model.OWLNamedClass;
 import edu.stanford.smi.protegex.owl.model.OWLObjectProperty;
 import edu.stanford.smi.protegex.owl.model.RDFResource;
+import edu.stanford.smi.protegex.owl.model.impl.DefaultOWLNamedClass;
 
 /**
  * 
@@ -353,7 +354,12 @@ public final class OntologieOWL {
       for (RDFResource owlNamedClass : directClasses1) {
         if ((!owlNamedClass.isSystem()) && (!owlNamedClass.isAnonymous())) {
           if (!owlNamedClass.equals(cls)) {
-            voisines.add((OWLNamedClass) owlNamedClass);
+            if (owlNamedClass instanceof DefaultOWLNamedClass) {
+              // System.out.println(owlNamedClass.getLocalName() + " : " + owlNamedClass.getClass());
+              voisines.add((OWLNamedClass) owlNamedClass);
+            } else {
+              // TODO DefaultRDFSNamedClass ???
+            }
           }
         } else if (owlNamedClass == this.getOWLModel().getOWLThingClass()) {
           voisines.add((OWLNamedClass) owlNamedClass);
