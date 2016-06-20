@@ -51,6 +51,7 @@ import fr.ign.cogit.geoxygene.feature.SchemaDefaultFeature;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
@@ -400,6 +401,7 @@ public class ShapefileReader implements Runnable {
       IPopulation<IFeature> population) throws IOException {
     ShapefileReader.fireActionPerformed(new ActionEvent(population, 0,
         "Read", reader.getNbFeatures())); //$NON-NLS-1$
+
     for (int indexFeature = 0; indexFeature < reader.getNbFeatures(); indexFeature++) {
       DefaultFeature defaultFeature = new DefaultFeature();
       defaultFeature.setFeatureType(schema.getFeatureType());
@@ -408,38 +410,40 @@ public class ShapefileReader implements Runnable {
       Class<? extends IGeometry> geometryType = schema.getFeatureType()
           .getGeometryType();
       try {
-        if (reader.geometries[indexFeature] == null) {
-          ShapefileReader.logger.log(Level.WARNING, "null geometry for object " //$NON-NLS-1$
-              + indexFeature);
-          ShapefileReader.logger.log(Level.WARNING, I18N
-              .getString("ShapefileReader" + //$NON-NLS-1$
-                  ".NullGeometryObjectIGnored")); //$NON-NLS-1$
-        } else {
-          IGeometry geometry = AdapterFactory
-              .toGM_Object(reader.geometries[indexFeature]);
-          if (!geometryType.isAssignableFrom(geometry.getClass())) {
-            ShapefileReader.logger.log(Level.FINE, "Geometry of type " //$NON-NLS-1$
-                + geometry.getClass().getSimpleName() + " instead of " //$NON-NLS-1$
-                + geometryType.getSimpleName());
-            // TODO make it more robust: a lot of assumptions here
-            if (geometry instanceof GM_MultiSurface<?>) {
-              geometry = ((GM_MultiSurface<?>) geometry).get(0);
-            } else {
-              if (geometry instanceof GM_MultiCurve<?>) {
-                geometry = ((GM_MultiCurve<?>) geometry).get(0);
-              } else {
-                if (geometry instanceof GM_MultiPoint) {
-                  geometry = ((GM_MultiPoint) geometry).get(0);
-                }
-              }
-            }
-          }
-          defaultFeature.setGeom(geometry);
-          defaultFeature.setId(indexFeature);
-          population.add(defaultFeature);
-          ShapefileReader.fireActionPerformed(new ActionEvent(population, 1,
-              "Read", indexFeature)); //$NON-NLS-1$
-        }
+    	  	IGeometry geometry = null ;
+			if (reader.geometries[indexFeature] == null) {
+				// support for empty geometries added
+				logger.log(
+					Level.WARNING, 
+					"null geometry for object "+ indexFeature+ " (considered EMPTY)"
+				);
+				geometry = new GM_Aggregate<IGeometry>();
+			} else {
+				geometry = AdapterFactory.toGM_Object(reader.geometries[indexFeature]);
+			}
+			
+			if (!geometryType.isAssignableFrom(geometry.getClass())) {
+				ShapefileReader.logger.log(Level.FINE,
+						"Geometry of type " //$NON-NLS-1$
+								+ geometry.getClass().getSimpleName() + " instead of " //$NON-NLS-1$
+								+ geometryType.getSimpleName());
+				// TODO make it more robust: a lot of assumptions here
+				if (geometry instanceof GM_MultiSurface<?>) {
+					geometry = ((GM_MultiSurface<?>) geometry).get(0);
+				} else {
+					if (geometry instanceof GM_MultiCurve<?>) {
+						geometry = ((GM_MultiCurve<?>) geometry).get(0);
+					} else {
+						if (geometry instanceof GM_MultiPoint) {
+							geometry = ((GM_MultiPoint) geometry).get(0);
+						}
+					}
+				}
+			}
+			defaultFeature.setGeom(geometry);
+			defaultFeature.setId(indexFeature);
+			population.add(defaultFeature);
+			ShapefileReader.fireActionPerformed(new ActionEvent(population, 1, "Read", indexFeature)); //$NON-NLS-1$
       } catch (Exception e) {
         ShapefileReader.logger.log(Level.SEVERE, I18N
             .getString("ShapefileReader" + //$NON-NLS-1$
@@ -475,7 +479,7 @@ public class ShapefileReader implements Runnable {
     return this.reader.getMaxX();
   }
 
-  public double getMinX() {
+	public double getMinX() {
     return this.reader.getMinX();
   }
 
