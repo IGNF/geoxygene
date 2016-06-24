@@ -1,4 +1,9 @@
 #version 330
+// @massea  
+// Raster Fragment Shader with style (Colormap and Opacity)
+
+// Const
+const float PI = 3.14159265359;
 
 // Uniform
 // Image buffer
@@ -107,21 +112,16 @@ void main(void)
     
     // Animation, tides and stuffs
     if(animate==1) {
-       float mean_height = 4.75; // 0.57;
-       float range = 3.25; // 1.5;
-       float time_scale = 100;
-       float pi = 3.14116;
-       float time_acceleration = 4000.0;
-       float length_of_tide_cycle = 43200.0;
-       float freq = 2.0 * pi / length_of_tide_cycle * time_acceleration;
-       float phase = 0.0;
+        // TODO Get back tide information from files
+        float mean_height = 4.75; // 0.57;
+        float range = 3.25; // 1.5;
+        float time_scale = 100;
+        float time_acceleration = 4000.0;
+        float length_of_tide_cycle = 43200.0;
+        float frequency = 2.0 * PI / length_of_tide_cycle * time_acceleration;
+        float phase = 0.0;
        
-       // TEMP, we have to get back tide information
-       //pixel.x = pixel.x - mean_height + (sin( mod(time,43200000.0) / 43200000.0 * 2.0 * pi * time_scale )*range);
-       //pixel.x = pixel.x - mean_height + (sin( mod(time/4.0,10000) /10000.0 *2.0 *3.14116)*range);
-       // pixel.x = pixel.x - mean_height + (sin( mod(time,10000) /10000.0*2*3.14116)*range);
-       
-       pixel.x = pixel.x - mean_height + (range * sin( freq * time / 1000.0 + phase));       
+        pixel.x = pixel.x - mean_height + (range * sin( frequency * time / 1000.0 + phase));       
     }
     
     // We apply the colormap 
@@ -139,5 +139,4 @@ void main(void)
      
     // Opacity (multiplication)
     outColor.a = outColor.a*globalOpacity*objectOpacity;
-    //outColor = vec4(mod(time/4.0,10000),1.0,1.0,1.0);
 }

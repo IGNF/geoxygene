@@ -70,6 +70,7 @@ import fr.ign.cogit.geoxygene.style.PointPlacement;
 import fr.ign.cogit.geoxygene.style.PointSymbolizer;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.RasterSymbolizer;
+import fr.ign.cogit.geoxygene.style.RotationLabel;
 import fr.ign.cogit.geoxygene.style.Rule;
 import fr.ign.cogit.geoxygene.style.ShadedRelief;
 import fr.ign.cogit.geoxygene.style.Stroke;
@@ -666,7 +667,9 @@ public class LayerFactory {
     displ.setDisplacementY(dyPlacement);
     ptPlacement.setDisplacement(displ);
     placement.setPlacement(ptPlacement);
-    ptPlacement.setRotation(rotation);
+    RotationLabel rotationLabel = new RotationLabel();
+    rotationLabel.setRotationValue(rotation);
+    ptPlacement.setRotation(rotationLabel);
     txtSymbolizer.setLabelPlacement(placement);
     // build the label
     txtSymbolizer.setLabel(attrName);

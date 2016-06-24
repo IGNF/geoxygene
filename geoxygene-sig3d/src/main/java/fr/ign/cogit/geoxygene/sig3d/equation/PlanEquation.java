@@ -118,14 +118,25 @@ public class PlanEquation {
 	 * @param d
 	 */
 	public PlanEquation(double a, double b, double c, double d) {
-		this.coeffa = a;
-		this.coeffb = b;
-		this.coeffc = c;
-		this.coeffd = d;
-		this.normaleToPlane = new Vecteur(a, b, c);
-		this.normaleToPlane.normalise();
+		
+		if(a ==0 && b ==0 && c ==0){
+			this.coeffa = Double.NaN;
+			this.coeffb = Double.NaN;
+			this.coeffc = Double.NaN;
+			this.coeffd = Double.NaN;
+		}else{
+			this.coeffa = a;
+			this.coeffb = b;
+			this.coeffc = c;
+			this.coeffd = d;
+			this.normaleToPlane = new Vecteur(a, b, c);
+			this.normaleToPlane.normalise();
+		}
+		
+	
 
-		String equation_str = new String(a + "x +" + b + "y +" + c + "z +" + d
+		// Affichage de l'équation implicite de l'équation
+		String equation_str = new String(coeffa + "x +" + coeffb + "y +" + coeffc + "z +" + coeffd
 				+ " = 0");
 
 		this.equation = equation_str;
@@ -138,27 +149,36 @@ public class PlanEquation {
 	 * @param dp point contenu dans le plan
 	 */
 	public PlanEquation(Vecteur v1, IDirectPosition dp) {
+		
+		if(v1.norme() == 0){
+			this.coeffa = Double.NaN;
+			this.coeffb = Double.NaN;
+			this.coeffc = Double.NaN;
+			this.coeffd = Double.NaN;
+		}else{
+			v1.normalise();
+			double a = v1.getX();
+			double b = v1.getY();
+			double c = v1.getZ();
 
-		v1.normalise();
-		double a = v1.getX();
-		double b = v1.getY();
-		double c = v1.getZ();
+			// Calcul de d
+			double d = -a * dp.getX() - b * dp.getY() - c * dp.getZ();
 
-		// Calcul de d
-		double d = -a * dp.getX() - b * dp.getY() - c * dp.getZ();
+			this.coeffa = a;
+			this.coeffb = b;
+			this.coeffc = c;
+			this.coeffd = d;
 
-		this.coeffa = a;
-		this.coeffb = b;
-		this.coeffc = c;
-		this.coeffd = d;
+			this.normaleToPlane = new Vecteur(a, b, c);
+			this.normaleToPlane.normalise();
+		}
+
 
 		// Affichage de l'équation implicite de l'équation
-		String equation_str = new String(a + "x +" + b + "y +" + c + "z +" + d
+		String equation_str = new String(coeffa + "x +" + coeffb + "y +" + coeffc + "z +" + coeffd
 				+ " = 0");
 
 		this.equation = equation_str;
-		this.normaleToPlane = new Vecteur(a, b, c);
-		this.normaleToPlane.normalise();
 
 	}
 

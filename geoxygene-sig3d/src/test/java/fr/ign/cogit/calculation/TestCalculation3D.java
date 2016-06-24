@@ -349,6 +349,10 @@ public class TestCalculation3D extends TestCase {
 			y = Math.random()*1000;
 			z = Math.random()*1000;
 
+			x = Math.round(x);
+			y = Math.round(y);
+			z = Math.round(z);
+			
 			xmin = Math.min(xmin, x);
 			ymin = Math.min(ymin, y);
 			zmin = Math.min(zmin, z);

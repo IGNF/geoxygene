@@ -25,7 +25,7 @@ public class TestUtil extends TestCase {
 
 	// ---------------------------------- ATTRIBUTES ----------------------------------
 
-	private double epsilon = Math.pow(10, -10);    // Scale error
+	private double epsilon = Math.pow(10, -4);    // Scale error
 	
 	private static Logger log = Logger.getLogger(TestUtil.class);
 
@@ -76,7 +76,7 @@ public class TestUtil extends TestCase {
 		DirectPosition gExp = new DirectPosition(xMean, yMean, zMean);
 
 		// Comparison
-		assertTrue("Points set center of gravity is incorrect", gExp.equals(g));
+		assertTrue("Points set center of gravity is incorrect", gExp.distance(g)<epsilon);
 
 	}
 
@@ -638,6 +638,10 @@ public class TestUtil extends TestCase {
 		// Random parameters
 		double triangleSize = Math.random()*100;
 		double alti = Math.random()*100;
+		
+		
+		triangleSize = (Math.round((triangleSize *1000 ) / 1000));
+		alti = (Math.round((alti *1000 ) / 1000));
 
 		// Surface 1 : triangle
 		DirectPositionList dpl1 = new DirectPositionList();
