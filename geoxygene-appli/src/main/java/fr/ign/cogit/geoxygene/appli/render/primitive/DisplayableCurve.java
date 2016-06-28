@@ -228,10 +228,10 @@ public class DisplayableCurve extends AbstractDisplayable {
             double minY = envelope.minY();
             final double minAngle = 0.; // TODO Set as input parameter
             final int sampleSize= 50; // TODO Set as input parameter            
-            GLPaintingComplex complex =  GLComplexFactory.createPaintingThickCurves(this.getName() + "-expressive-linepainting",symbolizer.getStroke(), minX, minY, curves, glPaperTexture 
-                ,(Double)paperHeightInCm.getValue(), minAngle,glPaperTexture.getTextureWidth(), glPaperTexture.getTextureHeight(), (Double)mapScale.getValue(),sampleSize);
-//            GLBezierShadingComplex complex = GLComplexFactory.createBezierThickCurves(this.getName() + "-expressive-bezier", symbolizer.getStroke(), minX, minY, curves, glPaperTexture,
-//                    (Double) paperHeightInCm.getValue(), (Double) mapScale.getValue(), (Double) transitionSize.getValue());
+//            GLPaintingComplex complex =  GLComplexFactory.createPaintingThickCurves(this.getName() + "-expressive-linepainting",symbolizer.getStroke(), minX, minY, curves, glPaperTexture 
+//                ,(Double)paperHeightInCm.getValue(), minAngle,glPaperTexture.getTextureWidth(), glPaperTexture.getTextureHeight(), (Double)mapScale.getValue(),sampleSize);
+            GLBezierShadingComplex complex = GLComplexFactory.createBezierThickCurves(this.getName() + "-expressive-bezier", symbolizer.getStroke(), minX, minY, curves, glPaperTexture,
+                    (Double) paperHeightInCm.getValue(), (Double) mapScale.getValue(), (Double) transitionSize.getValue());
             complexes.add(complex);
             this.setFullRepresentation(complexes);
             return complexes;
