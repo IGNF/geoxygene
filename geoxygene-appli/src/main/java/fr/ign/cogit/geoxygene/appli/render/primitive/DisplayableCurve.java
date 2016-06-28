@@ -31,6 +31,7 @@ import java.awt.Color;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -40,6 +41,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.GLBezierShadingComplex;
 import fr.ign.cogit.geoxygene.appli.gl.GLComplexFactory;
+import fr.ign.cogit.geoxygene.appli.gl.GLPaintingComplex;
 import fr.ign.cogit.geoxygene.appli.gl.GLSimpleComplex;
 import fr.ign.cogit.geoxygene.appli.gl.GLTextComplex;
 import fr.ign.cogit.geoxygene.appli.gl.LineTesselator;
@@ -50,6 +52,7 @@ import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.function.ConstantFunction;
 import fr.ign.cogit.geoxygene.function.Function1D;
 import fr.ign.cogit.geoxygene.style.LineSymbolizer;
+import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.expressive.ExpressiveDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.ExpressiveParameter;
@@ -223,8 +226,12 @@ public class DisplayableCurve extends AbstractDisplayable {
             IEnvelope envelope = IGeometryUtil.getEnvelope(this.curves);
             double minX = envelope.minX();
             double minY = envelope.minY();
-            GLBezierShadingComplex complex = GLComplexFactory.createBezierThickCurves(this.getName() + "-expressive-bezier", symbolizer.getStroke(), minX, minY, curves, glPaperTexture,
-                    (Double) paperHeightInCm.getValue(), (Double) mapScale.getValue(), (Double) transitionSize.getValue());
+            final double minAngle = 0.; // TODO Set as input parameter
+            final int sampleSize= 50; // TODO Set as input parameter            
+            GLPaintingComplex complex =  GLComplexFactory.createPaintingThickCurves(this.getName() + "-expressive-linepainting",symbolizer.getStroke(), minX, minY, curves, glPaperTexture 
+                ,(Double)paperHeightInCm.getValue(), minAngle,glPaperTexture.getTextureWidth(), glPaperTexture.getTextureHeight(), (Double)mapScale.getValue(),sampleSize);
+//            GLBezierShadingComplex complex = GLComplexFactory.createBezierThickCurves(this.getName() + "-expressive-bezier", symbolizer.getStroke(), minX, minY, curves, glPaperTexture,
+//                    (Double) paperHeightInCm.getValue(), (Double) mapScale.getValue(), (Double) transitionSize.getValue());
             complexes.add(complex);
             this.setFullRepresentation(complexes);
             return complexes;
