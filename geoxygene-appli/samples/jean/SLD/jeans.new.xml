@@ -12,9 +12,9 @@
 		<Color>#FFFFFF</Color>
 	</Background>
 	<NamedLayer>
-		<Name>hydro_100</Name>
+		<Name>hydro_lines</Name>
 		<UserStyle>
-			<Name>Style créé pour le layer hydro_100</Name>
+			<Name>Style créé pour le layer hydro_lines</Name>
 			<IsDefault>false</IsDefault>
 			<FeatureTypeStyle>
 				<Rule>
