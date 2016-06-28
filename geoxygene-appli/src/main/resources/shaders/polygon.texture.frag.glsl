@@ -1,8 +1,9 @@
 #version 330
 
 uniform sampler2D textureColor1;
-uniform float globalOpacity = 1.0;
-uniform float objectOpacity = 1.0;
+
+uniform float globalOpacity = 1.0; // from the layer 
+uniform float objectOpacity = 1.0; // from the feature
 uniform vec2 textureScaleFactor = vec2(1.0, 1.0);
 
 in vec4 fragmentColor;

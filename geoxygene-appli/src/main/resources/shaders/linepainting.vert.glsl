@@ -1,12 +1,10 @@
 // line painting and bezier (vertex and fragment) shaders share
 // the same API.
-// Line painting is associated with <StrokeTextureExpressiveRendering> tag in SLD 
-// Bezier is associated with <ExpressiveStroke> tag in SLD (and previously <BasicTextureExpressiveRendering>
+// Line painting and  Bezier is associated with <ExpressiveStroke> tag in SLD, there are selected depending on the method associated to the expressive stroke.
 // They only differ by how lines are tesselated. Bezier is better (smoother) than LinePainting
 // LinePainting should be now considered as deprecated 
 
 #version 330
-
 
 uniform float m00 = 1.; // X homothetic value in 3x3 matrix
 uniform float m02 = 0.; // X translation value in 3x3 matrix
@@ -43,8 +41,6 @@ out VertexData {
 } vertexOut;
 
 void main() {
-
-	//gl_Position = vec4 ( vertexPosition , 1f );
 	gl_Position = vec4( -1.0 + 2.0 * (vertexPosition.x * m00 + m02) / (screenWidth + 1.0), 1.0 - 2.0 * ( vertexPosition.y * m11 + m12 ) / ( screenHeight + 1.0 ), 0.0, 1.0);
 	vertexOut.position = gl_Position;
 	vertexOut.uv = vertexUV ;
@@ -52,6 +48,5 @@ void main() {
 	vertexOut.curvature = vertexCurvature;
 	vertexOut.thickness = vertexThickness;
 	vertexOut.color = vertexColor;
-	vertexOut.uMax = uMax;
-	
+	vertexOut.uMax = uMax;	
 }

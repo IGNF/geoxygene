@@ -8,18 +8,22 @@ uniform int antialiasingSize = 1;
 uniform int screenWidth;
 uniform int screenHeight;
 
+
+uniform float beta = 1.0; // should be integrated in sld def of hightone blending mode
+
 out vec4 outColor;
 in vec4 fragmentColor;
 in vec2 fragmentTextureCoord;
 
 vec4 colorFilter( vec4 col );
 
+
+// A is a control texture, should be grayscale, we use red channel instead of computing luminance (and add unecessray computation)
 vec3 hightoneBlend( vec3 A, vec3 B ){
-     float beta = 1.0; // a mettre en uniform ?
-     float T = 1.0- A.r; // prendre 1.0 - luminance ?
+     float T = 1.0 - A.r;
 
      float d =1.0+beta*(T-0.5);
-     return B-(B-B*B)*(d-1);
+     return B-(B-B*B)*(d-1.0);
 }
 
 void main(void) {
