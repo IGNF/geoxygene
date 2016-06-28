@@ -82,53 +82,9 @@
 		</UserStyle>
 	</NamedLayer>
 	<NamedLayer>
-		<Name>rochy_OCS_100</Name>
+		<Name>roads</Name>
 		<UserStyle>
-			<Name>Style créé pour le layer rochy_OCS_100</Name>
-			<IsDefault>false</IsDefault>
-			<FeatureTypeStyle>
-				<Rule>
-					<LegendGraphic>
-						<Graphic>
-							<Mark>
-								<WellKnownName>square</WellKnownName>
-								<Fill>
-									<CssParameter name="fill">#f5a4fd</CssParameter>
-									<CssParameter name="fill-opacity">0.8</CssParameter>
-								</Fill>
-								<Stroke>
-									<CssParameter name="stroke">#ab72b1</CssParameter>
-									<CssParameter name="stroke-opacity">0.8</CssParameter>
-									<CssParameter name="stroke-width">1.0</CssParameter>
-								</Stroke>
-							</Mark>
-							<opacity>1.0</opacity>
-							<Size>6.0</Size>
-							<Rotation>
-								<Literal>0</Literal>
-							</Rotation>
-						</Graphic>
-					</LegendGraphic>
-					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
-						<Stroke>
-							<CssParameter name="stroke">#737373</CssParameter>
-							<CssParameter name="stroke-opacity">0.8</CssParameter>
-							<CssParameter name="stroke-width">5.0</CssParameter>
-						</Stroke>
-						<GeometryPropertyName>geom</GeometryPropertyName>
-						<Fill>
-							<CssParameter name="fill">#bcbddc</CssParameter>
-							<CssParameter name="fill-opacity">0.8</CssParameter>
-						</Fill>
-					</PolygonSymbolizer>
-				</Rule>
-			</FeatureTypeStyle>
-		</UserStyle>
-	</NamedLayer>
-	<NamedLayer>
-		<Name>routes_100</Name>
-		<UserStyle>
-			<Name>Style créé pour le layer routes_100</Name>
+			<Name>Style créé pour le layer roads</Name>
 			<IsDefault>false</IsDefault>
 			<FeatureTypeStyle>
 				<Rule>
@@ -196,53 +152,9 @@
 		</UserStyle>
 	</NamedLayer>
 	<NamedLayer>
-		<Name>sablehum_OCS_100</Name>
+		<Name>hydro_areas</Name>
 		<UserStyle>
-			<Name>Style créé pour le layer sablehum_OCS_100</Name>
-			<IsDefault>false</IsDefault>
-			<FeatureTypeStyle>
-				<Rule>
-					<LegendGraphic>
-						<Graphic>
-							<Mark>
-								<WellKnownName>square</WellKnownName>
-								<Fill>
-									<CssParameter name="fill">#fee4f9</CssParameter>
-									<CssParameter name="fill-opacity">0.8</CssParameter>
-								</Fill>
-								<Stroke>
-									<CssParameter name="stroke">#b19fae</CssParameter>
-									<CssParameter name="stroke-opacity">0.8</CssParameter>
-									<CssParameter name="stroke-width">1.0</CssParameter>
-								</Stroke>
-							</Mark>
-							<opacity>1.0</opacity>
-							<Size>6.0</Size>
-							<Rotation>
-								<Literal>0</Literal>
-							</Rotation>
-						</Graphic>
-					</LegendGraphic>
-					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
-						<Stroke>
-							<CssParameter name="stroke">#36489e</CssParameter>
-							<CssParameter name="stroke-opacity">0.8</CssParameter>
-							<CssParameter name="stroke-width">4.0</CssParameter>
-						</Stroke>
-						<GeometryPropertyName>geom</GeometryPropertyName>
-						<Fill>
-							<CssParameter name="fill">#bcbddc</CssParameter>
-							<CssParameter name="fill-opacity">0.8</CssParameter>
-						</Fill>
-					</PolygonSymbolizer>
-				</Rule>
-			</FeatureTypeStyle>
-		</UserStyle>
-	</NamedLayer>
-	<NamedLayer>
-		<Name>surface_eau_OCS_100</Name>
-		<UserStyle>
-			<Name>Style créé pour le layer surface_eau_OCS_100</Name>
+			<Name>Style créé pour le layer hydro_areas</Name>
 			<IsDefault>false</IsDefault>
 			<FeatureTypeStyle>
 				<Rule>
@@ -284,9 +196,9 @@
 		</UserStyle>
 	</NamedLayer>
 	<NamedLayer>
-		<Name>vegetation_OCS_100</Name>
+		<Name>forest_areas</Name>
 		<UserStyle>
-			<Name>Style créé pour le layer vegetation_OCS_100</Name>
+			<Name>Style créé pour le layer forest_areas</Name>
 			<IsDefault>false</IsDefault>
 			<FeatureTypeStyle>
 				<Rule>
@@ -365,9 +277,9 @@
 		</UserStyle>
 	</NamedLayer>
 	<NamedLayer>
-		<Name>mer_OCS_100</Name>
+		<Name>sea_abstracted</Name>
 		<UserStyle>
-			<Name>Style créé pour le layer mer_OCS_100</Name>
+			<Name>Style créé pour le layer sea_abstracted</Name>
 			<IsDefault>false</IsDefault>
 			<FeatureTypeStyle>
 				<Rule>
