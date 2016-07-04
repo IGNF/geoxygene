@@ -227,24 +227,26 @@ public class CartAGenDoc {
     root.appendChild(nameElem);
 
     // the dataset zone
-    Element zoneElem = xmlDoc.createElement("dataset-zone");
-    root.appendChild(zoneElem);
-    Element zoneNameElem = xmlDoc.createElement("name");
-    n = xmlDoc.createTextNode(this.getZone().getName());
-    zoneNameElem.appendChild(n);
-    zoneElem.appendChild(zoneNameElem);
-    if (this.getZone().getExtent() != null) {
-      Element extentElem = xmlDoc.createElement("extent");
-      zoneElem.appendChild(extentElem);
-      for (IDirectPosition pt : this.getZone().getExtent().coord()) {
-        Element xExtentElem = xmlDoc.createElement("x");
-        n = xmlDoc.createTextNode(String.valueOf(pt.getX()));
-        xExtentElem.appendChild(n);
-        extentElem.appendChild(xExtentElem);
-        Element yExtentElem = xmlDoc.createElement("y");
-        n = xmlDoc.createTextNode(String.valueOf(pt.getY()));
-        yExtentElem.appendChild(n);
-        extentElem.appendChild(yExtentElem);
+    if (this.getZone() != null) {
+      Element zoneElem = xmlDoc.createElement("dataset-zone");
+      root.appendChild(zoneElem);
+      Element zoneNameElem = xmlDoc.createElement("name");
+      n = xmlDoc.createTextNode(this.getZone().getName());
+      zoneNameElem.appendChild(n);
+      zoneElem.appendChild(zoneNameElem);
+      if (this.getZone().getExtent() != null) {
+        Element extentElem = xmlDoc.createElement("extent");
+        zoneElem.appendChild(extentElem);
+        for (IDirectPosition pt : this.getZone().getExtent().coord()) {
+          Element xExtentElem = xmlDoc.createElement("x");
+          n = xmlDoc.createTextNode(String.valueOf(pt.getX()));
+          xExtentElem.appendChild(n);
+          extentElem.appendChild(xExtentElem);
+          Element yExtentElem = xmlDoc.createElement("y");
+          n = xmlDoc.createTextNode(String.valueOf(pt.getY()));
+          yExtentElem.appendChild(n);
+          extentElem.appendChild(yExtentElem);
+        }
       }
     }
 
@@ -323,30 +325,38 @@ public class CartAGenDoc {
     // the dataset zone
     Element zoneElem = (Element) root.getElementsByTagName("dataset-zone")
         .item(0);
-    Element zoneNameElem = (Element) zoneElem.getElementsByTagName("name")
-        .item(0);
-    String zoneName = zoneNameElem.getChildNodes().item(0).getNodeValue();
-    IPolygon extent = null;
-    if (zoneElem.getElementsByTagName("extent").getLength() > 0) {
-      Element extentElem = (Element) zoneElem.getElementsByTagName("extent")
+    if (zoneElem != null) {
+      Element zoneNameElem = (Element) zoneElem.getElementsByTagName("name")
           .item(0);
-      IDirectPositionList coords = new DirectPositionList();
-      for (int i = 0; i < extentElem.getElementsByTagName("x").getLength(); i++) {
-        Element xElem = (Element) extentElem.getElementsByTagName("x").item(i);
-        Element yElem = (Element) extentElem.getElementsByTagName("y").item(i);
-        double x = Double.valueOf(xElem.getChildNodes().item(0).getNodeValue());
-        double y = Double.valueOf(yElem.getChildNodes().item(0).getNodeValue());
-        coords.add(new DirectPosition(x, y));
+      String zoneName = zoneNameElem.getChildNodes().item(0).getNodeValue();
+      IPolygon extent = null;
+      if (zoneElem.getElementsByTagName("extent").getLength() > 0) {
+        Element extentElem = (Element) zoneElem.getElementsByTagName("extent")
+            .item(0);
+        IDirectPositionList coords = new DirectPositionList();
+        for (int i = 0; i < extentElem.getElementsByTagName("x")
+            .getLength(); i++) {
+          Element xElem = (Element) extentElem.getElementsByTagName("x")
+              .item(i);
+          Element yElem = (Element) extentElem.getElementsByTagName("y")
+              .item(i);
+          double x = Double
+              .valueOf(xElem.getChildNodes().item(0).getNodeValue());
+          double y = Double
+              .valueOf(yElem.getChildNodes().item(0).getNodeValue());
+          coords.add(new DirectPosition(x, y));
+        }
+        extent = new GM_Polygon(new GM_LineString(coords));
       }
-      extent = new GM_Polygon(new GM_LineString(coords));
+      instance.setZone(new DataSetZone(zoneName, extent));
     }
-    instance.setZone(new DataSetZone(zoneName, extent));
 
     // load databases
     Element dbsElem = (Element) root.getElementsByTagName("databases").item(0);
-    for (int i = 0; i < dbsElem.getElementsByTagName("database").getLength(); i++) {
-      Element dbElem = (Element) dbsElem.getElementsByTagName("database").item(
-          0);
+    for (int i = 0; i < dbsElem.getElementsByTagName("database")
+        .getLength(); i++) {
+      Element dbElem = (Element) dbsElem.getElementsByTagName("database")
+          .item(0);
       String path = dbElem.getChildNodes().item(0).getNodeValue();
       File dbFile = new File(path);
       Class<? extends CartAGenDB> dbClass = CartAGenDB.readType(dbFile);

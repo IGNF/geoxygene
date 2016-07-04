@@ -21,6 +21,7 @@ import javax.swing.JMenuItem;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetwork;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
+import fr.ign.cogit.cartagen.genealgorithms.network.RiverNetworkSelection;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -35,8 +36,8 @@ public class HydroNetworkMenu extends JMenu {
    */
   private static final long serialVersionUID = 1L;
 
-  private final Logger logger = Logger.getLogger(HydroNetworkMenu.class
-      .getName());
+  private final Logger logger = Logger
+      .getLogger(HydroNetworkMenu.class.getName());
 
   private final JMenuItem mResHydroEnrich = new JMenuItem(
       new EnrichHydroNetAction());
@@ -45,6 +46,8 @@ public class HydroNetworkMenu extends JMenu {
   public JCheckBoxMenuItem mVoirTauxSuperpositionRoutier = new JCheckBoxMenuItem(
       "Voir taux superposition routier");
   public JCheckBoxMenuItem mIdHydroVoir = new JCheckBoxMenuItem("Display id");
+  private final JMenuItem mNetworkSelection = new JMenuItem(
+      new NetworkSelectionAction());
 
   public HydroNetworkMenu(String title) {
     super(title);
@@ -52,6 +55,8 @@ public class HydroNetworkMenu extends JMenu {
     this.add(this.mResHydroEnrich);
     this.add(this.mResHydroSelect);
 
+    this.addSeparator();
+    this.add(this.mNetworkSelection);
     this.addSeparator();
 
     this.add(this.mIdHydroVoir);
@@ -80,12 +85,13 @@ public class HydroNetworkMenu extends JMenu {
         }
         net.setSections(sections);
       }
-      NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
-          .getCurrentDataset(), net);
+      NetworkEnrichment.buildTopology(
+          CartAGenDoc.getInstance().getCurrentDataset(), net, false);
     }
 
     public EnrichHydroNetAction() {
-      this.putValue(Action.SHORT_DESCRIPTION, "Enrichment of the hydro network");
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Enrichment of the hydro network");
       this.putValue(Action.NAME, "Enrichment");
     }
   }
@@ -103,8 +109,8 @@ public class HydroNetworkMenu extends JMenu {
           + CartAGenDoc.getInstance().getCurrentDataset().getHydroNetwork());
       for (IWaterLine section : CartAGenDoc.getInstance().getCurrentDataset()
           .getWaterLines()) {
-        SelectionUtil.addFeatureToSelection(CartAGenPlugin.getInstance()
-            .getApplication(), section);
+        SelectionUtil.addFeatureToSelection(
+            CartAGenPlugin.getInstance().getApplication(), section);
       }
     }
 
@@ -115,4 +121,23 @@ public class HydroNetworkMenu extends JMenu {
     }
   }
 
+  private class NetworkSelectionAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+      RiverNetworkSelection selection = new RiverNetworkSelection(3, 5000.0,
+          50000.0, true);
+      selection.selection();
+    }
+
+    public NetworkSelectionAction() {
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "hydro network selection based on strokes and Horton ordering");
+      this.putValue(Action.NAME, "hydro network selection");
+    }
+  }
 }

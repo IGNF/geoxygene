@@ -22,11 +22,13 @@ import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetwork;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 
+@Deprecated
 public class HydroNetworkMenu extends JMenu {
 
   /**
@@ -34,8 +36,8 @@ public class HydroNetworkMenu extends JMenu {
    */
   private static final long serialVersionUID = 1L;
 
-  private final Logger logger = Logger.getLogger(HydroNetworkMenu.class
-      .getName());
+  private final Logger logger = Logger
+      .getLogger(HydroNetworkMenu.class.getName());
 
   private final JMenuItem mResHydroEnrich = new JMenuItem(
       new EnrichHydroNetAction());
@@ -68,23 +70,24 @@ public class HydroNetworkMenu extends JMenu {
     @Override
     public void actionPerformed(ActionEvent e) {
       HydroNetworkMenu.this.logger.info("Enrichment of "
-          + CartAGenDocOld.getInstance().getCurrentDataset().getHydroNetwork());
-      INetwork net = CartAGenDocOld.getInstance().getCurrentDataset()
+          + CartAGenDoc.getInstance().getCurrentDataset().getHydroNetwork());
+      INetwork net = CartAGenDoc.getInstance().getCurrentDataset()
           .getHydroNetwork();
       if (net.getSections().size() == 0) {
         IFeatureCollection<INetworkSection> sections = new FT_FeatureCollection<INetworkSection>();
-        for (IWaterLine w : CartAGenDocOld.getInstance().getCurrentDataset()
+        for (IWaterLine w : CartAGenDoc.getInstance().getCurrentDataset()
             .getWaterLines()) {
           sections.add(w);
         }
         net.setSections(sections);
       }
-      NetworkEnrichment.enrichNetwork(CartAGenDocOld.getInstance()
-          .getCurrentDataset(), net);
+      NetworkEnrichment.buildTopology(
+          CartAGenDoc.getInstance().getCurrentDataset(), net, false);
     }
 
     public EnrichHydroNetAction() {
-      this.putValue(Action.SHORT_DESCRIPTION, "Enrichment of the hydro network");
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Enrichment of the hydro network");
       this.putValue(Action.NAME, "Enrichment");
     }
   }
@@ -99,11 +102,11 @@ public class HydroNetworkMenu extends JMenu {
     @Override
     public void actionPerformed(ActionEvent e) {
       HydroNetworkMenu.this.logger.info("Selection of "
-          + CartAGenDocOld.getInstance().getCurrentDataset().getHydroNetwork());
+          + CartAGenDoc.getInstance().getCurrentDataset().getHydroNetwork());
       for (IWaterLine section : CartAGenDocOld.getInstance().getCurrentDataset()
           .getWaterLines()) {
-        CartagenApplication.getInstance().getFrame().getVisuPanel().selectedObjects
-            .add(section);
+        CartagenApplication.getInstance().getFrame()
+            .getVisuPanel().selectedObjects.add(section);
       }
     }
 

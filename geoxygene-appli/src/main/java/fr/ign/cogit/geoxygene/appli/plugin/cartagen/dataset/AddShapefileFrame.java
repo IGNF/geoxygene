@@ -13,6 +13,7 @@ import javax.swing.JTabbedPane;
 import javax.xml.bind.JAXBException;
 
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
+import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildPoint;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
@@ -29,6 +30,7 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolsUtil;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 
 public class AddShapefileFrame extends JFrame implements ActionListener {
@@ -55,6 +57,9 @@ public class AddShapefileFrame extends JFrame implements ActionListener {
     ShapeFileToLayerPanel waterLineTab = new ShapeFileToLayerPanel(
         CartAGenDataSet.WATER_LINES_POP, null);
     tabs.addTab(waterLineTab.getLayerName(), waterLineTab);
+    ShapeFileToLayerPanel buildingPtTab = new ShapeFileToLayerPanel(
+        CartAGenDataSet.BUILD_PT_POP, null);
+    tabs.addTab(buildingPtTab.getLayerName(), buildingPtTab);
     tabs.setSelectedIndex(0);
 
     // a panel for OK and Cancel buttons
@@ -74,8 +79,8 @@ public class AddShapefileFrame extends JFrame implements ActionListener {
     // *********************************
     this.getContentPane().add(tabs);
     this.getContentPane().add(pBoutons);
-    this.getContentPane().setLayout(
-        new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+    this.getContentPane()
+        .setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
     this.pack();
     this.setAlwaysOnTop(true);
   }
@@ -93,15 +98,15 @@ public class AddShapefileFrame extends JFrame implements ActionListener {
         ShapeFileDB database = new ShapeFileDB("default");
         database.setSourceDLM(SourceDLM.SPECIAL_CARTAGEN);
         database.setSymboScale(25000);
-        database.setGeneObjImpl(GeneObjImplementation
-            .getDefaultImplementation());
+        database
+            .setGeneObjImpl(GeneObjImplementation.getDefaultImplementation());
         CartAGenDataSet dataset = new CartAGenDataSet();
         doc.addDatabase("default", database);
         database.setDataSet(dataset);
         database.setType(new DigitalLandscapeModel());
 
-        SymbolGroup symbGroup = SymbolsUtil.getSymbolGroup(
-            SourceDLM.SPECIAL_CARTAGEN, 25000);
+        SymbolGroup symbGroup = SymbolsUtil
+            .getSymbolGroup(SourceDLM.SPECIAL_CARTAGEN, 25000);
         dataset.setSymbols(SymbolList.getSymbolList(symbGroup));
       }
 
@@ -114,8 +119,9 @@ public class AddShapefileFrame extends JFrame implements ActionListener {
         SymbolList symbols = SymbolList
             .getSymbolList(SymbolsUtil.getSymbolGroup(currentDb.getSourceDLM(),
                 currentDb.getSymboScale()));
-        currentDb.addClass(new ShapeFileClass(currentDb, panel.getFile()
-            .getParent(), IRailwayLine.FEAT_TYPE_NAME, ILineString.class));
+        currentDb
+            .addClass(new ShapeFileClass(currentDb, panel.getFile().getParent(),
+                IRailwayLine.FEAT_TYPE_NAME, ILineString.class));
         try {
           ShapeFileLoader.loadRailwayLineFromSHP(panel.getFile().getPath(),
               symbols, panel.getAttributeMapping().get("Sidetrack"),
@@ -124,13 +130,23 @@ public class AddShapefileFrame extends JFrame implements ActionListener {
           e1.printStackTrace();
         }
       } else if (panel.getLayerName().equals(CartAGenDataSet.BUILDINGS_POP)) {
-        currentDb.addClass(new ShapeFileClass(currentDb, panel.getFile()
-            .getParent(), IBuilding.FEAT_TYPE_NAME, IPolygon.class));
+        currentDb
+            .addClass(new ShapeFileClass(currentDb, panel.getFile().getParent(),
+                IBuilding.FEAT_TYPE_NAME, IPolygon.class));
         try {
-          ShapeFileLoader
-              .loadBuildingsFromSHP(panel.getFile().getPath(),
-                  currentDb.getDataSet(),
-                  panel.getAttributeMapping().get("Nature"));
+          ShapeFileLoader.loadBuildingsFromSHP(panel.getFile().getPath(),
+              currentDb.getDataSet(),
+              panel.getAttributeMapping().get("Nature"));
+        } catch (IOException e1) {
+          e1.printStackTrace();
+        }
+      } else if (panel.getLayerName().equals(CartAGenDataSet.BUILD_PT_POP)) {
+        currentDb
+            .addClass(new ShapeFileClass(currentDb, panel.getFile().getParent(),
+                IBuildPoint.FEAT_TYPE_NAME, IPoint.class));
+        try {
+          ShapeFileLoader.loadBuildingPointsFromSHP(panel.getFile().getPath(),
+              currentDb.getDataSet());
         } catch (IOException e1) {
           e1.printStackTrace();
         }

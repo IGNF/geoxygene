@@ -31,6 +31,7 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 
+@Deprecated
 public class TownMenu extends JMenu {
 
   /**
@@ -127,8 +128,8 @@ public class TownMenu extends JMenu {
     }
 
     public TownLinksAction() {
-      this.putValue(Action.SHORT_DESCRIPTION, I18N
-          .getString("TownMenu.ttipTownLinks"));
+      this.putValue(Action.SHORT_DESCRIPTION,
+          I18N.getString("TownMenu.ttipTownLinks"));
       this.putValue(Action.NAME, I18N.getString("TownMenu.lblTownLinks"));
     }
   }
@@ -162,10 +163,8 @@ public class TownMenu extends JMenu {
     }
 
     public IsTownCentreAction() {
-      this
-          .putValue(
-              Action.SHORT_DESCRIPTION,
-              "Trigger the multicriteria decision technique to check if a block is part of town centre");
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Trigger the multicriteria decision technique to check if a block is part of town centre");
       this.putValue(Action.NAME, "Is block a town centre?");
     }
   }

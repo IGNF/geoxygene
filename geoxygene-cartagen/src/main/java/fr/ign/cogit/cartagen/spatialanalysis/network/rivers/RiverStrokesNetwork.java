@@ -25,12 +25,13 @@ import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.schemageo.api.hydro.NoeudHydrographique;
 import fr.ign.cogit.geoxygene.schemageo.api.hydro.TronconHydrographique;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseau;
+import fr.ign.cogit.geoxygene.schemageo.impl.hydro.NoeudHydrographiqueImpl;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.CommonAlgorithmsFromCartAGen;
 
 public class RiverStrokesNetwork extends StrokesNetwork {
 
-  private static Logger logger = Logger.getLogger(RiverStrokesNetwork.class
-      .getName());
+  private static Logger logger = Logger
+      .getLogger(RiverStrokesNetwork.class.getName());
   private Set<NoeudHydrographique> sources, sinks;
   private Set<RiverIsland> simpleIslands;
   private Set<RiverIslandGroup> complexIslands;
@@ -104,6 +105,12 @@ public class RiverStrokesNetwork extends StrokesNetwork {
       if (this.getSources().contains(node)) {
         continue;
       }
+      if (node == null) {
+        node = new NoeudHydrographiqueImpl();
+        node.setGeom(arc.getGeom().coord().get(0).toGM_Point());
+        arc.setNoeudInitial(node);
+        node.getArcsSortants().add(arc);
+      }
       if (node.getArcsEntrants().size() != 0) {
         continue;
       }
@@ -113,6 +120,12 @@ public class RiverStrokesNetwork extends StrokesNetwork {
       node = (NoeudHydrographique) arc.getNoeudFinal();
       if (this.getSinks().contains(node)) {
         continue;
+      }
+      if (node == null) {
+        node = new NoeudHydrographiqueImpl();
+        node.setGeom(arc.getGeom().coord().get(0).toGM_Point());
+        arc.setNoeudFinal(node);
+        node.getArcsEntrants().add(arc);
       }
       if (node.getArcsSortants().size() != 0) {
         continue;
@@ -135,8 +148,8 @@ public class RiverStrokesNetwork extends StrokesNetwork {
         for (Arc arc : face.arcs()) {
           outline.add((TronconHydrographique) arc.getCorrespondant(0));
         }
-        this.getSimpleIslands().add(
-            new RiverIsland((IPolygon) face.getGeom(), outline));
+        this.getSimpleIslands()
+            .add(new RiverIsland((IPolygon) face.getGeom(), outline));
       }
     }
   }
@@ -227,15 +240,15 @@ public class RiverStrokesNetwork extends StrokesNetwork {
         // get the upstream strokes and find the one that continues
         RiverStroke continuing = this.makeDecisionAtConfluence(node,
             downstreamSection, this.getUpstreamStrokes(node));
-
+        System.out.println("continuing: " + continuing);
         // now extends the continuing stroke with downstreamSection
         continuing.getFeatures().add(downstreamSection);
         this.getGroupedFeatures().add(downstreamSection);
 
         // find the next node
         if (!downstreamNodes.contains(downstreamSection.getNoeudFinal())) {
-          downstreamNodes.add((NoeudHydrographique) downstreamSection
-              .getNoeudFinal());
+          downstreamNodes
+              .add((NoeudHydrographique) downstreamSection.getNoeudFinal());
         }
 
         // compute Strahler order
@@ -321,6 +334,8 @@ public class RiverStrokesNetwork extends StrokesNetwork {
     }
 
     // continue the upstream stroke with mainBranch
+    System.out.println(node);
+    System.out.println(node.getArcsEntrants());
     RiverStroke upstreamStroke = this.getUpstreamStrokes(node).iterator()
         .next();
     upstreamStroke.getFeatures().add(mainBranch);
@@ -345,7 +360,8 @@ public class RiverStrokesNetwork extends StrokesNetwork {
    * @return
    */
   private RiverStroke makeDecisionAtConfluence(NoeudHydrographique node,
-      TronconHydrographique downstreamSection, Set<RiverStroke> upstreamStrokes) {
+      TronconHydrographique downstreamSection,
+      Set<RiverStroke> upstreamStrokes) {
     // if there is only one upstream river, it continues
     if (upstreamStrokes.size() == 1) {
       return upstreamStrokes.iterator().next();

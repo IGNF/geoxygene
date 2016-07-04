@@ -69,6 +69,7 @@ public class TwitterLoader {
       query.setSince(since);
     if (until != null)
       query.setUntil(until);
+    query.setCount(100);
 
     return getTweetsFromQuery(query);
   }
@@ -85,15 +86,28 @@ public class TwitterLoader {
       cb.setHttpProxyHost(proxyHost);
       cb.setHttpProxyPort(proxyPort);
     }
+    if (logger.isDebugEnabled())
+      logger.debug(query.toString());
     Twitter twitter = new TwitterFactory(cb.build()).getInstance();
     QueryResult result = twitter.search(query);
-    for (Status status : result.getTweets()) {
-      TwitterFeature feature = new TwitterFeature(status);
-      if (feature.getGeom() == null)
-        continue;
-      features.add(feature);
+    boolean loop = true;
+    while (loop) {
+      System.out.println(result.getTweets().size() + " tweets in this page");
+      for (Status status : result.getTweets()) {
+        System.out.println(status.toString());
+        TwitterFeature feature = new TwitterFeature(status);
+        if (feature.getGeom() == null)
+          continue;
+        features.add(feature);
+      }
+      Query nextQuery = result.nextQuery();
+      if (nextQuery == null)
+        loop = false;
+      else {
+        result = twitter.search(nextQuery);
+      }
     }
-
+    System.out.println(features.size() + " tweets retrieved");
     if (logger.isDebugEnabled())
       logger.debug(features.size() + " tweets retrieved");
     return features;

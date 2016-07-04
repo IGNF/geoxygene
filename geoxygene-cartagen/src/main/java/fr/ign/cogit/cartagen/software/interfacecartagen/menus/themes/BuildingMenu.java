@@ -32,6 +32,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.util.algo.CommonAlgorithms;
 import fr.ign.cogit.geoxygene.util.algo.SmallestSurroundingRectangleComputation;
 
+@Deprecated
 public class BuildingMenu extends JMenu {
 
   /**
@@ -53,7 +54,8 @@ public class BuildingMenu extends JMenu {
       "Display overlapping rate");
 
   public JCheckBoxMenuItem mVoirAire = new JCheckBoxMenuItem("Voir aire");
-  public JCheckBoxMenuItem mVoirAireBut = new JCheckBoxMenuItem("Voir aire but");
+  public JCheckBoxMenuItem mVoirAireBut = new JCheckBoxMenuItem(
+      "Voir aire but");
 
   public JCheckBoxMenuItem mVoirAltitude = new JCheckBoxMenuItem(
       "Voir altitude");
@@ -142,11 +144,12 @@ public class BuildingMenu extends JMenu {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      CartagenApplication.getInstance().getFrame().getVisuPanel().selectedObjects = new FT_FeatureCollection<IFeature>();
+      CartagenApplication.getInstance().getFrame()
+          .getVisuPanel().selectedObjects = new FT_FeatureCollection<IFeature>();
       for (IBuilding obj : CartAGenDocOld.getInstance().getCurrentDataset()
           .getBuildings()) {
-        CartagenApplication.getInstance().getFrame().getVisuPanel().selectedObjects
-            .add(obj);
+        CartagenApplication.getInstance().getFrame()
+            .getVisuPanel().selectedObjects.add(obj);
       }
     }
 
@@ -164,9 +167,10 @@ public class BuildingMenu extends JMenu {
       Thread th = new Thread(new Runnable() {
         @Override
         public void run() {
-          String s = JOptionPane.showInputDialog(CartagenApplication
-              .getInstance().getFrame(), "Coefficient de dilatation",
-              "Cartagen", JOptionPane.PLAIN_MESSAGE);
+          String s = JOptionPane.showInputDialog(
+              CartagenApplication.getInstance().getFrame(),
+              "Coefficient de dilatation", "Cartagen",
+              JOptionPane.PLAIN_MESSAGE);
           double coef = 1.0;
           if (s != null && !s.isEmpty()) {
             coef = Double.parseDouble(s);
@@ -183,13 +187,13 @@ public class BuildingMenu extends JMenu {
             IBuilding ab = (IBuilding) sel;
             BuildingMenu.this.logger.info("Dilatation du batiment " + ab);
             if (BuildingMenu.this.logger.isLoggable(Level.CONFIG)) {
-              BuildingMenu.this.logger.config("Geometrie initiale: "
-                  + ab.getGeom());
+              BuildingMenu.this.logger
+                  .config("Geometrie initiale: " + ab.getGeom());
             }
             ab.setGeom(CommonAlgorithms.homothetie(ab.getGeom(), coef));
             if (BuildingMenu.this.logger.isLoggable(Level.CONFIG)) {
-              BuildingMenu.this.logger.config("Geometrie finale: "
-                  + ab.getGeom());
+              BuildingMenu.this.logger
+                  .config("Geometrie finale: " + ab.getGeom());
             }
             BuildingMenu.this.logger.info(" fin");
           }
@@ -231,8 +235,8 @@ public class BuildingMenu extends JMenu {
                   * Legend.getSYMBOLISATI0N_SCALE()
                   * Legend.getSYMBOLISATI0N_SCALE() / 1000000.0;
               if (area < aireMini) {
-                GM_Object geom = (GM_Object) CommonAlgorithms.homothetie(
-                    ab.getGeom(), Math.sqrt(aireMini / area));
+                GM_Object geom = (GM_Object) CommonAlgorithms
+                    .homothetie(ab.getGeom(), Math.sqrt(aireMini / area));
                 ab.setGeom(geom);
               }
             }
@@ -268,17 +272,17 @@ public class BuildingMenu extends JMenu {
             }
 
             IBuilding ab = (IBuilding) sel;
-            BuildingMenu.this.logger.info("Transformation en PPRE du batiment "
-                + ab);
+            BuildingMenu.this.logger
+                .info("Transformation en PPRE du batiment " + ab);
             if (BuildingMenu.this.logger.isLoggable(Level.CONFIG)) {
-              BuildingMenu.this.logger.config("Geometrie initiale: "
-                  + ab.getGeom());
+              BuildingMenu.this.logger
+                  .config("Geometrie initiale: " + ab.getGeom());
             }
-            ab.setGeom(SmallestSurroundingRectangleComputation.getSSR(ab
-                .getGeom()));
+            ab.setGeom(
+                SmallestSurroundingRectangleComputation.getSSR(ab.getGeom()));
             if (BuildingMenu.this.logger.isLoggable(Level.CONFIG)) {
-              BuildingMenu.this.logger.config("Geometrie finale: "
-                  + ab.getGeom());
+              BuildingMenu.this.logger
+                  .config("Geometrie finale: " + ab.getGeom());
             }
             BuildingMenu.this.logger.info(" fin");
           }
@@ -313,26 +317,25 @@ public class BuildingMenu extends JMenu {
             }
 
             IBuilding ab = (IBuilding) sel;
-            BuildingMenu.this.logger
-                .info("Transformation en PPRE avec aire constante du batiment "
-                    + ab);
+            BuildingMenu.this.logger.info(
+                "Transformation en PPRE avec aire constante du batiment " + ab);
             if (BuildingMenu.this.logger.isLoggable(Level.CONFIG)) {
-              BuildingMenu.this.logger.config("Geometrie initiale: "
-                  + ab.getGeom());
+              BuildingMenu.this.logger
+                  .config("Geometrie initiale: " + ab.getGeom());
             }
             if (BuildingMenu.this.logger.isLoggable(Level.CONFIG)) {
-              BuildingMenu.this.logger.config("Aire initiale: "
-                  + ab.getGeom().area());
+              BuildingMenu.this.logger
+                  .config("Aire initiale: " + ab.getGeom().area());
             }
             ab.setGeom(SmallestSurroundingRectangleComputation
                 .getSSRPreservedArea(ab.getGeom()));
             if (BuildingMenu.this.logger.isLoggable(Level.CONFIG)) {
-              BuildingMenu.this.logger.config("Geometrie finale: "
-                  + ab.getGeom());
+              BuildingMenu.this.logger
+                  .config("Geometrie finale: " + ab.getGeom());
             }
             if (BuildingMenu.this.logger.isLoggable(Level.CONFIG)) {
-              BuildingMenu.this.logger.config("Aire finale: "
-                  + ab.getGeom().area());
+              BuildingMenu.this.logger
+                  .config("Aire finale: " + ab.getGeom().area());
             }
             BuildingMenu.this.logger.info(" fin");
           }
@@ -357,8 +360,8 @@ public class BuildingMenu extends JMenu {
       Thread th = new Thread(new Runnable() {
         @Override
         public void run() {
-          String s = JOptionPane.showInputDialog(CartagenApplication
-              .getInstance().getFrame(),
+          String s = JOptionPane.showInputDialog(
+              CartagenApplication.getInstance().getFrame(),
               "Angle de rotation (en degres, sens trigo)", "Cartagen",
               JOptionPane.PLAIN_MESSAGE);
           double angle = 0.0;
@@ -377,14 +380,14 @@ public class BuildingMenu extends JMenu {
             IBuilding ab = (IBuilding) sel;
             BuildingMenu.this.logger.info("Rotation du batiment " + ab);
             if (BuildingMenu.this.logger.isLoggable(Level.CONFIG)) {
-              BuildingMenu.this.logger.config("Geometrie initiale: "
-                  + ab.getGeom());
+              BuildingMenu.this.logger
+                  .config("Geometrie initiale: " + ab.getGeom());
             }
-            ab.setGeom(CommonAlgorithms.rotation(ab.getGeom(), angle * Math.PI
-                / 180.0));
+            ab.setGeom(CommonAlgorithms.rotation(ab.getGeom(),
+                angle * Math.PI / 180.0));
             if (BuildingMenu.this.logger.isLoggable(Level.CONFIG)) {
-              BuildingMenu.this.logger.config("Geometrie finale: "
-                  + ab.getGeom());
+              BuildingMenu.this.logger
+                  .config("Geometrie finale: " + ab.getGeom());
             }
             BuildingMenu.this.logger.info(" fin");
           }
@@ -422,13 +425,13 @@ public class BuildingMenu extends JMenu {
             BuildingMenu.this.logger
                 .info("Transformation en enveloppe convexe du batiment " + ab);
             if (BuildingMenu.this.logger.isLoggable(Level.CONFIG)) {
-              BuildingMenu.this.logger.config("Geometrie initiale: "
-                  + ab.getGeom());
+              BuildingMenu.this.logger
+                  .config("Geometrie initiale: " + ab.getGeom());
             }
             ab.setGeom(ab.getGeom().convexHull());
             if (BuildingMenu.this.logger.isLoggable(Level.CONFIG)) {
-              BuildingMenu.this.logger.config("Geometrie finale: "
-                  + ab.getGeom());
+              BuildingMenu.this.logger
+                  .config("Geometrie finale: " + ab.getGeom());
             }
             BuildingMenu.this.logger.info(" fin");
           }
@@ -462,17 +465,17 @@ public class BuildingMenu extends JMenu {
               continue;
             }
             IBuilding ab = (IBuilding) sel;
-            BuildingMenu.this.logger
-                .info("Transformation en enveloppe rectangulaire parallèle aux axes du batiment "
+            BuildingMenu.this.logger.info(
+                "Transformation en enveloppe rectangulaire parallèle aux axes du batiment "
                     + ab);
             if (BuildingMenu.this.logger.isLoggable(Level.CONFIG)) {
-              BuildingMenu.this.logger.config("Geometrie initiale: "
-                  + ab.getGeom());
+              BuildingMenu.this.logger
+                  .config("Geometrie initiale: " + ab.getGeom());
             }
             ab.setGeom(ab.getGeom().envelope().getGeom());
             if (BuildingMenu.this.logger.isLoggable(Level.CONFIG)) {
-              BuildingMenu.this.logger.config("Geometrie finale: "
-                  + ab.getGeom());
+              BuildingMenu.this.logger
+                  .config("Geometrie finale: " + ab.getGeom());
             }
             BuildingMenu.this.logger.info(" fin");
           }
@@ -497,8 +500,8 @@ public class BuildingMenu extends JMenu {
       Thread th = new Thread(new Runnable() {
         @Override
         public void run() {
-          String s = JOptionPane.showInputDialog(CartagenApplication
-              .getInstance().getFrame(), "Seuil", "Cartagen",
+          String s = JOptionPane.showInputDialog(
+              CartagenApplication.getInstance().getFrame(), "Seuil", "Cartagen",
               JOptionPane.PLAIN_MESSAGE);
           double coef = 10.0;
           if (s != null && !s.isEmpty()) {
@@ -519,8 +522,8 @@ public class BuildingMenu extends JMenu {
               BuildingMenu.this.logger.config("Geometrie initiale: "
                   + ab.getGeom().coord().size() + " " + ab.getGeom());
             }
-            ab.setGeom(SimplificationAlgorithm.simplification(ab.getGeom(),
-                coef));
+            ab.setGeom(
+                SimplificationAlgorithm.simplification(ab.getGeom(), coef));
             if (BuildingMenu.this.logger.isLoggable(Level.CONFIG)) {
               BuildingMenu.this.logger.config("Geometrie finale: "
                   + ab.getGeom().coord().size() + " " + ab.getGeom());
