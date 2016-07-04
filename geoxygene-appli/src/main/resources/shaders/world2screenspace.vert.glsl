@@ -15,11 +15,11 @@ out vec4 fragmentColor;
 out vec2 fragmentTextureCoord;
 
 
-void doStuff(vec4 vertexPos);
+void userTransform(vec4 vertexPos);
 
 void main(void) {
 	gl_Position = vec4(-1.0 + 2.0 * (vertexPosition.x * m00 + m02) / (screenWidth + 1.0), 1.0 - 2.0 * ( vertexPosition.y * m11 + m12 ) / ( screenHeight + 1.0 ), 0.0, 1.0);
-	doStuff(gl_Position);
+	userTransform(gl_Position);
 	fragmentColor = vertexColor;
     fragmentTextureCoord = vertexTextureCoord;
 }

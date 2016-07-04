@@ -20,8 +20,6 @@ vec3 multiply( vec3 A, vec3 B ) {
 }
 
 void main(void) {
- //   outColor = vec4( fragmentTextureCoord.xy, 1.0, 1.0 );
- //   return;
 
 	vec3 resultColor = vec3(0);
 	vec4 foregroundColor = colorFilter( texture( foregroundTexture, fragmentTextureCoord.xy ) );

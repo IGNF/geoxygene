@@ -567,6 +567,17 @@ public class GLComplexFactory {
         return complex;
     }
 
+    
+    public static GLPaintingComplex createPaintingThickCurves(String id, Stroke stroke, double minX, double minY, List<ILineString> curves, GLTexture glPaperTex, double paperHeightInCm,
+        double minAngle, int paperWidthInPixels,int paperHeightInPixels, double mapScale,int sampleSize) {
+    GLPaintingComplex complex = new GLPaintingComplex(id, minX, minY);
+    createPaintingThickCurves(id, complex, minX, minY, curves, glPaperTex, sampleSize, paperHeightInCm, mapScale, stroke.getStrokeWidth(),stroke.getStroke(), minAngle, paperWidthInPixels,paperHeightInPixels);
+    return complex;
+}
+
+    
+    
+
     /**
      * @param id
      * @param stroke

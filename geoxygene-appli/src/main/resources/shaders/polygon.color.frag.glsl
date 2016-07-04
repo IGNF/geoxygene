@@ -1,7 +1,7 @@
 #version 330
 
-uniform float globalOpacity = 1.0;
-uniform float objectOpacity = 1.0;
+uniform float globalOpacity = 1.0; // from the layer 
+uniform float objectOpacity = 1.0; // from the feature
 in vec4 fragmentColor;
 in vec2 fragmentTextureCoord;
 
