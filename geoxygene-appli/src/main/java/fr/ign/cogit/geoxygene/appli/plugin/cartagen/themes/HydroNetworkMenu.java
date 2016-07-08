@@ -24,10 +24,18 @@ import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.genealgorithms.network.RiverNetworkSelection;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
+import fr.ign.cogit.cartagen.spatialanalysis.network.Stroke;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.SelectionUtil;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
+import fr.ign.cogit.geoxygene.feature.Population;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
+import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.style.NamedLayerFactory;
 
 public class HydroNetworkMenu extends JMenu {
 
@@ -132,6 +140,23 @@ public class HydroNetworkMenu extends JMenu {
       RiverNetworkSelection selection = new RiverNetworkSelection(3, 5000.0,
           50000.0, true);
       selection.selection();
+      // add the strokes as a new layer
+      IPopulation<Stroke> pop = new Population<Stroke>();
+      pop.setNom("riverStrokes");
+      pop.addAll(selection.getNet().getStrokes());
+      CartAGenDoc.getInstance().getCurrentDataset().addPopulation(pop);
+      FeatureType ftGeom = new FeatureType();
+      ftGeom.setGeometryType(ILineString.class);
+      CartAGenDoc.getInstance().getCurrentDataset()
+          .getPopulation("riverStrokes").setFeatureType(ftGeom);
+      ProjectFrame frame = CartAGenPlugin.getInstance().getApplication()
+          .getMainFrame().getSelectedProjectFrame();
+      NamedLayerFactory factory = new NamedLayerFactory();
+      factory.setModel(frame.getSld());
+      factory.setName("riverStrokes");
+      factory.setGeometryType(ILineString.class);
+      Layer layer = factory.createLayer();
+      frame.getSld().add(layer);
     }
 
     public NetworkSelectionAction() {
