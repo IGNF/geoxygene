@@ -87,9 +87,9 @@ public class CIELabColorSpace extends ColorSpace {
 
     double[] f = new double[3];
 
-    f[0] = xr > epsilon ? Math.pow(xr, 1 / 3.) : (kappa * xr + 16d) / 116d;
-    f[1] = yr > epsilon ? Math.pow(yr, 1 / 3.) : (kappa * yr + 16d) / 116d;
-    f[2] = zr > epsilon ? Math.pow(zr, 1 / 3.) : (kappa * zr + 16d) / 116d;
+    f[0] = xr > epsilon ? Math.cbrt(xr) : (kappa * xr + 16d) / 116d;
+    f[1] = yr > epsilon ? Math.cbrt(yr) : (kappa * yr + 16d) / 116d;
+    f[2] = zr > epsilon ? Math.cbrt(zr) : (kappa * zr + 16d) / 116d;
 
     // Non normalized LAB coordinates in [0;100]*[-128;127]*[-128;127]
     double[] unLAB = new double[3];

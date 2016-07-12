@@ -44,7 +44,7 @@ public class CIELchColorSpace extends ColorSpace {
   private final CIELabColorSpace csLab;
 
   /**
-   * @param use_awt_WYZ_ColorSpace : either use the AWT XYZ color space or the
+   * @param use_awt_XYZ_ColorSpace : either use the AWT XYZ color space or the
    *          custom Geoxygene XYZ space to convert colors between sRGB and CIE
    *          L*c*h.
    */
