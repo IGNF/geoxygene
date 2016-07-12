@@ -32,9 +32,7 @@ public class ColorSpaceTest {
 
   @Test
   public void convert_sRGB_CIELab() {
-
-    logger.info("### convert_sRGB_CIELab() ###");
-    logger.info("### Convert forth and back between sRGB and CIE L*a*b*");
+    logger.info("### Convert back and forth between sRGB and CIE L*a*b*");
     CIELabColorSpace csLAB = new CIELabColorSpace(false);
 
     /**
@@ -99,9 +97,7 @@ public class ColorSpaceTest {
 
   @Test
   public void convert_sRGB_CIELch() {
-
-    logger.info("### convert_sRGB_CIELch() ###");
-    logger.info("### Convert forth and back between sRGB and CIE L*c*h*");
+    logger.info("### Convert back and forth between sRGB and CIE L*c*h*");
     CIELchColorSpace csLCH = new CIELchColorSpace(false);
 
     /**
@@ -172,9 +168,7 @@ public class ColorSpaceTest {
 
   @Test
   public void convert_sRGB_CIELuv() {
-
-    logger.info("### convert_sRGB_CIELuv() ###");
-    logger.info("### Convert forth and back between sRGB and CIE L*u*v*");
+    logger.info("### Convert back and forth between sRGB and CIE L*u*v*");
     CIELuvColorSpace csLUV = new CIELuvColorSpace(false);
 
     /**
