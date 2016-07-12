@@ -11,7 +11,7 @@ import org.junit.Test;
  * colorspaces. All expected results come from <a href =
  * "http://www.brucelindbloom.com" > http://www.brucelindbloom.com</a>.
  */
-public class ColorSpaceConversion {
+public class ColorSpaceTest {
 
   /**
    * Delta value set empirically. Seems to be the minimum precision of the
