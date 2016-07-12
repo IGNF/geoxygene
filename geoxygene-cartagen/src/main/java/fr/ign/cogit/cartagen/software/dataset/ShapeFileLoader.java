@@ -34,6 +34,7 @@ import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefElementLine;
 import fr.ign.cogit.cartagen.core.genericschema.relief.ISpotHeight;
 import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
+import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildPoint;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ICemetery;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ICemetery.CemeteryType;
@@ -69,8 +70,8 @@ import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 
 public class ShapeFileLoader {
 
-  private static Logger logger = Logger.getLogger(ShapeFileLoader.class
-      .getName());
+  private static Logger logger = Logger
+      .getLogger(ShapeFileLoader.class.getName());
 
   // ///////////////////////////////////////
   // Buildings
@@ -138,11 +139,8 @@ public class ShapeFileLoader {
 
       } else if (geom instanceof IMultiSurface<?>) {
         for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
-          IBuilding building = dataset
-              .getCartAGenDB()
-              .getGeneObjImpl()
-              .getCreationFactory()
-              .createBuilding(
+          IBuilding building = dataset.getCartAGenDB().getGeneObjImpl()
+              .getCreationFactory().createBuilding(
                   new BatimentImpl(((IMultiSurface<?>) geom).get(i)));
           if (fields.containsKey("CARTAGEN_ID")) {
             building.setId((Integer) fields.get("CARTAGEN_ID"));
@@ -155,10 +153,9 @@ public class ShapeFileLoader {
         }
 
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
       j++;
     }
@@ -230,11 +227,8 @@ public class ShapeFileLoader {
 
       } else if (geom instanceof IMultiSurface<?>) {
         for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
-          IBuilding building = dataset
-              .getCartAGenDB()
-              .getGeneObjImpl()
-              .getCreationFactory()
-              .createBuilding(
+          IBuilding building = dataset.getCartAGenDB().getGeneObjImpl()
+              .getCreationFactory().createBuilding(
                   new BatimentImpl(((IMultiSurface<?>) geom).get(i)));
           building.setId(dataset.getBuildings().size() + 1);
           building.setNature(nature);
@@ -242,10 +236,9 @@ public class ShapeFileLoader {
         }
 
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
       j++;
     }
@@ -313,10 +306,9 @@ public class ShapeFileLoader {
         geneObj.setGeom(geom);
 
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
     }
     shr.close();
@@ -333,9 +325,8 @@ public class ShapeFileLoader {
    * @param doug
    * @throws IOException
    */
-  public static boolean loadRoadLinesFromSHP(String chemin,
-      SourceDLM sourceDlm, SymbolList symbols, CartAGenDataSet dataset)
-      throws IOException {
+  public static boolean loadRoadLinesFromSHP(String chemin, SourceDLM sourceDlm,
+      SymbolList symbols, CartAGenDataSet dataset) throws IOException {
     if (sourceDlm.equals(SourceDLM.BD_TOPO_V2)) {
       return loadRoadLinesShapeFile(chemin, sourceDlm, symbols, dataset);
     }
@@ -382,14 +373,11 @@ public class ShapeFileLoader {
         continue;
       }
       if (geom instanceof ILineString) {
-        IRoadLine tr = dataset
-            .getCartAGenDB()
-            .getGeneObjImpl()
+        IRoadLine tr = dataset.getCartAGenDB().getGeneObjImpl()
             .getCreationFactory()
-            .createRoadLine(
-                new TronconDeRouteImpl((Reseau) dataset.getRoadNetwork()
-                    .getGeoxObj(), false, (ILineString) geom), importance,
-                result.symbolId);
+            .createRoadLine(new TronconDeRouteImpl(
+                (Reseau) dataset.getRoadNetwork().getGeoxObj(), false,
+                (ILineString) geom), importance, result.symbolId);
         if (fields.containsKey("CARTAGEN_ID")) {
           tr.setId((Integer) fields.get("CARTAGEN_ID"));
         } else {
@@ -400,14 +388,11 @@ public class ShapeFileLoader {
 
       } else if (geom instanceof IMultiCurve<?>) {
         for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-          IRoadLine tr = dataset
-              .getCartAGenDB()
-              .getGeneObjImpl()
+          IRoadLine tr = dataset.getCartAGenDB().getGeneObjImpl()
               .getCreationFactory()
-              .createRoadLine(
-                  new TronconDeRouteImpl((Reseau) dataset.getRoadNetwork()
-                      .getGeoxObj(), false,
-                      (ILineString) ((IMultiCurve<?>) geom).get(i)), importance);
+              .createRoadLine(new TronconDeRouteImpl(
+                  (Reseau) dataset.getRoadNetwork().getGeoxObj(), false,
+                  (ILineString) ((IMultiCurve<?>) geom).get(i)), importance);
           if (fields.containsKey("CARTAGEN_ID")) {
             tr.setId((Integer) fields.get("CARTAGEN_ID"));
           } else {
@@ -417,10 +402,9 @@ public class ShapeFileLoader {
           dataset.getRoadNetwork().addSection(tr);
         }
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
       j++;
     }
@@ -498,10 +482,9 @@ public class ShapeFileLoader {
         geneObj.setSymbolId(result.symbolId);
 
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
     }
     shr.close();
@@ -596,21 +579,18 @@ public class ShapeFileLoader {
         IRoadLine tr = null;
 
         if (sourceDlm != SourceDLM.BD_TOPO_V2)
-          tr = dataset
-              .getCartAGenDB()
-              .getGeneObjImpl()
-              .getCreationFactory()
-              .createRoadLine(
-                  new TronconDeRouteImpl((Reseau) dataset.getRoadNetwork()
-                      .getGeoxObj(), false, (ILineString) geom), importance,
-                  result.symbolId);
+          tr = dataset.getCartAGenDB().getGeneObjImpl().getCreationFactory()
+              .createRoadLine(new TronconDeRouteImpl(
+                  (Reseau) dataset.getRoadNetwork().getGeoxObj(), false,
+                  (ILineString) geom), importance, result.symbolId);
         else {
 
           tr = new RoadLineWithAttributes(
 
-          new TronconDeRouteImpl(
-              (Reseau) dataset.getRoadNetwork().getGeoxObj(), false,
-              (ILineString) geom), result.importance, result.symbolId);
+              new TronconDeRouteImpl(
+                  (Reseau) dataset.getRoadNetwork().getGeoxObj(), false,
+                  (ILineString) geom),
+              result.importance, result.symbolId);
           tr.setFeatureType(ft);
 
           for (int i = 0; i < dbr.getHeader().getNumFields(); i++) {
@@ -640,23 +620,20 @@ public class ShapeFileLoader {
 
           IRoadLine tr = null;
           if (sourceDlm != SourceDLM.BD_TOPO_V2)
-            tr = dataset
-                .getCartAGenDB()
-                .getGeneObjImpl()
-                .getCreationFactory()
+            tr = dataset.getCartAGenDB().getGeneObjImpl().getCreationFactory()
                 .createRoadLine(
-                    new TronconDeRouteImpl((Reseau) dataset.getRoadNetwork()
-                        .getGeoxObj(), false,
+                    new TronconDeRouteImpl(
+                        (Reseau) dataset.getRoadNetwork().getGeoxObj(), false,
                         (ILineString) ((IMultiCurve<?>) geom).get(i)),
                     importance);
 
           else {
 
-            tr = new RoadLineWithAttributes(new TronconDeRouteImpl(
-                (Reseau) dataset.getRoadNetwork()
+            tr = new RoadLineWithAttributes(
+                new TronconDeRouteImpl((Reseau) dataset.getRoadNetwork()
 
-                .getGeoxObj(), false,
-                (ILineString) ((IMultiCurve<?>) geom).get(i)),
+                    .getGeoxObj(), false,
+                    (ILineString) ((IMultiCurve<?>) geom).get(i)),
                 result.importance, result.symbolId);
 
             tr.setFeatureType(ft);
@@ -678,10 +655,9 @@ public class ShapeFileLoader {
       }
 
       else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
       j++;
     }
@@ -755,36 +731,29 @@ public class ShapeFileLoader {
 
       if (geom instanceof ILineString) {
 
-        IRoadLine tr = dataset
-            .getCartAGenDB()
-            .getGeneObjImpl()
-            .getCreationFactory()
-            .createRoadLine(
-                new TronconDeRouteImpl((Reseau) dataset.getRoadNetwork(),
-                    false, (ILineString) geom), 4, SymbolId);
+        IRoadLine tr = dataset.getCartAGenDB().getGeneObjImpl()
+            .getCreationFactory().createRoadLine(
+                new TronconDeRouteImpl((Reseau) dataset.getRoadNetwork(), false,
+                    (ILineString) geom),
+                4, SymbolId);
 
         dataset.getRoads().add(tr);
 
       } else if (geom instanceof IMultiCurve<?>) {
         for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
 
-          IRoadLine tr = dataset
-              .getCartAGenDB()
-              .getGeneObjImpl()
+          IRoadLine tr = dataset.getCartAGenDB().getGeneObjImpl()
               .getCreationFactory()
-              .createRoadLine(
-                  new TronconDeRouteImpl((Reseau) dataset.getRoadNetwork()
-                      .getGeoxObj(), false,
-                      (ILineString) ((IMultiCurve<?>) geom).get(i)), 4,
-                  SymbolId);
+              .createRoadLine(new TronconDeRouteImpl(
+                  (Reseau) dataset.getRoadNetwork().getGeoxObj(), false,
+                  (ILineString) ((IMultiCurve<?>) geom).get(i)), 4, SymbolId);
 
           dataset.getRoads().add(tr);
         }
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
     }
     shr.close();
@@ -876,9 +845,7 @@ public class ShapeFileLoader {
 
       } else if (geom instanceof IMultiCurve<?>) {
         for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-          IPathLine tr = dataset
-              .getCartAGenDB()
-              .getGeneObjImpl()
+          IPathLine tr = dataset.getCartAGenDB().getGeneObjImpl()
               .getCreationFactory()
               .createPath((ILineString) ((IMultiCurve<?>) geom).get(i),
                   result.importance, result.symbolId);
@@ -886,10 +853,9 @@ public class ShapeFileLoader {
           popPaths.add(tr);
         }
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
     }
     shr.close();
@@ -906,8 +872,8 @@ public class ShapeFileLoader {
    * @param symbols TODO used to get symbol from official list
    * @throws IOException
    */
-  public static boolean loadWaterLinesFromSHP(String chemin,
-      SymbolList symbols, CartAGenDataSet dataset) throws IOException {
+  public static boolean loadWaterLinesFromSHP(String chemin, SymbolList symbols,
+      CartAGenDataSet dataset) throws IOException {
     if (logger.isDebugEnabled()) {
       logger.debug("Loading: " + IWaterLine.class.getSimpleName());
     }
@@ -950,14 +916,11 @@ public class ShapeFileLoader {
       if (geom == null) {
         continue;
       } else if (geom instanceof ILineString) {
-        IWaterLine tr = dataset
-            .getCartAGenDB()
-            .getGeneObjImpl()
+        IWaterLine tr = dataset.getCartAGenDB().getGeneObjImpl()
             .getCreationFactory()
-            .createWaterLine(
-                new TronconHydrographiqueImpl((Reseau) dataset
-                    .getHydroNetwork().getGeoxObj(), false, (ILineString) geom),
-                0);
+            .createWaterLine(new TronconHydrographiqueImpl(
+                (Reseau) dataset.getHydroNetwork().getGeoxObj(), false,
+                (ILineString) geom), 0);
         if (fields.containsKey("CARTAGEN_ID")) {
           tr.setId((Integer) fields.get("CARTAGEN_ID"));
         } else {
@@ -967,14 +930,11 @@ public class ShapeFileLoader {
         dataset.getHydroNetwork().addSection(tr);
       } else if (geom instanceof IMultiCurve<?>) {
         for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-          IWaterLine tr = dataset
-              .getCartAGenDB()
-              .getGeneObjImpl()
+          IWaterLine tr = dataset.getCartAGenDB().getGeneObjImpl()
               .getCreationFactory()
-              .createWaterLine(
-                  new TronconHydrographiqueImpl((Reseau) dataset
-                      .getHydroNetwork().getGeoxObj(), false,
-                      (ILineString) ((IMultiCurve<?>) geom).get(i)), 0);
+              .createWaterLine(new TronconHydrographiqueImpl(
+                  (Reseau) dataset.getHydroNetwork().getGeoxObj(), false,
+                  (ILineString) ((IMultiCurve<?>) geom).get(i)), 0);
           if (fields.containsKey("CARTAGEN_ID")) {
             tr.setId((Integer) fields.get("CARTAGEN_ID"));
           } else {
@@ -984,10 +944,9 @@ public class ShapeFileLoader {
           dataset.getHydroNetwork().addSection(tr);
         }
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
       j++;
     }
@@ -1059,10 +1018,9 @@ public class ShapeFileLoader {
       if (geneObj != null && geom instanceof ILineString) {
         geneObj.setGeom(geom);
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
     }
     shr.close();
@@ -1079,8 +1037,8 @@ public class ShapeFileLoader {
    * @param symbols TODO used to get symbol from official list
    * @throws IOException
    */
-  public static boolean loadWaterAreasFromSHP(String chemin,
-      SymbolList symbols, CartAGenDataSet dataset) throws IOException {
+  public static boolean loadWaterAreasFromSHP(String chemin, SymbolList symbols,
+      CartAGenDataSet dataset) throws IOException {
     ShapefileReader shr = null;
     DbaseFileReader dbr = null;
     try {
@@ -1150,10 +1108,9 @@ public class ShapeFileLoader {
           pop.add(surf);
         }
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
       j++;
     }
@@ -1222,10 +1179,9 @@ public class ShapeFileLoader {
       if (geneObj != null && geom instanceof IPolygon) {
         geneObj.setGeom(geom);
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
     }
     shr.close();
@@ -1303,13 +1259,11 @@ public class ShapeFileLoader {
       }
 
       if (geom instanceof ILineString) {
-        IRailwayLine tr = dataset
-            .getCartAGenDB()
-            .getGeneObjImpl()
+        IRailwayLine tr = dataset.getCartAGenDB().getGeneObjImpl()
             .getCreationFactory()
-            .createRailwayLine(
-                new TronconFerreImpl((Reseau) dataset.getRailwayNetwork()
-                    .getGeoxObj(), false, (ILineString) geom), 0);
+            .createRailwayLine(new TronconFerreImpl(
+                (Reseau) dataset.getRailwayNetwork().getGeoxObj(), false,
+                (ILineString) geom), 0);
         if (sidetrackValue != null)
           tr.setSidetrack(new Boolean(sidetrackValue));
         if (fields.containsKey("CARTAGEN_ID")) {
@@ -1321,14 +1275,11 @@ public class ShapeFileLoader {
         dataset.getRailwayNetwork().addSection(tr);
       } else if (geom instanceof IMultiCurve<?>) {
         for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-          IRailwayLine tr = dataset
-              .getCartAGenDB()
-              .getGeneObjImpl()
+          IRailwayLine tr = dataset.getCartAGenDB().getGeneObjImpl()
               .getCreationFactory()
-              .createRailwayLine(
-                  new TronconFerreImpl((Reseau) dataset.getRailwayNetwork()
-                      .getGeoxObj(), false,
-                      (ILineString) ((IMultiCurve<?>) geom).get(i)), 0);
+              .createRailwayLine(new TronconFerreImpl(
+                  (Reseau) dataset.getRailwayNetwork().getGeoxObj(), false,
+                  (ILineString) ((IMultiCurve<?>) geom).get(i)), 0);
           if (sidetrackValue != null)
             tr.setSidetrack(new Boolean(sidetrackValue));
           if (fields.containsKey("CARTAGEN_ID")) {
@@ -1340,10 +1291,9 @@ public class ShapeFileLoader {
           dataset.getRailwayNetwork().addSection(tr);
         }
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
       j++;
     }
@@ -1412,10 +1362,9 @@ public class ShapeFileLoader {
       if (geneObj != null && geom instanceof ILineString) {
         geneObj.setGeom(geom);
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
     }
     shr.close();
@@ -1472,13 +1421,11 @@ public class ShapeFileLoader {
       }
 
       if (geom instanceof ILineString) {
-        IElectricityLine tr = dataset
-            .getCartAGenDB()
-            .getGeneObjImpl()
+        IElectricityLine tr = dataset.getCartAGenDB().getGeneObjImpl()
             .getCreationFactory()
-            .createElectricityLine(
-                new ArcReseauImpl((Reseau) dataset.getElectricityNetwork()
-                    .getGeoxObj(), false, (ILineString) geom), 0);
+            .createElectricityLine(new ArcReseauImpl(
+                (Reseau) dataset.getElectricityNetwork().getGeoxObj(), false,
+                (ILineString) geom), 0);
         if (fields.containsKey("CARTAGEN_ID")) {
           tr.setId((Integer) fields.get("CARTAGEN_ID"));
         } else {
@@ -1488,14 +1435,11 @@ public class ShapeFileLoader {
         dataset.getElectricityNetwork().addSection(tr);
       } else if (geom instanceof IMultiCurve<?>) {
         for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-          IElectricityLine tr = dataset
-              .getCartAGenDB()
-              .getGeneObjImpl()
+          IElectricityLine tr = dataset.getCartAGenDB().getGeneObjImpl()
               .getCreationFactory()
-              .createElectricityLine(
-                  new ArcReseauImpl((Reseau) dataset.getElectricityNetwork()
-                      .getGeoxObj(), false,
-                      (ILineString) ((IMultiCurve<?>) geom).get(i)), 0);
+              .createElectricityLine(new ArcReseauImpl(
+                  (Reseau) dataset.getElectricityNetwork().getGeoxObj(), false,
+                  (ILineString) ((IMultiCurve<?>) geom).get(i)), 0);
           if (fields.containsKey("CARTAGEN_ID")) {
             tr.setId((Integer) fields.get("CARTAGEN_ID"));
           } else {
@@ -1505,10 +1449,9 @@ public class ShapeFileLoader {
           dataset.getElectricityNetwork().addSection(tr);
         }
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
       j++;
     }
@@ -1578,10 +1521,9 @@ public class ShapeFileLoader {
       if (geneObj != null && geom instanceof ILineString) {
         geneObj.setGeom(geom);
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
     }
     shr.close();
@@ -1648,13 +1590,11 @@ public class ShapeFileLoader {
       }
 
       if (geom instanceof ILineString) {
-        IContourLine cn = dataset
-            .getCartAGenDB()
-            .getGeneObjImpl()
+        IContourLine cn = dataset.getCartAGenDB().getGeneObjImpl()
             .getCreationFactory()
-            .createContourLine(
-                new CourbeDeNiveauImpl(dataset.getReliefField()
-                    .getChampContinu(), z, (ILineString) geom));
+            .createContourLine(new CourbeDeNiveauImpl(
+                dataset.getReliefField().getChampContinu(), z,
+                (ILineString) geom));
         if (fields.containsKey("CARTAGEN_ID")) {
           cn.setId((Integer) fields.get("CARTAGEN_ID"));
         } else {
@@ -1664,14 +1604,11 @@ public class ShapeFileLoader {
         dataset.getReliefField().addContourLine(cn);
       } else if (geom instanceof IMultiCurve<?>) {
         for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-          IContourLine cn = dataset
-              .getCartAGenDB()
-              .getGeneObjImpl()
+          IContourLine cn = dataset.getCartAGenDB().getGeneObjImpl()
               .getCreationFactory()
-              .createContourLine(
-                  new CourbeDeNiveauImpl(dataset.getReliefField()
-                      .getChampContinu(), z,
-                      (ILineString) ((IMultiCurve<?>) geom).get(i)));
+              .createContourLine(new CourbeDeNiveauImpl(
+                  dataset.getReliefField().getChampContinu(), z,
+                  (ILineString) ((IMultiCurve<?>) geom).get(i)));
           if (fields.containsKey("CARTAGEN_ID")) {
             cn.setId((Integer) fields.get("CARTAGEN_ID"));
           } else {
@@ -1681,10 +1618,9 @@ public class ShapeFileLoader {
           dataset.getReliefField().addContourLine(cn);
         }
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
       j++;
     }
@@ -1703,9 +1639,8 @@ public class ShapeFileLoader {
    * @param symbols TODO used to get symbol from official map list
    * @throws IOException
    */
-  public static boolean overwriteContourLinesFromSHP(String chemin,
-      double doug, SymbolList symbols, CartAGenDataSet dataset)
-      throws IOException {
+  public static boolean overwriteContourLinesFromSHP(String chemin, double doug,
+      SymbolList symbols, CartAGenDataSet dataset) throws IOException {
     ShapefileReader shr = null;
     DbaseFileReader dbr = null;
     try {
@@ -1765,10 +1700,9 @@ public class ShapeFileLoader {
         geneObj.setGeom(CommonAlgorithms.filtreDouglasPeucker(geom, doug));
         geneObj.setAltitude(z);
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
     }
     shr.close();
@@ -1827,13 +1761,10 @@ public class ShapeFileLoader {
       }
 
       if (geom instanceof ILineString) {
-        IReliefElementLine line = dataset
-            .getCartAGenDB()
-            .getGeneObjImpl()
+        IReliefElementLine line = dataset.getCartAGenDB().getGeneObjImpl()
             .getCreationFactory()
-            .createReliefElementLine(
-                new ElementCaracteristiqueDuReliefImpl(dataset.getReliefField()
-                    .getChampContinu(), geom));
+            .createReliefElementLine(new ElementCaracteristiqueDuReliefImpl(
+                dataset.getReliefField().getChampContinu(), geom));
         if (fields.containsKey("CARTAGEN_ID")) {
           line.setId((Integer) fields.get("CARTAGEN_ID"));
         } else {
@@ -1843,14 +1774,11 @@ public class ShapeFileLoader {
         dataset.getReliefField().addReliefElementLine(line);
       } else if (geom instanceof IMultiCurve<?>) {
         for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-          IReliefElementLine line = dataset
-              .getCartAGenDB()
-              .getGeneObjImpl()
+          IReliefElementLine line = dataset.getCartAGenDB().getGeneObjImpl()
               .getCreationFactory()
-              .createReliefElementLine(
-                  new ElementCaracteristiqueDuReliefImpl(dataset
-                      .getReliefField().getChampContinu(),
-                      ((IMultiCurve<?>) geom).get(i)));
+              .createReliefElementLine(new ElementCaracteristiqueDuReliefImpl(
+                  dataset.getReliefField().getChampContinu(),
+                  ((IMultiCurve<?>) geom).get(i)));
           if (fields.containsKey("CARTAGEN_ID")) {
             line.setId((Integer) fields.get("CARTAGEN_ID"));
           } else {
@@ -1860,10 +1788,9 @@ public class ShapeFileLoader {
           dataset.getReliefField().addReliefElementLine(line);
         }
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
       j++;
     }
@@ -1935,10 +1862,9 @@ public class ShapeFileLoader {
       if (geneObj != null && geom instanceof ILineString) {
         geneObj.setGeom(geom);
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
     }
     shr.close();
@@ -1996,13 +1922,9 @@ public class ShapeFileLoader {
       double z = Double.parseDouble(champs[0].toString());
       // System.out.println("z="+z);
       if (geom instanceof IPoint) {
-        ISpotHeight pt = dataset
-            .getCartAGenDB()
-            .getGeneObjImpl()
-            .getCreationFactory()
-            .createSpotHeight(
-                new PointCoteImpl(dataset.getReliefField().getChampContinu(),
-                    z, (IPoint) geom));
+        ISpotHeight pt = dataset.getCartAGenDB().getGeneObjImpl()
+            .getCreationFactory().createSpotHeight(new PointCoteImpl(
+                dataset.getReliefField().getChampContinu(), z, (IPoint) geom));
         if (fields.containsKey("CARTAGEN_ID")) {
           pt.setId((Integer) fields.get("CARTAGEN_ID"));
         } else {
@@ -2012,11 +1934,8 @@ public class ShapeFileLoader {
         dataset.getReliefField().addSpotHeight(pt);
       } else if (geom instanceof IMultiPoint) {
         for (int i = 0; i < ((IMultiPoint) geom).size(); i++) {
-          ISpotHeight pt = dataset
-              .getCartAGenDB()
-              .getGeneObjImpl()
-              .getCreationFactory()
-              .createSpotHeight(
+          ISpotHeight pt = dataset.getCartAGenDB().getGeneObjImpl()
+              .getCreationFactory().createSpotHeight(
                   new PointCoteImpl(dataset.getReliefField().getChampContinu(),
                       z, ((IMultiPoint) geom).get(i)));
           if (fields.containsKey("CARTAGEN_ID")) {
@@ -2028,10 +1947,9 @@ public class ShapeFileLoader {
           dataset.getReliefField().addSpotHeight(pt);
         }
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
       j++;
     }
@@ -2102,10 +2020,9 @@ public class ShapeFileLoader {
         geneObj.setGeom(geom);
         geneObj.setZ(z);
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
     }
     shr.close();
@@ -2225,8 +2142,8 @@ public class ShapeFileLoader {
       }
       // int type=1;
       if (geom instanceof IPolygon) {
-        IMask tr = dataset.getCartAGenDB().getGeneObjImpl()
-            .getCreationFactory().createMask(new GM_LineString(geom.coord()));
+        IMask tr = dataset.getCartAGenDB().getGeneObjImpl().getCreationFactory()
+            .createMask(new GM_LineString(geom.coord()));
         // CartagenApplication.getInstance().getFrame().getLayerManager()
         // .addMasque(tr);
         if (fields.containsKey("CARTAGEN_ID")) {
@@ -2237,11 +2154,8 @@ public class ShapeFileLoader {
         pop.add(tr);
       } else if (geom instanceof IMultiSurface<?>) {
         for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
-          IMask tr = dataset
-              .getCartAGenDB()
-              .getGeneObjImpl()
-              .getCreationFactory()
-              .createMask(
+          IMask tr = dataset.getCartAGenDB().getGeneObjImpl()
+              .getCreationFactory().createMask(
                   new GM_LineString(((IMultiSurface<?>) geom).get(i).coord()));
           // CartagenApplication.getInstance().getFrame().getLayerManager()
           // .addMasque(tr);
@@ -2253,10 +2167,9 @@ public class ShapeFileLoader {
           pop.add(tr);
         }
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
       j++;
     }
@@ -2322,10 +2235,9 @@ public class ShapeFileLoader {
       if (geneObj != null && geom instanceof IPolygon) {
         geneObj.setGeom(geom);
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
     }
     shr.close();
@@ -2380,11 +2292,8 @@ public class ShapeFileLoader {
       }
       int type = 1;
       if (geom instanceof IPolygon) {
-        ISimpleLandUseArea area = dataset
-            .getCartAGenDB()
-            .getGeneObjImpl()
-            .getCreationFactory()
-            .createSimpleLandUseArea(
+        ISimpleLandUseArea area = dataset.getCartAGenDB().getGeneObjImpl()
+            .getCreationFactory().createSimpleLandUseArea(
                 (IPolygon) CommonAlgorithms.filtreDouglasPeucker(geom, dp),
                 type);
         if (fields.containsKey("CARTAGEN_ID")) {
@@ -2395,13 +2304,11 @@ public class ShapeFileLoader {
         pop.add(area);
       } else if (geom instanceof IMultiSurface<?>) {
         for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
-          ISimpleLandUseArea area = dataset
-              .getCartAGenDB()
-              .getGeneObjImpl()
+          ISimpleLandUseArea area = dataset.getCartAGenDB().getGeneObjImpl()
               .getCreationFactory()
-              .createSimpleLandUseArea(
-                  (IPolygon) CommonAlgorithms.filtreDouglasPeucker(
-                      ((IMultiSurface<?>) geom).get(i), dp), type);
+              .createSimpleLandUseArea((IPolygon) CommonAlgorithms
+                  .filtreDouglasPeucker(((IMultiSurface<?>) geom).get(i), dp),
+                  type);
           if (fields.containsKey("CARTAGEN_ID")) {
             area.setId((Integer) fields.get("CARTAGEN_ID"));
           } else {
@@ -2410,10 +2317,9 @@ public class ShapeFileLoader {
           pop.add(area);
         }
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
       j++;
     }
@@ -2471,11 +2377,8 @@ public class ShapeFileLoader {
       }
 
       if (geom instanceof IPolygon) {
-        ISimpleLandUseArea area = dataset
-            .getCartAGenDB()
-            .getGeneObjImpl()
-            .getCreationFactory()
-            .createSimpleLandUseArea(
+        ISimpleLandUseArea area = dataset.getCartAGenDB().getGeneObjImpl()
+            .getCreationFactory().createSimpleLandUseArea(
                 (IPolygon) CommonAlgorithms.filtreDouglasPeucker(geom, dp),
                 type);
         if (fields.containsKey("CARTAGEN_ID")) {
@@ -2486,13 +2389,11 @@ public class ShapeFileLoader {
         pop.add(area);
       } else if (geom instanceof IMultiSurface<?>) {
         for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
-          ISimpleLandUseArea area = dataset
-              .getCartAGenDB()
-              .getGeneObjImpl()
+          ISimpleLandUseArea area = dataset.getCartAGenDB().getGeneObjImpl()
               .getCreationFactory()
-              .createSimpleLandUseArea(
-                  (IPolygon) CommonAlgorithms.filtreDouglasPeucker(
-                      ((IMultiSurface<?>) geom).get(i), dp), type);
+              .createSimpleLandUseArea((IPolygon) CommonAlgorithms
+                  .filtreDouglasPeucker(((IMultiSurface<?>) geom).get(i), dp),
+                  type);
           if (fields.containsKey("CARTAGEN_ID")) {
             area.setId((Integer) fields.get("CARTAGEN_ID"));
           } else {
@@ -2501,10 +2402,9 @@ public class ShapeFileLoader {
           pop.add(area);
         }
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
       j++;
     }
@@ -2559,10 +2459,9 @@ public class ShapeFileLoader {
       } else if (geom instanceof IMultiSurface<?>) {
         logger.error("a revoir");
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
     }
     shr.close();
@@ -2633,11 +2532,9 @@ public class ShapeFileLoader {
         pop.add(cemetery);
       } else if (geom instanceof IMultiSurface<?>) {
         for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
-          ICemetery cemetery = dataset
-              .getCartAGenDB()
-              .getGeneObjImpl()
-              .getCreationFactory()
-              .createCemetery((IPolygon) ((IMultiSurface<?>) geom).get(i), type);
+          ICemetery cemetery = dataset.getCartAGenDB().getGeneObjImpl()
+              .getCreationFactory().createCemetery(
+                  (IPolygon) ((IMultiSurface<?>) geom).get(i), type);
           if (fields.containsKey("CARTAGEN_ID")) {
             cemetery.setId((Integer) fields.get("CARTAGEN_ID"));
           } else {
@@ -2647,10 +2544,9 @@ public class ShapeFileLoader {
           pop.add(cemetery);
         }
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
     }
     shr.close();
@@ -2723,12 +2619,9 @@ public class ShapeFileLoader {
         pop.add(field);
       } else if (geom instanceof IMultiSurface<?>) {
         for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
-          ISportsField field = dataset
-              .getCartAGenDB()
-              .getGeneObjImpl()
-              .getCreationFactory()
-              .createSportsField((IPolygon) ((IMultiSurface<?>) geom).get(i),
-                  type);
+          ISportsField field = dataset.getCartAGenDB().getGeneObjImpl()
+              .getCreationFactory().createSportsField(
+                  (IPolygon) ((IMultiSurface<?>) geom).get(i), type);
           if (fields.containsKey("CARTAGEN_ID")) {
             field.setId((Integer) fields.get("CARTAGEN_ID"));
           } else {
@@ -2738,10 +2631,9 @@ public class ShapeFileLoader {
           pop.add(field);
         }
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
     }
     shr.close();
@@ -2805,27 +2697,21 @@ public class ShapeFileLoader {
         }
 
         if (geom instanceof ILineString) {
-          IRoadLine tr = dataset
-              .getCartAGenDB()
-              .getGeneObjImpl()
-              .getCreationFactory()
-              .createRoadLine(
+          IRoadLine tr = dataset.getCartAGenDB().getGeneObjImpl()
+              .getCreationFactory().createRoadLine(
                   new TronconDeRouteImpl((Reseau) dataset.getRoadNetwork(),
-                      false, (ILineString) geom), 4, symbolID);
+                      false, (ILineString) geom),
+                  4, symbolID);
           tr.setId(id);
           dataset.getRoads().add(tr);
 
         } else if (geom instanceof IMultiCurve<?>) {
           for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-            IRoadLine tr = dataset
-                .getCartAGenDB()
-                .getGeneObjImpl()
+            IRoadLine tr = dataset.getCartAGenDB().getGeneObjImpl()
                 .getCreationFactory()
-                .createRoadLine(
-                    new TronconDeRouteImpl((Reseau) dataset.getRoadNetwork()
-                        .getGeoxObj(), false,
-                        (ILineString) ((IMultiCurve<?>) geom).get(i)), 4,
-                    symbolID);
+                .createRoadLine(new TronconDeRouteImpl(
+                    (Reseau) dataset.getRoadNetwork().getGeoxObj(), false,
+                    (ILineString) ((IMultiCurve<?>) geom).get(i)), 4, symbolID);
             tr.setId(id);
             dataset.getRoads().add(tr);
           }
@@ -2905,28 +2791,22 @@ public class ShapeFileLoader {
         }
 
         if (geom instanceof ILineString) {
-          IRoadLine tr = dataset
-              .getCartAGenDB()
-              .getGeneObjImpl()
-              .getCreationFactory()
-              .createRoadLine(
+          IRoadLine tr = dataset.getCartAGenDB().getGeneObjImpl()
+              .getCreationFactory().createRoadLine(
                   new TronconDeRouteImpl((Reseau) dataset.getRoadNetwork(),
-                      false, (ILineString) geom), 4, symbolID);
+                      false, (ILineString) geom),
+                  4, symbolID);
 
           tr.setAttribute(new AttributeType("ID", "String"), key);
           dataset.getRoads().add(tr);
 
         } else if (geom instanceof IMultiCurve<?>) {
           for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-            IRoadLine tr = dataset
-                .getCartAGenDB()
-                .getGeneObjImpl()
+            IRoadLine tr = dataset.getCartAGenDB().getGeneObjImpl()
                 .getCreationFactory()
-                .createRoadLine(
-                    new TronconDeRouteImpl((Reseau) dataset.getRoadNetwork()
-                        .getGeoxObj(), false,
-                        (ILineString) ((IMultiCurve<?>) geom).get(i)), 4,
-                    symbolID);
+                .createRoadLine(new TronconDeRouteImpl(
+                    (Reseau) dataset.getRoadNetwork().getGeoxObj(), false,
+                    (ILineString) ((IMultiCurve<?>) geom).get(i)), 4, symbolID);
             // tr.setAttribute(new AttributeType("KEY","KEY"), key);
             dataset.getRoads().add(tr);
           }
@@ -3014,12 +2894,9 @@ public class ShapeFileLoader {
       }
 
       if (geom instanceof IPoint) {
-        ILabelPoint label = dataset
-            .getCartAGenDB()
-            .getGeneObjImpl()
-            .getCreationFactory()
-            .createLabelPoint((IPoint) geom, category, name, nature,
-                Integer.valueOf(importance));
+        ILabelPoint label = dataset.getCartAGenDB().getGeneObjImpl()
+            .getCreationFactory().createLabelPoint((IPoint) geom, category,
+                name, nature, Integer.valueOf(importance));
         if (fields.containsKey("CARTAGEN_ID")) {
           label.setId((Integer) fields.get("CARTAGEN_ID"));
         } else {
@@ -3029,10 +2906,9 @@ public class ShapeFileLoader {
         pop.add(label);
 
       } else {
-        logger
-            .error("ERREUR lors du chargement de shp " + chemin
-                + ". Type de geometrie " + geom.getClass().getName()
-                + " non gere.");
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
       }
       j++;
     }
@@ -3043,4 +2919,76 @@ public class ShapeFileLoader {
     return true;
   }
 
+  /**
+   * Charge des bâtiments ponctuels depuis un shapefile.
+   * @param chemin
+   * @throws IOException
+   */
+  public static boolean loadBuildingPointsFromSHP(String chemin,
+      CartAGenDataSet dataset) throws IOException {
+    ShapefileReader shr = null;
+    DbaseFileReader dbr = null;
+    if (!chemin.endsWith(".shp"))
+      chemin = chemin + ".shp";
+    try {
+      ShpFiles shpf = new ShpFiles(chemin);
+      shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
+      dbr = new DbaseFileReader(shpf, true, Charset.defaultCharset());
+    } catch (FileNotFoundException e) {
+      if (logger.isDebugEnabled()) {
+        logger.debug("fichier " + chemin + " non trouve.");
+      }
+      e.printStackTrace();
+      return false;
+    }
+
+    if (logger.isInfoEnabled()) {
+      logger.info("Loading: " + chemin);
+    }
+
+    IPopulation<IBuildPoint> pop = dataset.getBuildPts();
+
+    int j = 0;
+    while (shr.hasNext()) {
+      Record objet = shr.nextRecord();
+
+      Object[] champs = dbr.readEntry();
+      Map<String, Object> fields = new HashMap<String, Object>();
+      for (int i = 0; i < dbr.getHeader().getNumFields(); i++) {
+        fields.put(dbr.getHeader().getFieldName(i), champs[i]);
+      }
+
+      IGeometry geom = null;
+      try {
+        geom = AdapterFactory.toGM_Object((Geometry) objet.shape());
+      } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+      }
+
+      if (geom instanceof IPoint) {
+        IBuildPoint label = dataset.getCartAGenDB().getGeneObjImpl()
+            .getCreationFactory().createBuildPoint((IPoint) geom);
+
+        if (fields.containsKey("CARTAGEN_ID")) {
+          label.setId((Integer) fields.get("CARTAGEN_ID"));
+        } else {
+          label.setShapeId(j);
+        }
+        label.setId(pop.size() + 1);
+        pop.add(label);
+
+      } else {
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
+      }
+      j++;
+    }
+
+    shr.close();
+    dbr.close();
+
+    return true;
+  }
 }

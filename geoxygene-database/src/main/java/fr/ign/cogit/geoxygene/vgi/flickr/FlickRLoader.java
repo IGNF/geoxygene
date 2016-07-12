@@ -7,7 +7,7 @@
  * 
  * @copyright IGN
  ******************************************************************************/
-package fr.ign.cogit.geoxygene.vgi;
+package fr.ign.cogit.geoxygene.vgi.flickr;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,22 +46,26 @@ public class FlickRLoader {
   private String sharedSecret;
   private Set<String> extras;
   private REST transport;
+  private String proxyHost;
+  private int proxyPort;
 
-  public FlickRLoader(String apiKey, String sharedSecret) {
+  public FlickRLoader(String apiKey, String sharedSecret, String proxyHost,
+      int proxyPort) {
     super();
     this.apiKey = apiKey;
     this.sharedSecret = sharedSecret;
     this.extras = new HashSet<>();
     this.extras.add("geo");
     this.extras.add("tags");
+    this.proxyHost = proxyHost;
+    this.proxyPort = proxyPort;
     this.transport = new REST();
-    this.transport.setProxy("proxy.ign.fr", 3128);
+    this.transport.setProxy(proxyHost, proxyPort);
   }
 
   public List<FlickRFeature> getPhotosFromExtent(double minLat, double maxLat,
-      double minLong, double maxLong, int accuracyLevel)
-      throws FlickrException, IOException, ParserConfigurationException,
-      SAXException {
+      double minLong, double maxLong, int accuracyLevel) throws FlickrException,
+      IOException, ParserConfigurationException, SAXException {
 
     // Set the wanted search parameters
     SearchParameters searchParameters = new SearchParameters();
@@ -71,12 +75,12 @@ public class FlickRLoader {
 
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("method", "flickr.photos.search");
-
-    parameters.put("accuracy", String.valueOf(accuracyLevel));
+    if (accuracyLevel > 0)
+      parameters.put("accuracy", String.valueOf(accuracyLevel));
     String[] bbox = searchParameters.getBBox();
     parameters.put("bbox", StringUtilities.join(bbox, ","));
     parameters.put(Flickr.API_KEY, apiKey);
-    transport.setProxy("proxy.ign.fr", 3128);
+    transport.setProxy(proxyHost, proxyPort);
     String requestUrl = transport.getScheme() + "://" + transport.getHost()
         + transport.getPath();
 
@@ -86,11 +90,12 @@ public class FlickRLoader {
     }
     String urlString = paramList.appendTo(requestUrl);
     URL url = new URL(urlString);
+    System.out.println(url);
 
     // Connection
     URLConnection urlConn;
-    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(
-        "proxy.ign.fr", 3128));
+    Proxy proxy = new Proxy(Proxy.Type.HTTP,
+        new InetSocketAddress(proxyHost, proxyPort));
     urlConn = (URLConnection) url.openConnection(proxy);
 
     // Get connection inputstream
@@ -130,8 +135,8 @@ public class FlickRLoader {
     this.sharedSecret = sharedSecret;
   }
 
-  public IDirectPosition getPhotoLocation(String photoId) throws IOException,
-      ParserConfigurationException, SAXException {
+  public IDirectPosition getPhotoLocation(String photoId)
+      throws IOException, ParserConfigurationException, SAXException {
     // make the query URL
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("method", "flickr.photos.geo.getLocation");
@@ -148,8 +153,8 @@ public class FlickRLoader {
 
     // Connection
     URLConnection urlConn;
-    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(
-        "proxy.ign.fr", 3128));
+    Proxy proxy = new Proxy(Proxy.Type.HTTP,
+        new InetSocketAddress(proxyHost, proxyPort));
     urlConn = (URLConnection) url.openConnection(proxy);
 
     // Get connection inputstream

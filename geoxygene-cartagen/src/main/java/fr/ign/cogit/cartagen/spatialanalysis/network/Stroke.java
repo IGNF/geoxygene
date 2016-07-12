@@ -154,6 +154,14 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
     return text;
   }
 
+  /**
+   * Add a feature at the end of the stroke feature list.
+   * @param feature
+   */
+  public void addFeature(ArcReseau feature) {
+    this.features.add(new ArcReseauFlagPairImpl(feature));
+  }
+
   public Stroke(StrokesNetwork network, ArcReseau root) {
     this.network = network;
     this.setRoot(root);
@@ -276,8 +284,8 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
       }
       this.network.getGroupedFeatures().add(best);
       if (logger.isDebugEnabled()) {
-        logger.debug("the grouped features are "
-            + this.network.getGroupedFeatures());
+        logger.debug(
+            "the grouped features are " + this.network.getGroupedFeatures());
       }
 
       // get the followers of 'best'
@@ -295,7 +303,7 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
       // update the 'next' segment with 'best'
       next = best;
       node = nextNode;
-    }// while(continuity)
+    } // while(continuity)
   }
 
   /**
@@ -400,9 +408,9 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
             minDiff = diffContinuity;
             // change the bestSegment
             bestSegment = follower;
-          }// if (diffContinuity < minDiff)
-        }// if (diffContinuity > -1.0)
-      }// loop on the followers
+          } // if (diffContinuity < minDiff)
+        } // if (diffContinuity > -1.0)
+      } // loop on the followers
     }
 
     if ((continuity) && !this.features.contains(bestSegment)) {
@@ -824,9 +832,9 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
             minDiff = diffContinuity;
             // change the bestSegment
             bestSegment = follower;
-          }// if (diffContinuity < minDiff)
-        }// if (diffContinuity > -1.0)
-      }// loop on the followers
+          } // if (diffContinuity < minDiff)
+        } // if (diffContinuity > -1.0)
+      } // loop on the followers
     }
 
     if ((continuity) && !this.features.contains(bestSegment)) {
@@ -870,7 +878,8 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
       HashSet<ArcReseau> followers, Set<String> attributeNames) {
     if (this.getNetwork().isAttributesDeclared()) {
       try {
-        this.filterByAttributeContinuityDeclared(arc, followers, attributeNames);
+        this.filterByAttributeContinuityDeclared(arc, followers,
+            attributeNames);
       } catch (SecurityException e) {
         e.printStackTrace();
       } catch (IllegalArgumentException e) {
@@ -901,9 +910,8 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
    */
   private void filterByAttributeContinuityDeclared(ArcReseau arc,
       HashSet<ArcReseau> followers, Set<String> attributeNames)
-      throws SecurityException, NoSuchMethodException,
-      IllegalArgumentException, IllegalAccessException,
-      InvocationTargetException {
+      throws SecurityException, NoSuchMethodException, IllegalArgumentException,
+      IllegalAccessException, InvocationTargetException {
     HashSet<ArcReseau> loopFoll = new HashSet<ArcReseau>();
 
     // loop on the attribute names to filter the followers
@@ -925,9 +933,9 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
             // remove 'a' from the followers set
             followers.remove(a);
           }
-        }// loop on the followers
+        } // loop on the followers
       }
-    }// loop on the attributes
+    } // loop on the attributes
   }
 
   /**
@@ -960,9 +968,9 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
             // remove 'a' from the followers set
             followers.remove(a);
           }
-        }// loop on the followers
+        } // loop on the followers
       }
-    }// loop on the attributes
+    } // loop on the attributes
   }
 
   protected static HashSet<ArcReseau> getFollowing(ArcReseau arc,
@@ -1007,8 +1015,8 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
   protected ILineString joinStrokeFeatures(ArrayList<ILineString> lines) {
     IDirectPositionList pointsFinaux = new DirectPositionList();
     if (lines.size() == 0) {
-      logger
-          .warn("ATTENTION. Erreur à la compilation de lignes : aucune ligne en entrée");
+      logger.warn(
+          "ATTENTION. Erreur à la compilation de lignes : aucune ligne en entrée");
       return null;
     }
     if (lines.size() == 1) {
@@ -1169,7 +1177,8 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
    *         noeudReseau related
    * @param strokeNodesMap saves the nodes which have already been seen
    */
-  public void instantiateStrokeNodes(Map<NoeudReseau, StrokeNode> strokeNodesMap) {
+  public void instantiateStrokeNodes(
+      Map<NoeudReseau, StrokeNode> strokeNodesMap) {
 
     ArcReseauFlagPair initialArcPair = this.getOrientedFeatures().get(0);
     NoeudReseau noeudReseau;
@@ -1188,8 +1197,8 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
       strokeNodesMap.put(noeudReseau, strokeInitialNode);
     }
 
-    ArcReseauFlagPair finalArcPair = this.getOrientedFeatures().get(
-        this.getFeatures().size() - 1);
+    ArcReseauFlagPair finalArcPair = this.getOrientedFeatures()
+        .get(this.getFeatures().size() - 1);
 
     // strokeFinalNode instanciation
     if (finalArcPair.getFlag())

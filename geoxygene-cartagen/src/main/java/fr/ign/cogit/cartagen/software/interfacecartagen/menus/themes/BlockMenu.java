@@ -24,6 +24,7 @@ import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 
+@Deprecated
 public class BlockMenu extends JMenu {
 
   private static final long serialVersionUID = 1L;
@@ -80,11 +81,12 @@ public class BlockMenu extends JMenu {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      CartagenApplication.getInstance().getFrame().getVisuPanel().selectedObjects = new FT_FeatureCollection<IFeature>();
+      CartagenApplication.getInstance().getFrame()
+          .getVisuPanel().selectedObjects = new FT_FeatureCollection<IFeature>();
       for (IUrbanBlock ai : CartAGenDocOld.getInstance().getCurrentDataset()
           .getBlocks()) {
-        CartagenApplication.getInstance().getFrame().getVisuPanel().selectedObjects
-            .add(ai);
+        CartagenApplication.getInstance().getFrame()
+            .getVisuPanel().selectedObjects.add(ai);
       }
     }
 

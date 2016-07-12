@@ -21,8 +21,10 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
+import fr.ign.cogit.cartagen.core.genericschema.IGeneObjPoint;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IAirportArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayLine;
@@ -36,6 +38,7 @@ import fr.ign.cogit.cartagen.genealgorithms.facilities.AirportTypification;
 import fr.ign.cogit.cartagen.genealgorithms.facilities.AirportTypification.TaxiwayBranching;
 import fr.ign.cogit.cartagen.genealgorithms.facilities.AirportTypification.TaxiwayBranchingCouple;
 import fr.ign.cogit.cartagen.genealgorithms.facilities.AirportTypification.TaxiwayBranchingGroup;
+import fr.ign.cogit.cartagen.genealgorithms.points.KMeansReduction;
 import fr.ign.cogit.cartagen.genealgorithms.rail.CollapseParallelRailways;
 import fr.ign.cogit.cartagen.genealgorithms.rail.TypifySideTracks;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
@@ -47,12 +50,14 @@ import fr.ign.cogit.cartagen.spatialanalysis.network.railways.ParallelRailsGroup
 import fr.ign.cogit.cartagen.spatialanalysis.network.railways.ParallelStroke;
 import fr.ign.cogit.cartagen.spatialanalysis.network.railways.ParallelismEndingType;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.SelectionUtil;
+import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseau;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.NoeudReseau;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineSegment;
@@ -69,8 +74,8 @@ public class OtherThemesMenu extends JMenu {
   private static final long serialVersionUID = 1L;
 
   @SuppressWarnings("unused")
-  private static Logger logger = Logger.getLogger(OtherThemesMenu.class
-      .getName());
+  private static Logger logger = Logger
+      .getLogger(OtherThemesMenu.class.getName());
 
   public OtherThemesMenu(String title) {
     super(title);
@@ -95,7 +100,11 @@ public class OtherThemesMenu extends JMenu {
     railMenu.add(new JMenuItem(new CollapseRailsAction()));
     railMenu.add(new JMenuItem(new GroupParallelRailsAction()));
     railMenu.add(new JMenuItem(new CollapseParallelRailsAction()));
-
+    JMenu ptSetMenu = new JMenu("Point-Set");
+    this.add(ptSetMenu);
+    ptSetMenu.add(new JMenuItem(new KMeansReductionSelectionAction()));
+    ptSetMenu.add(new JMenuItem(new KMeansReductionSimplifAction()));
+    ptSetMenu.addSeparator();
   }
 
   private class SelectAction extends AbstractAction {
@@ -113,8 +122,8 @@ public class OtherThemesMenu extends JMenu {
       else if (popName.equals("railroad"))
         pop = CartAGenDoc.getInstance().getCurrentDataset().getRailwayLines();
       for (IGeneObj obj : pop) {
-        SelectionUtil.addFeatureToSelection(CartAGenPlugin.getInstance()
-            .getApplication(), obj);
+        SelectionUtil.addFeatureToSelection(
+            CartAGenPlugin.getInstance().getApplication(), obj);
       }
     }
 
@@ -188,8 +197,8 @@ public class OtherThemesMenu extends JMenu {
         if (!(sel instanceof IAirportArea))
           continue;
         IAirportArea airport = (IAirportArea) sel;
-        AirportTypification algo = new AirportTypification(airport, CartAGenDoc
-            .getInstance().getCurrentDataset());
+        AirportTypification algo = new AirportTypification(airport,
+            CartAGenDoc.getInstance().getCurrentDataset());
         algo.setBranchingMaxArea(7000.0);
         algo.setMaxAngleBranching(14 * Math.PI / 20);
         algo.detectBranchingPatterns();
@@ -229,8 +238,8 @@ public class OtherThemesMenu extends JMenu {
         if (!(sel instanceof IAirportArea))
           continue;
         IAirportArea airport = (IAirportArea) sel;
-        AirportTypification algo = new AirportTypification(airport, CartAGenDoc
-            .getInstance().getCurrentDataset());
+        AirportTypification algo = new AirportTypification(airport,
+            CartAGenDoc.getInstance().getCurrentDataset());
         algo.setTaxiwayLengthThreshold(500.0);
         algo.makeTaxiwaysPlanar();
         algo.selectTaxiwayLines();
@@ -256,8 +265,8 @@ public class OtherThemesMenu extends JMenu {
           .getGeometryPool();
       pool.setSld(appli.getMainFrame().getSelectedProjectFrame().getSld());
       if (SelectionUtil.isEmpty(appli)) {
-        AirportTypification algo = new AirportTypification(CartAGenDoc
-            .getInstance().getCurrentDataset());
+        AirportTypification algo = new AirportTypification(
+            CartAGenDoc.getInstance().getCurrentDataset());
         algo.setOpenThreshTaxi(30.0);
         algo.collapseThinTaxiways();
         return;
@@ -266,8 +275,8 @@ public class OtherThemesMenu extends JMenu {
         if (!(sel instanceof IAirportArea))
           continue;
         IAirportArea airport = (IAirportArea) sel;
-        AirportTypification algo = new AirportTypification(airport, CartAGenDoc
-            .getInstance().getCurrentDataset());
+        AirportTypification algo = new AirportTypification(airport,
+            CartAGenDoc.getInstance().getCurrentDataset());
         algo.setTaxiwayLengthThreshold(500.0);
         algo.makeTaxiwaysPlanar();
         algo.selectTaxiwayLines();
@@ -293,8 +302,8 @@ public class OtherThemesMenu extends JMenu {
           .getGeometryPool();
       pool.setSld(appli.getMainFrame().getSelectedProjectFrame().getSld());
       if (SelectionUtil.isEmpty(appli)) {
-        AirportTypification algo = new AirportTypification(CartAGenDoc
-            .getInstance().getCurrentDataset());
+        AirportTypification algo = new AirportTypification(
+            CartAGenDoc.getInstance().getCurrentDataset());
         algo.setApronClosingSize(50.0);
         algo.setApronMinArea(1000.0);
         algo.setApronSegLength(10.0);
@@ -306,8 +315,8 @@ public class OtherThemesMenu extends JMenu {
         if (!(sel instanceof IAirportArea))
           continue;
         IAirportArea airport = (IAirportArea) sel;
-        AirportTypification algo = new AirportTypification(airport, CartAGenDoc
-            .getInstance().getCurrentDataset());
+        AirportTypification algo = new AirportTypification(airport,
+            CartAGenDoc.getInstance().getCurrentDataset());
         algo.setApronClosingSize(25.0);
         algo.setApronMinArea(1000.0);
         algo.setApronSegLength(8.0);
@@ -334,8 +343,8 @@ public class OtherThemesMenu extends JMenu {
           .getGeometryPool();
       pool.setSld(appli.getMainFrame().getSelectedProjectFrame().getSld());
       if (SelectionUtil.isEmpty(appli)) {
-        AirportTypification algo = new AirportTypification(CartAGenDoc
-            .getInstance().getCurrentDataset());
+        AirportTypification algo = new AirportTypification(
+            CartAGenDoc.getInstance().getCurrentDataset());
         try {
           algo.collapseRunways();
         } catch (Exception e1) {
@@ -350,8 +359,8 @@ public class OtherThemesMenu extends JMenu {
         if (!(sel instanceof IAirportArea))
           continue;
         IAirportArea airport = (IAirportArea) sel;
-        AirportTypification algo = new AirportTypification(airport, CartAGenDoc
-            .getInstance().getCurrentDataset());
+        AirportTypification algo = new AirportTypification(airport,
+            CartAGenDoc.getInstance().getCurrentDataset());
         try {
           algo.collapseRunways();
         } catch (Exception e1) {
@@ -385,8 +394,8 @@ public class OtherThemesMenu extends JMenu {
         if (!(sel instanceof IAirportArea))
           continue;
         IAirportArea airport = (IAirportArea) sel;
-        AirportTypification algo = new AirportTypification(airport, CartAGenDoc
-            .getInstance().getCurrentDataset());
+        AirportTypification algo = new AirportTypification(airport,
+            CartAGenDoc.getInstance().getCurrentDataset());
 
         // collapse runways
         try {
@@ -443,8 +452,8 @@ public class OtherThemesMenu extends JMenu {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      TypifySideTracks typify = new TypifySideTracks(100.0, CartAGenDoc
-          .getInstance().getCurrentDataset(), 6.0);
+      TypifySideTracks typify = new TypifySideTracks(100.0,
+          CartAGenDoc.getInstance().getCurrentDataset(), 6.0);
       typify.typifySideTracks();
 
     }
@@ -646,16 +655,16 @@ public class OtherThemesMenu extends JMenu {
           if (pStroke.getStart().getType()
               .equals(ParallelismEndingType.DANGLING))
             colorStart = Color.PINK;
-          pool.addFeatureToGeometryPool(pStroke.getStart().getPosition()
-              .toGM_Point(), colorStart, 5);
+          pool.addFeatureToGeometryPool(
+              pStroke.getStart().getPosition().toGM_Point(), colorStart, 5);
           Color colorEnd = Color.ORANGE;
           if (pStroke.getEnd().getType()
               .equals(ParallelismEndingType.CONVERGING))
             colorEnd = Color.GREEN;
           if (pStroke.getEnd().getType().equals(ParallelismEndingType.DANGLING))
             colorEnd = Color.PINK;
-          pool.addFeatureToGeometryPool(pStroke.getEnd().getPosition()
-              .toGM_Point(), colorEnd, 5);
+          pool.addFeatureToGeometryPool(
+              pStroke.getEnd().getPosition().toGM_Point(), colorEnd, 5);
           pool.addFeatureToGeometryPool(pStroke.getStroke().getGeomStroke(),
               pStroke.getColor(), 3);
         }
@@ -695,4 +704,61 @@ public class OtherThemesMenu extends JMenu {
     }
   }
 
+  private class KMeansReductionSelectionAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      final GeOxygeneApplication appli = CartAGenPlugin.getInstance()
+          .getApplication();
+      String s = JOptionPane.showInputDialog(
+          CartAGenPlugin.getInstance().getApplication().getMainFrame().getGui(),
+          "shrinking ratio", "Cartagen", JOptionPane.PLAIN_MESSAGE);
+      double shrinkRatio = 1.0;
+      if (s != null && !s.isEmpty()) {
+        shrinkRatio = Double.parseDouble(s);
+      }
+      IFeatureCollection<IGeneObjPoint> features = new FT_FeatureCollection<>();
+      for (IFeature feat : SelectionUtil.getSelectedObjects(appli))
+        features.add((IGeneObjPoint) feat);
+      KMeansReduction algorithm = new KMeansReduction(features, false,
+          shrinkRatio);
+      algorithm.reducePointSet();
+    }
+
+    public KMeansReductionSelectionAction() {
+      this.putValue(Action.NAME, "Reduction-Selection by KMeans");
+    }
+  }
+
+  private class KMeansReductionSimplifAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      final GeOxygeneApplication appli = CartAGenPlugin.getInstance()
+          .getApplication();
+      String s = JOptionPane.showInputDialog(
+          CartAGenPlugin.getInstance().getApplication().getMainFrame().getGui(),
+          "shrinking ratio", "Cartagen", JOptionPane.PLAIN_MESSAGE);
+      double shrinkRatio = 1.0;
+      if (s != null && !s.isEmpty()) {
+        shrinkRatio = Double.parseDouble(s);
+      }
+      IFeatureCollection<IGeneObjPoint> features = new FT_FeatureCollection<>();
+      for (IFeature feat : SelectionUtil.getSelectedObjects(appli))
+        features.add((IGeneObjPoint) feat);
+      KMeansReduction algorithm = new KMeansReduction(features, true,
+          shrinkRatio);
+      algorithm.reducePointSet();
+    }
+
+    public KMeansReductionSimplifAction() {
+      this.putValue(Action.NAME, "Reduction-Simplification by KMeans");
+    }
+  }
 }
