@@ -101,7 +101,7 @@ public class CIELchColorSpace extends ColorSpace {
   @Override
   public float getMaxValue(int component) {
     assert (component < this.getNumComponents());
-    return component == 2 ? 100f : 360f;
+    return component == 2 ? 360f : 100f;
   }
 
   @Override
