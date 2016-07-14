@@ -54,7 +54,7 @@ public class CIELabColorSpace extends ColorSpace {
    *          custom Geoxygene XYZ space to convert colors between sRGB and CIE
    *          L*a*b*.
    */
-  protected CIELabColorSpace(boolean use_awt_XYZ_ColorSpace) {
+  public CIELabColorSpace(boolean use_awt_XYZ_ColorSpace) {
     super(TYPE_Lab, 3);
     if (use_awt_XYZ_ColorSpace) {
       this.csXYZ = ColorSpace.getInstance(CS_CIEXYZ);
