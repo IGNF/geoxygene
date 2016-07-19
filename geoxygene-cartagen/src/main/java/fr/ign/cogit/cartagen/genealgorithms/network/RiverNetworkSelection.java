@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
@@ -14,6 +16,8 @@ import fr.ign.cogit.cartagen.spatialanalysis.network.rivers.RiverStrokesNetwork;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseau;
 
 public class RiverNetworkSelection {
+
+  private static Logger logger = Logger.getLogger(RiverNetworkSelection.class);
 
   private RiverStrokesNetwork net;
   private Map<ArcReseau, IWaterLine> map;
@@ -57,7 +61,7 @@ public class RiverNetworkSelection {
 
     // then, create the strokes network
     HashSet<ArcReseau> arcs = new HashSet<ArcReseau>();
-    Map<ArcReseau, IWaterLine> map = new HashMap<ArcReseau, IWaterLine>();
+    this.map = new HashMap<ArcReseau, IWaterLine>();
     for (IGeneObj feat : CartAGenDoc.getInstance().getCurrentDataset()
         .getHydroNetwork().getSections()) {
       if (feat.isEliminated()) {
@@ -66,8 +70,9 @@ public class RiverNetworkSelection {
       arcs.add((ArcReseau) feat.getGeoxObj());
       map.put((ArcReseau) feat.getGeoxObj(), (IWaterLine) feat);
     }
-    RiverStrokesNetwork net = new RiverStrokesNetwork(arcs);
+    this.net = new RiverStrokesNetwork(arcs);
     net.findSourcesAndSinks();
+    // net.correctDoubleSources();
     net.buildRiverStrokes();
   }
 
@@ -90,11 +95,20 @@ public class RiverNetworkSelection {
 
       if (this.removeBraided) {
         if (((RiverStroke) stroke).isBraided()) {
+          logger.trace("braided stroke " + stroke + " is eliminated");
           for (ArcReseau arc : stroke.getFeatures()) {
             this.map.get(arc).eliminate();
           }
         }
       }
     }
+  }
+
+  public RiverStrokesNetwork getNet() {
+    return net;
+  }
+
+  public void setNet(RiverStrokesNetwork net) {
+    this.net = net;
   }
 }
