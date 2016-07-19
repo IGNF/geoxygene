@@ -86,6 +86,7 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
   private List<String> unexportedLayers = new ArrayList<String>();
   private List<Layer> layers;
   private Map<Layer, JCheckBox> mapLayers = new HashMap<Layer, JCheckBox>();
+  private Map<Layer, JTextField> nameLayers = new HashMap<Layer, JTextField>();
   private JTextField txtHost, txtPort, txtDb, txtUser, txtPwd, txtSchema;
 
   public ExportPostGISFrame(ProjectFrame projectFrame) {
@@ -105,9 +106,18 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
 
     JPanel layerPanel = new JPanel();
     for (Layer layer : layers) {
+      JPanel layerLine = new JPanel();
       JCheckBox box = new JCheckBox(layer.getName());
+      JTextField txt = new JTextField(layer.getName());
+      txt.setPreferredSize(new Dimension(100, 20));
+      txt.setMinimumSize(new Dimension(100, 20));
+      txt.setMaximumSize(new Dimension(100, 20));
       mapLayers.put(layer, box);
-      layerPanel.add(box);
+      nameLayers.put(layer, txt);
+      layerLine.add(box);
+      layerLine.add(txt);
+      layerLine.setLayout(new BoxLayout(layerLine, BoxLayout.X_AXIS));
+      layerPanel.add(layerLine);
     }
     layerPanel.setLayout(new BoxLayout(layerPanel, BoxLayout.Y_AXIS));
 
@@ -268,7 +278,10 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
       if (unexportedLayers.contains(layer.getName()))
         continue;
 
-      String tableName = layer.getName();
+      String tableName = nameLayers.get(layer).getText();
+      if (tableName == null || tableName == "") {
+        tableName = layer.getName();
+      }
       if (logger.isLoggable(Level.FINE)) {
         logger.fine(tableName);
       }
@@ -292,19 +305,20 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
             geomType = IPoint.class;
         }
 
-        if (!(obj instanceof IGeneObj)) {
+        if ((obj instanceof IGeneObj)) {
           features.add(obj);
           continue;
         }
-        if (!((IGeneObj) obj).isEliminated()) {
-          features.add((IGeneObj) obj);
-        }
+
+        // if (!((IGeneObj) obj).isEliminated()) {
+        // features.add((IGeneObj) obj);
+        // }
       }
       if (features.isEmpty()) {
         continue;
       }
 
-      // write the shapefile
+      // write the table
       write(features, geomType, tableName);
     }
   }
@@ -346,14 +360,23 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
 
       // specify the attributes: there is only one the MRDB link
       specs += "," + "a_pour_antecedant" + ":" + Integer.class.getName();
+      // add the initial geometry
+      specs += "," + "initial_geom" + ":" + String.class.getName();
+      // add the eliminated status
+      specs += "," + "is_eliminated" + ":" + Boolean.class.getName();
+      // the others attributes
       List<String> getters = new ArrayList<String>();
       if (featurePop.size() != 0) {
         Class<?> classObj = featurePop.get(0).getClass();
         Vector<Object> result = addAttributesToHeader(classObj);
+        System.out.println(result);
+        System.out.println(result.get(0));
+        System.out.println(result.get(1));
         getters = (List<String>) result.get(0);
         specs += result.get(1);
       }
 
+      // create the data schema
       String featureTypeName = tableName;
       SimpleFeatureType type = DataUtilities.createType(featureTypeName, specs);
       dataStore.createSchema(type);
@@ -371,9 +394,19 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
         IGeometry geom = feature.getGeom();
         if ((geom instanceof ILineString) && (geom.coord().size() < 2))
           continue;
-
+        // affect the geometry
         liste.add(AdapterFactory.toGeometry(new GeometryFactory(), geom));
+        // TODO affect the antecedent (MRDB link)
         liste.add(feature.getId());
+        // affect the initial geometry
+        if (feature instanceof IGeneObj) {
+          System.out.println(((IGeneObj) feature).getInitialGeom().toString());
+          liste.add(((IGeneObj) feature).getInitialGeom().toString());
+        } else
+          liste.add("null");
+        // affect the eliminated status :
+        // TODO check if it is updated as eliminated
+        liste.add(feature.isDeleted());
         // put the attributes in the list, after the geometry
         for (String getter : getters) {
           Method m = feature.getClass().getDeclaredMethod(getter);
@@ -388,22 +421,22 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
       t.close();
       dataStore.dispose();
     } catch (MalformedURLException e) {
-      logger.log(Level.SEVERE, I18N.getString("ShapefileWriter.FileName") //$NON-NLS-1$
-          + tableName + I18N.getString("ShapefileWriter.Malformed")); //$NON-NLS-1$
+      logger.log(Level.SEVERE, I18N.getString("ExportPostGISFrame.FileName") //$NON-NLS-1$
+          + tableName + I18N.getString("ExportPostGISFrame.Malformed")); //$NON-NLS-1$
       e.printStackTrace();
     } catch (IOException e) {
       logger.log(Level.SEVERE,
-          I18N.getString("ShapefileWriter.ErrorWritingFile") //$NON-NLS-1$
+          I18N.getString("ExportPostGISFrame.ErrorWritingFile") //$NON-NLS-1$
               + tableName);
       e.printStackTrace();
     } catch (SchemaException e) {
       logger.log(Level.SEVERE,
-          I18N.getString("ShapefileWriter.SchemeUsedForWritingFile") //$NON-NLS-1$
-              + tableName + I18N.getString("ShapefileWriter.Incorrect")); //$NON-NLS-1$
+          I18N.getString("ExportPostGISFrame.SchemeUsedForWritingFile") //$NON-NLS-1$
+              + tableName + I18N.getString("ExportPostGISFrame.Incorrect")); //$NON-NLS-1$
       e.printStackTrace();
     } catch (Exception e) {
       logger.log(Level.SEVERE,
-          I18N.getString("ShapefileWriter.ErrorWritingFile") //$NON-NLS-1$
+          I18N.getString("ExportPostGISFrame.ErrorWritingFile") //$NON-NLS-1$
               + tableName);
       e.printStackTrace();
     }
