@@ -35,6 +35,7 @@ import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
 import org.geotools.data.shapefile.ShapefileDataStore;
+import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.SchemaException;
@@ -729,7 +730,8 @@ public abstract class AppariementSurfaces {
     store.createSchema(type);
     FeatureStore<SimpleFeatureType, SimpleFeature> featureStore = (FeatureStore<SimpleFeatureType, SimpleFeature>) store.getFeatureSource("Link");
     Transaction t = new DefaultTransaction();
-    FeatureCollection<SimpleFeatureType, SimpleFeature> collection = FeatureCollections.newCollection();
+    DefaultFeatureCollection collection = new DefaultFeatureCollection("coll",type);
+    
     int linkId = 1;
     int edgeId = 1;
     GeometryFactory factory = new GeometryFactory();

@@ -56,7 +56,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.hibernate.Session;
-import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.cfg.Configuration;
 import org.xml.sax.SAXException;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
@@ -843,7 +843,7 @@ public class DatasetGUIComponent extends JMenu {
     public void actionPerformed(ActionEvent arg0) {
       if (CartAGenDocOld.getInstance().getPostGisSession() == null) {
         // open a connection with the current PostGISDB
-        AnnotationConfiguration hibConfig = new AnnotationConfiguration();
+        Configuration hibConfig = new Configuration();
         hibConfig = hibConfig.configure(new File(PostgisDB
             .getDefaultConfigPath()));
         hibConfig.setProperty("hibernate.connection.url", PostgisDB.getUrl());
@@ -868,8 +868,9 @@ public class DatasetGUIComponent extends JMenu {
         }
 
         // start the transaction
-        Session session = hibConfig.buildSessionFactory().openSession(
-            PostgisDB.getConnection());
+      //  Session session = hibConfig.buildSessionFactory().openSession(
+        //      PostgisDB.getConnection());
+        Session session = hibConfig.buildSessionFactory().openSession();
         CartAGenDocOld.getInstance().setPostGisSession(session);
         session.beginTransaction();
       } else {

@@ -9,6 +9,7 @@ import java.sql.Types;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.usertype.UserType;
 import org.postgis.PGgeometry;
 
@@ -55,9 +56,11 @@ public class GeOxygeneGeometryUserType implements UserType {
       return null;
     }
     
+  
+    
     if (object instanceof org.postgresql.util.PGobject) {
       try {
-        object = new PGgeometry(object.toString());
+        object = new  PGgeometry(object.toString());
       } catch (SQLException e) {
         e.printStackTrace();
       }
@@ -206,14 +209,15 @@ public class GeOxygeneGeometryUserType implements UserType {
     return false;
   }
 
-  @Override
+  /*
   public Object nullSafeGet(ResultSet rs, String[] names, Object owner)
       throws HibernateException, SQLException {
     Object geomObj = rs.getObject(names[0]);
     return this.convert2GM_Object(geomObj);
   }
 
-  @Override
+  
+
   public void nullSafeSet(PreparedStatement st, Object value, int index)
       throws HibernateException, SQLException {
     if (value == null) {
@@ -232,9 +236,41 @@ public class GeOxygeneGeometryUserType implements UserType {
           e.printStackTrace();
         }
       }
-    }
+   
+  }*/
+
+  
+  @Override
+  public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor arg2, Object arg3)
+  		throws HibernateException, SQLException {
+	    Object geomObj = rs.getObject(names[0]);
+	    return this.convert2GM_Object(geomObj);
   }
 
+  @Override
+  public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session)
+  		throws HibernateException, SQLException {
+	    if (value == null) {
+	        st.setNull(index, this.sqlTypes()[0]);
+	      } else {
+	        if (value instanceof IGeometry) {
+	          IGeometry geom = (IGeometry) value;
+	          Object dbGeom = this.conv2DBGeometry(geom, st.getConnection());
+	          st.setObject(index, dbGeom);
+	        } else {
+	          try {
+	            IGeometry geom = AdapterFactory.toGM_Object((Geometry) value);
+	            Object dbGeom = this.conv2DBGeometry(geom, st.getConnection());
+	            st.setObject(index, dbGeom);
+	          } catch (Exception e) {
+	            e.printStackTrace();
+	          }
+	        }
+	      }
+  	
+  }
+  
+  
   @Override
   public Object replace(Object original, Object target, Object owner)
       throws HibernateException {
@@ -245,4 +281,6 @@ public class GeOxygeneGeometryUserType implements UserType {
   public Class<IGeometry> returnedClass() {
     return IGeometry.class;
   }
+
+
 }

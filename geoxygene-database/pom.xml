@@ -61,6 +61,7 @@
 		</plugins>
 	</build>
 
+	<!-- //seems to be out
 	<repositories>
 		<repository>
 			<id>hibernatespatial</id>
@@ -71,6 +72,7 @@
 			</snapshots>
 		</repository>
 	</repositories>
+-->
 
 	<dependencies>
 		<dependency>
@@ -94,8 +96,39 @@
 			<artifactId>log4j</artifactId>
 		</dependency>
 
-		
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
 
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-spatial</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+        </dependency>
+
+	<dependency>
+	    <groupId>net.postgis</groupId>
+	    <artifactId>postgis-jdbc</artifactId>
+	    <version>2.1.7.2</version>
+	</dependency>
+
+        
+
+<!-- 
 		<dependency>
 			<groupId>org.postgis</groupId>
 			<artifactId>postgis-jdbc</artifactId>
@@ -138,7 +171,7 @@
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>8.4-701.jdbc4</version>
-		</dependency>
+		</dependency>  -->
 
 		<dependency>
 			<groupId>org.geotools</groupId>
@@ -156,10 +189,10 @@
 			<version>${geotools.version}</version>
 		</dependency>
 		<dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-cql</artifactId>
-            <version>${geotools.version}</version>
-        </dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-cql</artifactId>
+			<version>${geotools.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.geotools.jdbc</groupId>
@@ -183,19 +216,19 @@
 			<version>2.12</version>
 		</dependency>
 		<dependency>
-           <groupId>org.twitter4j</groupId>
-           <artifactId>twitter4j-core</artifactId>
-           <version>4.0.2</version>
-       </dependency>
+			<groupId>org.twitter4j</groupId>
+			<artifactId>twitter4j-core</artifactId>
+			<version>4.0.2</version>
+		</dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 			<version>2.6.2</version>
 		</dependency>
 		<dependency>
-   			<groupId>com.github.danshannon</groupId>
-    		<artifactId>javastrava-api</artifactId>
-    		<version>1.0.1</version>
+			<groupId>com.github.danshannon</groupId>
+			<artifactId>javastrava-api</artifactId>
+			<version>1.0.1</version>
 		</dependency>
 	</dependencies>
 

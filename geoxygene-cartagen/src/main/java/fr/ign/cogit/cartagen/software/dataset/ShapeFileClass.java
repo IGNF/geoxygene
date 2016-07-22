@@ -21,11 +21,12 @@ import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
 import org.geotools.data.shapefile.ShapefileDataStore;
-import org.geotools.data.shapefile.ShpFiles;
 import org.geotools.data.shapefile.dbf.DbaseFileHeader;
 import org.geotools.data.shapefile.dbf.DbaseFileReader;
+import org.geotools.data.shapefile.files.ShpFiles;
 import org.geotools.data.shapefile.shp.ShapeType;
 import org.geotools.data.shapefile.shp.ShapefileReader;
+import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.SchemaException;
@@ -160,9 +161,13 @@ public class ShapeFileClass implements GeographicClass {
       FeatureStore featureStore = (FeatureStore) store
           .getFeatureSource(featureTypeName);
 
+      
       // write features in the datastore
       Transaction t = new DefaultTransaction();
-      FeatureCollection collection = FeatureCollections.newCollection();
+     
+      // FeatureCollection<SimpleFeatureType, SimpleFeature> collection = FeatureCollections.newCollection();
+      DefaultFeatureCollection collection = new DefaultFeatureCollection("building",type);
+      
       // loop on the records
       for (Integer j = 0; j < fields.size(); j++) {
         // get the object related to record using the shape id
