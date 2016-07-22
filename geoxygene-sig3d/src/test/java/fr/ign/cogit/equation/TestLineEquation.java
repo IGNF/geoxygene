@@ -292,7 +292,7 @@ public class TestLineEquation extends TestCase {
 		DirectPosition pi = (DirectPosition) eq1.intersectionLineLine(eq2);
 
 		// Comparison
-		assertTrue("Intersection between lines is incorrect", pi.equals(p));
+		assertTrue("Intersection between lines is incorrect", pi.equals(p,0.1));
 
 	}
 

@@ -61,7 +61,8 @@
 		<geotools.version>14.4</geotools.version>
 		<jfreechart.version>1.0.13</jfreechart.version>
 		<jgrapht.version>0.9.0</jgrapht.version>
-		<postgresql.version>9.1-901.jdbc4</postgresql.version>
+		<postgresql.version>9.1-901-1.jdbc4</postgresql.version>
+		<postgis.jdbc.version>2.2.0</postgis.jdbc.version>
 		<hibernate.version>5.1.0.Final</hibernate.version>
 
 		<!-- <skip.unit.tests>false</skip.unit.tests> -->
@@ -606,6 +607,16 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+		
+		<repository>
+			<id>Central2</id>
+			<name>Central Repository 2</name>
+			<url>http://repo.maven.apache.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+
 		<repository>
 			<id>cogit-snapshots</id>
 			<name>Cogit Snapshots Repository</name>

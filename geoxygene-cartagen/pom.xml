@@ -52,16 +52,6 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-        <!-- it seems to be out
-		<repository>
-			<id>hibernatespatial</id>
-			<name>hibernatespatial Repository</name>
-			<url>http://www.hibernatespatial.org/repository</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		 -->
         <repository>
             <id>apache.snapshots</id>
             <name>Apache commons</name>
@@ -165,6 +155,11 @@
             <artifactId>hibernate-entitymanager</artifactId>
             <version>${hibernate.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-spatial</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-referencing</artifactId>
@@ -199,12 +194,12 @@
 		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>8.4-701.jdbc4</version>
+			<version>${postgresql.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.postgis</groupId>
-			<artifactId>postgis-jdbc</artifactId>
-			<version>1.3.2</version>
+		    <groupId>net.postgis</groupId>
+		    <artifactId>postgis-jdbc</artifactId>
+		    <version>${postgis.jdbc.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.opencsv</groupId>
