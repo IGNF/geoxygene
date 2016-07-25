@@ -26,7 +26,11 @@ public class Java3DInstallated {
 		catch (Error e) // You shouldn't normally catch java.lang.Error... this is an exception
 		{
 		   System.out.println("Java3D binaries not installed");
+		}	catch (Exception e) // You shouldn't normally catch java.lang.Error... this is an exception
+		{
+			System.out.println("Java3D binaries not installed");
 		}
+		
 		
 		return isJava3DInstallated;
 	}
