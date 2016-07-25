@@ -144,7 +144,7 @@ public class ShapeFileClass implements GeographicClass {
           + ".shp").toURI().toURL());
       // build the specification String of the shapefile
       // specify the geometry type
-      String specs = "geom:" + geomType; //$NON-NLS-1$
+      String specs = "the_geom:" + geomType; //$NON-NLS-1$
       // now add the attributes to the specs
       for (int j = 0; j < header.getNumFields(); j++) {
         specs += "," + header.getFieldName(j) + ":"
@@ -158,7 +158,7 @@ public class ShapeFileClass implements GeographicClass {
       featureTypeName = featureTypeName.replace('.', '_');
       SimpleFeatureType type = DataUtilities.createType(featureTypeName, specs);
       store.createSchema(type);
-      FeatureStore featureStore = (FeatureStore) store
+      FeatureStore<SimpleFeatureType, SimpleFeature>featureStore = (FeatureStore<SimpleFeatureType, SimpleFeature>) store
           .getFeatureSource(featureTypeName);
 
       

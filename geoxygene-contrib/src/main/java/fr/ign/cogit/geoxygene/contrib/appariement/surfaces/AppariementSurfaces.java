@@ -725,7 +725,7 @@ public abstract class AppariementSurfaces {
   @SuppressWarnings("unchecked")
   public static void writeShapefile(EnsembleDeLiens liens, String file) throws SchemaException, IOException {
     ShapefileDataStore store = new ShapefileDataStore(new File(file).toURI().toURL());
-    String specs = "geom:LineString,linkId:Integer,edgeId:Integer,refId:Integer,compId:Integer,evalLink:Double,surfDist:Double,exact:Double,compl:Double"; //$NON-NLS-1$
+    String specs = "the_geom:LineString,linkId:Integer,edgeId:Integer,refId:Integer,compId:Integer,evalLink:Double,surfDist:Double,exact:Double,compl:Double"; //$NON-NLS-1$
     SimpleFeatureType type = DataUtilities.createType("Link", specs);
     store.createSchema(type);
     FeatureStore<SimpleFeatureType, SimpleFeature> featureStore = (FeatureStore<SimpleFeatureType, SimpleFeature>) store.getFeatureSource("Link");

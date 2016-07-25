@@ -196,11 +196,11 @@
 			<artifactId>postgresql</artifactId>
 			<version>${postgresql.version}</version>
 		</dependency>
-	<!-- 	<dependency>
+ 	<dependency>
 		    <groupId>net.postgis</groupId>
 		    <artifactId>postgis-jdbc</artifactId>
 		    <version>${postgis.jdbc.version}</version>
-		</dependency> -->
+		</dependency> 
 		<dependency>
 			<groupId>net.sf.opencsv</groupId>
 			<artifactId>opencsv</artifactId>

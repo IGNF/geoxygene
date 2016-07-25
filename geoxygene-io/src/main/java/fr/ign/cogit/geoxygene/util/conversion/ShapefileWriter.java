@@ -108,7 +108,7 @@ public class ShapefileWriter {
 			}
 			ShapefileDataStore store = new ShapefileDataStore(new File(shapefileName).toURI().toURL());
 
-			String specs = "geom:"; //$NON-NLS-1$
+			String specs = "the_geom:"; //$NON-NLS-1$
 
 			GF_FeatureType featureType = featureCollection.getFeatureType();
 			if (featureType != null) {
@@ -148,7 +148,7 @@ public class ShapefileWriter {
 			featureTypeName = featureTypeName.replace('.', '_');
 			SimpleFeatureType type = DataUtilities.createType(featureTypeName, specs);
 			store.createSchema(type);
-			FeatureStore featureStore = (FeatureStore) store.getFeatureSource(featureTypeName);
+			FeatureStore<SimpleFeatureType, SimpleFeature> featureStore = (FeatureStore<SimpleFeatureType, SimpleFeature>)store.getFeatureSource(featureTypeName);
 			Transaction t = new DefaultTransaction();
 			// FeatureCollection collection =
 			// FeatureCollections.newCollection();
