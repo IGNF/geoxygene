@@ -16,6 +16,10 @@ public class Java3DInstallated {
 	public static boolean isJava3DInstallated(){
 		boolean isJava3DInstallated = false;
 		
+		if(GraphicsEnvironment.isHeadless()){
+			return false;
+		}
+		
 		try
 		{
 		   GraphicsConfigTemplate3D gconfigTemplate = new GraphicsConfigTemplate3D();
