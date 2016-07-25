@@ -34,7 +34,7 @@ public class TestShapeFileWriter {
 		AttributeManager.addAttribute(feat, "Taile", 42.42 , "Double");
 		
 		featColl.add(feat);
-		String pathFolder = "/home/mickael/Bureau/Anouk/test"; // getClass().getClassLoader().getResource("shp/").toString()+"test";
+		String pathFolder = getClass().getClassLoader().getResource("shp/").toString()+"test";
 		try {
 			CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4326");
 			ShapefileWriter.write(featColl,pathFolder+ ".shp", sourceCRS);
