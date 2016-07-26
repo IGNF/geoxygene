@@ -53,7 +53,7 @@ public class CityGMLLoadingWindow extends JDialog implements ActionListener {
   JButton cancel = new JButton();
 
   JCheckBox jCBKeepCoordinate;
-  JComboBox jCBLOD;
+  JComboBox<Object> jCBLOD;
 
   /**
    * Constructeur de la fenêtre
@@ -80,7 +80,7 @@ public class CityGMLLoadingWindow extends JDialog implements ActionListener {
     this.add(label);
 
     Object[] l = { 0, 1, 2, 3, 4 };
-    this.jCBLOD = new JComboBox(l);
+    this.jCBLOD = new JComboBox<Object>(l);
     this.jCBLOD.setBounds(220, 10, 50, 30);
     this.jCBLOD.setSelectedIndex(1);
     this.add(this.jCBLOD);

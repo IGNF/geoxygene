@@ -54,7 +54,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
  */
 public class DissimilarityMenu extends JPanel implements ActionListener {
   // Formulaire permettant de choisir les 2 objets et le style de calcul
-  JComboBox opChoice;
+  JComboBox<String> opChoice;
   JTextField jTFFeat1 = new JTextField();
   JTextField jTFFeat2 = new JTextField();
   JButton sel1 = new JButton();
@@ -104,7 +104,7 @@ public class DissimilarityMenu extends JPanel implements ActionListener {
 
     // Choix de l'Opération
 
-    this.opChoice = new JComboBox(DissimilarityMenu.choix);
+    this.opChoice = new JComboBox<String>(DissimilarityMenu.choix);
     this.opChoice.setBounds(150, 25, 100, 20);
     this.opChoice.setVisible(true);
     this.add(this.opChoice);

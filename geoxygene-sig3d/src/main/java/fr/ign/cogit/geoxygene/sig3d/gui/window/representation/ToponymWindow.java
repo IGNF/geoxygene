@@ -67,7 +67,7 @@ public class ToponymWindow extends JDialog implements ActionListener {
   // soit une valeur fixe jChoixValConst
   // soit une valeur issue des attributs jChoixValAtt
   JTextField jValTFNomConst;
-  JComboBox jListAttrbiText;
+  JComboBox<Object> jListAttrbiText;
   JRadioButton jChoixValAtt;
   JRadioButton jChoixValConst;
 
@@ -78,7 +78,7 @@ public class ToponymWindow extends JDialog implements ActionListener {
   JTextField jTFTaille;
 
   // Il s'agit du choix pour police de caractère
-  JComboBox jCBChoixPolice;
+  JComboBox<Object> jCBChoixPolice;
 
   // Il s'agit de choisir
   // choixBillboard le toponyme fera face à la caméra
@@ -90,21 +90,21 @@ public class ToponymWindow extends JDialog implements ActionListener {
   // au choix valeur constante ou valeur attributaire
   JRadioButton choixAttValX;
   JRadioButton choixConsValX;
-  JComboBox jCBValChoixAttValX;
+  JComboBox<Object> jCBValChoixAttValX;
   JTextField jTFConxValX;
 
   // Il s'agit de la valeur constante de rotation suivant Y
   // au choix valeur constante ou valeur attributaire
   JRadioButton choixAttValY;
   JRadioButton choixConsValY;
-  JComboBox jCBValChoixAttValY;
+  JComboBox<Object> jCBValChoixAttValY;
   JTextField jTFConxValY;
 
   // Il s'agit de la valeur constante de rotation suivant Z
   // au choix valeur constante ou valeur attributaire
   JRadioButton choixAttValZ;
   JRadioButton choixConsValZ;
-  JComboBox jCBValChoixAttValZ;
+  JComboBox<Object> jCBValChoixAttValZ;
   JTextField jTFConxValZ;
 
   // Panneau contenant le formulaire concernant la rotation
@@ -209,7 +209,7 @@ public class ToponymWindow extends JDialog implements ActionListener {
     rbg.add(this.jChoixValAtt);
     jpan.add(this.jChoixValAtt);
 
-    this.jListAttrbiText = new JComboBox(lNomAttributs.toArray());
+    this.jListAttrbiText = new JComboBox<Object>(lNomAttributs.toArray());
     jpan.add(this.jListAttrbiText);
 
     this.jChoixValConst = new JRadioButton(
@@ -251,7 +251,7 @@ public class ToponymWindow extends JDialog implements ActionListener {
     GraphicsEnvironment e = GraphicsEnvironment.getLocalGraphicsEnvironment();
     String[] fontnames = e.getAvailableFontFamilyNames();
 
-    this.jCBChoixPolice = new JComboBox(fontnames);
+    this.jCBChoixPolice = new JComboBox<Object>(fontnames);
     this.jCBChoixPolice.setSelectedItem("Arial");
     this.jCBChoixPolice.setBounds(200, 220, 220, 20);
     this.add(this.jCBChoixPolice);
@@ -315,7 +315,7 @@ public class ToponymWindow extends JDialog implements ActionListener {
     this.choixAttValX.addActionListener(this);
     this.jpan2.add(this.choixAttValX);
 
-    this.jCBValChoixAttValX = new JComboBox(lNomAttributsNumeriques.toArray());
+    this.jCBValChoixAttValX = new JComboBox<Object>(lNomAttributsNumeriques.toArray());
     this.jCBValChoixAttValX.setEnabled(false);
     this.jpan2.add(this.jCBValChoixAttValX);
 
@@ -345,7 +345,7 @@ public class ToponymWindow extends JDialog implements ActionListener {
     this.choixAttValY.addActionListener(this);
     this.jpan2.add(this.choixAttValY);
 
-    this.jCBValChoixAttValY = new JComboBox(lNomAttributsNumeriques.toArray());
+    this.jCBValChoixAttValY = new JComboBox<Object>(lNomAttributsNumeriques.toArray());
     this.jCBValChoixAttValY.setEnabled(false);
     this.jpan2.add(this.jCBValChoixAttValY);
 
@@ -374,7 +374,7 @@ public class ToponymWindow extends JDialog implements ActionListener {
     this.choixAttValZ.addActionListener(this);
     this.jpan2.add(this.choixAttValZ);
 
-    this.jCBValChoixAttValZ = new JComboBox(lNomAttributsNumeriques.toArray());
+    this.jCBValChoixAttValZ = new JComboBox<Object>(lNomAttributsNumeriques.toArray());
     this.jCBValChoixAttValZ.setEnabled(false);
     this.jpan2.add(this.jCBValChoixAttValZ);
 

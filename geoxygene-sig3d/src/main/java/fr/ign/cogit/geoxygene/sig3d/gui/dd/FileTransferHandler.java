@@ -76,14 +76,15 @@ public class FileTransferHandler extends TransferHandler {
    * @see javax.swing.TransferHandler#importData(javax.swing.JComponent,
    *      java.awt.datatransfer.Transferable)
    */
-  public boolean importData(JComponent comp, Transferable t) {
+  @SuppressWarnings("unchecked")
+public boolean importData(JComponent comp, Transferable t) {
     DataFlavor[] flavors = t.getTransferDataFlavors();
     for (int i = 0; i < flavors.length; i++) {
       DataFlavor flavor = flavors[i];
       try {
         if (flavor.equals(DataFlavor.javaFileListFlavor)) {
-          List l = (List) t.getTransferData(DataFlavor.javaFileListFlavor);
-          Iterator iter = l.iterator();
+          List<File> l = (List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
+          Iterator<File> iter = l.iterator();
           while (iter.hasNext()) {
 
             File file = (File) iter.next();
