@@ -24,7 +24,7 @@ public class TestBooleanOperators extends TestCase {
 
 	private static double epsilon = Math.pow(10, -1);
 
-	private static boolean isJava3DInstallated = Java3DInstallated.isJava3DInstallated();
+	private static boolean isJava3DInstalled = Java3DInstallated.isJava3DInstalled();
 
 	private static Logger log = Logger.getLogger(TestBooleanOperators.class);
 
@@ -48,7 +48,7 @@ public class TestBooleanOperators extends TestCase {
 	// --------------------------------------------------------------------------------
 	public void testCompute1() {
 
-		if (isJava3DInstallated) {
+		if (isJava3DInstalled) {
 			log.info("Test for solid cube intersection");
 
 			GM_Solid s = normalCase(BooleanOperators.INTERSECTION);
@@ -70,7 +70,7 @@ public class TestBooleanOperators extends TestCase {
 	// --------------------------------------------------------------------------------
 	public void testCompute2() {
 
-		if (isJava3DInstallated) {
+		if (isJava3DInstalled) {
 
 			log.info("Test for solid cubes intersection (same positions)");
 
@@ -94,7 +94,7 @@ public class TestBooleanOperators extends TestCase {
 	// --------------------------------------------------------------------------------
 	public void testCompute3() {
 
-		if (isJava3DInstallated) {
+		if (isJava3DInstalled) {
 			log.info("Test for solid cubes intersection (empty intersection)");
 
 			GM_Solid s = emptyIntersection(BooleanOperators.INTERSECTION);
@@ -114,7 +114,7 @@ public class TestBooleanOperators extends TestCase {
 	// --------------------------------------------------------------------------------
 	public void testCompute4() {
 
-		if (isJava3DInstallated) {
+		if (isJava3DInstalled) {
 
 			log.info("Test for solid cubes union");
 
@@ -140,7 +140,7 @@ public class TestBooleanOperators extends TestCase {
 	// --------------------------------------------------------------------------------
 	public void testCompute5() {
 
-		if (isJava3DInstallated) {
+		if (isJava3DInstalled) {
 
 			log.info("Test for solid cubes union (same positions)");
 
@@ -162,7 +162,7 @@ public class TestBooleanOperators extends TestCase {
 	// --------------------------------------------------------------------------------
 	public void testCompute6() {
 
-		if (isJava3DInstallated) {
+		if (isJava3DInstalled) {
 
 			log.info("Test for solid cubes union (empty intersection)");
 
@@ -208,7 +208,7 @@ public class TestBooleanOperators extends TestCase {
 	// Test with Sphere differences
 	// --------------------------------------------------------------------------------
 	public void testCompute7() {
-		if (isJava3DInstallated) {
+		if (isJava3DInstalled) {
 			log.info("Test with Sphere differences");
 
 			// Creating spheres
@@ -241,7 +241,7 @@ public class TestBooleanOperators extends TestCase {
 	// --------------------------------------------------------------------------------
 	public void testCompute8() {
 
-		if (isJava3DInstallated) {
+		if (isJava3DInstalled) {
 			log.info("Test for particular cases");
 
 			// Creating spheres
@@ -266,7 +266,7 @@ public class TestBooleanOperators extends TestCase {
 	// Creating cube
 	// --------------------------------------------------------------------------------
 	public GM_Solid normalCase(int operation) {
-		if (isJava3DInstallated) {
+		if (isJava3DInstalled) {
 			log.info("Test for solid cubes operation");
 
 			// Creating features
@@ -294,7 +294,7 @@ public class TestBooleanOperators extends TestCase {
 	// Test for solid cubes operation (same positions)
 	// --------------------------------------------------------------------------------
 	public GM_Solid samePositions(int operation) {
-		if (isJava3DInstallated) {
+		if (isJava3DInstalled) {
 			log.info("Test for solid cubes operation (same positions)");
 
 			// Creating features
@@ -322,7 +322,7 @@ public class TestBooleanOperators extends TestCase {
 	// Test for solid cubes operation (empty intersection)
 	// --------------------------------------------------------------------------------
 	public GM_Solid emptyIntersection(int operation) {
-		if (isJava3DInstallated) {
+		if (isJava3DInstalled) {
 			log.info("Test for solid cubes operation (empty intersection)");
 
 			// Creating features

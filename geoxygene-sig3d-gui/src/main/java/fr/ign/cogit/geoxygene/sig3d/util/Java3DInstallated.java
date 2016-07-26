@@ -13,7 +13,7 @@ import javax.media.j3d.GraphicsConfigTemplate3D;
 public class Java3DInstallated {
 	
 	
-	public static boolean isJava3DInstallated(){
+	public static boolean isJava3DInstalled(){
 		boolean isJava3DInstallated = false;
 		
 		if(GraphicsEnvironment.isHeadless()){
