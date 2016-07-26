@@ -21,6 +21,10 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
 public class TestShapeFileWriter {
 
 	
+	public static void main(String args[]){
+		(new TestShapeFileWriter()).testWritePoint() ;
+	}
+	
 	@Test
     public void testWritePoint() {
 		
@@ -34,7 +38,13 @@ public class TestShapeFileWriter {
 		AttributeManager.addAttribute(feat, "Taile", 42.42 , "Double");
 		
 		featColl.add(feat);
-		String pathFolder = getClass().getClassLoader().getResource("shp/").toString()+"test";
+		String pathFolder = "test";
+		
+		
+		//String pathFolder ="/home/mickael/Bureau/temp/test";
+		
+		
+		System.out.println(pathFolder);
 		try {
 			CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4326");
 			ShapefileWriter.write(featColl,pathFolder+ ".shp", sourceCRS);
@@ -53,14 +63,7 @@ public class TestShapeFileWriter {
 		assert((new File(pathFolder+".shx").exists()));
 		assert((new File(pathFolder+".prj").exists()));
 		
-		IFeatureCollection<IFeature> featCollIn = ShapefileReader.read(pathFolder+".shp");
-		
-		assert(!featCollIn.isEmpty());
-		
-		
-		
-		assert(featColl.get(0).equals(featCollIn.get(0)));
-		assert(featColl.get(0).getGeom().equals(featCollIn.get(0).getGeom()));
+
 
 	}
 

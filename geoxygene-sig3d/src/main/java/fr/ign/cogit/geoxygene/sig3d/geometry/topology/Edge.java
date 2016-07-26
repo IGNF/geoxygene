@@ -5,7 +5,7 @@ import java.util.List;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
-import fr.ign.cogit.geoxygene.sig3d.calculation.buffer3d.VContribution.MinkowskiSum;
+import fr.ign.cogit.geoxygene.sig3d.calculation.minkowskisum.VContribution.MinkowskiSum;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;

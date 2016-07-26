@@ -1,7 +1,6 @@
 package fr.ign.cogit.geoxygene.sig3d.tetraedrisation;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.junit.Test;

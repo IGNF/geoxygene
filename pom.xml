@@ -759,6 +759,7 @@
 		<module>geoxygene-schemageo</module>
 		<module>geoxygene-semio</module>
 		<module>geoxygene-sig3d</module>
+		<module>geoxygene-sig3d-gui</module>		
 		<module>geoxygene-spatial</module>
 		<module>geoxygene-style</module>
 		<module>geoxygene-util</module>
