@@ -67,7 +67,7 @@ public class ShapeFile3DWindow extends JDialog implements ActionListener {
   JCheckBox jcbExtrudeChoice;
   JLabel jLExtrusion;
 
-  JComboBox jcbAttHightChoice;
+  JComboBox<String> jcbAttHightChoice;
 
   JRadioButton jrbExtruPos;
   JRadioButton jrbExtruNeg;
@@ -136,7 +136,7 @@ public class ShapeFile3DWindow extends JDialog implements ActionListener {
     this.jLExtrusion.setVisible(false);
     this.add(this.jLExtrusion);
 
-    this.jcbAttHightChoice = new JComboBox(lAttNum);
+    this.jcbAttHightChoice = new JComboBox<String>(lAttNum);
     this.jcbAttHightChoice.addActionListener(this);
     this.jcbAttHightChoice.setVisible(false);
     this.jcbAttHightChoice.setBounds(215, 55, 200, 20);

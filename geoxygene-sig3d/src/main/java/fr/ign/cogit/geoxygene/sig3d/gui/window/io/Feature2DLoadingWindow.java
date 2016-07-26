@@ -72,9 +72,9 @@ public class Feature2DLoadingWindow extends JDialog implements ActionListener {
   JRadioButton jrbZminChoice;
   JRadioButton jrbMinConstantChoice;
 
-  JComboBox jcbDTMChoice;
+  JComboBox<Object> jcbDTMChoice;
   JCheckBox jcbSamplingChoice;
-  JComboBox jcbZminChoice;
+  JComboBox<String> jcbZminChoice;
   JTextField jtfConstMinChoice;
 
   // Seconde série de radio button
@@ -83,8 +83,8 @@ public class Feature2DLoadingWindow extends JDialog implements ActionListener {
   JRadioButton jrbZMaxHightChoice;
   JRadioButton jrbHightConstantChoice;
 
-  JComboBox jcbZMaxAttChoice;
-  JComboBox jcbZMaxHightChoice;
+  JComboBox<String> jcbZMaxAttChoice;
+  JComboBox<String> jcbZMaxHightChoice;
   JTextField jtfHightMaxChoice;
 
   // Bouton validation/annulation
@@ -159,7 +159,7 @@ public class Feature2DLoadingWindow extends JDialog implements ActionListener {
     this.jrbDTMChoice.setSelected(true);
     jpan.add(this.jrbDTMChoice);
 
-    this.jcbDTMChoice = new JComboBox(lNomMNT.toArray());
+    this.jcbDTMChoice = new JComboBox<Object>(lNomMNT.toArray());
     this.jcbDTMChoice.addActionListener(this);
     jpan.add(this.jcbDTMChoice);
 
@@ -175,7 +175,7 @@ public class Feature2DLoadingWindow extends JDialog implements ActionListener {
     this.jrbZminChoice.setSelected(false);
     jpan.add(this.jrbZminChoice);
 
-    this.jcbZminChoice = new JComboBox(lAttNum);
+    this.jcbZminChoice = new JComboBox<String>(lAttNum);
     this.jcbZminChoice.addActionListener(this);
     this.jcbZminChoice.setEnabled(false);
     jpan.add(this.jcbZminChoice);
@@ -210,7 +210,7 @@ public class Feature2DLoadingWindow extends JDialog implements ActionListener {
     this.jrbZMaxAttChoice.setSelected(true);
     jpan2.add(this.jrbZMaxAttChoice);
 
-    this.jcbZMaxAttChoice = new JComboBox(lAttNum);
+    this.jcbZMaxAttChoice = new JComboBox<String>(lAttNum);
     this.jcbZMaxAttChoice.addActionListener(this);
     jpan2.add(this.jcbZMaxAttChoice);
 
@@ -220,7 +220,7 @@ public class Feature2DLoadingWindow extends JDialog implements ActionListener {
     this.jrbZMaxHightChoice.setSelected(false);
     jpan2.add(this.jrbZMaxHightChoice);
 
-    this.jcbZMaxHightChoice = new JComboBox(lAttNum);
+    this.jcbZMaxHightChoice = new JComboBox<String>(lAttNum);
     this.jcbZMaxHightChoice.addActionListener(this);
     this.jcbZMaxHightChoice.setEnabled(false);
     jpan2.add(this.jcbZMaxHightChoice);

@@ -65,6 +65,21 @@ public class RasterSpecializedSetter implements UserDefinedGLProgramSetter {
             e.printStackTrace();
             return false;
         }
+        
+        try {
+          if (raster.getDefTide()) {
+              program.setUniform("tideRange", raster.getTideRange());
+              program.setUniform("tidePhase", raster.getTidePhase());
+              program.setUniform("waterHeightMean", raster.getWaterHeightMean());
+              program.setUniform("timeAcceleration", raster.getTimeAcceleration());
+              program.setUniform("tideCycleLength", raster.getTideCycleLength());
+          }
+        } catch (GLException e) {
+          e.printStackTrace();
+          return false;
+        }
+        
+        
         return true;
     }
 

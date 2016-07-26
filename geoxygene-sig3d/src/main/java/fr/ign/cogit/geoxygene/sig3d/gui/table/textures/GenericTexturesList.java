@@ -43,7 +43,7 @@ public class GenericTexturesList extends JCheckBox {
     this.model = new GenericTexturesListModel();
     List<String> lNomsTextures = TextureManager.getlTexturesName();
 
-    JComboBox jcb = new JComboBox();
+    JComboBox<String> jcb = new JComboBox<String>();
     jcb.setRenderer(new GenericTexturesListRenderer());
     jcb.setVisible(true);
     jcb.setModel(this.model);
