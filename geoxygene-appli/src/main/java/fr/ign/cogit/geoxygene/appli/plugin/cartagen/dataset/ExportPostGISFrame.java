@@ -225,7 +225,7 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
     btnPanel.add(this.bExportTout);
     btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.X_AXIS));
     btnPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
+    // Visualiser/Editer les tables attributaires
     this.add(middlePanel);
     this.add(btnPanel);
 
@@ -290,12 +290,13 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
 
       // get the features to export
       Collection<? extends IFeature> iterable = layer.getFeatureCollection();
+      System.out.println(iterable.size()); // bon nombre = avec les éliminés
       if (selection)
         iterable = SelectionUtil.getSelectedObjects(CartAGenPlugin
             .getInstance().getApplication(), layer.getName());
       IFeatureCollection<IFeature> features = new FT_FeatureCollection<IFeature>();
       for (IFeature obj : iterable) {
-
+        // set the geometry type
         if (geomType == null) {
           if (obj.getGeom() instanceof ILineString)
             geomType = ILineString.class;
@@ -310,6 +311,9 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
           continue;
         }
 
+        // @author mdumont
+        // on veut exporter même les éléments supprimés, en les taguant
+        // eliminated, pour des besoins de généralisation
         // if (!((IGeneObj) obj).isEliminated()) {
         // features.add((IGeneObj) obj);
         // }
@@ -359,19 +363,18 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
       specs += AdapterFactory.toJTSGeometryType(geomType).getSimpleName();
 
       // specify the attributes: there is only one the MRDB link
-      specs += "," + "a_pour_antecedant" + ":" + Integer.class.getName();
+      specs += "," + "antecedents_liste" + ":" + String.class.getName();
       // add the initial geometry
       specs += "," + "initial_geom" + ":" + String.class.getName();
       // add the eliminated status
-      specs += "," + "is_eliminated" + ":" + Boolean.class.getName();
+      specs += "," + "is_eliminated" + ":" + String.class.getName();
+      // add the unique key
+      specs += "," + "uKey" + ":" + String.class.getName();
       // the others attributes
       List<String> getters = new ArrayList<String>();
       if (featurePop.size() != 0) {
         Class<?> classObj = featurePop.get(0).getClass();
         Vector<Object> result = addAttributesToHeader(classObj);
-        System.out.println(result);
-        System.out.println(result.get(0));
-        System.out.println(result.get(1));
         getters = (List<String>) result.get(0);
         specs += result.get(1);
       }
@@ -386,9 +389,11 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
       List<SimpleFeature> collection = new ArrayList<SimpleFeature>();
       int i = 1;
       for (IFeature feature : featurePop) {
-        if (feature.isDeleted()) {
-          continue;
-        }
+        // @author mdumont on exporte aussi les éléments éliminés par la
+        // généralisation, avec un attribut is_eliminated
+        // if (feature.isDeleted()) {
+        // continue;
+        // }
         List<Object> liste = new ArrayList<Object>(0);
         // change the CRS if needed
         IGeometry geom = feature.getGeom();
@@ -396,17 +401,23 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
           continue;
         // affect the geometry
         liste.add(AdapterFactory.toGeometry(new GeometryFactory(), geom));
-        // TODO affect the antecedent (MRDB link)
-        liste.add(feature.getId());
+        // affect the antecedent (MRDB link)
+        Set<IGeneObj> listAnt = ((IGeneObj) feature).getAntecedents();
+        List<String> listAntId = new ArrayList<String>();
+        for (IGeneObj ant : listAnt) {
+          listAntId.add(ant.getAttribute("uKey").toString());
+        }
+        liste.add(listAntId.toString());
         // affect the initial geometry
         if (feature instanceof IGeneObj) {
-          System.out.println(((IGeneObj) feature).getInitialGeom().toString());
           liste.add(((IGeneObj) feature).getInitialGeom().toString());
-        } else
+        } else {
           liste.add("null");
+        }
         // affect the eliminated status :
-        // TODO check if it is updated as eliminated
-        liste.add(feature.isDeleted());
+        liste.add(((IGeneObj) feature).isEliminated());
+        // affect the unique key
+        liste.add(feature.getAttribute("uKey"));
         // put the attributes in the list, after the geometry
         for (String getter : getters) {
           Method m = feature.getClass().getDeclaredMethod(getter);
