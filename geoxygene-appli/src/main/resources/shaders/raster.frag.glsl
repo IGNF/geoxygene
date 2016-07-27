@@ -1,6 +1,7 @@
 #version 330
 // @massea  
 // Raster Fragment Shader with style (Colormap and Opacity)
+// Specific : Tide animation (maybe too specific to be here)
 
 // Const
 const float PI = 3.14159265359;
@@ -22,6 +23,13 @@ uniform sampler2D bufferColormap;
 // Animation
 uniform float time = 0.0;
 uniform int animate = 0;
+
+// Tide information
+uniform float waterHeightMean = 0.0;
+uniform float tideRange = 0.0;
+uniform float timeAcceleration = 1.0;
+uniform float tideCycleLength = 43200.0;
+uniform float tidePhase = 0.0;
 
 // Vertex data in
 in VertexData {
@@ -113,15 +121,10 @@ void main(void)
     // Animation, tides and stuffs
     if(animate==1) {
         // TODO Get back tide information from files
-        float mean_height = 4.75; // 0.57;
-        float range = 3.25; // 1.5;
-        float time_scale = 100;
-        float time_acceleration = 4000.0;
-        float length_of_tide_cycle = 43200.0;
-        float frequency = 2.0 * PI / length_of_tide_cycle * time_acceleration;
-        float phase = 0.0;
-       
-        pixel.x = pixel.x - mean_height + (range * sin( frequency * time / 1000.0 + phase));       
+
+        // New version with uniform
+        float tideFrequency = 2.0 * PI / tideCycleLength * timeAcceleration;
+        pixel.x = pixel.x - waterHeightMean + (tideRange * sin( tideFrequency * time / 1000.0 + tidePhase));            
     }
     
     // We apply the colormap 

@@ -1,0 +1,42 @@
+<RenderingMethod>
+    <Name>InkBrush</Name>
+    <GeneralMethodReference>BrushStroke</GeneralMethodReference>
+    <ShaderList>
+        <ShaderRef gltype="GL_FRAGMENT_SHADER">../shaders/subshader1d.hydro.frag.glsl</ShaderRef>
+    </ShaderList>
+    <Parameters>
+        <Parameter userdefined="true" required="false">
+            <Name>extremitiesLength</Name>
+            <Type>float</Type>
+	    <Description>The length of the portion on the curve where the brush pressure increases.</Description>
+        </Parameter>
+        <Parameter userdefined="true" required="true">
+            <Name>hardness</Name>
+            <Type>float</Type>
+	    <Description>The hardness of the brush</Description>
+            <Restrictions>	
+	            <BoundRestriction min="0.0" max="1.0"/>
+            </Restrictions>	
+        </Parameter>
+        <Parameter userdefined="true" required="true">
+            <Name>thickness</Name>
+            <Type>float</Type>
+	    <Description>The thickness of the brush</Description>
+            <Restrictions>	
+	            <BoundRestriction min="0.0" max="1.0"/>
+            </Restrictions>	
+        </Parameter>
+        <Parameter userdefined="true" required="true">
+            <Name>noiseWavelength</Name>
+            <Type>float</Type>
+	    <Description>The variations of the brush thickness</Description>
+            <Restrictions>	
+	            <BoundRestriction min="0.0" max="10000.0"/>
+            </Restrictions>	
+        </Parameter>
+    </Parameters>    
+</RenderingMethod>
+
+
+
+

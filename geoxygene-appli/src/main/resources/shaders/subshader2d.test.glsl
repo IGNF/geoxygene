@@ -1,4 +1,5 @@
 #version 330
+// example shader to extend in order to provide expressive fill rendering methods
 
 struct DataGradient {
 	float screenWidth; 		// screen width in pixels 

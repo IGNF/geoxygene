@@ -39,6 +39,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.generalisation.GaussianFilter;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.LineDensification;
 
+@Deprecated
 public class RoadNetworkMenu extends JMenu {
 
   /**
@@ -46,8 +47,8 @@ public class RoadNetworkMenu extends JMenu {
    */
   private static final long serialVersionUID = 1L;
 
-  private final Logger logger = Logger.getLogger(RoadNetworkMenu.class
-      .getName());
+  private final Logger logger = Logger
+      .getLogger(RoadNetworkMenu.class.getName());
 
   private final JMenuItem mResRoutierEnrich = new JMenuItem(
       new EnrichRoadNetAction());
@@ -55,7 +56,7 @@ public class RoadNetworkMenu extends JMenu {
       new NetworkFacesAction());
   private final JMenuItem mResRoutierSelect = new JMenuItem(
 
-  new SelectSectionsAction());
+      new SelectSectionsAction());
   public JCheckBoxMenuItem mNoeudsResRoutierVoir = new JCheckBoxMenuItem(
       "Display nodes");
   public JCheckBoxMenuItem mDegreNoeudsResRoutierVoir = new JCheckBoxMenuItem(
@@ -68,7 +69,8 @@ public class RoadNetworkMenu extends JMenu {
       "Display offset road");
   private final JMenuItem mRoutierSupprimerImpasses = new JMenuItem(
       new DeleteDeadEndsAction());
-  private final JMenuItem mRoutierDensifier = new JMenuItem(new DensifyAction());
+  private final JMenuItem mRoutierDensifier = new JMenuItem(
+      new DensifyAction());
   private final JMenuItem mRoutierAgregerTronconsAdjacentsAnalogues = new JMenuItem(
       new AggregationAction());
   private final JMenuItem mRoutierDetectBranchings = new JMenuItem(
@@ -130,9 +132,9 @@ public class RoadNetworkMenu extends JMenu {
     public void actionPerformed(ActionEvent e) {
       RoadNetworkMenu.this.logger.info("Enrichment of "
           + CartAGenDocOld.getInstance().getCurrentDataset().getRoadNetwork());
-      NetworkEnrichment.enrichNetwork(CartAGenDocOld.getInstance()
-          .getCurrentDataset(), CartAGenDocOld.getInstance().getCurrentDataset()
-          .getRoadNetwork());
+      NetworkEnrichment.enrichNetwork(
+          CartAGenDocOld.getInstance().getCurrentDataset(),
+          CartAGenDocOld.getInstance().getCurrentDataset().getRoadNetwork());
     }
 
     public EnrichRoadNetAction() {
@@ -150,8 +152,8 @@ public class RoadNetworkMenu extends JMenu {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      NetworkEnrichment.buildNetworkFaces(CartAGenDocOld.getInstance()
-          .getCurrentDataset());
+      NetworkEnrichment
+          .buildNetworkFaces(CartAGenDocOld.getInstance().getCurrentDataset());
     }
 
     public NetworkFacesAction() {
@@ -172,8 +174,8 @@ public class RoadNetworkMenu extends JMenu {
           + CartAGenDocOld.getInstance().getCurrentDataset().getRoadNetwork());
       for (IRoadLine section : CartAGenDocOld.getInstance().getCurrentDataset()
           .getRoads()) {
-        CartagenApplication.getInstance().getFrame().getVisuPanel().selectedObjects
-            .add(section);
+        CartagenApplication.getInstance().getFrame()
+            .getVisuPanel().selectedObjects.add(section);
       }
     }
 
@@ -194,9 +196,10 @@ public class RoadNetworkMenu extends JMenu {
         @Override
         public void run() {
 
-          String s = JOptionPane.showInputDialog(CartagenApplication
-              .getInstance().getFrame(), "Longueur seuil des impasses:",
-              "Cartagen", JOptionPane.PLAIN_MESSAGE);
+          String s = JOptionPane.showInputDialog(
+              CartagenApplication.getInstance().getFrame(),
+              "Longueur seuil des impasses:", "Cartagen",
+              JOptionPane.PLAIN_MESSAGE);
           double lg = 1.0;
           if (s != null && !s.isEmpty()) {
             lg = Double.parseDouble(s);
@@ -204,8 +207,9 @@ public class RoadNetworkMenu extends JMenu {
 
           RoadNetworkMenu.this.logger
               .info("Suppression des impasses du reseau routier");
-          NetworkEnrichment.supprimerImpasses(CartAGenDocOld.getInstance()
-              .getCurrentDataset().getRoadNetwork(), lg);
+          NetworkEnrichment.supprimerImpasses(
+              CartAGenDocOld.getInstance().getCurrentDataset().getRoadNetwork(),
+              lg);
 
           if (RoadNetworkMenu.this.logger.isLoggable(Level.FINEST)) {
             RoadNetworkMenu.this.logger
@@ -243,13 +247,13 @@ public class RoadNetworkMenu extends JMenu {
             RoadNetworkMenu.this.logger
                 .info("Densification du troncon routier " + tr);
             if (RoadNetworkMenu.this.logger.isLoggable(Level.CONFIG)) {
-              RoadNetworkMenu.this.logger.config("Geometrie initiale: "
-                  + tr.getGeom());
+              RoadNetworkMenu.this.logger
+                  .config("Geometrie initiale: " + tr.getGeom());
             }
             tr.setGeom(LineDensification.densification(tr.getGeom(), 1.0));
             if (RoadNetworkMenu.this.logger.isLoggable(Level.CONFIG)) {
-              RoadNetworkMenu.this.logger.config("Geometrie finale: "
-                  + tr.getGeom());
+              RoadNetworkMenu.this.logger
+                  .config("Geometrie finale: " + tr.getGeom());
             }
             RoadNetworkMenu.this.logger.info(" fin");
           }
@@ -280,20 +284,18 @@ public class RoadNetworkMenu extends JMenu {
             RoadNetworkMenu.this.logger.finest("   initial: nbTroncons="
                 + CartAGenDocOld.getInstance().getCurrentDataset().getRoads()
                     .size()
-                + "  nbNoeuds="
-                + CartAGenDocOld.getInstance().getCurrentDataset().getRoadNodes()
-                    .size());
+                + "  nbNoeuds=" + CartAGenDocOld.getInstance()
+                    .getCurrentDataset().getRoadNodes().size());
           }
-          NetworkEnrichment.aggregateAnalogAdjacentSections(CartAGenDocOld
-              .getInstance().getCurrentDataset(), CartAGenDocOld.getInstance()
-              .getCurrentDataset().getRoadNetwork());
+          NetworkEnrichment.aggregateAnalogAdjacentSections(
+              CartAGenDocOld.getInstance().getCurrentDataset(), CartAGenDocOld
+                  .getInstance().getCurrentDataset().getRoadNetwork());
           if (RoadNetworkMenu.this.logger.isLoggable(Level.FINEST)) {
             RoadNetworkMenu.this.logger.finest("   final: nbTroncons="
                 + CartAGenDocOld.getInstance().getCurrentDataset().getRoads()
                     .size()
-                + "  nbNoeuds="
-                + CartAGenDocOld.getInstance().getCurrentDataset().getRoadNodes()
-                    .size());
+                + "  nbNoeuds=" + CartAGenDocOld.getInstance()
+                    .getCurrentDataset().getRoadNodes().size());
           }
           if (RoadNetworkMenu.this.logger.isLoggable(Level.FINEST)) {
             RoadNetworkMenu.this.logger
@@ -316,7 +318,8 @@ public class RoadNetworkMenu extends JMenu {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      CartAGenDataSet dataset = CartAGenDocOld.getInstance().getCurrentDataset();
+      CartAGenDataSet dataset = CartAGenDocOld.getInstance()
+          .getCurrentDataset();
       CrossRoadDetection detect = new CrossRoadDetection();
       detect.detectRoundaboutsAndBranchingCartagen(dataset);
       for (IRoundAbout round : dataset.getRoundabouts()) {
@@ -342,7 +345,8 @@ public class RoadNetworkMenu extends JMenu {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      CartAGenDataSet dataset = CartAGenDocOld.getInstance().getCurrentDataset();
+      CartAGenDataSet dataset = CartAGenDocOld.getInstance()
+          .getCurrentDataset();
       for (IRoundAbout roundAbout : dataset.getRoundabouts()) {
         CollapseRoundabout collapseRoundabout = new CollapseRoundabout(150,
             roundAbout);
@@ -374,26 +378,25 @@ public class RoadNetworkMenu extends JMenu {
               continue;
             }
 
-            RoadNetworkMenu.this.logger
-                .info("Application du lissage gaussien au troncon routier "
-                    + sel);
+            RoadNetworkMenu.this.logger.info(
+                "Application du lissage gaussien au troncon routier " + sel);
             if (RoadNetworkMenu.this.logger.isLoggable(Level.CONFIG)) {
-              RoadNetworkMenu.this.logger.config("Geometrie initiale: "
-                  + ((INetworkSection) sel).getGeom());
+              RoadNetworkMenu.this.logger.config(
+                  "Geometrie initiale: " + ((INetworkSection) sel).getGeom());
             }
 
             INetworkSection road = (INetworkSection) sel;
             double symbolWidth = SectionSymbol.getUsedSymbolWidth(road) / 2;
             double sigma = 75.0 * symbolWidth;
 
-            ILineString filteredGeom = GaussianFilter
-                .gaussianFilter(road.getGeom(), sigma,
-                    GeneralisationSpecifications.getRESOLUTION());
+            ILineString filteredGeom = GaussianFilter.gaussianFilter(
+                road.getGeom(), sigma,
+                GeneralisationSpecifications.getRESOLUTION());
             road.setGeom(filteredGeom);
 
             if (RoadNetworkMenu.this.logger.isLoggable(Level.CONFIG)) {
-              RoadNetworkMenu.this.logger.config("Geometrie finale: "
-                  + ((INetworkSection) sel).getGeom());
+              RoadNetworkMenu.this.logger.config(
+                  "Geometrie finale: " + ((INetworkSection) sel).getGeom());
             }
             RoadNetworkMenu.this.logger.info(" fin");
           }
@@ -427,12 +430,11 @@ public class RoadNetworkMenu extends JMenu {
               continue;
             }
 
-            RoadNetworkMenu.this.logger
-                .info("Application de lissage de courbure au troncon routier "
-                    + sel);
+            RoadNetworkMenu.this.logger.info(
+                "Application de lissage de courbure au troncon routier " + sel);
             if (RoadNetworkMenu.this.logger.isLoggable(Level.CONFIG)) {
-              RoadNetworkMenu.this.logger.config("Geometrie initiale: "
-                  + ((INetworkSection) sel).getGeom());
+              RoadNetworkMenu.this.logger.config(
+                  "Geometrie initiale: " + ((INetworkSection) sel).getGeom());
             }
             if (RoadNetworkMenu.this.logger.isLoggable(Level.CONFIG)) {
               RoadNetworkMenu.this.logger.config("longueur initiale: "
@@ -444,8 +446,8 @@ public class RoadNetworkMenu extends JMenu {
             algo.compute(true);
 
             if (RoadNetworkMenu.this.logger.isLoggable(Level.CONFIG)) {
-              RoadNetworkMenu.this.logger.config("Geometrie finale: "
-                  + ((INetworkSection) sel).getGeom());
+              RoadNetworkMenu.this.logger.config(
+                  "Geometrie finale: " + ((INetworkSection) sel).getGeom());
             }
             if (RoadNetworkMenu.this.logger.isLoggable(Level.CONFIG)) {
               RoadNetworkMenu.this.logger.config("longueur finale: "

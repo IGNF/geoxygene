@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 
+@Deprecated
 public class UrbanAlignmentMenu extends JMenu {
 
   /**

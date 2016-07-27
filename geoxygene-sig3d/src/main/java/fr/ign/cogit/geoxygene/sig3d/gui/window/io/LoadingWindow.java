@@ -53,7 +53,7 @@ public class LoadingWindow extends JDialog implements ActionListener {
   private final static Logger logger = Logger.getLogger(LoadingWindow.class
       .getName());
   // Nom de la couche
-  JComboBox jCBBFormat;
+  JComboBox<String> jCBBFormat;
 
   JTextField jTFPath;
 
@@ -97,7 +97,7 @@ public class LoadingWindow extends JDialog implements ActionListener {
     labelNom.setText(Messages.getString("3DGIS.FileFormat")); //$NON-NLS-1$
     this.add(labelNom);
 
-    this.jCBBFormat = new JComboBox(LoadingWindow.availableFormats);
+    this.jCBBFormat = new JComboBox<String>(LoadingWindow.availableFormats);
     this.jCBBFormat.setBounds(160, 10, 200, 20);
     this.jCBBFormat.setVisible(true);
     this.jCBBFormat.addActionListener(this);

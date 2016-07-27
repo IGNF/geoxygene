@@ -2,12 +2,12 @@ GeOxygene, version 1.3
 
 GeOxygene aims at providing an open framework which implements OGC/ISO specifications for 
 the development and deployment of geographic (GIS) applications. It is a open source 
-contribution of the COGIT laboratory at the Institut G�ographique National (the French 
+contribution of the COGIT laboratory at the Institut Geographique National (the French 
 National Mapping Agency).
  
 Homepage: http://oxygene-project.sourceforge.net 
   
-Copyright (C) 2005 Institut G�ographique National
+Copyright (C) 2005 Institut Geographique National
 
 
 NOTE ABOUT LIBRARIES INCLUDED IN THIS DISTRIBUTION:

@@ -1,0 +1,7 @@
+<RenderingMethod>
+    <Name>ColorGradient</Name>
+    <GeneralMethodReference>RenderGradient</GeneralMethodReference>
+    <ShaderList>    
+        <ShaderRef gltype="GL_FRAGMENT_SHADER">../shaders/subshader2d.colorgradient.frag.glsl</ShaderRef>
+    </ShaderList>
+</RenderingMethod>

@@ -16,6 +16,7 @@ import com.vividsolutions.jts.operation.distance.DistanceOp;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
@@ -35,8 +36,8 @@ import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
  * 
  */
 public class CommonAlgorithms {
-  private static Logger logger = Logger.getLogger(CommonAlgorithms.class
-      .getName());
+  private static Logger logger = Logger
+      .getLogger(CommonAlgorithms.class.getName());
 
   /**
    * determine the farest point of a polygon to another given point the polygon
@@ -65,7 +66,8 @@ public class CommonAlgorithms {
    * @param geom2
    * @return
    */
-  public static IDirectPosition getNearestPoint(IGeometry geom1, IGeometry geom2) {
+  public static IDirectPosition getNearestPoint(IGeometry geom1,
+      IGeometry geom2) {
 
     // conversion en geometrie JTS
     Geometry geom1_ = null;
@@ -83,6 +85,101 @@ public class CommonAlgorithms {
     return new DirectPosition(cp[0].x, cp[0].y, cp[0].z);
   }
 
+  /**
+   * Gets the nearest point on an envelope from a direct position. Partition
+   * space around the envelope into regions. Returns the initial point if it's
+   * inside the envelope.
+   * 
+   * @param point
+   * @param env
+   * @return
+   */
+  public static IDirectPosition getNearestPoint(IDirectPosition point,
+      IEnvelope env) {
+    double xMin = env.getLowerCorner().getX();
+    double xMax = env.getUpperCorner().getX();
+    double yMin = env.getLowerCorner().getY();
+    double yMax = env.getUpperCorner().getY();
+    if (point.getX() < xMin) { // Region I, VIII, or VII
+      if (point.getY() < yMin) { // I
+        return env.getLowerCorner();
+      } else if (point.getY() > yMax) { // VII
+        return new DirectPosition(xMin, yMax);
+      } else { // VIII
+        return new DirectPosition(xMin, point.getY());
+      }
+    } else if (point.getX() > xMax) { // Region III, IV, or V
+      if (point.getY() < yMin) { // III
+        return new DirectPosition(xMax, yMin);
+      } else if (point.getY() > yMax) { // V
+        return env.getUpperCorner();
+      } else { // IV
+        return new DirectPosition(xMax, point.getY());
+      }
+    } else { // Region II, IX, or VI
+      if (point.getY() < yMin) { // II
+        return new DirectPosition(point.getX(), yMin);
+      } else if (point.getY() > yMax) { // VI
+        return new DirectPosition(point.getX(), yMax);
+      } else { // IX
+        return point;
+      }
+    }
+  }
+
+  /**
+   * Get the nearest points between two envelopes, the first one being on env1
+   * and the second one being on env2. Returns an empty list if envelopes
+   * intersect.
+   * @param env1
+   * @param env2
+   * @return
+   */
+  public static IDirectPositionList getNearestPoints(IEnvelope env1,
+      IEnvelope env2) {
+    IDirectPositionList list = new DirectPositionList();
+    if (!env1.intersects(env2)) {
+      if (env1.maxY() < env2.minY()) {
+        if (env1.maxX() < env2.minX()) {
+          list.add(env1.getUpperCorner());
+          list.add(env2.getLowerCorner());
+        } else if (env1.maxX() < env2.maxX()) {
+          list.add(env1.getUpperCorner());
+          list.add(new DirectPosition(env1.maxX(), env2.minY()));
+        } else if (env1.minX() < env2.maxX()) {
+          list.add(new DirectPosition(env1.minX(), env1.maxY()));
+          list.add(new DirectPosition(env1.minX(), env2.minY()));
+        } else {
+          list.add(new DirectPosition(env1.minX(), env1.maxY()));
+          list.add(new DirectPosition(env2.maxX(), env2.minY()));
+        }
+      } else if (env1.maxY() < env2.maxY()) {
+        if (env1.maxX() < env2.minX()) {
+          list.add(new DirectPosition(env1.maxX(), env1.maxY()));
+          list.add(new DirectPosition(env2.minX(), env1.maxY()));
+        } else {
+          list.add(new DirectPosition(env1.minX(), env1.maxY()));
+          list.add(new DirectPosition(env2.maxX(), env1.maxY()));
+        }
+      } else {
+        if (env1.maxX() < env2.minX()) {
+          list.add(new DirectPosition(env1.maxX(), env1.minY()));
+          list.add(new DirectPosition(env2.minX(), env2.maxY()));
+        } else if (env1.maxX() < env2.maxX()) {
+          list.add(new DirectPosition(env1.maxX(), env1.minY()));
+          list.add(new DirectPosition(env1.maxX(), env2.maxY()));
+        } else if (env1.minX() < env2.maxX()) {
+          list.add(new DirectPosition(env1.minX(), env1.minY()));
+          list.add(new DirectPosition(env1.minX(), env2.maxY()));
+        } else {
+          list.add(env1.getLowerCorner());
+          list.add(env2.getUpperCorner());
+        }
+      }
+    }
+    return list;
+  }
+
   // angle: angle de la direction de l'affinite, a partir de l'axe des x
   public static LineString affinite(LineString ls, Coordinate c, double angle,
       double coef) {
@@ -95,8 +192,8 @@ public class CommonAlgorithms {
       coord_[i] = new Coordinate(c.x + coef * (coord[i].x - c.x), coord[i].y);
     }
 
-    return CommonAlgorithms.rotation(
-        new GeometryFactory().createLineString(coord_), c, angle);
+    return CommonAlgorithms
+        .rotation(new GeometryFactory().createLineString(coord_), c, angle);
   }
 
   // angle: angle de la direction de l'affinite, a partir de l'axe des x
@@ -154,8 +251,8 @@ public class CommonAlgorithms {
     Coordinate[] coord = geom.getExteriorRing().getCoordinates();
     Coordinate[] coord_ = new Coordinate[coord.length];
     for (int i = 0; i < coord.length; i++) {
-      coord_[i] = new Coordinate(x0 + scale * (coord[i].x - x0), y0 + scale
-          * (coord[i].y - y0));
+      coord_[i] = new Coordinate(x0 + scale * (coord[i].x - x0),
+          y0 + scale * (coord[i].y - y0));
     }
     LinearRing lr = gf.createLinearRing(new CoordinateArraySequence(coord_));
 
@@ -165,8 +262,8 @@ public class CommonAlgorithms {
       Coordinate[] hole_coord = geom.getInteriorRingN(j).getCoordinates();
       Coordinate[] hole_coord_ = new Coordinate[hole_coord.length];
       for (int i = 0; i < hole_coord.length; i++) {
-        hole_coord_[i] = new Coordinate(x0 + scale * (hole_coord[i].x - x0), y0
-            + scale * (hole_coord[i].y - y0));
+        hole_coord_[i] = new Coordinate(x0 + scale * (hole_coord[i].x - x0),
+            y0 + scale * (hole_coord[i].y - y0));
       }
       trous[j] = gf.createLinearRing(new CoordinateArraySequence(hole_coord_));
     }
@@ -174,8 +271,8 @@ public class CommonAlgorithms {
   }
 
   public static Polygon homothetie(Polygon geom, double scale) {
-    return CommonAlgorithms.homothetie(geom, geom.getCentroid().getX(), geom
-        .getCentroid().getY(), scale);
+    return CommonAlgorithms.homothetie(geom, geom.getCentroid().getX(),
+        geom.getCentroid().getY(), scale);
   }
 
   public static IPolygon homothetie(IPolygon geom, double scale) {
@@ -220,27 +317,27 @@ public class CommonAlgorithms {
   public static Polygon translation(Polygon geom, double dx, double dy) {
 
     // le contour externe
-    LinearRing lr = CommonAlgorithms.translation(
-        (LinearRing) geom.getExteriorRing(), dx, dy);
+    LinearRing lr = CommonAlgorithms
+        .translation((LinearRing) geom.getExteriorRing(), dx, dy);
 
     // les trous
     LinearRing[] trous = new LinearRing[geom.getNumInteriorRing()];
     for (int j = 0; j < geom.getNumInteriorRing(); j++) {
-      trous[j] = CommonAlgorithms.translation(
-          (LinearRing) geom.getInteriorRingN(j), dx, dy);
+      trous[j] = CommonAlgorithms
+          .translation((LinearRing) geom.getInteriorRingN(j), dx, dy);
     }
 
     return new GeometryFactory().createPolygon(lr, trous);
   }
 
   public static LinearRing translation(LinearRing lr, double dx, double dy) {
-    return new GeometryFactory().createLinearRing(CommonAlgorithms.translation(
-        lr.getCoordinates(), dx, dy));
+    return new GeometryFactory().createLinearRing(
+        CommonAlgorithms.translation(lr.getCoordinates(), dx, dy));
   }
 
   public static LineString translation(LineString ls, double dx, double dy) {
-    return new GeometryFactory().createLineString(CommonAlgorithms.translation(
-        ls.getCoordinates(), dx, dy));
+    return new GeometryFactory().createLineString(
+        CommonAlgorithms.translation(ls.getCoordinates(), dx, dy));
   }
 
   public static Coordinate[] translation(Coordinate[] coord, double dx,
@@ -269,20 +366,21 @@ public class CommonAlgorithms {
   public static IPolygon translation(IPolygon geom, double dx, double dy) {
 
     // le contour externe
-    GM_Polygon poly = new GM_Polygon(CommonAlgorithms.translation(
-        geom.getExterior(), dx, dy));
+    GM_Polygon poly = new GM_Polygon(
+        CommonAlgorithms.translation(geom.getExterior(), dx, dy));
 
     // les trous
     for (int j = 0; j < geom.getInterior().size(); j++) {
-      poly.addInterior(CommonAlgorithms.translation(geom.getInterior(j), dx, dy));
+      poly.addInterior(
+          CommonAlgorithms.translation(geom.getInterior(j), dx, dy));
     }
 
     return poly;
   }
 
   public static IRing translation(IRing ring, double dx, double dy) {
-    return new GM_Ring(new GM_LineString(CommonAlgorithms.translation(
-        ring.coord(), dx, dy)));
+    return new GM_Ring(
+        new GM_LineString(CommonAlgorithms.translation(ring.coord(), dx, dy)));
   }
 
   public static ILineString translation(ILineString ls, double dx, double dy) {
@@ -293,8 +391,8 @@ public class CommonAlgorithms {
       double dx, double dy) {
     IDirectPositionList coords_ = new DirectPositionList();
     for (int i = 0; i < coords.size(); i++) {
-      coords_.add(new DirectPosition(coords.get(i).getX() + dx, coords.get(i)
-          .getY() + dy));
+      coords_.add(new DirectPosition(coords.get(i).getX() + dx,
+          coords.get(i).getY() + dy));
     }
     return coords_;
   }
@@ -306,8 +404,8 @@ public class CommonAlgorithms {
     Coordinate[] coord_ = new Coordinate[coord.length];
     for (int i = 0; i < coord.length; i++) {
       double x = coord[i].x, y = coord[i].y;
-      coord_[i] = new Coordinate(c.x + cos * (x - c.x) - sin * (y - c.y), c.y
-          + sin * (x - c.x) + cos * (y - c.y));
+      coord_[i] = new Coordinate(c.x + cos * (x - c.x) - sin * (y - c.y),
+          c.y + sin * (x - c.x) + cos * (y - c.y));
     }
     return new GeometryFactory().createLineString(coord_);
   }
@@ -339,8 +437,8 @@ public class CommonAlgorithms {
     Coordinate[] coord_ = new Coordinate[coord.length];
     for (int i = 0; i < coord.length; i++) {
       double x = coord[i].x, y = coord[i].y;
-      coord_[i] = new Coordinate(c.x + cos * (x - c.x) - sin * (y - c.y), c.y
-          + sin * (x - c.x) + cos * (y - c.y));
+      coord_[i] = new Coordinate(c.x + cos * (x - c.x) - sin * (y - c.y),
+          c.y + sin * (x - c.x) + cos * (y - c.y));
     }
     LinearRing lr = gf.createLinearRing(coord_);
 
@@ -359,7 +457,8 @@ public class CommonAlgorithms {
     return gf.createPolygon(lr, trous);
   }
 
-  public static IPolygon rotation(IPolygon geom, IDirectPosition c, double angle) {
+  public static IPolygon rotation(IPolygon geom, IDirectPosition c,
+      double angle) {
     IPolygon poly = null;
     try {
       poly = (IPolygon) AdapterFactory.toGM_Object(CommonAlgorithms.rotation(
@@ -454,8 +553,8 @@ public class CommonAlgorithms {
 
   public static IGeometry buffer(IGeometry geom, int quad, int cap, int join,
       double mitre, double distance) {
-    BufferBuilder bb = new BufferBuilder(new BufferParameters(quad, cap, join,
-        mitre));
+    BufferBuilder bb = new BufferBuilder(
+        new BufferParameters(quad, cap, join, mitre));
     IGeometry geom_ = null;
     try {
       geom_ = AdapterFactory.toGM_Object(bb.buffer(
@@ -478,9 +577,10 @@ public class CommonAlgorithms {
 
     Coordinate[] coords = null;
     try {
-      coords = new DistanceOp(AdapterFactory.toGeometry(new GeometryFactory(),
-          geom1), AdapterFactory.toGeometry(new GeometryFactory(), geom2))
-          .nearestPoints();
+      coords = new DistanceOp(
+          AdapterFactory.toGeometry(new GeometryFactory(), geom1),
+          AdapterFactory.toGeometry(new GeometryFactory(), geom2))
+              .nearestPoints();
       dl.add(new DirectPosition(coords[0].x, coords[0].y));
       dl.add(new DirectPosition(coords[1].x, coords[1].y));
     } catch (Exception e) {
@@ -510,8 +610,8 @@ public class CommonAlgorithms {
       e.printStackTrace();
     }
     ls = CommonAlgorithms.rotation(ls, new Coordinate(0.0, 0.0), angle);
-    DirectPosition endPoint = new DirectPosition(ls.getEndPoint().getX(), ls
-        .getEndPoint().getY());
+    DirectPosition endPoint = new DirectPosition(ls.getEndPoint().getX(),
+        ls.getEndPoint().getY());
     return new Vecteur(new DirectPosition(0.0, 0.0), endPoint);
   }
 

@@ -25,12 +25,14 @@ import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.schemageo.api.hydro.NoeudHydrographique;
 import fr.ign.cogit.geoxygene.schemageo.api.hydro.TronconHydrographique;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseau;
+import fr.ign.cogit.geoxygene.schemageo.impl.hydro.NoeudHydrographiqueImpl;
+import fr.ign.cogit.geoxygene.spatial.geomengine.GeometryEngine;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.CommonAlgorithmsFromCartAGen;
 
 public class RiverStrokesNetwork extends StrokesNetwork {
 
-  private static Logger logger = Logger.getLogger(RiverStrokesNetwork.class
-      .getName());
+  private static Logger logger = Logger
+      .getLogger(RiverStrokesNetwork.class.getName());
   private Set<NoeudHydrographique> sources, sinks;
   private Set<RiverIsland> simpleIslands;
   private Set<RiverIslandGroup> complexIslands;
@@ -104,6 +106,12 @@ public class RiverStrokesNetwork extends StrokesNetwork {
       if (this.getSources().contains(node)) {
         continue;
       }
+      if (node == null) {
+        node = new NoeudHydrographiqueImpl();
+        node.setGeom(arc.getGeom().coord().get(0).toGM_Point());
+        arc.setNoeudInitial(node);
+        node.getArcsSortants().add(arc);
+      }
       if (node.getArcsEntrants().size() != 0) {
         continue;
       }
@@ -113,6 +121,12 @@ public class RiverStrokesNetwork extends StrokesNetwork {
       node = (NoeudHydrographique) arc.getNoeudFinal();
       if (this.getSinks().contains(node)) {
         continue;
+      }
+      if (node == null) {
+        node = new NoeudHydrographiqueImpl();
+        node.setGeom(arc.getGeom().coord().get(0).toGM_Point());
+        arc.setNoeudFinal(node);
+        node.getArcsEntrants().add(arc);
       }
       if (node.getArcsSortants().size() != 0) {
         continue;
@@ -135,8 +149,8 @@ public class RiverStrokesNetwork extends StrokesNetwork {
         for (Arc arc : face.arcs()) {
           outline.add((TronconHydrographique) arc.getCorrespondant(0));
         }
-        this.getSimpleIslands().add(
-            new RiverIsland((IPolygon) face.getGeom(), outline));
+        this.getSimpleIslands()
+            .add(new RiverIsland((IPolygon) face.getGeom(), outline));
       }
     }
   }
@@ -229,13 +243,13 @@ public class RiverStrokesNetwork extends StrokesNetwork {
             downstreamSection, this.getUpstreamStrokes(node));
 
         // now extends the continuing stroke with downstreamSection
-        continuing.getFeatures().add(downstreamSection);
+        continuing.addFeature(downstreamSection);
         this.getGroupedFeatures().add(downstreamSection);
 
         // find the next node
         if (!downstreamNodes.contains(downstreamSection.getNoeudFinal())) {
-          downstreamNodes.add((NoeudHydrographique) downstreamSection
-              .getNoeudFinal());
+          downstreamNodes
+              .add((NoeudHydrographique) downstreamSection.getNoeudFinal());
         }
 
         // compute Strahler order
@@ -276,7 +290,7 @@ public class RiverStrokesNetwork extends StrokesNetwork {
           Set<RiverStroke> upstreamStrokes = this.getUpstreamStrokes(node);
           Collection<ArcReseau> remainingBranches = new HashSet<ArcReseau>(
               node.getArcsSortants());
-          RiverStroke unbraided = this.getNonBraidedStroke(upstreamStrokes);
+          RiverStroke unbraided = this.getMainNonBraidedStroke(upstreamStrokes);
 
           if (unbraided != null) {
             upstreamStrokes.remove(unbraided);
@@ -323,7 +337,7 @@ public class RiverStrokesNetwork extends StrokesNetwork {
     // continue the upstream stroke with mainBranch
     RiverStroke upstreamStroke = this.getUpstreamStrokes(node).iterator()
         .next();
-    upstreamStroke.getFeatures().add(mainBranch);
+    upstreamStroke.addFeature(mainBranch);
     this.getGroupedFeatures().add(mainBranch);
     // find the next node
     if (!downstreamNodes.contains(mainBranch.getNoeudFinal())) {
@@ -345,7 +359,8 @@ public class RiverStrokesNetwork extends StrokesNetwork {
    * @return
    */
   private RiverStroke makeDecisionAtConfluence(NoeudHydrographique node,
-      TronconHydrographique downstreamSection, Set<RiverStroke> upstreamStrokes) {
+      TronconHydrographique downstreamSection,
+      Set<RiverStroke> upstreamStrokes) {
     // if there is only one upstream river, it continues
     if (upstreamStrokes.size() == 1) {
       return upstreamStrokes.iterator().next();
@@ -367,23 +382,22 @@ public class RiverStrokesNetwork extends StrokesNetwork {
     }
 
     // arrived here, decision is made on stroke length
-    RiverStroke longest = null;
+    RiverStroke longest = null, second = null;
     double maxLength = 0.0;
-    double lengthDiff = 0.0;
+    double secondLength = 0.0;
     for (RiverStroke stroke : upstreamStrokes) {
       double length = stroke.getLength();
       if (length > maxLength) {
+        second = longest;
+        secondLength = maxLength;
         longest = stroke;
-        lengthDiff = maxLength / length;
         maxLength = length;
-      } else {
-        double diff = length / maxLength;
-        if (diff < lengthDiff) {
-          lengthDiff = diff;
-        }
+      } else if (length > secondLength) {
+        second = stroke;
+        secondLength = length;
       }
     }
-    if (lengthDiff >= 0.25) {
+    if (longest.getLength() / second.getLength() >= 3) {
       return longest;
     }
 
@@ -416,6 +430,23 @@ public class RiverStrokesNetwork extends StrokesNetwork {
       return unbraided;
     }
     return null;
+  }
+
+  private RiverStroke getMainNonBraidedStroke(
+      Set<RiverStroke> upstreamStrokes) {
+    double maxLength = 0;
+    RiverStroke unbraided = null;
+    for (RiverStroke stroke : upstreamStrokes) {
+      if (stroke.isBraided()) {
+        continue;
+      }
+      if (stroke.getLength() > maxLength) {
+        unbraided = stroke;
+        maxLength = stroke.getLength();
+      }
+    }
+    return unbraided;
+
   }
 
   /**
@@ -461,5 +492,39 @@ public class RiverStrokesNetwork extends StrokesNetwork {
       return max + 1;
     }
     return max;
+  }
+
+  /**
+   * Correct the geometry direction of what should be the source outflow stream
+   * at nodes that have two downstream sections and no upstream section. The
+   * section that is modified is the one that is connected only at one side.
+   * Sources and sinks must have been identified prior to this method.
+   */
+  public void correctDoubleSources() {
+    for (ArcReseau arc : this.getFeatures()) {
+      if (this.getSinks().contains(arc.getNoeudFinal())) {
+        NoeudHydrographique sink = (NoeudHydrographique) arc.getNoeudFinal();
+        NoeudHydrographique doubleNode = (NoeudHydrographique) arc
+            .getNoeudInitial();
+        if (doubleNode.getArcsEntrants().size() > 0)
+          continue;
+        if (doubleNode.getArcsSortants().size() != 2)
+          continue;
+        if (sink.getArcsEntrants().size() > 1)
+          continue;
+        // arrived here, arc geometry direction should be reversed
+        arc.setNoeudInitial(sink);
+        arc.setNoeudFinal(doubleNode);
+        sink.getArcsEntrants().clear();
+        sink.getArcsSortants().add(arc);
+        doubleNode.getArcsEntrants().add(arc);
+        doubleNode.getArcsSortants().remove(arc);
+        arc.setGeom(GeometryEngine.getFactory()
+            .createILineString(arc.getGeom().coord().reverse()));
+        this.getSinks().remove(sink);
+        this.getSources().remove(doubleNode);
+        this.getSources().add(sink);
+      }
+    }
   }
 }

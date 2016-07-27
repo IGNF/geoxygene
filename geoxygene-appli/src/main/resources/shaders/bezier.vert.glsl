@@ -70,7 +70,7 @@ vec2 worldToIdentityVector( vec2 p ) {
 
 
 
-void doStuff(vec4 screenPos) {
+void userTransform(vec4 screenPos) {
 	gl_Position = screenPos;
 	vertexOut.uv = vertexUV;
 	vertexOut.color = vertexColor;

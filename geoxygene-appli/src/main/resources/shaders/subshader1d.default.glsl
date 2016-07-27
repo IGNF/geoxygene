@@ -1,5 +1,7 @@
 #version 330
 
+// example shader to extend in order to provide expressive stroke rendering methods
+
 /* Data structure sent to subshaders */
 struct DataPainting {
     float screenWidth;      // screen width in pixels 
@@ -62,8 +64,6 @@ vec2 computeBrushTextureCoordinates( DataPainting fragmentData ) {
 }
 
 /************************************************************************************/
-vec4 computeFragmentColor( in vec4 brushColor, in vec4 paperColor, in DataPainting fragmentData ) {
-	
+vec4 computeFragmentColor( in vec4 brushColor, in vec4 paperColor, in DataPainting fragmentData ) {       
 	return vec4(computeBrushTextureCoordinates( fragmentData ).y,computeBrushTextureCoordinates( fragmentData ).y,computeBrushTextureCoordinates( fragmentData ).y,1.0);
-	//return vec4( brushColor.rgb , fragmentData.color.a );
 }

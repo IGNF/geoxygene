@@ -68,27 +68,27 @@ public class SymbolWindow extends JDialog implements ActionListener,
   // Il s'agit des paramètres utilisés si le fichier de modélisation différe
   // selon l'entité
   private JRadioButton jrbAttributePath;
-  private JComboBox jcbAttreibutePath;
+  private JComboBox<Object> jcbAttreibutePath;
 
   // Il s'agit de la valeur constante de rotation suivant X
   // au choix valeur constante ou valeur attributaire
   JRadioButton choiceAttValX;
   JRadioButton choiceConsValX;
-  JComboBox jCBValChoiceAttValX;
+  JComboBox<Object> jCBValChoiceAttValX;
   JTextField jTFConxValX;
 
   // Il s'agit de la valeur constante de rotation suivant Y
   // au choix valeur constante ou valeur attributaire
   JRadioButton choiceAttValY;
   JRadioButton choiceConsValY;
-  JComboBox jCBValChoiceAttValY;
+  JComboBox<Object> jCBValChoiceAttValY;
   JTextField jTFConxValY;
 
   // Il s'agit de la valeur constante de rotation suivant Z
   // au choix valeur constante ou valeur attributaire
   JRadioButton choixAttValZ;
   JRadioButton choixConsValZ;
-  JComboBox jCBValChoiceAttValZ;
+  JComboBox<Object> jCBValChoiceAttValZ;
   JTextField jTFConxValZ;
 
   // Il s'agit du coefficient à appliquer à la forme
@@ -96,7 +96,7 @@ public class SymbolWindow extends JDialog implements ActionListener,
   JSlider jSTValAtt;
 
   // Il s'agit de l'attribut qui servira de coefficient
-  JComboBox jCBValChoiceAttValHeight;
+  JComboBox<Object> jCBValChoiceAttValHeight;
   JRadioButton choiceAttValHeight;
 
   JButton ok;
@@ -239,7 +239,7 @@ public class SymbolWindow extends JDialog implements ActionListener,
     this.jrbAttributePath.addActionListener(this);
     jpan.add(this.jrbAttributePath);
 
-    this.jcbAttreibutePath = new JComboBox(lNomAttributs.toArray());
+    this.jcbAttreibutePath = new JComboBox<Object>(lNomAttributs.toArray());
     this.jcbAttreibutePath.setEnabled(false);
     jpan.add(this.jcbAttreibutePath);
 
@@ -275,7 +275,7 @@ public class SymbolWindow extends JDialog implements ActionListener,
     this.choiceAttValX.addActionListener(this);
     jpan2.add(this.choiceAttValX);
 
-    this.jCBValChoiceAttValX = new JComboBox(lNomAttributsNumeriques.toArray());
+    this.jCBValChoiceAttValX = new JComboBox<Object>(lNomAttributsNumeriques.toArray());
     this.jCBValChoiceAttValX.setEnabled(false);
     jpan2.add(this.jCBValChoiceAttValX);
 
@@ -305,7 +305,7 @@ public class SymbolWindow extends JDialog implements ActionListener,
     this.choiceAttValY.addActionListener(this);
     jpan2.add(this.choiceAttValY);
 
-    this.jCBValChoiceAttValY = new JComboBox(lNomAttributsNumeriques.toArray());
+    this.jCBValChoiceAttValY = new JComboBox<Object>(lNomAttributsNumeriques.toArray());
     this.jCBValChoiceAttValY.setEnabled(false);
     jpan2.add(this.jCBValChoiceAttValY);
 
@@ -334,7 +334,7 @@ public class SymbolWindow extends JDialog implements ActionListener,
     this.choixAttValZ.addActionListener(this);
     jpan2.add(this.choixAttValZ);
 
-    this.jCBValChoiceAttValZ = new JComboBox(lNomAttributsNumeriques.toArray());
+    this.jCBValChoiceAttValZ = new JComboBox<Object>(lNomAttributsNumeriques.toArray());
     this.jCBValChoiceAttValZ.setEnabled(false);
     jpan2.add(this.jCBValChoiceAttValZ);
 
@@ -365,7 +365,7 @@ public class SymbolWindow extends JDialog implements ActionListener,
     this.choiceAttValHeight.addActionListener(this);
     jpan3.add(this.choiceAttValHeight);
 
-    this.jCBValChoiceAttValHeight = new JComboBox(
+    this.jCBValChoiceAttValHeight = new JComboBox<Object>(
         lNomAttributsNumeriques.toArray());
     this.jCBValChoiceAttValHeight.setEnabled(false);
     jpan3.add(this.jCBValChoiceAttValHeight);

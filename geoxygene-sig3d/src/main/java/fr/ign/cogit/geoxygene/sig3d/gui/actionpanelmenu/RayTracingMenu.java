@@ -71,7 +71,7 @@ public class RayTracingMenu extends JPanel implements ActionListener,
   JLabel jBetaVal;
   JLabel jAngleVal;
 
-  JComboBox jModeChoice;
+  JComboBox<String> jModeChoice;
 
   JButton ok = new JButton();
 
@@ -229,7 +229,7 @@ public class RayTracingMenu extends JPanel implements ActionListener,
 
     String[] lObject = { Messages.getString("FenetreRayonnement.PointCloud"),
         Messages.getString("FenetreRayonnement.Selection") };
-    this.jModeChoice = new JComboBox(lObject);
+    this.jModeChoice = new JComboBox<String> (lObject);
     this.jModeChoice.setBounds(10, 235, 350, 20);
     this.add(this.jModeChoice);
 

@@ -452,11 +452,11 @@ public class OBJWriter extends FilterWriter {
       }
       int [] normalIndexSubstitutes = new int [geometryArray.getVertexCount()];
       int [] oppositeSideNormalIndexSubstitutes;
-      if (cullFace == PolygonAttributes.CULL_NONE) {
-        oppositeSideNormalIndexSubstitutes = new int [geometryArray.getVertexCount()];
-      } else {
+    //  if (cullFace == PolygonAttributes.CULL_NONE) {
+      //    oppositeSideNormalIndexSubstitutes = new int [geometryArray.getVertexCount()];
+      // } else {
         oppositeSideNormalIndexSubstitutes = null;
-      }
+        // }
 
       boolean textureCoordinatesDefined = (geometryArray.getVertexFormat() & GeometryArray.TEXTURE_COORDINATE_2) != 0;
       int [] textureCoordinatesIndexSubstitutes = new int [geometryArray.getVertexCount()];
@@ -805,15 +805,15 @@ public class OBJWriter extends FilterWriter {
       normalIndexSubstitutes [index] = normalIndex;
     }
     
-    if (cullFace == PolygonAttributes.CULL_NONE) {
-      Vector3f oppositeNormal = new Vector3f(); 
-      oppositeNormal.negate(normal);
+    // if (cullFace == PolygonAttributes.CULL_NONE) {
+    //  Vector3f oppositeNormal = new Vector3f(); 
+    // oppositeNormal.negate(normal);
       // Fill opposite side normal index substitutes array
-      return writeNormal(normalsBuffer, transformationToParent, oppositeNormal, index, 
-          oppositeSideNormalIndexSubstitutes, null, PolygonAttributes.CULL_FRONT, false);
-    } else {
+    //  return writeNormal(normalsBuffer, transformationToParent, oppositeNormal, index, 
+    //      oppositeSideNormalIndexSubstitutes, null, PolygonAttributes.CULL_FRONT, false);
+    // } else {
       return true;
-    }
+      // }
   }
 
   /**
@@ -907,12 +907,12 @@ public class OBJWriter extends FilterWriter {
       }
     }
 
-    if (cullFace == PolygonAttributes.CULL_NONE) {
+    // if (cullFace == PolygonAttributes.CULL_NONE) {
       // Use opposite side normal index substitutes array
-      writeIndexedTriangle(geometryArray, vertexIndex1, vertexIndex2, vertexIndex3, 
-          vertexIndexSubstitutes, oppositeSideNormalIndexSubstitutes, null,  
-          normalsDefined, textureCoordinatesIndexSubstitutes, textureCoordinatesGenerated, PolygonAttributes.CULL_FRONT);
-    }
+    //    writeIndexedTriangle(geometryArray, vertexIndex1, vertexIndex2, vertexIndex3, 
+    //       vertexIndexSubstitutes, oppositeSideNormalIndexSubstitutes, null,  
+    //       normalsDefined, textureCoordinatesIndexSubstitutes, textureCoordinatesGenerated, PolygonAttributes.CULL_FRONT);
+    // }
   }
   
   /**
@@ -980,12 +980,12 @@ public class OBJWriter extends FilterWriter {
       }
     }
 
-    if (cullFace == PolygonAttributes.CULL_NONE) {      
+    //   if (cullFace == PolygonAttributes.CULL_NONE) {      
       // Use opposite side normal index substitutes array
-      writeIndexedQuadrilateral(geometryArray, vertexIndex1, vertexIndex2, vertexIndex3, vertexIndex4, 
-          vertexIndexSubstitutes, oppositeSideNormalIndexSubstitutes, null,  
-          normalsDefined, textureCoordinatesIndexSubstitutes, textureCoordinatesGenerated, PolygonAttributes.CULL_FRONT);
-    }
+    //    writeIndexedQuadrilateral(geometryArray, vertexIndex1, vertexIndex2, vertexIndex3, vertexIndex4, 
+    //       vertexIndexSubstitutes, oppositeSideNormalIndexSubstitutes, null,  
+    //       normalsDefined, textureCoordinatesIndexSubstitutes, textureCoordinatesGenerated, PolygonAttributes.CULL_FRONT);
+    // }
   }
   
   /**
@@ -1061,12 +1061,12 @@ public class OBJWriter extends FilterWriter {
       }
     }
 
-    if (cullFace == PolygonAttributes.CULL_NONE) {
+    // if (cullFace == PolygonAttributes.CULL_NONE) {
       // Use opposite side normal index substitutes array
-      writeTriangle(geometryArray, vertexIndex1, vertexIndex2, vertexIndex3, 
-          vertexIndexSubstitutes, oppositeSideNormalIndexSubstitutes, null,  
-          normalsDefined, textureCoordinatesIndexSubstitutes, textureCoordinatesGenerated, PolygonAttributes.CULL_FRONT);
-    }
+    //   writeTriangle(geometryArray, vertexIndex1, vertexIndex2, vertexIndex3, 
+    //      vertexIndexSubstitutes, oppositeSideNormalIndexSubstitutes, null,  
+    //      normalsDefined, textureCoordinatesIndexSubstitutes, textureCoordinatesGenerated, PolygonAttributes.CULL_FRONT);
+    //}
   }
   
   /**
@@ -1134,12 +1134,12 @@ public class OBJWriter extends FilterWriter {
       }
     }
 
-    if (cullFace == PolygonAttributes.CULL_NONE) {      
+    //  if (cullFace == PolygonAttributes.CULL_NONE) {      
       // Use opposite side normal index substitutes array
-      writeQuadrilateral(geometryArray, vertexIndex1, vertexIndex2, vertexIndex3, vertexIndex4, 
-          vertexIndexSubstitutes, oppositeSideNormalIndexSubstitutes, null, 
-          normalsDefined, textureCoordinatesIndexSubstitutes, textureCoordinatesGenerated, PolygonAttributes.CULL_FRONT);
-    }
+    //    writeQuadrilateral(geometryArray, vertexIndex1, vertexIndex2, vertexIndex3, vertexIndex4, 
+    //        vertexIndexSubstitutes, oppositeSideNormalIndexSubstitutes, null, 
+    //       normalsDefined, textureCoordinatesIndexSubstitutes, textureCoordinatesGenerated, PolygonAttributes.CULL_FRONT);
+          //  }
   }
   
   /**

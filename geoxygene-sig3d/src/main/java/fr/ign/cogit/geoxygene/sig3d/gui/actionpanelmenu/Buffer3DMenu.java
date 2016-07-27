@@ -49,7 +49,7 @@ public class Buffer3DMenu extends JPanel implements ActionListener {
   InterfaceMap3D iMap3D;
 
   // Nom de la couche
-  JComboBox jCBBAlgorithmChoice;
+  JComboBox<String> jCBBAlgorithmChoice;
   private static String[] formatsDisponibles = { "Convolution",
       "Divide & conquer" };
 
@@ -104,7 +104,7 @@ public class Buffer3DMenu extends JPanel implements ActionListener {
     labelCoupeZ.setVisible(true);
     this.add(labelCoupeZ);
 
-    this.jCBBAlgorithmChoice = new JComboBox(Buffer3DMenu.formatsDisponibles);
+    this.jCBBAlgorithmChoice = new JComboBox<String>(Buffer3DMenu.formatsDisponibles);
     this.jCBBAlgorithmChoice.setBounds(200, 105, 150, 20);
     this.jCBBAlgorithmChoice.setVisible(true);
     this.jCBBAlgorithmChoice.addActionListener(this);
