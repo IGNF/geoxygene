@@ -11,10 +11,10 @@ struct DataPainting {
 	int brushEndWidth;      // end texture length in pixels for the brush
 	float brushScale;       // size in mm of one brush pixel
 	float paperScale;       // scaling factor for paper
-	float sharpness;        // brush-paper blending sharpness
+	float strokeSoftness;        // brush-paper blending strokeSoftness
 	
-	float paperDensity;     // paper height scale factor
-	float brushDensity;     // brush height scale factor
+	float paperRoughness;     // paper height scale factor
+	float brushRoughness;     // brush height scale factor
 	float strokePressure;   // stroke pressure
 	vec4 position;          // current point position in world coordinates
 	vec2 uv;                // UV coordinates texture (u in world coordinates, v between 0 and 1)
@@ -26,8 +26,10 @@ struct DataPainting {
 	
 };
 
+
+
 uniform int time;
-uniform vec4 col;
+//uniform vec4 col;
 
 // v is scaled from [0..1] to [0.5-width/2..0.5+width/2]
 float vTextureScale( in float width, in float v ) {
@@ -81,7 +83,7 @@ vec4 computeFragmentColorCurvature( in vec4 brushColor, in vec4 paperColor, in D
 
 
 vec4 computeFragmentColor( in vec4 brushColor, in vec4 paperColor, in DataPainting fragmentData ) {
-return col;
+//return col;
 	return computeFragmentColorCurvature( brushColor, paperColor, fragmentData );
-	// return computeFragmentColorRainbow( brushColor, paperColor, fragmentData );
+	 //return computeFragmentColorRainbow( brushColor, paperColor, fragmentData );
 }
