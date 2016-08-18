@@ -55,8 +55,8 @@ public class DTMWindow extends JDialog implements ActionListener,
   private String file;
   private InterfaceMap3D iMap3D;
 
-  private JComboBox jCBoxModChoice;
-  private JComboBox jCBoxShadeChoice;
+  private JComboBox<String> jCBoxModChoice;
+  private JComboBox <Color[]>jCBoxShadeChoice;
   private JTextField jTFPath;
 
   private JCheckBox jCBiSFilled;
@@ -122,7 +122,7 @@ public class DTMWindow extends JDialog implements ActionListener,
     this.jTFLayerName.setBounds(150, 10, 230, 20);
     this.add(this.jTFLayerName);
 
-    this.jCBoxModChoice = new JComboBox(DTMWindow.loadingChoice);
+    this.jCBoxModChoice = new JComboBox<String>(DTMWindow.loadingChoice);
     this.jCBoxModChoice.setBounds(10, 40, 370, 20);
     this.jCBoxModChoice.setVisible(true);
     this.jCBoxModChoice.addActionListener(this);
@@ -150,7 +150,7 @@ public class DTMWindow extends JDialog implements ActionListener,
     this.jLabelExa.setVisible(true);
     this.add(this.jLabelExa);
 
-    this.jCBoxShadeChoice = new JComboBox(ColorShade.getColorShadeList());
+    this.jCBoxShadeChoice = new JComboBox<Color[]>(ColorShade.getColorShadeList());
     this.jCBoxShadeChoice.setRenderer(new ColorGradient());
     this.jCBoxShadeChoice.setBounds(10, 180, 370, 20);
     this.jCBoxShadeChoice.addActionListener(this);

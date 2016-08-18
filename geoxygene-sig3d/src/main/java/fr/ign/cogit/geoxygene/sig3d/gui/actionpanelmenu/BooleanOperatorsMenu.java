@@ -44,7 +44,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
  */
 public class BooleanOperatorsMenu extends JPanel implements ActionListener {
   // Formulaire permettant de choisir les 2 objets et l'Opérateur
-  JComboBox choixop;
+  JComboBox<String> choixop;
   JTextField JTFfeat1 = new JTextField();
   JTextField JTFfeat2 = new JTextField();
   JButton sel1 = new JButton();
@@ -88,7 +88,7 @@ public class BooleanOperatorsMenu extends JPanel implements ActionListener {
     op.setText("Operation");
     this.add(op);
 
-    this.choixop = new JComboBox(BooleanOperatorsMenu.choix);
+    this.choixop = new JComboBox<String>(BooleanOperatorsMenu.choix);
     this.choixop.setBounds(150, 25, 100, 20);
     this.choixop.setVisible(true);
     this.add(this.choixop);

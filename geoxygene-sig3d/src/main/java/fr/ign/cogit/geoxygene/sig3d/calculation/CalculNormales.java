@@ -99,7 +99,7 @@ public class CalculNormales {
 
     } else if (geom instanceof GM_MultiSurface<?>) {
 
-      lOS.addAll((GM_MultiSurface<GM_OrientableSurface>) geom);
+      lOS.addAll((GM_MultiSurface<?>) geom);
 
     } else {
 

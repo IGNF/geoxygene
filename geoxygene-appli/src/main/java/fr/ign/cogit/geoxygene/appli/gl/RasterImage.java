@@ -105,6 +105,14 @@ public class RasterImage extends BasicTexture {
 
     // animation
     private int animate = 0;
+    
+    // Tide information
+    private boolean defTide = false;
+    private double waterHeightMean = 0.0;
+    private double tideRange = 0.0;
+    private double timeAcceleration = 1.0;
+    private double tideCycleLength = 43200.0;
+    private double tidePhase = 0.0;
 
     /**
      * Constructor
@@ -203,6 +211,10 @@ public class RasterImage extends BasicTexture {
         return defColormap;
     }
 
+    public boolean getDefTide() {
+      return defTide;
+    }
+    
     /**
      * initialize the texture rendering
      * 
@@ -570,6 +582,20 @@ public class RasterImage extends BasicTexture {
             defColormap = false;
         }
     }
+    
+    public void readTide(RasterSymbolizer rasterSymbolizer) {
+   // Tide information
+      if (rasterSymbolizer.getTide()!=null) {
+        defTide = true;
+        waterHeightMean = rasterSymbolizer.getTide().getWaterHeightMean();
+        tideRange = rasterSymbolizer.getTide().getTideRange();
+        timeAcceleration = rasterSymbolizer.getTide().getTimeAcceleration();
+        tideCycleLength = rasterSymbolizer.getTide().getTideCycleLength();
+        tidePhase = rasterSymbolizer.getTide().getTidePhase();
+      } else {
+        defTide = false;
+      }
+    }
 
     public ImageColormap getImageColorMap() {
         return imageColormap;
@@ -577,5 +603,25 @@ public class RasterImage extends BasicTexture {
 
     public int getAnimate() {
         return animate;
+    }
+    
+    public double getTideRange() {
+      return tideRange;
+    }
+    
+    public double getTidePhase() {
+      return tidePhase;
+    }
+    
+    public double getTideCycleLength() {
+      return tideCycleLength;
+    }
+    
+    public double getTimeAcceleration() {
+      return timeAcceleration;
+    }
+    
+    public double getWaterHeightMean() {
+      return waterHeightMean;
     }
 }

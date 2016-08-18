@@ -101,6 +101,17 @@ public class RasterSymbolizer extends AbstractSymbolizer {
         this.animate = animate;
     }
     
+    // Tide data
+    @XmlElement(name = "Tide")
+    Tide tide = null;
+    public Tide getTide() {
+      return this.tide;
+    }
+
+    public void setTide(Tide tide) {
+      this.tide = tide;
+    }
+    
     // TODO 
     // ContrastEnhancement
     

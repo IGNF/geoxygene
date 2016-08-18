@@ -244,6 +244,9 @@ public class DisplayableSurface extends AbstractDisplayable {
                 TextureManager.addTexture(colormap_uri, raster.getImageColorMap());
             }
 
+            // retrieve tide information if available
+            raster.readTide(rasterSymbolizer);
+            
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }

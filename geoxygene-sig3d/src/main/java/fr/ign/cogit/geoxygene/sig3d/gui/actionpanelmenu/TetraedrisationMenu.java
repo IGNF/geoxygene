@@ -43,8 +43,8 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
  */
 public class TetraedrisationMenu extends JPanel implements ActionListener {
   // Composants du formulaire
-  JComboBox choixContrainte;
-  JComboBox choixDeomposition;
+  JComboBox<String>  choixContrainte;
+  JComboBox<String>  choixDeomposition;
 
   JButton ok = new JButton();
   InterfaceMap3D iCarte3D;
@@ -99,7 +99,7 @@ public class TetraedrisationMenu extends JPanel implements ActionListener {
     o.setVisible(true);
     this.add(o);
 
-    this.choixContrainte = new JComboBox(TetraedrisationMenu.choix);
+    this.choixContrainte = new JComboBox<String> (TetraedrisationMenu.choix);
     this.choixContrainte.setBounds(150, 25, 150, 20);
     this.choixContrainte.setVisible(true);
     this.choixContrainte.setSelectedIndex(0);
@@ -108,7 +108,7 @@ public class TetraedrisationMenu extends JPanel implements ActionListener {
     this.add(this.choixContrainte);
 
     // Etiquette su choix de la décomposition
-    this.choixDeomposition = new JComboBox(TetraedrisationMenu.choix2);
+    this.choixDeomposition = new JComboBox<String> (TetraedrisationMenu.choix2);
     this.choixDeomposition.setBounds(150, 65, 150, 20);
     this.choixDeomposition.setVisible(true);
     this.choixDeomposition.setSelectedIndex(0);

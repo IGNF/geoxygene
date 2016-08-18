@@ -86,6 +86,7 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
   private List<String> unexportedLayers = new ArrayList<String>();
   private List<Layer> layers;
   private Map<Layer, JCheckBox> mapLayers = new HashMap<Layer, JCheckBox>();
+  private Map<Layer, JTextField> nameLayers = new HashMap<Layer, JTextField>();
   private JTextField txtHost, txtPort, txtDb, txtUser, txtPwd, txtSchema;
 
   public ExportPostGISFrame(ProjectFrame projectFrame) {
@@ -105,9 +106,18 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
 
     JPanel layerPanel = new JPanel();
     for (Layer layer : layers) {
+      JPanel layerLine = new JPanel();
       JCheckBox box = new JCheckBox(layer.getName());
+      JTextField txt = new JTextField(layer.getName());
+      txt.setPreferredSize(new Dimension(100, 20));
+      txt.setMinimumSize(new Dimension(100, 20));
+      txt.setMaximumSize(new Dimension(100, 20));
       mapLayers.put(layer, box);
-      layerPanel.add(box);
+      nameLayers.put(layer, txt);
+      layerLine.add(box);
+      layerLine.add(txt);
+      layerLine.setLayout(new BoxLayout(layerLine, BoxLayout.X_AXIS));
+      layerPanel.add(layerLine);
     }
     layerPanel.setLayout(new BoxLayout(layerPanel, BoxLayout.Y_AXIS));
 
@@ -215,7 +225,7 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
     btnPanel.add(this.bExportTout);
     btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.X_AXIS));
     btnPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
+    // Visualiser/Editer les tables attributaires
     this.add(middlePanel);
     this.add(btnPanel);
 
@@ -268,7 +278,10 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
       if (unexportedLayers.contains(layer.getName()))
         continue;
 
-      String tableName = layer.getName();
+      String tableName = nameLayers.get(layer).getText();
+      if (tableName == null || tableName == "") {
+        tableName = layer.getName();
+      }
       if (logger.isLoggable(Level.FINE)) {
         logger.fine(tableName);
       }
@@ -277,12 +290,13 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
 
       // get the features to export
       Collection<? extends IFeature> iterable = layer.getFeatureCollection();
+      System.out.println(iterable.size()); // bon nombre = avec les éliminés
       if (selection)
         iterable = SelectionUtil.getSelectedObjects(CartAGenPlugin
             .getInstance().getApplication(), layer.getName());
       IFeatureCollection<IFeature> features = new FT_FeatureCollection<IFeature>();
       for (IFeature obj : iterable) {
-
+        // set the geometry type
         if (geomType == null) {
           if (obj.getGeom() instanceof ILineString)
             geomType = ILineString.class;
@@ -292,19 +306,23 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
             geomType = IPoint.class;
         }
 
-        if (!(obj instanceof IGeneObj)) {
+        if ((obj instanceof IGeneObj)) {
           features.add(obj);
           continue;
         }
-        if (!((IGeneObj) obj).isEliminated()) {
-          features.add((IGeneObj) obj);
-        }
+
+        // @author mdumont
+        // on veut exporter même les éléments supprimés, en les taguant
+        // eliminated, pour des besoins de généralisation
+        // if (!((IGeneObj) obj).isEliminated()) {
+        // features.add((IGeneObj) obj);
+        // }
       }
       if (features.isEmpty()) {
         continue;
       }
 
-      // write the shapefile
+      // write the table
       write(features, geomType, tableName);
     }
   }
@@ -345,7 +363,14 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
       specs += AdapterFactory.toJTSGeometryType(geomType).getSimpleName();
 
       // specify the attributes: there is only one the MRDB link
-      specs += "," + "a_pour_antecedant" + ":" + Integer.class.getName();
+      specs += "," + "antecedents_liste" + ":" + String.class.getName();
+      // add the initial geometry
+      specs += "," + "initial_geom" + ":" + String.class.getName();
+      // add the eliminated status
+      specs += "," + "is_eliminated" + ":" + String.class.getName();
+      // add the unique key
+      specs += "," + "uKey" + ":" + String.class.getName();
+      // the others attributes
       List<String> getters = new ArrayList<String>();
       if (featurePop.size() != 0) {
         Class<?> classObj = featurePop.get(0).getClass();
@@ -354,6 +379,7 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
         specs += result.get(1);
       }
 
+      // create the data schema
       String featureTypeName = tableName;
       SimpleFeatureType type = DataUtilities.createType(featureTypeName, specs);
       dataStore.createSchema(type);
@@ -363,17 +389,35 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
       List<SimpleFeature> collection = new ArrayList<SimpleFeature>();
       int i = 1;
       for (IFeature feature : featurePop) {
-        if (feature.isDeleted()) {
-          continue;
-        }
+        // @author mdumont on exporte aussi les éléments éliminés par la
+        // généralisation, avec un attribut is_eliminated
+        // if (feature.isDeleted()) {
+        // continue;
+        // }
         List<Object> liste = new ArrayList<Object>(0);
         // change the CRS if needed
         IGeometry geom = feature.getGeom();
         if ((geom instanceof ILineString) && (geom.coord().size() < 2))
           continue;
-
+        // affect the geometry
         liste.add(AdapterFactory.toGeometry(new GeometryFactory(), geom));
-        liste.add(feature.getId());
+        // affect the antecedent (MRDB link)
+        Set<IGeneObj> listAnt = ((IGeneObj) feature).getAntecedents();
+        List<String> listAntId = new ArrayList<String>();
+        for (IGeneObj ant : listAnt) {
+          listAntId.add(ant.getAttribute("uKey").toString());
+        }
+        liste.add(listAntId.toString());
+        // affect the initial geometry
+        if (feature instanceof IGeneObj) {
+          liste.add(((IGeneObj) feature).getInitialGeom().toString());
+        } else {
+          liste.add("null");
+        }
+        // affect the eliminated status :
+        liste.add(((IGeneObj) feature).isEliminated());
+        // affect the unique key
+        liste.add(feature.getAttribute("uKey"));
         // put the attributes in the list, after the geometry
         for (String getter : getters) {
           Method m = feature.getClass().getDeclaredMethod(getter);
@@ -388,22 +432,22 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
       t.close();
       dataStore.dispose();
     } catch (MalformedURLException e) {
-      logger.log(Level.SEVERE, I18N.getString("ShapefileWriter.FileName") //$NON-NLS-1$
-          + tableName + I18N.getString("ShapefileWriter.Malformed")); //$NON-NLS-1$
+      logger.log(Level.SEVERE, I18N.getString("ExportPostGISFrame.FileName") //$NON-NLS-1$
+          + tableName + I18N.getString("ExportPostGISFrame.Malformed")); //$NON-NLS-1$
       e.printStackTrace();
     } catch (IOException e) {
       logger.log(Level.SEVERE,
-          I18N.getString("ShapefileWriter.ErrorWritingFile") //$NON-NLS-1$
+          I18N.getString("ExportPostGISFrame.ErrorWritingFile") //$NON-NLS-1$
               + tableName);
       e.printStackTrace();
     } catch (SchemaException e) {
       logger.log(Level.SEVERE,
-          I18N.getString("ShapefileWriter.SchemeUsedForWritingFile") //$NON-NLS-1$
-              + tableName + I18N.getString("ShapefileWriter.Incorrect")); //$NON-NLS-1$
+          I18N.getString("ExportPostGISFrame.SchemeUsedForWritingFile") //$NON-NLS-1$
+              + tableName + I18N.getString("ExportPostGISFrame.Incorrect")); //$NON-NLS-1$
       e.printStackTrace();
     } catch (Exception e) {
       logger.log(Level.SEVERE,
-          I18N.getString("ShapefileWriter.ErrorWritingFile") //$NON-NLS-1$
+          I18N.getString("ExportPostGISFrame.ErrorWritingFile") //$NON-NLS-1$
               + tableName);
       e.printStackTrace();
     }

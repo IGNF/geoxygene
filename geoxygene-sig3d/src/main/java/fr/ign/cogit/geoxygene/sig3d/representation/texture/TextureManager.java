@@ -98,7 +98,7 @@ public class TextureManager {
       }
 
     }
-    //System.out.println("chemin = " + path);
+    // System.out.println("chemin = " + path);
     TextureLoader loader = new TextureLoader(path, null);
     Texture2D texture = (Texture2D) loader.getTexture();
     texture.setBoundaryModeS(Texture.WRAP);
