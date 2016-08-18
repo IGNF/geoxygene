@@ -70,7 +70,7 @@ public class UserLayer extends AbstractLayer {
 
   public UserLayer(StyledLayerDescriptor sld,
       IFeatureCollection<? extends IFeature> collection, String name) {
-    this.sld = sld; // SlD should never be null 
+    this.sld = sld; 
     this.setName(name);
     this.setFeatures(collection);
   }
