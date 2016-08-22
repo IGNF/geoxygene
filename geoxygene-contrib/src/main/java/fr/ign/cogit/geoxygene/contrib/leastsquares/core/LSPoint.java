@@ -63,7 +63,7 @@ public class LSPoint extends AbstractFeature {
   // set contenant un objet java impl�mentant l'interface ContrainteInterneMC
   private Set<LSInternalConstraint> internalConstraints = new HashSet<LSInternalConstraint>();
 
-  // Map contenant en cl� un objet java impl�mentant l'interface
+  // Map contenant en clé un objet java implémentant l'interface
   // ContrainteExterneMC
   private Set<LSExternalConstraint> externalConstraints = new HashSet<LSExternalConstraint>();
 
@@ -155,12 +155,12 @@ public class LSPoint extends AbstractFeature {
           this.setSystemeLocal(systeme.copy());
           prems = false;
           continue;
-        }// if(prems)
+        } // if(prems)
 
         // on met à jour le nombre de valeurs non nulles dans la matrice A du
         // système linéaire
-        this.getSystemeLocal().setNonNullValues(
-            this.getSystemeLocal().getNonNullValues()
+        this.getSystemeLocal()
+            .setNonNullValues(this.getSystemeLocal().getNonNullValues()
                 + systeme.getNonNullValues());
 
         // on assemble le systemeLocal et systeme : on ajoute des lignes
@@ -173,10 +173,10 @@ public class LSPoint extends AbstractFeature {
         for (int i = 0; i < nb; i++) {
           // System.out.println("i = "+i);
           this.getSystemeLocal().setObs(i, local.getObs(i));
-        }// for i, boucle sur les obs initiales
+        } // for i, boucle sur les obs initiales
         for (int i = 0; i < systeme.getObsRowNumber(); i++) {
           this.getSystemeLocal().setObs(i + nb, systeme.getObs(i));
-        }// for i boucle sur les nouvelles observations
+        } // for i boucle sur les nouvelles observations
 
         // on assemble le vecteur des contraintes :
         // on ajoute simplement les nouvelles contraintes apr�s celles d�j�
@@ -195,7 +195,7 @@ public class LSPoint extends AbstractFeature {
           // on ajoute alors 2 fois point aux inconnues
           this.getSystemeLocal().getUnknowns().addElement(point);
           this.getSystemeLocal().getUnknowns().addElement(point);
-        }// for i, boucle sur les inconnues de systeme
+        } // for i, boucle sur les inconnues de systeme
 
         // on assemble enfin les matrices A
         // on construit la nouvelle matrice A
@@ -214,7 +214,7 @@ public class LSPoint extends AbstractFeature {
 
               this.getSystemeLocal().setA(i, j, local.getA(i, j));
               continue;
-            }// if(i<=systemeLocal.matriceA.getRowDimension())
+            } // if(i<=systemeLocal.matriceA.getRowDimension())
 
             // dans ce cas, on est dans les nouvelles contraintes
             // il faut trouver � quoi correspondent (i,j) dans systeme
@@ -227,8 +227,8 @@ public class LSPoint extends AbstractFeature {
             // on d�termine si c'est la colonne x du point
             boolean estX = false;
             if (!(j + 1 >= this.getSystemeLocal().getUnknowns().size())) {
-              if (inconnue.equals(this.getSystemeLocal().getUnknowns()
-                  .get(j + 1))) {
+              if (inconnue
+                  .equals(this.getSystemeLocal().getUnknowns().get(j + 1))) {
                 estX = true;
               }
             }
@@ -246,11 +246,11 @@ public class LSPoint extends AbstractFeature {
             // on assigne la valeur dans la matrice
             this.getSystemeLocal().setA(i, j,
                 systeme.getA(i - local.getRowNumber(), colonne));
-          }// for j, boucle sur les colonnes
-        }// for i, boucle sur les lignes
+          } // for j, boucle sur les colonnes
+        } // for i, boucle sur les lignes
         local.clear();
-      }// for boucle sur les objets r�els contenant ce point
-    }// while boucle sur contraintesInternes
+      } // for boucle sur les objets r�els contenant ce point
+    } // while boucle sur contraintesInternes
   }// assembleContraintesInternes
 
   /**
@@ -279,8 +279,8 @@ public class LSPoint extends AbstractFeature {
 
       // on met � jour le nombre de valeurs non nulles dans la matrice A du
       // syst�me lin�aire
-      this.getSystemeLocal().setNonNullValues(
-          this.getSystemeLocal().getNonNullValues()
+      this.getSystemeLocal()
+          .setNonNullValues(this.getSystemeLocal().getNonNullValues()
               + systeme.getNonNullValues());
 
       // on assemble le systemeLocal et systeme : on ajoute des lignes
@@ -291,10 +291,10 @@ public class LSPoint extends AbstractFeature {
       this.getSystemeLocal().initObservations(nb + systeme.getRowNumber());
       for (int i = 0; i < nb; i++) {
         this.getSystemeLocal().setObs(i, local.getObs(i));
-      }// for i, boucle sur les obs initiales
+      } // for i, boucle sur les obs initiales
       for (int i = 0; i < systeme.getRowNumber(); i++) {
         this.getSystemeLocal().setObs(i + nb, systeme.getObs(i));
-      }// for i boucle sur les nouvelles observations
+      } // for i boucle sur les nouvelles observations
 
       // on assemble le vecteur des contraintes :
       // on ajoute simplement les nouvelles contraintes apr�s celles d�j�
@@ -312,7 +312,7 @@ public class LSPoint extends AbstractFeature {
         // on ajoute alors 2 fois point aux inconnues
         this.getSystemeLocal().getUnknowns().addElement(point);
         this.getSystemeLocal().getUnknowns().addElement(point);
-      }// for i, boucle sur les inconnues de systeme
+      } // for i, boucle sur les inconnues de systeme
 
       // on assemble enfin les matrices A
       // on construit la nouvelle matrice A
@@ -331,7 +331,7 @@ public class LSPoint extends AbstractFeature {
 
             this.getSystemeLocal().setA(i, j, local.getA(i, j));
             continue;
-          }// if(i<=systemeLocal.matriceA.getRowDimension())
+          } // if(i<=systemeLocal.matriceA.getRowDimension())
 
           // dans ce cas, on est dans les nouvelles contraintes
           // il faut trouver � quoi correspondent (i,j) dans systeme
@@ -357,10 +357,10 @@ public class LSPoint extends AbstractFeature {
           // on assigne la valeur dans la matrice
           this.getSystemeLocal().setA(i, j,
               systeme.getA(i - local.getRowNumber(), colonne));
-        }// for j, boucle sur les colonnes
-      }// for i, boucle sur les lignes
+        } // for j, boucle sur les colonnes
+      } // for i, boucle sur les lignes
       local.clear();
-    }// while boucle sur contraintesExternes
+    } // while boucle sur contraintesExternes
   }// assembleContraintesExternes()
 
   /**
@@ -385,8 +385,8 @@ public class LSPoint extends AbstractFeature {
     if (ReflectionUtil.containsClassOrSuper(mapspecs.getClassesRigides(),
         className)) {
       iter = mapspecs.getContraintesRigides().iterator();
-    } else if (ReflectionUtil.containsClassOrSuper(
-        mapspecs.getClassesMalleables(), className)) {
+    } else if (ReflectionUtil
+        .containsClassOrSuper(mapspecs.getClassesMalleables(), className)) {
       iter = mapspecs.getContraintesMalleables().iterator();
     }
 
@@ -402,10 +402,10 @@ public class LSPoint extends AbstractFeature {
       }
       Constructor<?> constr = constraintClass.getConstructor(LSPoint.class,
           LSScheduler.class);
-      this.internalConstraints.add((LSInternalConstraint) constr.newInstance(
-          this, sched));
+      this.internalConstraints
+          .add((LSInternalConstraint) constr.newInstance(this, sched));
 
-    }// while iter
+    } // while iter
   }// setContraintesInternes()
 
   /**
@@ -451,8 +451,8 @@ public class LSPoint extends AbstractFeature {
         Class<?> constrClass = Class.forName(nomContr);
         if (constrClass.equals(LSCoalescenceConstraint.class)) {
           // on construit une contrainte pour ce point
-          LSCoalescenceConstraint contr = new LSCoalescenceConstraint(this,
-              obj, obj, sched);
+          LSCoalescenceConstraint contr = new LSCoalescenceConstraint(this, obj,
+              obj, sched);
           contr.seuilSep = mapspecs.getContraintesExternes().get(contrainte)
               .doubleValue();
           this.externalConstraints.add(contr);
@@ -467,19 +467,18 @@ public class LSPoint extends AbstractFeature {
           Map<LSSpatialConflict, Set<IFeature>> conflits = this
               .rechercheConflitsTIN(dist_req, sched, autreClasse);
           for (LSSpatialConflict conflit : conflits.keySet()) {
-            // System.out.println(conflit.distance());
             for (IFeature voisin : conflits.get(conflit)) {
-              LSProximityConstraint contr = new LSProximityConstraint(this,
-                  obj, voisin, sched, conflit);
+              LSProximityConstraint contr = new LSProximityConstraint(this, obj,
+                  voisin, sched, conflit);
               contr.setSeuilSep(distance);
               this.externalConstraints.add(contr);
             }
-          }// while boucle sur conflits
+          } // while boucle sur conflits
         }
         // TODO ajout de nouvelles contraintes externes ? (nécessite de rendre
         // la méthode plus générique
 
-      }// boucle sur les contraintes
+      } // boucle sur les contraintes
     }
 
   }// setContraintesExternes(MapspecsMC mapspecs,MCScheduler sched)
@@ -507,6 +506,8 @@ public class LSPoint extends AbstractFeature {
     double dist = distance;
     dist += this.getSymbolWidth();
     dist += sched.getClassSymbolWidth(classeVoisin);
+    LSScheduler.logger.finest("conflict distance for " + this + ": " + dist);
+    LSScheduler.logger.finest("classeVoisin: " + classeVoisin.getName());
 
     // on commence par créer le set vide
     Map<LSSpatialConflict, Set<IFeature>> conflits = new HashMap<LSSpatialConflict, Set<IFeature>>();
@@ -524,6 +525,8 @@ public class LSPoint extends AbstractFeature {
         }
 
         if (voisinsConf.size() != 0) {
+          LSScheduler.logger.finest(
+              "conflict " + conflit + " has distance: " + conflit.distance());
           if (conflit.distance() <= dist) {
             conflits.put(conflit, voisinsConf);
           }
@@ -570,8 +573,8 @@ public class LSPoint extends AbstractFeature {
       if (sched.getMapspec().getClassesMalleables().contains(obj.getClass())) {
         // dans ce cas il faut filtrer les objets aux croisements
         // on commence par récupérer le set des objets intersectant
-        Collection<IFeature> objsInter = neighbours.select((ILineString) obj
-            .getGeom());
+        Collection<IFeature> objsInter = neighbours
+            .select((ILineString) obj.getGeom());
 
         IGeometry geom = obj.getGeom();
         // on parcourt la collection des voisins en conflit
@@ -609,7 +612,7 @@ public class LSPoint extends AbstractFeature {
           } else {
             voisinsConflit.add(voisin);
           }
-        }// for boucle sur setVoisins
+        } // for boucle sur setVoisins
 
       } else {
         // dans ce cas, on garde tous les objets voisins de la zone à traiter
@@ -621,8 +624,8 @@ public class LSPoint extends AbstractFeature {
             continue;
           }
           voisinsConflit.add(voisin);
-        }// for boucle sur setVoisins
-      }// else du test sur les classes Malléables
+        } // for boucle sur setVoisins
+      } // else du test sur les classes Malléables
     }
 
     return voisinsConflit;
@@ -655,8 +658,8 @@ public class LSPoint extends AbstractFeature {
     IGeometry geom = obj.getGeom();
     if (sched.getObjsMalleables().contains(obj)
         && geom.coord().size() < sched.getMapObjPts().get(obj).size()) {
-      geom = LineDensification.densification2(geom, sched.getMapspec()
-          .getDensStep());
+      geom = LineDensification.densification2(geom,
+          sched.getMapspec().getDensStep());
     }
     if (geom instanceof ILineString) {
       int ecart = 0;
@@ -794,8 +797,8 @@ public class LSPoint extends AbstractFeature {
       return new Vector2D(0.0, 0.0);
     }
     // cas général
-    return new Vector2D(this.getFinalPt().getX() - this.getIniPt().getX(), this
-        .getFinalPt().getY() - this.getIniPt().getY());
+    return new Vector2D(this.getFinalPt().getX() - this.getIniPt().getX(),
+        this.getFinalPt().getY() - this.getIniPt().getY());
   }
 
   @Override
