@@ -18,6 +18,9 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
+import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
+import fr.ign.cogit.geoxygene.contrib.delaunay.Triangulation;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Angle;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
@@ -164,6 +167,36 @@ public class GeometryPool {
       style.getFeatureTypeStyles().add(colFeat.computeFeatureStyle());
     }
     for (INode node : graph.getNodes()) {
+      ColouredFeature colFeat = new ColouredFeature(node.getGeom(), nodeColor);
+      ((IPopulation<IFeature>) dataset.getPopulation(CartAGenDataSet.GEOM_POOL))
+          .add(colFeat);
+      Layer poolLayer = sld.getLayer(CartAGenDataSet.GEOM_POOL);
+      if (poolLayer == null)
+        return;
+      Style style = poolLayer.getStyles().get(0);
+      style.getFeatureTypeStyles().add(colFeat.computeFeatureStyle());
+    }
+  }
+
+  /**
+   * Display a graph in the geometry pool with the given colors.
+   * @param feat
+   * @param color
+   */
+  @SuppressWarnings("unchecked")
+  public void addTriangulationToGeometryPool(Triangulation triangulation,
+      Color edgeColor, Color nodeColor) {
+    for (Arc edge : triangulation.getPopArcs()) {
+      ColouredFeature colFeat = new ColouredFeature(edge.getGeom(), edgeColor);
+      ((IPopulation<IFeature>) dataset.getPopulation(CartAGenDataSet.GEOM_POOL))
+          .add(colFeat);
+      Layer poolLayer = sld.getLayer(CartAGenDataSet.GEOM_POOL);
+      if (poolLayer == null)
+        return;
+      Style style = poolLayer.getStyles().get(0);
+      style.getFeatureTypeStyles().add(colFeat.computeFeatureStyle());
+    }
+    for (Noeud node : triangulation.getPopNoeuds()) {
       ColouredFeature colFeat = new ColouredFeature(node.getGeom(), nodeColor);
       ((IPopulation<IFeature>) dataset.getPopulation(CartAGenDataSet.GEOM_POOL))
           .add(colFeat);
