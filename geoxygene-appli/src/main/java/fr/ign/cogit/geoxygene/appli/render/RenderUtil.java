@@ -1822,8 +1822,6 @@ public final class RenderUtil {
       IDirectPosition position, Viewport viewport, Graphics2D graphics,
       double scale) throws NoninvertibleTransformException {
     FontRenderContext frc = graphics.getFontRenderContext();
-    System.out.println("je suis là"
-        + pointPlacement.getRotation().getRotationValue());
     float rotation = (float) ((double) pointPlacement.getRotation()
         .getRotationValue() * Math.PI / 180);
     GlyphVector gv = graphics.getFont().createGlyphVector(frc, text);
