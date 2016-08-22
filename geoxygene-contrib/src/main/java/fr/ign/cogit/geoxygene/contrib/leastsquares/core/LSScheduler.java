@@ -79,6 +79,8 @@ public class LSScheduler {
 
   private MapspecsLS mapspec;
 
+  private Triangulation triangulation;
+
   /**
    * les conflits spatiaux par triangulation
    */
@@ -155,10 +157,9 @@ public class LSScheduler {
    * @throws SecurityException
    * 
    */
-  protected void initialiserLSPoints()
-      throws SecurityException, IllegalArgumentException,
-      ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
-      InvocationTargetException, InstantiationException {
+  protected void initialiserLSPoints() throws SecurityException,
+      IllegalArgumentException, ClassNotFoundException, NoSuchMethodException,
+      IllegalAccessException, InvocationTargetException, InstantiationException {
     Set<IFeature> objs = new HashSet<IFeature>();
     objs.addAll(this.getObjsFixes());
     objs.addAll(this.getObjsMalleables());
@@ -180,8 +181,9 @@ public class LSScheduler {
       }
       // cas d'un point
       if (geom instanceof IPoint) {
-        LSPoint point = this.construirePoint(obj, ((IPoint) geom).getPosition(),
-            1, GeometryType.POINT, true, this.getSymbolWidth(obj), points);
+        LSPoint point = this.construirePoint(obj,
+            ((IPoint) geom).getPosition(), 1, GeometryType.POINT, true,
+            this.getSymbolWidth(obj), points);
         point.setContraintesInternes(this.mapspec, this);
         listePoints.add(point);
         points.add(point);
@@ -296,8 +298,8 @@ public class LSScheduler {
         if (geom instanceof ILineString)
           objSegments.addAll(Segment.getSegmentList((ILineString) geom));
         if (geom instanceof IPolygon)
-          objSegments.addAll(
-              Segment.getSegmentList((IPolygon) geom, geom.coord().get(0)));
+          objSegments.addAll(Segment.getSegmentList((IPolygon) geom, geom
+              .coord().get(0)));
         for (Segment seg : objSegments) {
           IDirectPosition pt1 = seg.getStartPoint();
           LSPoint lsPt1 = getPointFromCoord(pt1, obj);
@@ -328,22 +330,22 @@ public class LSScheduler {
       }
 
       // on lance la triangulation
-      Triangulation tri = new Triangulation();
-      tri.importAsNodes(points);
-      tri.importClasseGeo(segments);
-      tri.setOptions(options);
-      tri.create();
+      triangulation = new Triangulation();
+      triangulation.importAsNodes(points);
+      triangulation.importClasseGeo(segments);
+      triangulation.setOptions(options);
+      triangulation.create();
 
       // on détermine les conflits spatiaux à partir de la triangulation
       // pour cela, on fait une boucle sur les triangles
-      for (Face face : tri.getPopFaces()) {
+      for (Face face : triangulation.getPopFaces()) {
         TriangleDelaunay triangle = (TriangleDelaunay) face;
-        LSPoint point1 = indices
-            .getKey(mapIndices.get(triangle.getCoord().get(0)));
-        LSPoint point2 = indices
-            .getKey(mapIndices.get(triangle.getCoord().get(1)));
-        LSPoint point3 = indices
-            .getKey(mapIndices.get(triangle.getCoord().get(2)));
+        LSPoint point1 = indices.getKey(mapIndices.get(triangle.getCoord().get(
+            0)));
+        LSPoint point2 = indices.getKey(mapIndices.get(triangle.getCoord().get(
+            1)));
+        LSPoint point3 = indices.getKey(mapIndices.get(triangle.getCoord().get(
+            2)));
         // on gère le cas des "Steiner points" de la triangulation (i.e.
         // nouveaux points)
         if (point1 == null || point2 == null || point3 == null) {
@@ -378,12 +380,12 @@ public class LSScheduler {
           // si les deux angles des voisins sont aigus, c'est un conflit
           // point-segment
           // il faut donc calculer ces angles
-          double angle1 = Angle.angleTroisPoints(voisins[0].getIniPt(),
-              voisins[1].getIniPt(), autre.getIniPt()).angleAPiPres()
-              .getValeur();
-          double angle2 = Angle.angleTroisPoints(voisins[1].getIniPt(),
-              voisins[0].getIniPt(), autre.getIniPt()).angleAPiPres()
-              .getValeur();
+          double angle1 = Angle
+              .angleTroisPoints(voisins[0].getIniPt(), voisins[1].getIniPt(),
+                  autre.getIniPt()).angleAPiPres().getValeur();
+          double angle2 = Angle
+              .angleTroisPoints(voisins[1].getIniPt(), voisins[0].getIniPt(),
+                  autre.getIniPt()).angleAPiPres().getValeur();
           if (angle1 < Math.PI / 2 && angle2 < Math.PI / 2) {
             // on construit un nouveau conflit pToSegment
             double dist = 1.5 * this.mapspec.getEchelle() / 1000.0
@@ -397,12 +399,12 @@ public class LSScheduler {
                 * (voisins[0].getIniPt().getY() - voisins[1].getIniPt().getY())
                 / (voisins[0].getIniPt().getX() - voisins[1].getIniPt().getX())
                 - voisins[0].getIniPt().getY();
-            double distance = Math.abs(
-                a * autre.getIniPt().getX() + b * autre.getIniPt().getY() + c)
+            double distance = Math.abs(a * autre.getIniPt().getX() + b
+                * autre.getIniPt().getY() + c)
                 / Math.sqrt(a * a + b * b);
             if (distance < dist) {
-              logger.finer(
-                  "conflit Point-to-Segment entre " + autre + " et " + voisins);
+              logger.finer("conflit Point-to-Segment entre " + autre + " et "
+                  + voisins);
               this.getConflits().add(
                   new LSSpatialConflict(this, false, autre, null, voisins));
             }
@@ -440,16 +442,16 @@ public class LSScheduler {
           double dist3 = 1.5 * this.mapspec.getEchelle() / 1000.0
               * (100 + point2.getSymbolWidth() + point3.getSymbolWidth());
           if (point1.getIniPt().distance2D(point2.getIniPt()) < dist1) {
-            this.getConflits()
-                .add(new LSSpatialConflict(this, true, point1, point2, null));
+            this.getConflits().add(
+                new LSSpatialConflict(this, true, point1, point2, null));
           }
           if (point1.getIniPt().distance2D(point3.getIniPt()) < dist2) {
-            this.getConflits()
-                .add(new LSSpatialConflict(this, true, point1, point3, null));
+            this.getConflits().add(
+                new LSSpatialConflict(this, true, point1, point3, null));
           }
           if (point3.getIniPt().distance2D(point2.getIniPt()) < dist3) {
-            this.getConflits()
-                .add(new LSSpatialConflict(this, true, point3, point2, null));
+            this.getConflits().add(
+                new LSSpatialConflict(this, true, point3, point2, null));
           }
         } // fin du cas avec 3 points non voisins
       } // for j: boucle sur les triangles résultants
@@ -502,8 +504,8 @@ public class LSScheduler {
     } // while(iMall.hasNext())
 
     LSScheduler.logger.fine("Nb total de contraintes : " + nb);
-    LSScheduler.logger
-        .finer("Nb total de conflits : " + this.getConflits().size());
+    LSScheduler.logger.finer("Nb total de conflits : "
+        + this.getConflits().size());
   }// initialiserContraintesExternes()
 
   /**
@@ -534,8 +536,8 @@ public class LSScheduler {
             prems = false;
         } else {
           // on assemble le systeme global et point.systemeLocal
-          EquationsSystem nouveau = this.systemeGlobal
-              .assemble(point.getSystemeLocal());
+          EquationsSystem nouveau = this.systemeGlobal.assemble(point
+              .getSystemeLocal());
           this.systemeGlobal = nouveau.copy();
         } // else : cas on ce n'est pas le 1er pt traité
       } // while boucle sur setPoints
@@ -656,8 +658,8 @@ public class LSScheduler {
     }
     if (this.getObjsMalleables().contains(obj)
         && ringIni.coord().size() < this.getMapObjPts().get(obj).size()) {
-      ringIni = LineDensification.densification2(ringIni,
-          this.getMapspec().getDensStep());
+      ringIni = LineDensification.densification2(ringIni, this.getMapspec()
+          .getDensStep());
     }
 
     // loop on the vertices of initial geometry
@@ -742,9 +744,8 @@ public class LSScheduler {
     Map<LSPoint, IDirectPosition> map = new HashMap<LSPoint, IDirectPosition>();
     for (int i = 0; i < this.systemeGlobal.getUnknowns().size(); i = i + 2) {
       LSPoint point = this.systemeGlobal.getUnknowns().get(i);
-      IDirectPosition vector = new DirectPosition(
-          this.systemeGlobal.getSolutions().get(i),
-          this.systemeGlobal.getSolutions().get(i + 1));
+      IDirectPosition vector = new DirectPosition(this.systemeGlobal
+          .getSolutions().get(i), this.systemeGlobal.getSolutions().get(i + 1));
       map.put(point, vector);
     }
     return map;
@@ -826,8 +827,8 @@ public class LSScheduler {
       LSScheduler.logger.fine("Moindres carres : pas d objet a traiter");
       return;
     }
-    LSScheduler.logger
-        .fine("Moindres carres : " + this.countObjs() + " objets a traiter");
+    LSScheduler.logger.fine("Moindres carres : " + this.countObjs()
+        + " objets a traiter");
     // System.out.println(this.objsFixes.size());
     // System.out.println(this.objsRigides.size());
     // System.out.println(this.objsMalleables.size());
@@ -901,11 +902,11 @@ public class LSScheduler {
 
     // puis on réalise l'ajustement du système par moindres carrés
     LSScheduler.logger.fine("Moindres carres : on fait l ajustement");
-    this.systemeGlobal
-        .ajustementMoindresCarres(this.mapspec.getPoidsContraintes());
+    this.systemeGlobal.ajustementMoindresCarres(this.mapspec
+        .getPoidsContraintes());
 
-    LSScheduler.logger
-        .finer("solutions : " + this.systemeGlobal.getSolutions().toString());
+    LSScheduler.logger.finer("solutions : "
+        + this.systemeGlobal.getSolutions().toString());
 
     // enfin, on met à jour les géométries
     LSScheduler.logger.fine("Moindres carres : on met a jour les geometries");
@@ -917,9 +918,9 @@ public class LSScheduler {
     }
   }
 
-  private void marquerAncresDiffusion()
-      throws IllegalArgumentException, SecurityException,
-      IllegalAccessException, NoSuchFieldException, ClassNotFoundException {
+  private void marquerAncresDiffusion() throws IllegalArgumentException,
+      SecurityException, IllegalAccessException, NoSuchFieldException,
+      ClassNotFoundException {
     // on commence par récupérer les ancres
     Set<LSPoint> ancres = this.recupererPointsAncres();
 
@@ -937,9 +938,9 @@ public class LSScheduler {
    * @throws SecurityException
    * @throws IllegalArgumentException
    */
-  private void ancrerObjetsMalleables()
-      throws IllegalArgumentException, SecurityException,
-      IllegalAccessException, NoSuchFieldException, ClassNotFoundException {
+  private void ancrerObjetsMalleables() throws IllegalArgumentException,
+      SecurityException, IllegalAccessException, NoSuchFieldException,
+      ClassNotFoundException {
     // on commence par récupérer les ancres
     Set<LSPoint> ancres = this.recupererPointsAncres();
 
@@ -959,9 +960,9 @@ public class LSScheduler {
    * @throws SecurityException
    * @throws IllegalArgumentException
    */
-  private Set<LSPoint> recupererPointsAncres()
-      throws IllegalArgumentException, SecurityException,
-      IllegalAccessException, NoSuchFieldException, ClassNotFoundException {
+  private Set<LSPoint> recupererPointsAncres() throws IllegalArgumentException,
+      SecurityException, IllegalAccessException, NoSuchFieldException,
+      ClassNotFoundException {
     Set<LSPoint> ancres = new HashSet<LSPoint>();
     // on fait une boucle sur les objets malléables
     for (IFeature obj : this.getObjsMalleables()) {
@@ -1220,5 +1221,13 @@ public class LSScheduler {
 
   public void setSystemeGlobal(EquationsSystem systemeGlobal) {
     this.systemeGlobal = systemeGlobal;
+  }
+
+  public Triangulation getTriangulation() {
+    return triangulation;
+  }
+
+  public void setTriangulation(Triangulation triangulation) {
+    this.triangulation = triangulation;
   }
 }// class MCScheduler

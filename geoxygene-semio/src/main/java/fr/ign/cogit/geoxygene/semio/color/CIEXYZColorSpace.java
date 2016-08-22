@@ -58,7 +58,7 @@ public class CIEXYZColorSpace extends ColorSpace {
       0.1430661, 0.2225550, 0.7168324, 0.0606126, 0.0139329, 0.0970894,
       0.7140823 };
 
-  protected CIEXYZColorSpace() {
+  public CIEXYZColorSpace() {
     super(ColorSpace.TYPE_XYZ, 3);
   }
 

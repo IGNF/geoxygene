@@ -89,7 +89,6 @@ public class PointPlacement implements Placement {
    * @param rotation l'attribut rotation à affecter
    */
   public void setRotation(RotationLabel rotation) {
-    System.out.println("setRotation" + rotation);
     this.rotation = rotation;
   }
 

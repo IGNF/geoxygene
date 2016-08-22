@@ -11,10 +11,10 @@ struct DataPainting {
 	int brushEndWidth;      // end texture length in pixels for the brush
 	float brushScale;       // size in mm of one brush pixel
 	float paperScale;       // scaling factor for paper
-	float sharpness;        // brush-paper blending sharpness
+	float strokeSoftness;        // brush-paper blending strokeSoftness
 	
-	float paperDensity;     // paper height scale factor
-	float brushDensity;     // brush height scale factor
+	float paperRoughness;     // paper height scale factor
+	float brushRoughness;     // brush height scale factor
 	float strokePressure;   // stroke pressure
 	vec4 position;          // current point position in world coordinates
 	vec2 uv;                // UV coordinates texture (u in world coordinates, v between 0 and 1)
@@ -26,8 +26,10 @@ struct DataPainting {
 	
 };
 
-uniform int nb_stripes;
-uniform int time;
+
+
+uniform int nb_stripes = 1;
+uniform int time = 1;
 uniform float globalOpacity = 1.0;
 
 #define PI 3.1415926535897932384626433832795
@@ -298,8 +300,8 @@ vec4 computeFragmentColorMandelbrot( in vec4 brushColor, in vec4 paperColor, in 
 
 /************************************************************************************/
 vec4 computeFragmentColor( in vec4 brushColor, in vec4 paperColor, in DataPainting fragmentData ) {
-	return computeFragmentColorWater( brushColor, paperColor, fragmentData );
-//	return computeFragmentColorMandelbrot( brushColor, paperColor, fragmentData );
+	//return computeFragmentColorWater( brushColor, paperColor, fragmentData );
+	//return computeFragmentColorMandelbrot( brushColor, paperColor, fragmentData );
 //	return computeFragmentColorStripes( brushColor, paperColor, fragmentData );
-//	return computeFragmentColorDots( brushColor, paperColor, fragmentData );
+	return computeFragmentColorDots( brushColor, paperColor, fragmentData );
 }
