@@ -7,18 +7,19 @@
         
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
         <!-- <property name="hibernate.connection.url">jdbc:postgresql:geoxygenehibernate</property> -->
-        <property name="hibernate.connection.url">jdbc:postgresql://del1109s019:5433/dbunit</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://del1109s019:5432/dbunit</property>
         <property name="hibernate.connection.username">dbunit</property>
         <property name="hibernate.connection.password">dbunit</property>
         
 		<!-- SPATIAL SQL dialect -->
-        <property name="dialect">org.hibernatespatial.postgis.PostgisDialect</property>
+        <property name="dialect">org.hibernate.spatial.dialect.postgis.PostgisDialect</property>
         <!-- <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property> -->
         
 		<!-- JDBC connection pool (use the built-in) -->
 		<property name="connection.pool_size">1</property>
         <property name="hibernate.current_session_context_class">org.hibernate.context.ThreadLocalSessionContext</property> 
         <!-- <property name="hbm2ddl.auto">create</property> -->
+        <property name="hbm2ddl.auto">update</property>
         
         <!-- Schema par defaut -->
         <property name="hibernate.default_schema">database</property>
@@ -45,6 +46,8 @@
 
 		<mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.data.Point_eau" />
         <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.data.Troncon_cours_eau" />
+        
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.data.ClassWithJtsGeometry" />
 
     </session-factory>
 </hibernate-configuration>

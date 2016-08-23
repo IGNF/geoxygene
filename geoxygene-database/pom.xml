@@ -55,6 +55,7 @@
 					<excludes>
 						<exclude>**/TestHibernate.java</exclude>
 						<exclude>**/TestInheritance.java</exclude>
+						<exclude>**/ClassWithJtsGeometryTest.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

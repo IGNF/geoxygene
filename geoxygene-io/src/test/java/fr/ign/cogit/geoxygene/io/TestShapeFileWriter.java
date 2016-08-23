@@ -8,6 +8,9 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+import com.google.common.io.Files;
+import com.vividsolutions.jts.util.Assert;
+
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
@@ -17,19 +20,12 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.util.attribute.AttributeManager;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
+import junit.framework.TestCase;
 
-public class TestShapeFileWriter {
+public class TestShapeFileWriter extends TestCase {
 
-	
-	public static void main(String args[]){
-		(new TestShapeFileWriter()).testWritePoint() ;
-	}
-	
 	@Test
     public void testWritePoint() {
-		
-		
-		
 		IFeatureCollection<IFeature> featColl = new FT_FeatureCollection<>();
 		
 		IFeature feat = new DefaultFeature(new GM_Point(new DirectPosition(1,1)));
@@ -38,33 +34,22 @@ public class TestShapeFileWriter {
 		AttributeManager.addAttribute(feat, "Taile", 42.42 , "Double");
 		
 		featColl.add(feat);
-		String pathFolder = "test";
-		
-		
-		//String pathFolder ="/home/mickael/Bureau/temp/test";
-		
-		
+		File folder = Files.createTempDir();
+		String pathFolder = folder.getAbsolutePath();
 		System.out.println(pathFolder);
 		try {
 			CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4326");
 			ShapefileWriter.write(featColl,pathFolder+ ".shp", sourceCRS);
 		} catch (NoSuchAuthorityCodeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail(e.getMessage());
 		} catch (FactoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail(e.getMessage());
 		}
 		
-
-		
-		assert((new File(pathFolder+".shp").exists()));
-		assert((new File(pathFolder+".dbf").exists()));
-		assert((new File(pathFolder+".shx").exists()));
-		assert((new File(pathFolder+".prj").exists()));
-		
-
-
+		assertTrue((new File(pathFolder+".shp").exists()));
+		assertTrue((new File(pathFolder+".dbf").exists()));
+		assertTrue((new File(pathFolder+".shx").exists()));
+		assertTrue((new File(pathFolder+".prj").exists()));
 	}
 
 }
