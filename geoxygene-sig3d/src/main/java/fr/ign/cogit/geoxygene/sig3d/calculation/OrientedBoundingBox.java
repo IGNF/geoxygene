@@ -77,6 +77,12 @@ public class OrientedBoundingBox {
     return width;
   }
 
+
+
+  public double getHeight() {
+    return (this.getzMax() - this.getzMin());
+  }
+  
   public double getLength() {
     if (length == -1) {
       IDirectPositionList dpl = poly.coord();
