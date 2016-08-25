@@ -64,378 +64,446 @@ import fr.ign.cogit.geoxygene.util.conversion.ImgUtil;
  */
 public class LayerViewAwtPanel extends LayerViewPanel {
 
-    /** Serializable UID. */
-    private static final long serialVersionUID = -6502924871341284384L;
+  /** Serializable UID. */
+  private static final long serialVersionUID = -6502924871341284384L;
 
-    /** Logger. */
-    private static Logger logger = Logger.getLogger(LayerViewAwtPanel.class.getName());
+  /** Logger. */
+  private static Logger logger = Logger.getLogger(LayerViewAwtPanel.class.getName());
 
-    /** Rendering manager. */
-    private MultithreadedRenderingManager renderingManager = null;
+  /** Rendering manager. */
+  private MultithreadedRenderingManager renderingManager = null;
 
-    /** Default visibility Constructor which can be called only by the factory. */
-    public LayerViewAwtPanel() {
-        super();
-        this.addPaintListener(new ScalePaintListener());
-        this.addPaintListener(new CompassPaintListener());
-        this.addPaintListener(new LegendPaintListener());
-        this.setDoubleBuffered(true);
-        this.setOpaque(true);
-        this.renderingManager = new MultithreadedRenderingManager(this); // rendering
-                                                                         // manager
+  /** Default visibility Constructor which can be called only by the factory. */
+  public LayerViewAwtPanel() {
+    super();
+    this.addPaintListener(new ScalePaintListener());
+    this.addPaintListener(new CompassPaintListener());
+    this.addPaintListener(new LegendPaintListener());
+    this.setDoubleBuffered(true);
+    this.setOpaque(true);
+    this.renderingManager = new MultithreadedRenderingManager(this); // rendering
+                                                                     // manager
+  }
+
+  /** @return The rendering manager handling the rendering of the layers */
+  @Override
+  public MultithreadedRenderingManager getRenderingManager() {
+    return this.renderingManager;
+  }
+
+  @Override
+  public final void repaint() {
+    if (this.getRenderingManager() != null) {
+      this.getRenderingManager().renderAll();
+    }
+  }
+
+  /**
+   * Repaint the panel using the repaint method of the super class
+   * {@link JPanel}. Called in order to perform the progressive rendering.
+   * 
+   * @see #paintComponent(Graphics)
+   */
+  @Override
+  public final void superRepaint() {
+    Container parent = this.getParent();
+    if (parent != null) {
+      parent.repaint();
+    }
+  }
+
+  @Override
+  public final void paintComponent(final Graphics g) {
+    try {
+      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+      // // super.paintComponent(g);
+      // // clear the graphics
+      g.setColor(this.getBackground());
+      g.fillRect(0, 0, this.getWidth(), this.getHeight());
+      // copy the result of the rendering manager to the panel
+      this.getRenderingManager().copyTo((Graphics2D) g);
+      // if currently editing geometry
+      this.paintGeometryEdition(g);
+      this.paintOverlays(g);
+      //
+      if (this.recording) {
+        this.saveImage();
+      }
+    } catch (Throwable t) {
+      LayerViewAwtPanel.logger.error(I18N.getString("LayerViewAwtPanel.PaintError")); //$NON-NLS-1$
+      t.printStackTrace();
+      // TODO HANDLE EXCEPTIONS
+    }
+  }
+
+  private void saveImage() {
+    LayerViewAwtPanel.logger.debug("record"); //$NON-NLS-1$
+    Color bg = this.getBackground();
+    BufferedImage image = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_ARGB);
+    Graphics2D graphics = image.createGraphics();
+    graphics.setColor(bg);
+    graphics.fillRect(0, 0, this.getWidth(), this.getHeight());
+    this.getRenderingManager().copyTo(graphics);
+    this.recording = false;
+    // this.paintOverlays(graphics);
+    graphics.dispose();
+    try {
+      NumberFormat format = NumberFormat.getInstance();
+      format.setMinimumIntegerDigits(3);
+      ImgUtil.saveImage(image, this.recordFileName + format.format(this.recordIndex) + ".png"); //$NON-NLS-1$
+      this.recordIndex++;
+    } catch (IOException e1) {
+      e1.printStackTrace();
+    }
+  }
+
+  /** Dispose of the panel and its rendering manager. */
+  @Override
+  public final void dispose() {
+    if (this.getRenderingManager() != null) {
+      this.getRenderingManager().dispose();
+    }
+    this.setViewport(null);
+    // TODO
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#getEnvelope()
+   */
+  @Override
+  public final IEnvelope getEnvelope() {
+    if (this.getRenderingManager().getLayers().isEmpty()) {
+      return null;
+    }
+    List<Layer> copy = new ArrayList<Layer>(this.getRenderingManager().getLayers());
+    Iterator<Layer> layerIterator = copy.iterator();
+    IEnvelope envelope = layerIterator.next().getFeatureCollection().envelope();
+    while (layerIterator.hasNext()) {
+      IFeatureCollection<? extends IFeature> collection = layerIterator.next().getFeatureCollection();
+      if (collection != null) {
+        IEnvelope env = collection.getEnvelope();
+        if (envelope == null) {
+          envelope = env;
+        } else {
+          envelope.expand(env);
+        }
+      }
+    }
+    return envelope;
+  }
+
+  @Override
+  public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+    if (pageIndex >= 1) {
+      return Printable.NO_SUCH_PAGE;
+    }
+    Graphics2D g2d = (Graphics2D) graphics;
+    // translate to the upper left corner of the page format
+    g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+    // translate to the middle of the page format
+    g2d.translate(pageFormat.getImageableWidth() / 2, pageFormat.getImageableHeight() / 2);
+    Dimension d = this.getSize();
+    double scale = Math.min(pageFormat.getImageableWidth() / d.width, pageFormat.getImageableHeight() / d.height);
+    if (scale < 1.0) {
+      g2d.scale(scale, scale);
+    }
+    // translate of half the size of the graphics to paint for it to be
+    // centered
+    g2d.translate(-d.width / 2.0, -d.height / 2.0);
+    // copy the rendered layers into the graphics
+    this.getRenderingManager().copyTo(g2d);
+    return Printable.PAGE_EXISTS;
+  }
+
+  @Override
+  public void saveAsImage(String fileName, int width, int height, boolean doSaveWorldFile) {
+    Color bg = this.getBackground();
+    BufferedImage outImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+    Graphics2D graphics = outImage.createGraphics();
+    // TEMP
+    graphics.setColor(bg);
+    graphics.fillRect(0, 0, width, height);
+    int tmpw = this.getWidth();
+    int tmph = this.getHeight();
+    // We save the old extent to force the Viewport to keep the old
+    // window in world coordinates.
+    IEnvelope env = this.getViewport().getEnvelopeInModelCoordinates();
+    // Artificially resize the canvas to the image dimensions.
+    this.setSize(width, height);
+    try {
+      // We zoom to the old extent in the resized canvas.
+      this.getViewport().zoom(env);
+    } catch (NoninvertibleTransformException e2) {
+      logger.error("In Image Export : failed to zoom in the correct extent.");
+      e2.printStackTrace();
+    }
+    this.renderingManager.renderAll();
+    long time = System.currentTimeMillis();
+    long twaited = 0;
+    while (this.renderingManager.isRendering() && twaited < 15000) {
+      // Wait for the rendering to end for a maximum of 15s. If the
+      // rendering is not finished after this delay,
+      // we give up.
+      twaited = System.currentTimeMillis() - time;
+    }
+    if (this.renderingManager.isRendering()) {
+      logger.error("Export to image : waited 15s but the rendering is still not finished. Abort.");
+      return;
     }
 
-    /** @return The rendering manager handling the rendering of the layers */
-    @Override
-    public MultithreadedRenderingManager getRenderingManager() {
-        return this.renderingManager;
+    // We have to impose a bbox !!!
+    this.getRenderingManager().copyTo(graphics);
+
+    // TODO ask to paint overlays
+    this.paintOverlays(graphics);
+    graphics.dispose();
+    try {
+      ImgUtil.saveImage(outImage, fileName);
+    } catch (IOException e1) {
+      e1.printStackTrace();
     }
 
-    @Override
-    public final void repaint() {
-        if (this.getRenderingManager() != null) {
-            this.getRenderingManager().renderAll();
-        }
+    if (doSaveWorldFile) {
+      String wld = FilenameUtils.removeExtension(fileName) + ".wld";
+      try {
+        AffineTransform t = this.getViewport().getModelToViewTransform();
+        fr.ign.cogit.geoxygene.util.conversion.WorldFileWriter.write(new File(wld), t.getScaleX(), t.getScaleY(),
+            this.getViewport().getViewOrigin().getX(), this.getViewport().getViewOrigin().getY(), this.getHeight());
+      } catch (NoninvertibleTransformException e) {
+        logger.error("Failed to save the world file associated with the image file " + fileName);
+        e.printStackTrace();
+      }
     }
 
-    /**
-     * Repaint the panel using the repaint method of the super class
-     * {@link JPanel}. Called in order to perform the progressive rendering.
-     * 
-     * @see #paintComponent(Graphics)
-     */
-    @Override
-    public final void superRepaint() {
-        Container parent = this.getParent();
-        if (parent != null) {
-            parent.repaint();
-        }
+    // Finally, rollback the canvas to its original size.
+    this.setSize(tmpw, tmph);
+    try {
+      // Zoom back to the "normal" extent
+      this.getViewport().zoom(env);
+    } catch (NoninvertibleTransformException e2) {
+      logger.error("In Image Export : failed to zoom back to the original LayerViewPanel extent.");
+      e2.printStackTrace();
+      return;
+    }
+  }
+
+  public void saveAsImage(String fileName, int width, int height) {
+    Color bg = this.getBackground();
+    BufferedImage outImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+    Graphics2D graphics = outImage.createGraphics();
+    // TEMP
+    graphics.setColor(bg);
+    graphics.fillRect(0, 0, width, height);
+    int tmpw = this.getWidth();
+    int tmph = this.getHeight();
+    // We save the old extent to force the Viewport to keep the old
+    // window in world coordinates.
+    IEnvelope env = this.getViewport().getEnvelopeInModelCoordinates();
+    // Artificially resize the canvas to the image dimensions.
+    this.setSize(width, height);
+    try {
+      // We zoom to the old extent in the resized canvas.
+      this.getViewport().zoom(env);
+    } catch (NoninvertibleTransformException e2) {
+      logger.error("In Image Export : failed to zoom in the correct extent.");
+      e2.printStackTrace();
+    }
+    this.renderingManager.renderAll();
+    long time = System.currentTimeMillis();
+    long twaited = 0;
+    while (this.renderingManager.isRendering() && twaited < 15000) {
+      // Wait for the rendering to end for a maximum of 15s. If the
+      // rendering is not finished after this delay,
+      // we give up.
+      twaited = System.currentTimeMillis() - time;
+    }
+    if (this.renderingManager.isRendering()) {
+      logger.error("Export to image : waited 15s but the rendering is still not finished. Abort.");
+      return;
     }
 
-    @Override
-    public final void paintComponent(final Graphics g) {
-        try {
-            ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            // // super.paintComponent(g);
-            // // clear the graphics
-            g.setColor(this.getBackground());
-            g.fillRect(0, 0, this.getWidth(), this.getHeight());
-            // copy the result of the rendering manager to the panel
-            this.getRenderingManager().copyTo((Graphics2D) g);
-            // if currently editing geometry
-            this.paintGeometryEdition(g);
-            this.paintOverlays(g);
-            //
-            if (this.recording) {
-                this.saveImage();
-            }
-        } catch (Throwable t) {
-            LayerViewAwtPanel.logger.error(I18N.getString("LayerViewAwtPanel.PaintError")); //$NON-NLS-1$
-            t.printStackTrace();
-            // TODO HANDLE EXCEPTIONS
-        }
+    // We have to impose a bbox !!!
+    this.getRenderingManager().copyTo(graphics);
+
+    // TODO ask to paint overlays
+    // this.paintOverlays(graphics);
+    graphics.dispose();
+    try {
+      ImgUtil.saveImage(outImage, fileName);
+    } catch (IOException e1) {
+      e1.printStackTrace();
     }
-
-    private void saveImage() {
-        LayerViewAwtPanel.logger.debug("record"); //$NON-NLS-1$
-        Color bg = this.getBackground();
-        BufferedImage image = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D graphics = image.createGraphics();
-        graphics.setColor(bg);
-        graphics.fillRect(0, 0, this.getWidth(), this.getHeight());
-        this.getRenderingManager().copyTo(graphics);
-        this.recording = false;
-        // this.paintOverlays(graphics);
-        graphics.dispose();
-        try {
-            NumberFormat format = NumberFormat.getInstance();
-            format.setMinimumIntegerDigits(3);
-            ImgUtil.saveImage(image, this.recordFileName + format.format(this.recordIndex) + ".png"); //$NON-NLS-1$
-            this.recordIndex++;
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
+    // if (doSaveWorldFile) {
+    String wld = FilenameUtils.removeExtension(fileName) + ".wld";
+    try {
+      AffineTransform t = this.getViewport().getModelToViewTransform();
+      fr.ign.cogit.geoxygene.util.conversion.WorldFileWriter.write(new File(wld), t.getScaleX(), t.getScaleY(),
+          this.getViewport().getViewOrigin().getX(), this.getViewport().getViewOrigin().getY(), this.getHeight());
+    } catch (NoninvertibleTransformException e) {
+      logger.error("Failed to save the world file associated with the image file " + fileName);
+      e.printStackTrace();
     }
-
-    /** Dispose of the panel and its rendering manager. */
-    @Override
-    public final void dispose() {
-        if (this.getRenderingManager() != null) {
-            this.getRenderingManager().dispose();
-        }
-        this.setViewport(null);
-        // TODO
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#getEnvelope()
-     */
-    @Override
-    public final IEnvelope getEnvelope() {
-        if (this.getRenderingManager().getLayers().isEmpty()) {
-            return null;
-        }
-        List<Layer> copy = new ArrayList<Layer>(this.getRenderingManager().getLayers());
-        Iterator<Layer> layerIterator = copy.iterator();
-        IEnvelope envelope = layerIterator.next().getFeatureCollection().envelope();
-        while (layerIterator.hasNext()) {
-            IFeatureCollection<? extends IFeature> collection = layerIterator.next().getFeatureCollection();
-            if (collection != null) {
-                IEnvelope env = collection.getEnvelope();
-                if (envelope == null) {
-                    envelope = env;
-                } else {
-                    envelope.expand(env);
-                }
-            }
-        }
-        return envelope;
-    }
-
-    @Override
-    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-        if (pageIndex >= 1) {
-            return Printable.NO_SUCH_PAGE;
-        }
-        Graphics2D g2d = (Graphics2D) graphics;
-        // translate to the upper left corner of the page format
-        g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
-        // translate to the middle of the page format
-        g2d.translate(pageFormat.getImageableWidth() / 2, pageFormat.getImageableHeight() / 2);
-        Dimension d = this.getSize();
-        double scale = Math.min(pageFormat.getImageableWidth() / d.width, pageFormat.getImageableHeight() / d.height);
-        if (scale < 1.0) {
-            g2d.scale(scale, scale);
-        }
-        // translate of half the size of the graphics to paint for it to be
-        // centered
-        g2d.translate(-d.width / 2.0, -d.height / 2.0);
-        // copy the rendered layers into the graphics
-        this.getRenderingManager().copyTo(g2d);
-        return Printable.PAGE_EXISTS;
-    }
-
-    @Override
-    public void saveAsImage(String fileName, int width, int height, boolean doSaveWorldFile) {
-        Color bg = this.getBackground();
-        BufferedImage outImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D graphics = outImage.createGraphics();
-        // TEMP
-        graphics.setColor(bg);
-        graphics.fillRect(0, 0, width, height);
-        int tmpw = this.getWidth();
-        int tmph = this.getHeight();
-        // We save the old extent to force the Viewport to keep the old
-        // window in world coordinates.
-        IEnvelope env = this.getViewport().getEnvelopeInModelCoordinates();
-        // Artificially resize the canvas to the image dimensions.
-        this.setSize(width, height);
-        try {
-            // We zoom to the old extent in the resized canvas.
-            this.getViewport().zoom(env);
-        } catch (NoninvertibleTransformException e2) {
-            logger.error("In Image Export : failed to zoom in the correct extent.");
-            e2.printStackTrace();
-        }
-        this.renderingManager.renderAll();
-        long time = System.currentTimeMillis();
-        long twaited = 0;
-        while (this.renderingManager.isRendering() && twaited < 15000) {
-            // Wait for the rendering to end for a maximum of 15s. If the
-            // rendering is not finished after this delay,
-            // we give up.
-            twaited = System.currentTimeMillis() - time;
-        }
-        if (this.renderingManager.isRendering()) {
-            logger.error("Export to image : waited 15s but the rendering is still not finished. Abort.");
-            return;
-        }
-
-        // We have to impose a bbox !!!
-        this.getRenderingManager().copyTo(graphics);
-
-        // TODO ask to paint overlays
-        this.paintOverlays(graphics);
-        graphics.dispose();
-        try {
-            ImgUtil.saveImage(outImage, fileName);
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-
-        if (doSaveWorldFile) {
-            String wld = FilenameUtils.removeExtension(fileName) + ".wld";
-            try {
-                AffineTransform t = this.getViewport().getModelToViewTransform();
-                fr.ign.cogit.geoxygene.util.conversion.WorldFileWriter.write(new File(wld), t.getScaleX(), t.getScaleY(), this.getViewport().getViewOrigin().getX(), this.getViewport().getViewOrigin()
-                        .getY(), this.getHeight());
-            } catch (NoninvertibleTransformException e) {
-                logger.error("Failed to save the world file associated with the image file " + fileName);
-                e.printStackTrace();
-            }
-        }
-
-        // Finally, rollback the canvas to its original size.
-        this.setSize(tmpw, tmph);
-        try {
-            // Zoom back to the "normal" extent
-            this.getViewport().zoom(env);
-        } catch (NoninvertibleTransformException e2) {
-            logger.error("In Image Export : failed to zoom back to the original LayerViewPanel extent.");
-            e2.printStackTrace();
-            return;
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#saveAsImage(java
-     * .lang .String)
-     */
-    @Override
-    public void saveAsImage(String fileName) {
-        // TODO: ask for out resolution
-        int widthOut = this.getWidth();
-        int heightOut = this.getHeight();
-        this.saveAsImage(fileName, widthOut, heightOut, false);
-    }
-
-    private boolean recording = false;
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#isRecording()
-     */
-    @Override
-    public boolean isRecording() {
-        return this.recording;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#setRecord(boolean)
-     */
-    // @Override
-    @Override
-    public void setRecord(boolean b) {
-        this.recording = b;
-    }
-
-    private String recordFileName = ""; //$NON-NLS-1$
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#getRecordFileName()
-     */
-    // @Override
-    @Override
-    public String getRecordFileName() {
-        return this.recordFileName;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#setRecordFileName(
-     * java.lang.String)
-     */
-    // @Override
-    @Override
-    public void setRecordFileName(String recordFileName) {
-        this.recordFileName = recordFileName;
-        this.recordIndex = 0;
-    }
-
-    private int recordIndex = 0;
-
-    // public void setModel(StyledLayerDescriptor sld) {
-    // this.sldmodel = sld;
-    // this.sldmodel.addSldListener(this);
-    //
     // }
 
-    /** Evenements SLD */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        this.repaint();
+    // Finally, rollback the canvas to its original size.
+    this.setSize(tmpw, tmph);
+    try {
+      // Zoom back to the "normal" extent
+      this.getViewport().zoom(env);
+    } catch (NoninvertibleTransformException e2) {
+      logger.error("In Image Export : failed to zoom back to the original LayerViewPanel extent.");
+      e2.printStackTrace();
+      return;
     }
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#layerAdded(fr.ign.
-     * cogit.geoxygene.style.Layer)
-     */
-    @Override
-    public synchronized void layerAdded(Layer l) {
-        if (this.getRenderingManager() != null) {
-            this.getRenderingManager().addLayer(l);
-        }
-        try {
-            IEnvelope env = l.getFeatureCollection().getEnvelope();
-            if (env == null) {
-                env = l.getFeatureCollection().envelope();
-            }
-            this.getViewport().zoom(env);
-        } catch (NoninvertibleTransformException e1) {
-            e1.printStackTrace();
-        }
+  /*
+   * (non-Javadoc)
+   * 
+   * @see fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#saveAsImage(java
+   * .lang .String)
+   */
+  @Override
+  public void saveAsImage(String fileName) {
+    // TODO: ask for out resolution
+    int widthOut = this.getWidth();
+    int heightOut = this.getHeight();
+    this.saveAsImage(fileName, widthOut, heightOut, false);
+  }
+
+  private boolean recording = false;
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#isRecording()
+   */
+  @Override
+  public boolean isRecording() {
+    return this.recording;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#setRecord(boolean)
+   */
+  // @Override
+  @Override
+  public void setRecord(boolean b) {
+    this.recording = b;
+  }
+
+  private String recordFileName = ""; //$NON-NLS-1$
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#getRecordFileName()
+   */
+  // @Override
+  @Override
+  public String getRecordFileName() {
+    return this.recordFileName;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#setRecordFileName(
+   * java.lang.String)
+   */
+  // @Override
+  @Override
+  public void setRecordFileName(String recordFileName) {
+    this.recordFileName = recordFileName;
+    this.recordIndex = 0;
+  }
+
+  private int recordIndex = 0;
+
+  // public void setModel(StyledLayerDescriptor sld) {
+  // this.sldmodel = sld;
+  // this.sldmodel.addSldListener(this);
+  //
+  // }
+
+  /** Evenements SLD */
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    this.repaint();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#layerAdded(fr.ign.
+   * cogit.geoxygene.style.Layer)
+   */
+  @Override
+  public synchronized void layerAdded(Layer l) {
+    if (this.getRenderingManager() != null) {
+      this.getRenderingManager().addLayer(l);
     }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#layerOrderChanged
-     * (int , int)
-     */
-    @Override
-    public void layerOrderChanged(int oldIndex, int newIndex) {
-        this.repaint();
+    try {
+      IEnvelope env = l.getFeatureCollection().getEnvelope();
+      if (env == null) {
+        env = l.getFeatureCollection().envelope();
+      }
+      this.getViewport().zoom(env);
+    } catch (NoninvertibleTransformException e1) {
+      e1.printStackTrace();
     }
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#layersRemoved(java
-     * .util.Collection)
-     */
-    @Override
-    public void layersRemoved(Collection<Layer> layers) {
-        this.repaint();
-    }
+  /*
+   * (non-Javadoc)
+   * 
+   * @see fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#layerOrderChanged
+   * (int , int)
+   */
+  @Override
+  public void layerOrderChanged(int oldIndex, int newIndex) {
+    this.repaint();
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel#dislplayGui()
-     */
-    @Override
-    public void displayGui() {
-        // nothing to display
-    }
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#layersRemoved(java
+   * .util.Collection)
+   */
+  @Override
+  public void layersRemoved(Collection<Layer> layers) {
+    this.repaint();
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel#hideGui()
-     */
-    @Override
-    public void hideGui() {
-        // nothing to hide
+  /*
+   * (non-Javadoc)
+   * 
+   * @see fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel#dislplayGui()
+   */
+  @Override
+  public void displayGui() {
+    // nothing to display
+  }
 
-    }
+  /*
+   * (non-Javadoc)
+   * 
+   * @see fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel#hideGui()
+   */
+  @Override
+  public void hideGui() {
+    // nothing to hide
+
+  }
 
 }

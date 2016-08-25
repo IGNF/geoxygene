@@ -79,6 +79,8 @@ public class LSScheduler {
 
   private MapspecsLS mapspec;
 
+  private Triangulation triangulation;
+
   /**
    * les conflits spatiaux par triangulation
    */
@@ -328,29 +330,37 @@ public class LSScheduler {
       }
 
       // on lance la triangulation
-      Triangulation tri = new Triangulation();
-      tri.importAsNodes(points);
-      tri.importClasseGeo(segments);
-      tri.setOptions(options);
-      tri.create();
+      triangulation = new Triangulation();
+      triangulation.importAsNodes(points);
+      triangulation.importClasseGeo(segments);
+      triangulation.setOptions(options);
+      triangulation.create();
 
       // on détermine les conflits spatiaux à partir de la triangulation
       // pour cela, on fait une boucle sur les triangles
-      for (Face face : tri.getPopFaces()) {
+      for (Face face : triangulation.getPopFaces()) {
         TriangleDelaunay triangle = (TriangleDelaunay) face;
-        LSPoint point1 = indices
-            .getKey(mapIndices.get(triangle.getCoord().get(0)));
-        LSPoint point2 = indices
-            .getKey(mapIndices.get(triangle.getCoord().get(1)));
-        LSPoint point3 = indices
-            .getKey(mapIndices.get(triangle.getCoord().get(2)));
+        IDirectPosition triPt1 = new DirectPosition(
+            triangle.getCoord().get(0).getX(),
+            triangle.getCoord().get(0).getY());
+        IDirectPosition triPt2 = new DirectPosition(
+            triangle.getCoord().get(1).getX(),
+            triangle.getCoord().get(1).getY());
+        IDirectPosition triPt3 = new DirectPosition(
+            triangle.getCoord().get(2).getX(),
+            triangle.getCoord().get(2).getY());
+        LSPoint point1 = indices.getKey(mapIndices.get(triPt1));
+        LSPoint point2 = indices.getKey(mapIndices.get(triPt2));
+        LSPoint point3 = indices.getKey(mapIndices.get(triPt3));
         // on gère le cas des "Steiner points" de la triangulation (i.e.
         // nouveaux points)
         if (point1 == null || point2 == null || point3 == null) {
+          logger.finest("null point");
           continue;
         }
         // si les trois points sont voisins, on passe
         if (point1.estVoisin(this, point2) && point1.estVoisin(this, point3)) {
+          logger.finest("points on same object");
           continue;
         }
         // sinon, on teste si deux sont voisins
@@ -374,7 +384,7 @@ public class LSScheduler {
           deuxObjs = true;
         }
         if (deuxObjs) {
-          // System.out.println("cas a 2 objets");
+          logger.finest("cas a 2 objets");
           // si les deux angles des voisins sont aigus, c'est un conflit
           // point-segment
           // il faut donc calculer ces angles
@@ -386,7 +396,7 @@ public class LSScheduler {
               .getValeur();
           if (angle1 < Math.PI / 2 && angle2 < Math.PI / 2) {
             // on construit un nouveau conflit pToSegment
-            double dist = 1.5 * this.mapspec.getEchelle() / 1000.0
+            double dist = 1.5
                 * (100 + autre.getSymbolWidth() + voisins[0].getSymbolWidth());
             // on calcule la distance de autre au segment
             // on calcule l'équation de la droite passant par point2 et point 3
@@ -400,6 +410,9 @@ public class LSScheduler {
             double distance = Math.abs(
                 a * autre.getIniPt().getX() + b * autre.getIniPt().getY() + c)
                 / Math.sqrt(a * a + b * b);
+            logger.finest("process triangle (" + point1 + ", " + point2 + ", "
+                + point3 + "): distance= " + distance + " for a threshold of "
+                + dist);
             if (distance < dist) {
               logger.finer(
                   "conflit Point-to-Segment entre " + autre + " et " + voisins);
@@ -427,7 +440,7 @@ public class LSScheduler {
             }
           }
         } else {
-          // System.out.println("cas a 3 objets");
+          logger.finest("cas a 3 objets");
           // on est dans le cas où les trois points ne sont pas voisins
           // on crée donc des conflits pToP entre les points quand la distance
           // est
@@ -454,6 +467,7 @@ public class LSScheduler {
         } // fin du cas avec 3 points non voisins
       } // for j: boucle sur les triangles résultants
     } // fin si la proximité par triangulation est utilisée dans les mapspecs
+    logger.finer("we found " + this.getConflits().size() + " TIN conflicts");
 
     // on parcourt les objets fixes
     int nb = 0;
@@ -1220,5 +1234,13 @@ public class LSScheduler {
 
   public void setSystemeGlobal(EquationsSystem systemeGlobal) {
     this.systemeGlobal = systemeGlobal;
+  }
+
+  public Triangulation getTriangulation() {
+    return triangulation;
+  }
+
+  public void setTriangulation(Triangulation triangulation) {
+    this.triangulation = triangulation;
   }
 }// class MCScheduler
