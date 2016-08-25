@@ -480,7 +480,6 @@ public class SLDDemoApplication extends AbstractGeOxygeneApplicationPlugin {
         texparam.setValue(texture);
         efill.addExpressiveParameter(texparam);
         symbolizer.getFill().setExpressiveFill(efill);
-        
         Population<DefaultFeature> pop = new Population<DefaultFeature>(
                 "Texture"); //$NON-NLS-1$
         pop.add(new DefaultFeature(new GM_Polygon(new GM_Envelope(120, 220,

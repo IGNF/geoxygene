@@ -229,6 +229,7 @@ public class TextureManager {
             tt = TextureTaskFactory.createTextureTask(tex_uri, file.getAbsoluteFile().toURI().toURL());
             tt.addTaskListener(TextureManager.getInstance().basicListener);
             tasksMap.put(tex_uri, tt);
+            
           } else {
             // Create a new texture task and resolve the texture
             // resource.
