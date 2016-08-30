@@ -216,7 +216,8 @@ public final class RenderUtil {
   }
 
   public static void paint(Symbolizer symbolizer, IFeature feature,
-      Viewport viewport, Graphics2D graphics, double opacity, BufferedImage img) {
+      Viewport viewport, Graphics2D graphics, double opacity,
+      BufferedImage img) {
     if (PointSymbolizer.class.isAssignableFrom(symbolizer.getClass())) {
       paint((PointSymbolizer) symbolizer, feature, viewport, graphics, opacity);
       return;
@@ -232,7 +233,8 @@ public final class RenderUtil {
       return;
     }
     if (RasterSymbolizer.class.isAssignableFrom(symbolizer.getClass())) {
-      paint((RasterSymbolizer) symbolizer, feature, viewport, graphics, opacity);
+      paint((RasterSymbolizer) symbolizer, feature, viewport, graphics,
+          opacity);
       return;
     }
     if (TextSymbolizer.class.isAssignableFrom(symbolizer.getClass())) {
@@ -258,10 +260,10 @@ public final class RenderUtil {
     RenderUtil.draw(feature.getGeom(), viewport, graphics, opacity);
 
     try {
-      graphics.setStroke(new BasicStroke(1, BasicStroke.CAP_SQUARE,
-          BasicStroke.JOIN_MITER));
-      for (IDirectPosition position : viewport.toViewDirectPositionList(feature
-          .getGeom().coord())) {
+      graphics.setStroke(
+          new BasicStroke(1, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER));
+      for (IDirectPosition position : viewport
+          .toViewDirectPositionList(feature.getGeom().coord())) {
         GeneralPath shape = new GeneralPath();
         shape.moveTo(position.getX() - 2, position.getY() - 2);
         shape.lineTo(position.getX() + 2, position.getY() - 2);
@@ -312,30 +314,32 @@ public final class RenderUtil {
       size *= scale;
       AffineTransform at = AffineTransform.getTranslateInstance(point.getX(),
           point.getY());
-      at.rotate(-Double.parseDouble(symbolizer.getGraphic().getRotation()
-          .evaluate(feature).toString())
+      at.rotate(-Double.parseDouble(
+          symbolizer.getGraphic().getRotation().evaluate(feature).toString())
           * Math.PI / 180.0);
       at.scale(size, size);
       markShape = at.createTransformedShape(markShape);
       if (symbolizer.getColorMap() != null) {
         try {
           graphics
-              .setColor(ColorUtil.getColorWithOpacity(
-                  new Color(symbolizer.getColorMap().getColor(
-                      (Double.parseDouble(feature.getAttribute(
-                          symbolizer.getColorMap().getPropertyName())
-                          .toString())))), opacity));
+              .setColor(ColorUtil
+                  .getColorWithOpacity(new Color(symbolizer.getColorMap()
+                      .getColor((Double.parseDouble(feature
+                          .getAttribute(
+                              symbolizer.getColorMap().getPropertyName())
+                          .toString())))),
+                      opacity));
         } catch (NumberFormatException e) {
         }
       } else if (symbolizer.getCategorizedMap() != null) {
-        Object value = feature.getAttribute(symbolizer.getCategorizedMap()
-            .getPropertyName());
+        Object value = feature
+            .getAttribute(symbolizer.getCategorizedMap().getPropertyName());
         int rgb = symbolizer.getCategorizedMap().getColor(value);
-        graphics.setColor(ColorUtil
-            .getColorWithOpacity(new Color(rgb), opacity));
+        graphics
+            .setColor(ColorUtil.getColorWithOpacity(new Color(rgb), opacity));
       } else {
-        Color color = (mark.getFill() == null) ? Color.gray : mark.getFill()
-            .getColor();
+        Color color = (mark.getFill() == null) ? Color.gray
+            : mark.getFill().getColor();
         graphics.setColor(ColorUtil.getColorWithOpacity(color, opacity));
       }
       graphics.fill(markShape);
@@ -347,8 +351,8 @@ public final class RenderUtil {
         Color color = Color.black;
         graphics.setColor(ColorUtil.getColorWithOpacity(color, opacity));
       } else {
-        Color color = (mark.getStroke() == null) ? Color.black : mark
-            .getStroke().getColor(feature);
+        Color color = (mark.getStroke() == null) ? Color.black
+            : mark.getStroke().getColor(feature);
         graphics.setColor(ColorUtil.getColorWithOpacity(color, opacity));
       }
       graphics.draw(markShape);
@@ -376,17 +380,18 @@ public final class RenderUtil {
         // .parseDouble(symbolizer.getGraphic().getRotation()
         // .evaluate(feature).toString())
         // * Math.PI / 180.0);
-        at.rotate(-Double.parseDouble(symbolizer.getGraphic().getRotation()
-            .evaluate(feature).toString())
+        at.rotate(-Double.parseDouble(
+            symbolizer.getGraphic().getRotation().evaluate(feature).toString())
             * Math.PI / 180.0);
         double ratio = node.getBounds().getWidth()
             / node.getBounds().getHeight();
         at.translate(-ratio * size / 2, -size / 2);
-        at.scale(size / node.getBounds().getHeight(), size
-            / node.getBounds().getHeight());
+        at.scale(size / node.getBounds().getHeight(),
+            size / node.getBounds().getHeight());
         node.setTransform(at);
         node.paint(graphics);
-      } else if (theGraphic.getFormat().contains("png") || theGraphic.getFormat().contains("gif")) { //$NON-NLS-1$
+      } else if (theGraphic.getFormat().contains("png") //$NON-NLS-1$
+          || theGraphic.getFormat().contains("gif")) {
         Image onlineImage = theGraphic.getOnlineResource();
         float size = symbolizer.getGraphic().getSize();
         double scale = 1;
@@ -398,21 +403,17 @@ public final class RenderUtil {
           }
         }
         size *= scale;
-        AffineTransform at = AffineTransform.getRotateInstance(-Double
-            .parseDouble(symbolizer.getGraphic().getRotation()
-                .evaluate(feature).toString())
-            * Math.PI / 180.0);
+        AffineTransform at = AffineTransform
+            .getRotateInstance(-Double.parseDouble(symbolizer.getGraphic()
+                .getRotation().evaluate(feature).toString()) * Math.PI / 180.0);
         at.scale(size / onlineImage.getHeight(null),
             size / onlineImage.getHeight(null));
         AffineTransformOp op = new AffineTransformOp(at,
             AffineTransformOp.TYPE_BILINEAR);
-        graphics
-            .drawImage(
-                (BufferedImage) onlineImage,
-                op,
-                (int) (point.getX() - ((((double) onlineImage.getWidth(null)) / ((double) onlineImage
-                    .getHeight(null))) * (size / 2))),
-                (int) (point.getY() - size / 2));
+        graphics.drawImage((BufferedImage) onlineImage, op,
+            (int) (point.getX() - ((((double) onlineImage.getWidth(null))
+                / ((double) onlineImage.getHeight(null))) * (size / 2))),
+            (int) (point.getY() - size / 2));
       }
     }
 
@@ -456,8 +457,8 @@ public final class RenderUtil {
         e.printStackTrace();
       }
     }
-    graphics.setStroke(symbolizer.getStroke().toAwtStroke(
-        (float) scaleUOMToPixels));
+    graphics.setStroke(
+        symbolizer.getStroke().toAwtStroke((float) scaleUOMToPixels));
     paintShadow(symbolizer, geometry, viewport, graphics, opacity);
     if (symbolizer.getStroke().getColor(feature) != null) {
       List<Shape> shapes = getShapeList(symbolizer, geometry, viewport, false);
@@ -465,37 +466,41 @@ public final class RenderUtil {
         // ColorMap
         if (symbolizer.getColorMap() != null) {
           try {
-            Color c = new Color(symbolizer.getColorMap().getColor(
-                (Double.parseDouble(feature.getAttribute(
-                    symbolizer.getColorMap().getPropertyName()).toString()))));
+            Color c = new Color(
+                symbolizer.getColorMap()
+                    .getColor((Double.parseDouble(feature
+                        .getAttribute(
+                            symbolizer.getColorMap().getPropertyName())
+                        .toString()))));
             graphics.setColor(ColorUtil.getColorWithOpacity(c, opacity));
           } catch (NumberFormatException e) {
             e.printStackTrace();
           }
           // Categorized Map
         } else if (symbolizer.getCategorizedMap() != null) {
-          Object value = feature.getAttribute(symbolizer.getCategorizedMap()
-              .getPropertyName());
+          Object value = feature
+              .getAttribute(symbolizer.getCategorizedMap().getPropertyName());
           int rgb = symbolizer.getCategorizedMap().getColor(value);
-          graphics.setColor(ColorUtil.getColorWithOpacity(new Color(rgb),
-              opacity));
+          graphics
+              .setColor(ColorUtil.getColorWithOpacity(new Color(rgb), opacity));
           // Proxy Symbol
         } else if (symbolizer.getProxySymbol() != null) {
           // Color without opacity
-          Color adaptedColor = new Color(Integer.parseInt(feature.getAttribute(
-              symbolizer.getProxySymbol().getProxyColorPropertyName())
+          Color adaptedColor = new Color(Integer.parseInt(feature
+              .getAttribute(
+                  symbolizer.getProxySymbol().getProxyColorPropertyName())
               .toString()));
           // Color with stroke opacity
           Color adaptedColorTransp = new Color(adaptedColor.getRed(),
               adaptedColor.getGreen(), adaptedColor.getBlue(),
               (int) (symbolizer.getStroke().getStrokeOpacity() * 255f));
           // Color with stroke and layer opacity
-          graphics.setColor(ColorUtil.getColorWithOpacity(adaptedColorTransp,
-              opacity));
+          graphics.setColor(
+              ColorUtil.getColorWithOpacity(adaptedColorTransp, opacity));
 
         } else {
-          graphics.setColor(ColorUtil.getColorWithOpacity(symbolizer
-              .getStroke().getColor(feature), opacity));
+          graphics.setColor(ColorUtil.getColorWithOpacity(
+              symbolizer.getStroke().getColor(feature), opacity));
         }
         for (Shape shape : shapes) {
           graphics.draw(shape);
@@ -518,13 +523,14 @@ public final class RenderUtil {
       } else if (symbolizer.getStroke().getGraphicType().getClass()
           .isAssignableFrom(GraphicStroke.class)) {
         // GraphicStroke
-        float[] dashArray = symbolizer.getStroke().getStrokeDashArray(
-            (float) scaleUOMToPixels);
+        float[] dashArray = symbolizer.getStroke()
+            .getStrokeDashArray((float) scaleUOMToPixels);
         double space = 0.0;
         if (dashArray != null) {
           space = dashArray[1];
         }
-        List<Shape> shapes = getShapeList(symbolizer, geometry, viewport, false);
+        List<Shape> shapes = getShapeList(symbolizer, geometry, viewport,
+            false);
         if (shapes != null) {
           List<Graphic> graphicList = ((GraphicStroke) symbolizer.getStroke()
               .getGraphicType()).getGraphics();
@@ -538,7 +544,8 @@ public final class RenderUtil {
       } else if (symbolizer.getStroke().getGraphicType().getClass()
           .isAssignableFrom(GradientStroke.class)) {
         // GradientStroke
-        List<Shape> shapes = getShapeList(symbolizer, geometry, viewport, false);
+        List<Shape> shapes = getShapeList(symbolizer, geometry, viewport,
+            false);
         if (shapes != null) {
           for (Shape shape : shapes) {
             int xMin = (int) shape.getBounds2D().getMinX();
@@ -589,25 +596,24 @@ public final class RenderUtil {
     double scaleSymbolizerUOMToDataUOM = 1;
     if (symbolizer.getUnitOfMeasure().equalsIgnoreCase(Symbolizer.PIXEL)) {
       try {
-        scaleSymbolizerUOMToDataUOM = 1 / viewport.getModelToViewTransform()
-            .getScaleX();
+        scaleSymbolizerUOMToDataUOM = 1
+            / viewport.getModelToViewTransform().getScaleX();
       } catch (NoninvertibleTransformException e) {
         e.printStackTrace();
       }
     }
     if (ICurve.class.isAssignableFrom(geometry.getClass())
         || IPolygon.class.isAssignableFrom(geometry.getClass())) {
-      ICurve curve = ((ICurve.class.isAssignableFrom(geometry.getClass())) ? ((ICurve) geometry)
-          : ((IPolygon) geometry).exteriorLineString());
+      ICurve curve = ((ICurve.class.isAssignableFrom(geometry.getClass()))
+          ? ((ICurve) geometry) : ((IPolygon) geometry).exteriorLineString());
       if (symbolizer.getPerpendicularOffset() != 0) {
         IMultiCurve<ILineString> offsetCurve = JtsAlgorithms.offsetCurve(curve,
             symbolizer.getPerpendicularOffset() * scaleSymbolizerUOMToDataUOM);
         List<Shape> shapes = new ArrayList<Shape>();
         for (ILineString l : offsetCurve) {
-          shapes
-              .addAll(getLineStringShapeList(symbolizer.getStroke()
-                  .getStrokeWidth(), l, viewport, fill,
-                  scaleSymbolizerUOMToDataUOM));
+          shapes.addAll(
+              getLineStringShapeList(symbolizer.getStroke().getStrokeWidth(), l,
+                  viewport, fill, scaleSymbolizerUOMToDataUOM));
         }
         return shapes;
       }
@@ -622,14 +628,14 @@ public final class RenderUtil {
               (ILineString) line, symbolizer.getPerpendicularOffset()
                   * scaleSymbolizerUOMToDataUOM);
           for (ILineString l : offsetCurve) {
-            shapes.addAll(getLineStringShapeList(symbolizer.getStroke()
-                .getStrokeWidth(), l, viewport, fill,
-                scaleSymbolizerUOMToDataUOM));
+            shapes.addAll(
+                getLineStringShapeList(symbolizer.getStroke().getStrokeWidth(),
+                    l, viewport, fill, scaleSymbolizerUOMToDataUOM));
           }
         } else {
-          shapes.addAll(getLineStringShapeList(symbolizer.getStroke()
-              .getStrokeWidth(), line, viewport, fill,
-              scaleSymbolizerUOMToDataUOM));
+          shapes.addAll(
+              getLineStringShapeList(symbolizer.getStroke().getStrokeWidth(),
+                  line, viewport, fill, scaleSymbolizerUOMToDataUOM));
         }
 
       }
@@ -640,8 +646,9 @@ public final class RenderUtil {
       for (IOrientableSurface surface : ((IMultiSurface<IOrientableSurface>) geometry)
           .getList()) {
         try {
-          Shape shape = viewport.toShape(fill ? surface.buffer(symbolizer
-              .getStroke().getStrokeWidth() / 2) : surface);
+          Shape shape = viewport.toShape(
+              fill ? surface.buffer(symbolizer.getStroke().getStrokeWidth() / 2)
+                  : surface);
           if (shape != null) {
             shapes.add(shape);
           }
@@ -667,8 +674,8 @@ public final class RenderUtil {
     double scaleSymbolizerUOMToDataUOM = 1;
     if (symbolizer.getUnitOfMeasure().equalsIgnoreCase(Symbolizer.PIXEL)) {
       try {
-        scaleSymbolizerUOMToDataUOM = 1 / viewport.getModelToViewTransform()
-            .getScaleX();
+        scaleSymbolizerUOMToDataUOM = 1
+            / viewport.getModelToViewTransform().getScaleX();
       } catch (NoninvertibleTransformException e) {
         e.printStackTrace();
       }
@@ -676,8 +683,8 @@ public final class RenderUtil {
 
     if (ICurve.class.isAssignableFrom(geometry.getClass())
         || IPolygon.class.isAssignableFrom(geometry.getClass())) {
-      ICurve curve = ((ICurve.class.isAssignableFrom(geometry.getClass())) ? ((ICurve) geometry)
-          : ((IPolygon) geometry).exteriorLineString());
+      ICurve curve = ((ICurve.class.isAssignableFrom(geometry.getClass()))
+          ? ((ICurve) geometry) : ((IPolygon) geometry).exteriorLineString());
 
       return getLineStringShapeList(symbolizer.getStroke().getStrokeWidth(),
           curve, viewport, fill, scaleSymbolizerUOMToDataUOM);
@@ -696,9 +703,9 @@ public final class RenderUtil {
         // scaleSymbolizerUOMToDataUOM));
         // }
         // } else {
-        shapes.addAll(getLineStringShapeList(symbolizer.getStroke()
-            .getStrokeWidth(), line, viewport, fill,
-            scaleSymbolizerUOMToDataUOM));
+        shapes.addAll(
+            getLineStringShapeList(symbolizer.getStroke().getStrokeWidth(),
+                line, viewport, fill, scaleSymbolizerUOMToDataUOM));
         // }
       }
       return shapes;
@@ -708,8 +715,9 @@ public final class RenderUtil {
       for (IOrientableSurface surface : ((IMultiSurface<IOrientableSurface>) geometry)
           .getList()) {
         try {
-          Shape shape = viewport.toShape(fill ? surface.buffer(symbolizer
-              .getStroke().getStrokeWidth() / 2) : surface);
+          Shape shape = viewport.toShape(
+              fill ? surface.buffer(symbolizer.getStroke().getStrokeWidth() / 2)
+                  : surface);
           if (shape != null) {
             shapes.add(shape);
           }
@@ -735,8 +743,8 @@ public final class RenderUtil {
       IOrientableCurve line, Viewport viewport, boolean fill, double scale) {
     List<Shape> shapes = new ArrayList<Shape>();
     try {
-      Shape shape = viewport.toShape(fill ? line.buffer(strokeWidth * 0.5
-          * scale) : line);
+      Shape shape = viewport
+          .toShape(fill ? line.buffer(strokeWidth * 0.5 * scale) : line);
       if (shape != null) {
         shapes.add(shape);
       }
@@ -747,11 +755,11 @@ public final class RenderUtil {
   }
 
   @SuppressWarnings("unchecked")
-  private static void paintShadow(LineSymbolizer symbolizer,
-      IGeometry geometry, Viewport viewport, Graphics2D graphics, double opacity) {
+  private static void paintShadow(LineSymbolizer symbolizer, IGeometry geometry,
+      Viewport viewport, Graphics2D graphics, double opacity) {
     if (symbolizer.getShadow() != null) {
-      Color shadowColor = ColorUtil.getColorWithOpacity(symbolizer.getShadow()
-          .getColor(), opacity);
+      Color shadowColor = ColorUtil
+          .getColorWithOpacity(symbolizer.getShadow().getColor(), opacity);
       double translate_x = -5;
       double translate_y = -5;
       if (symbolizer.getShadow().getDisplacement() != null) {
@@ -764,8 +772,8 @@ public final class RenderUtil {
       List<Shape> shapes = new ArrayList<Shape>();
       if (geometry.isLineString()) {
         try {
-          Shape shape = viewport.toShape(geometry.translate(translate_x,
-              translate_y, 0));
+          Shape shape = viewport
+              .toShape(geometry.translate(translate_x, translate_y, 0));
           if (shape != null) {
             shapes.add(shape);
           }
@@ -776,8 +784,8 @@ public final class RenderUtil {
         if (geometry.isMultiCurve()) {
           for (GM_OrientableCurve line : (GM_MultiCurve<GM_OrientableCurve>) geometry) {
             try {
-              Shape shape = viewport.toShape(line.translate(translate_x,
-                  translate_y, 0));
+              Shape shape = viewport
+                  .toShape(line.translate(translate_x, translate_y, 0));
               if (shape != null) {
                 shapes.add(shape);
               }
@@ -801,7 +809,8 @@ public final class RenderUtil {
     float size = graphic.getSize();
     graphics.setClip(shape);
     for (ExternalGraphic external : graphic.getExternalGraphics()) {
-      if (external.getFormat().contains("png") || external.getFormat().contains("gif")) { //$NON-NLS-1$ //$NON-NLS-2$
+      if (external.getFormat().contains("png") //$NON-NLS-1$
+          || external.getFormat().contains("gif")) { //$NON-NLS-1$
         Image image = external.getOnlineResource();
         graphicFillLineString(shape, image, size, graphics, opacity);
       } else {
@@ -816,8 +825,8 @@ public final class RenderUtil {
     List<Shape> shapes = new ArrayList<Shape>(graphic.getMarks().size());
     for (Mark mark : graphic.getMarks()) {
       shapes.add(mark.toShape());
-      graphics.setColor(ColorUtil.getColorWithOpacity(
-          mark.getFill().getColor(), opacity));
+      graphics.setColor(
+          ColorUtil.getColorWithOpacity(mark.getFill().getColor(), opacity));
 
     }
     double width = shape.getBounds2D().getWidth();
@@ -829,8 +838,8 @@ public final class RenderUtil {
     for (int i = 0; i < xSize; i++) {
       for (int j = 0; j < ySize; j++) {
         AffineTransform transform = AffineTransform.getTranslateInstance(
-            (i + 0.5) * size + shape.getBounds2D().getMinX(), (j + 0.5) * size
-                + shape.getBounds2D().getMinY());
+            (i + 0.5) * size + shape.getBounds2D().getMinX(),
+            (j + 0.5) * size + shape.getBounds2D().getMinY());
         transform.concatenate(scaleTransform);
         for (Shape markShape : shapes) {
           Shape tranlatedShape = transform.createTransformedShape(markShape);
@@ -842,8 +851,8 @@ public final class RenderUtil {
 
   private static void graphicFillLineString(Shape shape, GraphicsNode node,
       float size, Graphics2D graphics, double opacity) {
-    AffineTransform translate = AffineTransform.getTranslateInstance(-node
-        .getBounds().getMinX(), -node.getBounds().getMinY());
+    AffineTransform translate = AffineTransform.getTranslateInstance(
+        -node.getBounds().getMinX(), -node.getBounds().getMinY());
     node.setTransform(translate);
     BufferedImage buff = new BufferedImage((int) node.getBounds().getWidth(),
         (int) node.getBounds().getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -858,8 +867,8 @@ public final class RenderUtil {
     Double shapeHeight = new Double(size);
     double factor = shapeHeight.doubleValue() / image.getHeight(null);
     Double shapeWidth = new Double(image.getWidth(null) * factor);
-    AffineTransform transform = AffineTransform.getTranslateInstance(shape
-        .getBounds2D().getMinX(), shape.getBounds2D().getMinY());
+    AffineTransform transform = AffineTransform.getTranslateInstance(
+        shape.getBounds2D().getMinX(), shape.getBounds2D().getMinY());
     Image scaledImage = image.getScaledInstance(shapeWidth.intValue(),
         shapeHeight.intValue(), Image.SCALE_FAST);
     BufferedImage buff = new BufferedImage(shapeWidth.intValue(),
@@ -887,7 +896,8 @@ public final class RenderUtil {
 
     float size = graphic.getSize();
     for (ExternalGraphic external : graphic.getExternalGraphics()) {
-      if (external.getFormat().contains("png") || external.getFormat().contains("gif")) { //$NON-NLS-1$ //$NON-NLS-2$
+      if (external.getFormat().contains("png") //$NON-NLS-1$
+          || external.getFormat().contains("gif")) { //$NON-NLS-1$
         Image image = external.getOnlineResource();
         graphicStrokeLineString(shape, image, size, graphics, opacity);
       } else {
@@ -901,8 +911,8 @@ public final class RenderUtil {
     List<Shape> shapes = new ArrayList<Shape>();
     for (Mark mark : graphic.getMarks()) {
       shapes.add(mark.toShape());
-      graphics.setColor(ColorUtil.getColorWithOpacity(
-          mark.getFill().getColor(), opacity));
+      graphics.setColor(
+          ColorUtil.getColorWithOpacity(mark.getFill().getColor(), opacity));
     }
 
     List<AffineTransform> transforms = getGraphicStrokeLineStringTransforms(
@@ -923,8 +933,8 @@ public final class RenderUtil {
     List<AffineTransform> transforms = getGraphicStrokeLineStringTransforms(
         shape, size, width, height, 0.0);
     for (AffineTransform t : transforms) {
-      AffineTransform tr = AffineTransform.getTranslateInstance(-node
-          .getBounds().getMinX(), -node.getBounds().getMinY());
+      AffineTransform tr = AffineTransform.getTranslateInstance(
+          -node.getBounds().getMinX(), -node.getBounds().getMinY());
       t.concatenate(tr);
       node.setTransform(t);
       node.paint(graphics);
@@ -958,8 +968,8 @@ public final class RenderUtil {
     double shapeWidth = width * factor;
     AffineTransform scaleTransform = AffineTransform.getScaleInstance(factor,
         factor);
-    AffineTransform translation = AffineTransform.getTranslateInstance(-(0.5)
-        * width, -(0.5) * height);
+    AffineTransform translation = AffineTransform
+        .getTranslateInstance(-(0.5) * width, -(0.5) * height);
     transforms.add(translation);
     GeneralPath path = (GeneralPath) shape;
     PathIterator pathIterator = path.getPathIterator(null);
@@ -981,24 +991,25 @@ public final class RenderUtil {
         IDirectPosition p2 = line.getControlPoint(i + 1);
         IDirectPosition p = new DirectPosition((p1.getX() + p2.getX()) / 2,
             (p1.getY() + p2.getY()) / 2);
-        AffineTransform transform = AffineTransform.getTranslateInstance(
-            p.getX(), p.getY());
+        AffineTransform transform = AffineTransform
+            .getTranslateInstance(p.getX(), p.getY());
         transform.concatenate(scaleTransform);
-        transform.concatenate(AffineTransform.getRotateInstance(new Angle(p1,
-            p2).getValeur()));
+        transform.concatenate(
+            AffineTransform.getRotateInstance(new Angle(p1, p2).getValeur()));
         transform.concatenate(translation);
         transforms.add(transform);
       }
     } else {
       ILineString line = new GM_LineString(points);
       IDirectPosition previous = line.coord().get(0);
-      for (double curv = 0.0; curv < line.length(); curv += space + shapeWidth) {
+      for (double curv = 0.0; curv < line.length(); curv += space
+          + shapeWidth) {
         IDirectPosition p = Operateurs.pointEnAbscisseCurviligne(line, curv);
-        AffineTransform transform = AffineTransform.getTranslateInstance(
-            p.getX(), p.getY());
+        AffineTransform transform = AffineTransform
+            .getTranslateInstance(p.getX(), p.getY());
         transform.concatenate(scaleTransform);
-        transform.concatenate(AffineTransform.getRotateInstance(new Angle(
-            previous, p).getValeur()));
+        transform.concatenate(AffineTransform
+            .getRotateInstance(new Angle(previous, p).getValeur()));
         // transform.concatenate(translation);
         transforms.add(transform);
         previous = p;
@@ -1008,7 +1019,8 @@ public final class RenderUtil {
   }
 
   public static void paint(PolygonSymbolizer symbolizer, IFeature feature,
-      Viewport viewport, Graphics2D graphics, double opacity, BufferedImage img) {
+      Viewport viewport, Graphics2D graphics, double opacity,
+      BufferedImage img) {
     IGeometry geometry = getGeometry(symbolizer.getGeometryPropertyName(),
         feature);
     if (geometry == null) {
@@ -1019,8 +1031,8 @@ public final class RenderUtil {
       return;
     }
     if (symbolizer.getShadow() != null) {
-      Color shadowColor = ColorUtil.getColorWithOpacity(symbolizer.getShadow()
-          .getColor(), opacity);
+      Color shadowColor = ColorUtil
+          .getColorWithOpacity(symbolizer.getShadow().getColor(), opacity);
       double translate_x = -5;
       double translate_y = -5;
       if (symbolizer.getShadow().getDisplacement() != null) {
@@ -1033,8 +1045,8 @@ public final class RenderUtil {
       List<Shape> shapes = new ArrayList<Shape>();
       if (geometry.isPolygon()) {
         try {
-          Shape shape = viewport.toShape(geometry.translate(translate_x,
-              translate_y, 0));
+          Shape shape = viewport
+              .toShape(geometry.translate(translate_x, translate_y, 0));
           if (shape != null) {
             shapes.add(shape);
           }
@@ -1044,8 +1056,8 @@ public final class RenderUtil {
       } else {
         if (GM_MultiSurface.class.isAssignableFrom(geometry.getClass())) {
           try {
-            Shape shape = viewport.toShape(geometry.translate(translate_x,
-                translate_y, 0));
+            Shape shape = viewport
+                .toShape(geometry.translate(translate_x, translate_y, 0));
             if (shape != null) {
               shapes.add(shape);
             }
@@ -1064,24 +1076,24 @@ public final class RenderUtil {
     float fillOpacity = 1f;
     if (symbolizer.getFill() != null && symbolizer.getFill().getColor() != null
         && opacity > 0f) {
-      fillColor = ColorUtil.getColorWithOpacity(
-          symbolizer.getFill().getColor(), opacity);
+      fillColor = ColorUtil.getColorWithOpacity(symbolizer.getFill().getColor(),
+          opacity);
       fillOpacity = symbolizer.getFill().getFillOpacity() * (float) opacity;
 
     }
 
     if (symbolizer.getColorMap() != null
         && symbolizer.getColorMap().getInterpolate() != null) {
-      double value = Double.parseDouble(feature.getAttribute(
-          symbolizer.getColorMap().getPropertyName()).toString());
+      double value = Double.parseDouble(feature
+          .getAttribute(symbolizer.getColorMap().getPropertyName()).toString());
       int rgb = symbolizer.getColorMap().getColor(value);
       fillColor = ColorUtil.getColorWithOpacity(new Color(rgb), opacity);
       symbolizer.getStroke().setStroke(Color.BLACK);
 
     }
     if (symbolizer.getCategorizedMap() != null) {
-      Object value = feature.getAttribute(symbolizer.getCategorizedMap()
-          .getPropertyName());
+      Object value = feature
+          .getAttribute(symbolizer.getCategorizedMap().getPropertyName());
       int rgb = symbolizer.getCategorizedMap().getColor(value);
       fillColor = ColorUtil.getColorWithOpacity(new Color(rgb), opacity);
       symbolizer.getStroke().setStroke(Color.BLACK);
@@ -1120,8 +1132,8 @@ public final class RenderUtil {
           List<Graphic> graphicList = symbolizer.getFill().getGraphicFill()
               .getGraphics();
           for (Graphic graphic : graphicList) {
-            double rotation = Double.parseDouble(graphic.getRotation()
-                .evaluate(feature).toString());
+            double rotation = Double.parseDouble(
+                graphic.getRotation().evaluate(feature).toString());
             graphicFillPolygon(shape, graphic, viewport, graphics, opacity,
                 rotation);
           }
@@ -1141,11 +1153,14 @@ public final class RenderUtil {
       }
     }
     if (symbolizer.getStroke() != null) {
-      if (symbolizer.getStroke().getStrokeLineJoin() == BasicStroke.JOIN_MITER) {
+      if (symbolizer.getStroke()
+          .getStrokeLineJoin() == BasicStroke.JOIN_MITER) {
         symbolizer.getStroke().setStrokeLineCap(BasicStroke.CAP_SQUARE);
-      } else if (symbolizer.getStroke().getStrokeLineJoin() == BasicStroke.JOIN_BEVEL) {
+      } else if (symbolizer.getStroke()
+          .getStrokeLineJoin() == BasicStroke.JOIN_BEVEL) {
         symbolizer.getStroke().setStrokeLineCap(BasicStroke.CAP_BUTT);
-      } else if (symbolizer.getStroke().getStrokeLineJoin() == BasicStroke.JOIN_ROUND) {
+      } else if (symbolizer.getStroke()
+          .getStrokeLineJoin() == BasicStroke.JOIN_ROUND) {
         symbolizer.getStroke().setStrokeLineCap(BasicStroke.CAP_ROUND);
       } else {
         RenderUtil.logger.error("Stroke Line Join undefined."); //$NON-NLS-1$
@@ -1162,11 +1177,11 @@ public final class RenderUtil {
             e.printStackTrace();
           }
         }
-        BasicStroke bs = (BasicStroke) symbolizer.getStroke().toAwtStroke(
-            (float) scale);
+        BasicStroke bs = (BasicStroke) symbolizer.getStroke()
+            .toAwtStroke((float) scale);
         // Solid color
-        Color color = ColorUtil.getColorWithOpacity(symbolizer.getStroke()
-            .getColor(feature), opacity);
+        Color color = ColorUtil.getColorWithOpacity(
+            symbolizer.getStroke().getColor(feature), opacity);
         graphics.setColor(color);
         if (geometry.isPolygon()) {
           drawPolygon(symbolizer, feature, (IPolygon) geometry, viewport,
@@ -1191,21 +1206,23 @@ public final class RenderUtil {
               .getGraphicType()).getGraphics();
           for (Graphic graphic : graphicList) {
             for (Shape shape : shapes) {
-              graphicFillLineString(shape, graphic, viewport, graphics, opacity);
+              graphicFillLineString(shape, graphic, viewport, graphics,
+                  opacity);
             }
           }
         } else {
           // GraphicStroke
           double scaleUOMToPixels = 1;
-          if (!symbolizer.getUnitOfMeasure().equalsIgnoreCase(Symbolizer.PIXEL)) {
+          if (!symbolizer.getUnitOfMeasure()
+              .equalsIgnoreCase(Symbolizer.PIXEL)) {
             try {
               scaleUOMToPixels = viewport.getModelToViewTransform().getScaleX();
             } catch (NoninvertibleTransformException e) {
               e.printStackTrace();
             }
           }
-          float[] dashArray = symbolizer.getStroke().getStrokeDashArray(
-              (float) scaleUOMToPixels);
+          float[] dashArray = symbolizer.getStroke()
+              .getStrokeDashArray((float) scaleUOMToPixels);
           double space = 0.0;
           if (dashArray != null) {
             space = dashArray[1];
@@ -1265,20 +1282,22 @@ public final class RenderUtil {
             try {
               Point2D upper = new Point2D.Double();
               Point2D lower = new Point2D.Double();
-              Point2D.Double displacedUpper = new Point2D.Double(envelope
-                  .getUpperCorner().getX() + texture.getDisplacement().getX(),
+              Point2D.Double displacedUpper = new Point2D.Double(
+                  envelope.getUpperCorner().getX()
+                      + texture.getDisplacement().getX(),
                   envelope.getUpperCorner().getY()
                       + texture.getDisplacement().getY());
               viewport.getModelToViewTransform().transform(displacedUpper,
                   upper);
-              Point2D.Double displacedLower = new Point2D.Double(envelope
-                  .getLowerCorner().getX() + texture.getDisplacement().getX(),
+              Point2D.Double displacedLower = new Point2D.Double(
+                  envelope.getLowerCorner().getX()
+                      + texture.getDisplacement().getX(),
                   envelope.getLowerCorner().getY()
                       + texture.getDisplacement().getY());
               viewport.getModelToViewTransform().transform(displacedLower,
                   lower);
-              graphics.setComposite(AlphaComposite.getInstance(
-                  AlphaComposite.SRC_OVER, (float) opacity));
+              graphics.setComposite(AlphaComposite
+                  .getInstance(AlphaComposite.SRC_OVER, (float) opacity));
               AffineTransform transform = new AffineTransform();
               transform.translate(lower.getX(), upper.getY());
               transform.scale(pixelScaleX * texture.getScaleFactor().getX(),
@@ -1293,15 +1312,15 @@ public final class RenderUtil {
           }
             break;
           case SCREENSPACE: {
-            logger
-                .warn("Screenspace textures have not been retested after changes. You're lucky if it works...");
+            logger.warn(
+                "Screenspace textures have not been retested after changes. You're lucky if it works...");
             double pixelDisplacementX = texture.getDisplacement().getX();
             double pixelDisplacementY = texture.getDisplacement().getY();
             AffineTransform transform = new AffineTransform();
             transform.translate(pixelDisplacementX, pixelDisplacementY);
             transform.scale(pixelScaleX, pixelScaleY);
-            drawTexture(feature, shape, viewport, graphics, opacity,
-                imgTexture, transform, xRepeat, yRepeat);
+            drawTexture(feature, shape, viewport, graphics, opacity, imgTexture,
+                transform, xRepeat, yRepeat);
           }
             break;
           default:
@@ -1326,10 +1345,10 @@ public final class RenderUtil {
    */
   private static void drawTexture(IFeature feature, Shape shape,
       Viewport viewport, Graphics2D graphics, double opacity,
-      BufferedImage imgTexture, AffineTransform localTransform,
-      boolean xRepeat, boolean yRepeat) {
-    graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-        (float) opacity));
+      BufferedImage imgTexture, AffineTransform localTransform, boolean xRepeat,
+      boolean yRepeat) {
+    graphics.setComposite(
+        AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) opacity));
     if (xRepeat || yRepeat) {
       logger.warn("xy texture repeat option is not handled by AWT");
     }
@@ -1348,7 +1367,8 @@ public final class RenderUtil {
     float size = graphic.getSize();
     graphics.setClip(shape);
     for (ExternalGraphic external : graphic.getExternalGraphics()) {
-      if (external.getFormat().contains("png") || external.getFormat().contains("gif")) { //$NON-NLS-1$ //$NON-NLS-2$
+      if (external.getFormat().contains("png") //$NON-NLS-1$
+          || external.getFormat().contains("gif")) { //$NON-NLS-1$
         Image image = external.getOnlineResource();
         graphicFillPolygon(shape, image, size, graphics, opacity);
       } else {
@@ -1362,22 +1382,22 @@ public final class RenderUtil {
     int markShapeSize = 200;
     for (Mark mark : graphic.getMarks()) {
       Shape markShape = mark.toShape();
-      AffineTransform translate = AffineTransform.getTranslateInstance(
-          markShapeSize / 2, markShapeSize / 2);
+      AffineTransform translate = AffineTransform
+          .getTranslateInstance(markShapeSize / 2, markShapeSize / 2);
       if (graphic.getRotation() != null) {
-        AffineTransform rotate = AffineTransform.getRotateInstance(Math.PI
-            * rotation / 180.0);
+        AffineTransform rotate = AffineTransform
+            .getRotateInstance(Math.PI * rotation / 180.0);
         translate.concatenate(rotate);
       }
-      AffineTransform scaleTransform = AffineTransform.getScaleInstance(
-          markShapeSize, markShapeSize);
+      AffineTransform scaleTransform = AffineTransform
+          .getScaleInstance(markShapeSize, markShapeSize);
       translate.concatenate(scaleTransform);
       Shape tranlatedShape = translate.createTransformedShape(markShape);
       BufferedImage buff = new BufferedImage(markShapeSize, markShapeSize,
           BufferedImage.TYPE_INT_ARGB);
       Graphics2D g = (Graphics2D) buff.getGraphics();
-      g.setColor(ColorUtil.getColorWithOpacity(mark.getFill().getColor(),
-          opacity));
+      g.setColor(
+          ColorUtil.getColorWithOpacity(mark.getFill().getColor(), opacity));
       g.fill(tranlatedShape);
       graphicFillPolygon(shape, buff, size, graphics, opacity);
     }
@@ -1391,8 +1411,8 @@ public final class RenderUtil {
     Double shapeHeight = new Double(size);
     double factor = shapeHeight / image.getHeight(null);
     Double shapeWidth = new Double(Math.max(image.getWidth(null) * factor, 1));
-    AffineTransform transform = AffineTransform.getTranslateInstance(shape
-        .getBounds2D().getMinX(), shape.getBounds2D().getMinY());
+    AffineTransform transform = AffineTransform.getTranslateInstance(
+        shape.getBounds2D().getMinX(), shape.getBounds2D().getMinY());
     Image scaledImage = image.getScaledInstance(shapeWidth.intValue(),
         shapeHeight.intValue(), Image.SCALE_FAST);
     BufferedImage buff = new BufferedImage(shapeWidth.intValue(),
@@ -1404,8 +1424,8 @@ public final class RenderUtil {
     p.add(height.intValue());
     RenderedOp im = JAI.create("pattern", p);//$NON-NLS-1$
     BufferedImage bufferedImage = im.getAsBufferedImage();
-    graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-        (float) opacity));
+    graphics.setComposite(
+        AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) opacity));
     graphics.drawImage(bufferedImage, transform, null);
     bufferedImage.flush();
     im.dispose();
@@ -1415,8 +1435,8 @@ public final class RenderUtil {
 
   private static void graphicFillPolygon(Shape shape, GraphicsNode node,
       float size, Graphics2D graphics, double opacity) {
-    AffineTransform translate = AffineTransform.getTranslateInstance(-node
-        .getBounds().getMinX(), -node.getBounds().getMinY());
+    AffineTransform translate = AffineTransform.getTranslateInstance(
+        -node.getBounds().getMinX(), -node.getBounds().getMinY());
     node.setTransform(translate);
     BufferedImage buff = new BufferedImage((int) node.getBounds().getWidth(),
         (int) node.getBounds().getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -1473,8 +1493,8 @@ public final class RenderUtil {
     }
     for (Shape shape : shapes) {
       Shape outline = stroke.createStrokedShape(shape);
-      graphics.setColor(ColorUtil.getColorWithOpacity(symbolizer.getStroke()
-          .getColor(feature), opacity));
+      graphics.setColor(ColorUtil.getColorWithOpacity(
+          symbolizer.getStroke().getColor(feature), opacity));
       graphics.fill(outline);
     }
   }
@@ -1497,15 +1517,16 @@ public final class RenderUtil {
           view.minY(), view.maxY());
 
       GridCoverageRenderer renderer = new GridCoverageRenderer(
-          coverage.getCoordinateReferenceSystem(), renderEnvelope, viewport
-              .getLayerViewPanels().iterator().next().getVisibleRect(), null);
+          coverage.getCoordinateReferenceSystem(), renderEnvelope,
+          viewport.getLayerViewPanels().iterator().next().getVisibleRect(),
+          null);
       // For geotools, we create a style
       org.geotools.styling.RasterSymbolizer s = new StyleBuilder()
           .createRasterSymbolizer();
 
       // style: Opacity
-      s.setOpacity((new FilterFactoryImpl()).literal(opacity
-          * symbolizer.getOpacity()));
+      s.setOpacity(
+          (new FilterFactoryImpl()).literal(opacity * symbolizer.getOpacity()));
 
       // Style: channelSelection
       if (symbolizer.getChannelSelection() != null) {
@@ -1519,7 +1540,8 @@ public final class RenderUtil {
               ContrastMethod.NONE);
           SelectedChannelType sct = sf.createSelectedChannelType(
               String.valueOf(symbolizer.getChannelSelection().getGrayChannel()
-                  .getSourceChannelName()), ce);
+                  .getSourceChannelName()),
+              ce);
 
           channelSelection = sf.channelSelection(sct);
         } else if (symbolizer.getChannelSelection().isRGBChannels()) {
@@ -1529,18 +1551,18 @@ public final class RenderUtil {
           SelectedChannelType[] sct = new SelectedChannelType[3];
 
           for (int i = 0; i < 3; i++) {
-            ce[i] = sf
-                .contrastEnhancement(ff.literal(1.0), ContrastMethod.NONE);
+            ce[i] = sf.contrastEnhancement(ff.literal(1.0),
+                ContrastMethod.NONE);
           }
-          sct[0] = sf.createSelectedChannelType(
-              String.valueOf(symbolizer.getChannelSelection().getRedChannel()
-                  .getSourceChannelName()), ce[0]);
-          sct[1] = sf.createSelectedChannelType(
-              String.valueOf(symbolizer.getChannelSelection().getGreenChannel()
-                  .getSourceChannelName()), ce[1]);
-          sct[2] = sf.createSelectedChannelType(
-              String.valueOf(symbolizer.getChannelSelection().getBlueChannel()
-                  .getSourceChannelName()), ce[2]);
+          sct[0] = sf.createSelectedChannelType(String.valueOf(symbolizer
+              .getChannelSelection().getRedChannel().getSourceChannelName()),
+              ce[0]);
+          sct[1] = sf.createSelectedChannelType(String.valueOf(symbolizer
+              .getChannelSelection().getGreenChannel().getSourceChannelName()),
+              ce[1]);
+          sct[2] = sf.createSelectedChannelType(String.valueOf(symbolizer
+              .getChannelSelection().getBlueChannel().getSourceChannelName()),
+              ce[2]);
 
           channelSelection = sf.channelSelection(sct[0], sct[1], sct[2]);
         } else {
@@ -1636,8 +1658,8 @@ public final class RenderUtil {
     }
     Object value = feature.getAttribute(symbolizer.getLabel());
     if (symbolizer.getLabelPlacement() != null) {
-      if (symbolizer.getLabelPlacement().getPlacement() != null
-          && symbolizer.getLabelPlacement().getPlacement() instanceof PointPlacement) {
+      if (symbolizer.getLabelPlacement().getPlacement() != null && symbolizer
+          .getLabelPlacement().getPlacement() instanceof PointPlacement) {
         PointPlacement pl = ((PointPlacement) symbolizer.getLabelPlacement()
             .getPlacement());
         if (pl.getRotation() != null) {
@@ -1662,12 +1684,13 @@ public final class RenderUtil {
    */
   @SuppressWarnings("unchecked")
   public static void paint(TextSymbolizer symbolizer, String text,
-      IGeometry geometry, Viewport viewport, Graphics2D graphics, double opacity) {
+      IGeometry geometry, Viewport viewport, Graphics2D graphics,
+      double opacity) {
     // Initialize the color with which to actually paint the text
     Color fillColor = ColorUtil.getColorWithOpacity(Color.black, opacity);
     if (symbolizer.getFill() != null) {
-      fillColor = ColorUtil.getColorWithOpacity(
-          symbolizer.getFill().getColor(), opacity);
+      fillColor = ColorUtil.getColorWithOpacity(symbolizer.getFill().getColor(),
+          opacity);
     }
     // The scale
     double scaleUOMToPixels = 1;
@@ -1680,8 +1703,8 @@ public final class RenderUtil {
       }
     } else {
       try {
-        scaleSymbolizerUOMToDataUOM = 1 / viewport.getModelToViewTransform()
-            .getScaleX();
+        scaleSymbolizerUOMToDataUOM = 1
+            / viewport.getModelToViewTransform().getScaleX();
       } catch (NoninvertibleTransformException e) {
         e.printStackTrace();
       }
@@ -1701,8 +1724,8 @@ public final class RenderUtil {
     float haloRadius = 1.0f;
     if (symbolizer.getHalo() != null) {
       if (symbolizer.getHalo().getFill() != null) {
-        haloColor = ColorUtil.getColorWithOpacity(symbolizer.getHalo()
-            .getFill().getColor(), opacity);
+        haloColor = ColorUtil.getColorWithOpacity(
+            symbolizer.getHalo().getFill().getColor(), opacity);
       }
       haloRadius = symbolizer.getHalo().getRadius();
     }
@@ -1764,12 +1787,12 @@ public final class RenderUtil {
   private static void paint(LinePlacement linePlacement, String text,
       Color fillColor, Color haloColor, float haloRadius, IGeometry geometry,
       Viewport viewport, Graphics2D graphics, double scale)
-      throws NoninvertibleTransformException {
+          throws NoninvertibleTransformException {
     if (linePlacement.isGeneralizeLine()) {
       // we have to generalize the geometry first
       double sigma = graphics.getFontMetrics().getMaxAdvance() / scale;
-      geometry = GaussianFilter.gaussianFilter(
-          new GM_LineString(geometry.coord()), sigma, 1.0);
+      geometry = GaussianFilter
+          .gaussianFilter(new GM_LineString(geometry.coord()), sigma, 1.0);
     }
     Shape lineShape = null;
     if (linePlacement.isAligned()) {
@@ -1791,8 +1814,9 @@ public final class RenderUtil {
       return;
     }
     Stroke s = new TextStroke(text, graphics.getFont(), false,
-        linePlacement.isRepeated(), false, linePlacement.getInitialGap()
-            * (float) scale, linePlacement.getGap() * (float) scale);
+        linePlacement.isRepeated(), false,
+        linePlacement.getInitialGap() * (float) scale,
+        linePlacement.getGap() * (float) scale);
     Shape textShape = s.createStrokedShape(lineShape);
     // halo
     if (haloColor != null) {
@@ -1822,8 +1846,11 @@ public final class RenderUtil {
       IDirectPosition position, Viewport viewport, Graphics2D graphics,
       double scale) throws NoninvertibleTransformException {
     FontRenderContext frc = graphics.getFontRenderContext();
-    float rotation = (float) ((double) pointPlacement.getRotation()
-        .getRotationValue() * Math.PI / 180);
+    float rotation = 0.0f;
+    if (pointPlacement.getRotation() != null) {
+      rotation = (float) ((double) pointPlacement.getRotation()
+          .getRotationValue() * Math.PI / 180);
+    }
     GlyphVector gv = graphics.getFont().createGlyphVector(frc, text);
     Shape textShape = gv.getOutline();
     Rectangle2D bounds = textShape.getBounds2D();
@@ -1831,15 +1858,15 @@ public final class RenderUtil {
     double height = bounds.getHeight();
     Point2D p = viewport.toViewPoint(position);
     AnchorPoint anchorPoint = pointPlacement.getAnchorPoint();
-    float anchorPointX = (anchorPoint == null) ? 0.5f : anchorPoint
-        .getAnchorPointX();
-    float anchorPointY = (anchorPoint == null) ? 0.5f : anchorPoint
-        .getAnchorPointY();
+    float anchorPointX = (anchorPoint == null) ? 0.5f
+        : anchorPoint.getAnchorPointX();
+    float anchorPointY = (anchorPoint == null) ? 0.5f
+        : anchorPoint.getAnchorPointY();
     Displacement displacement = pointPlacement.getDisplacement();
-    float displacementX = (displacement == null) ? 0.0f : displacement
-        .getDisplacementX();
-    float displacementY = (displacement == null) ? 0.0f : displacement
-        .getDisplacementY();
+    float displacementX = (displacement == null) ? 0.0f
+        : displacement.getDisplacementX();
+    float displacementY = (displacement == null) ? 0.0f
+        : displacement.getDisplacementY();
     float tx = (float) (p.getX() + displacementX * scale);
     float ty = (float) (p.getY() - displacementY * scale);
     AffineTransform t = AffineTransform.getTranslateInstance(tx, ty);
@@ -1892,16 +1919,17 @@ public final class RenderUtil {
           }
         }
         for (Arc a : t.getPopArcs()) {
-          ((IPopulation<IFeature>) DataSet.getInstance().getPopulation(
-              "Triangulation")).add(new DefaultFeature(a.getGeometrie())); //$NON-NLS-1$
+          ((IPopulation<IFeature>) DataSet.getInstance()
+              .getPopulation("Triangulation")) //$NON-NLS-1$
+                  .add(new DefaultFeature(a.getGeometrie()));
         }
         double maxDistance = Double.MIN_VALUE;
         Noeud maxNode = null;
         for (Arc a : t.getPopVoronoiEdges().select(feature.getGeom())) {
           if (!a.getGeometrie().intersectsStrictement(feature.getGeom())) {
-            ((Population<DefaultFeature>) DataSet.getInstance().getPopulation(
-                "MedialAxis")).add(new DefaultFeature(a //$NON-NLS-1$
-                .getGeometrie()));
+            ((Population<DefaultFeature>) DataSet.getInstance()
+                .getPopulation("MedialAxis")) //$NON-NLS-1$
+                    .add(new DefaultFeature(a.getGeometrie()));
           }
         }
         for (Noeud n : t.getPopVoronoiVertices().select(feature.getGeom())) {
@@ -1941,14 +1969,14 @@ public final class RenderUtil {
       if (s.getDiagramType().equalsIgnoreCase("piechart")) { //$NON-NLS-1$
         double startAngle = 0.0;
         for (ThematicClass thematicClass : s.getThematicClass()) {
-          double value = ((Number) thematicClass.getClassValue().evaluate(
-              feature)).doubleValue();
+          double value = ((Number) thematicClass.getClassValue()
+              .evaluate(feature)).doubleValue();
           if (value == 0) {
             continue;
           }
           double arcAngle = 3.6 * value;
-          graphics.setColor(ColorUtil.getColorWithOpacity(thematicClass
-              .getFill().getColor(), opacity));
+          graphics.setColor(ColorUtil.getColorWithOpacity(
+              thematicClass.getFill().getColor(), opacity));
           graphics.fillArc((int) (point.getX() - size),
               (int) (point.getY() - size), (int) (2 * size), (int) (2 * size),
               (int) startAngle, (int) arcAngle);
@@ -1962,20 +1990,22 @@ public final class RenderUtil {
         double part = 0.70;
         graphics.setColor(Color.BLACK);
         drawArrow(graphics, (int) (point.getX() - part * size),
-            (int) (point.getY() + part * size), (int) (point.getX() - part
-                * size), (int) (point.getY() - part * size));
+            (int) (point.getY() + part * size),
+            (int) (point.getX() - part * size),
+            (int) (point.getY() - part * size));
         drawArrow(graphics, (int) (point.getX() - part * size),
-            (int) (point.getY() + part * size), (int) (point.getX() + part
-                * size), (int) (point.getY() + part * size));
+            (int) (point.getY() + part * size),
+            (int) (point.getX() + part * size),
+            (int) (point.getY() + part * size));
 
         int width = (int) (2 * part * size / (3 * s.getThematicClass().size()));
         int startX = width;
         for (ThematicClass thematicClass : s.getThematicClass()) {
-          double value = ((Number) thematicClass.getClassValue().evaluate(
-              feature)).doubleValue();
+          double value = ((Number) thematicClass.getClassValue()
+              .evaluate(feature)).doubleValue();
           int hauteur = (int) (value * 2 * part * size / 100);
-          graphics.setColor(ColorUtil.getColorWithOpacity(thematicClass
-              .getFill().getColor(), opacity));
+          graphics.setColor(ColorUtil.getColorWithOpacity(
+              thematicClass.getFill().getColor(), opacity));
           graphics.fillRect((int) (point.getX() - part * size) + startX,
               (int) (point.getY() + part * size) - hauteur, 2 * width, hauteur);
 
@@ -1997,8 +2027,8 @@ public final class RenderUtil {
         // Portions
         double max = 0;
         for (ThematicClass thematicClass : s.getThematicClass()) {
-          double value = ((Number) thematicClass.getClassValue().evaluate(
-              feature)).doubleValue();
+          double value = ((Number) thematicClass.getClassValue()
+              .evaluate(feature)).doubleValue();
           if (value > max)
             max = value;
         }
@@ -2011,8 +2041,8 @@ public final class RenderUtil {
         }
         double angleDegre = 0;
         for (ThematicClass thematicClass : s.getThematicClass()) {
-          double value = ((Number) thematicClass.getClassValue().evaluate(
-              feature)).doubleValue();
+          double value = ((Number) thematicClass.getClassValue()
+              .evaluate(feature)).doubleValue();
           if (value <= 0) {
             value = 1;
           }
@@ -2020,8 +2050,8 @@ public final class RenderUtil {
           int a2 = pas - 2;
           int l = (int) (size - value * size / max);
           // graphics.setColor(Color.ORANGE);
-          graphics.setColor(ColorUtil.getColorWithOpacity(thematicClass
-              .getFill().getColor(), opacity));
+          graphics.setColor(ColorUtil.getColorWithOpacity(
+              thematicClass.getFill().getColor(), opacity));
           graphics.fillArc((int) (x0 + l), (int) (y0 + l),
               (int) (2 * size - 2 * l), (int) (2 * size - 2 * l), a1, a2);
           angleDegre = angleDegre + pas;
@@ -2034,21 +2064,21 @@ public final class RenderUtil {
             BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
         graphics.setStroke(dashed);
         graphics.drawArc((int) (x0 + 1 * size / 4), (int) (y0 + 1 * size / 4),
-            (int) (2 * size - 2 * size / 4), (int) (2 * size - 2 * size / 4),
-            0, 180);
+            (int) (2 * size - 2 * size / 4), (int) (2 * size - 2 * size / 4), 0,
+            180);
         graphics.drawArc((int) (x0 + 2 * size / 4), (int) (y0 + 2 * size / 4),
-            (int) (2 * size - 4 * size / 4), (int) (2 * size - 4 * size / 4),
-            0, 180);
+            (int) (2 * size - 4 * size / 4), (int) (2 * size - 4 * size / 4), 0,
+            180);
         graphics.drawArc((int) (x0 + 3 * size / 4), (int) (y0 + 3 * size / 4),
-            (int) (2 * size - 6 * size / 4), (int) (2 * size - 6 * size / 4),
-            0, 180);
+            (int) (2 * size - 6 * size / 4), (int) (2 * size - 6 * size / 4), 0,
+            180);
         // graphics.drawLine((int)(x0 + size), (int)(y0 + size), (int)(x0 +
         // size), (int)(y0));
         graphics.setColor(Color.BLACK);
         graphics.setStroke(new BasicStroke(1.0f));
         graphics.drawArc((int) (x0 + 0 * size / 4), (int) (y0 + 0 * size / 4),
-            (int) (2 * size - 0 * size / 4), (int) (2 * size - 0 * size / 4),
-            0, 180);
+            (int) (2 * size - 0 * size / 4), (int) (2 * size - 0 * size / 4), 0,
+            180);
         graphics.drawLine((int) (x0), (int) (y0 + size), (int) (x0 + 2 * size),
             (int) (y0 + size));
 
@@ -2057,11 +2087,13 @@ public final class RenderUtil {
         double part = 0.70;
         graphics.setColor(Color.BLACK);
         drawArrow(graphics, (int) (point.getX() - part * size),
-            (int) (point.getY() + part * size), (int) (point.getX() - part
-                * size), (int) (point.getY() - part * size));
+            (int) (point.getY() + part * size),
+            (int) (point.getX() - part * size),
+            (int) (point.getY() - part * size));
         drawArrow(graphics, (int) (point.getX() - part * size),
-            (int) (point.getY() + part * size), (int) (point.getX() + part
-                * size), (int) (point.getY() + part * size));
+            (int) (point.getY() + part * size),
+            (int) (point.getX() + part * size),
+            (int) (point.getY() + part * size));
 
         /*
          * int width = (int) (2 * part * size / s.getThematicClass().size());
