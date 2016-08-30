@@ -11,7 +11,26 @@ import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridCoverageFactory;
 import org.opengis.geometry.Envelope;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.feature.FT_Coverage;
+
 public class ImageUtil {
+
+  public static GridCoverage2D bufferredImageToGridCovergade2D(
+      BufferedImage image,
+      IFeatureCollection<? extends IFeature> templateFeatColl) {
+
+    Envelope env = ((FT_Coverage) templateFeatColl.get(0)).coverage()
+        .getEnvelope();
+    return bufferedImageToGridCoverage2D(image, env);
+  }
+
+  public static GridCoverage2D bufferredImageToGridCovergade2D(
+      BufferedImage image, GridCoverage2D sourceCoverage) {
+    Envelope env = sourceCoverage.getEnvelope();
+    return bufferedImageToGridCoverage2D(image, env);
+  }
 
   public static GridCoverage2D bufferedImageToGridCoverage2D(
       BufferedImage image, Envelope env) {
