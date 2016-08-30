@@ -320,10 +320,10 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<compilerVersion>1.7</compilerVersion>
-					<source>1.7</source>
-					<complianceLevel>1.7</complianceLevel>
-					<target>1.7</target>
+					<compilerVersion>1.8</compilerVersion>
+					<source>1.8</source>
+					<complianceLevel>1.8</complianceLevel>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 			<!-- <plugin>
@@ -476,7 +476,7 @@
 				<configuration>
 					<!-- <reportOutputDirectory>javadoc</reportOutputDirectory> -->
 					<aggregate>true</aggregate>
-					<source>1.7</source>             <!-- Enables javadoc to handle assertions present in J2SE 1.4. -->
+					<source>1.8</source>             <!-- Enables javadoc to handle assertions present in J2SE 1.4. -->
 					<encoding>UTF-8</encoding>       <!-- The encoding of the source files. -->
 					<docencoding>UTF-8</docencoding> <!-- The encoding of the generated HTML files. -->
 					<charset>UTF-8</charset>
@@ -539,7 +539,7 @@
 				</reportSets>
 				<configuration>
 					<!-- <reportOutputDirectory>javadoc</reportOutputDirectory> -->
-					<source>1.6</source>             <!-- Enables javadoc to handle assertions present in J2SE 1.4. -->
+					<source>1.8</source>             <!-- Enables javadoc to handle assertions present in J2SE 1.4. -->
 					<encoding>UTF-8</encoding>       <!-- The encoding of the source files. -->
 					<docencoding>UTF-8</docencoding> <!-- The encoding of the generated HTML files. -->
 					<charset>UTF-8</charset>
