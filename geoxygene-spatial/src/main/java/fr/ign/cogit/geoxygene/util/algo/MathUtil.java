@@ -211,4 +211,19 @@ public class MathUtil {
     }
   }
 
+  /**
+   * Interpolation linéaire entre deux points
+   * @param x abscisse du point à interpoler
+   * @param x1 abscisse du point 1
+   * @param x2 abscisse du point 2
+   * @param y1 ordonnée du point 1
+   * @param y2 ordonnée du point 2
+   * @return Résultat d'interpolation linéaire
+   */
+  public static float lin(int x, int x1, int x2, int y1, int y2) {
+    float a = ((float) (y2 - y1)) / ((float) (x2 - x1));
+    float b = ((float) (x2 * y1 - x1 * y2)) / ((float) (x2 - x1));
+    return (float) a * x + b;
+  }
+
 }
