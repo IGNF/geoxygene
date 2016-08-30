@@ -58,7 +58,7 @@
 
 		<jts.version>1.13</jts.version>
 		<log4j.version>1.2.16</log4j.version>
-		<geotools.version>14.4</geotools.version>
+		<geotools.version>15.1</geotools.version>
 		<jfreechart.version>1.0.13</jfreechart.version>
 		<jgrapht.version>0.9.0</jgrapht.version>
 		<postgresql.version>9.1-901-1.jdbc4</postgresql.version>
@@ -654,17 +654,6 @@
 			<id>geosolutions</id>
 			<name>GeoSolutions libraries repository</name>
 			<url>http://maven.geo-solutions.it/</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-		<repository>
-			<id>iscpif-ign-releases</id>
-			<name>ISCPIF Release repository for IGN</name>
-			<url>http://maven.iscpif.fr/ign-releases</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
