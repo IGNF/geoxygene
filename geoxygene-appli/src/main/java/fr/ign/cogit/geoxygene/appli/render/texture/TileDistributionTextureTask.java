@@ -478,15 +478,10 @@ public class TileDistributionTextureTask extends AbstractTextureTask<BasicTextur
         }
 
         Graphics2D g2 = (Graphics2D) bi.getGraphics();
-        g2.setComposite(AlphaComposite.Clear);
+        g2.setColor(new Color(255, 255, 255, 255));
         g2.fillRect(0, 0, this.getTextureWidth(), this.getTextureHeight());
         g2.setComposite(AlphaComposite.SrcOver);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        // if (clippingShape != null) {
-        // Shape screenSpaceShape =
-        // this.transform.createTransformedShape(clippingShape);
-        // g2.setClip(screenSpaceShape);
-        // }
         int nbSamples = sampler.getSampleCount();
         int nSample = 0;
         Iterator<Sample> sampleIterator = sampler.getSampleIterator();
@@ -500,8 +495,6 @@ public class TileDistributionTextureTask extends AbstractTextureTask<BasicTextur
             double xTexture = sample.getLocation().getX();
             double yTexture = sample.getLocation().getY();
             Tile tile = sample.getTile();
-            // Tile tile = sample.getTile() != null ? sample.getTile()
-            // : tileChooser.getTile(sample);
             if (tile == null) {
                 continue;
             }
