@@ -19,6 +19,8 @@
 package fr.ign.cogit.geoxygene.style;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -28,171 +30,194 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ColorMap {
 
-    @XmlElement(name = "PropertyName")
-    String propertyName = null;
-    
-    // ColorMap version Categorize
-    @XmlElement(name = "Categorize")
-    Categorize categorize = null;
-    
-    public Categorize getCategorize() {
-        return categorize;
-    }
-    
-    public void setCategorize(Categorize categorize) {
-        this.categorize = categorize;
+  @XmlElement(name = "PropertyName")
+  String propertyName = null;
+
+  // ColorMap version Categorize
+  @XmlElement(name = "Categorize")
+  Categorize categorize = null;
+
+  public ColorMap(ColorMap cm, List<Color> color) {
+    List<InterpolationPoint> intPList = new ArrayList<InterpolationPoint>(
+        cm.getInterpolate().getInterpolationPoint().size());
+    for (int i = 0; i < cm.getInterpolate().getInterpolationPoint()
+        .size(); i++) {
+      InterpolationPoint intP = new InterpolationPoint(
+          cm.getInterpolate().getInterpolationPoint().get(i).getData(),
+          color.get(i));
+      intPList.add(intP);
     }
 
-    // ColorMap version Interpolate
-    @XmlElement(name = "Interpolate")
-    Interpolate interpolate = null;
-    
-    public Interpolate getInterpolate() {
-        return this.interpolate;
-    }
+    Interpolate interpo = new Interpolate();
+    interpo.setInterpolationPoint(intPList);
+    interpo.setLookupvalue("RasterData");
 
-    public void setInterpolate(Interpolate interpolate) {
-        this.interpolate = interpolate;
-    }
+    this.setInterpolate(interpo);
+  }
 
-    // TODO ColorMap version Intervals
-    @XmlElement(name = "Intervals")
-    Intervals intervals = null;
-    
-    public Intervals getIntervals() {
-        return this.intervals;
-    }
+  public ColorMap() {
+    super();
+  }
 
-    public void setIntervals(Intervals intervals) {
-        this.intervals = intervals;
-    }
-    
-    @XmlTransient
-    public String getPropertyName() {
-        return this.propertyName;
-    }
+  public Categorize getCategorize() {
+    return categorize;
+  }
 
-    public void setPropertyName(String propertyName) {
-        this.propertyName = propertyName;
-    }
+  public void setCategorize(Categorize categorize) {
+    this.categorize = categorize;
+  }
 
-   
+  // ColorMap version Interpolate
+  @XmlElement(name = "Interpolate")
+  Interpolate interpolate = null;
 
-    public int getColor(double value) {
-        if (this.interpolate != null) {
-            InterpolationPoint previous = null;
-            for (InterpolationPoint point : this.interpolate
-                    .getInterpolationPoint()) {
-                if (value <= point.getData()) {
-                    if (previous == null) {
-                        return point.getColor().getRGB();
-                    }
-                    return this.interpolateColor(value, previous.getData(),
-                            previous.getColor(), point.getData(),
-                            point.getColor()).getRGB();
-                }
-                previous = point;
-            }
-            return previous.getColor().getRGB();
+  public Interpolate getInterpolate() {
+    return this.interpolate;
+  }
+
+  public void setInterpolate(Interpolate interpolate) {
+    this.interpolate = interpolate;
+  }
+
+  public Color getColor(int index) {
+    return this.getInterpolate().getInterpolationPoint(index).getColor();
+  }
+
+  public void setColor(int index, Color c) {
+    this.getInterpolate().getInterpolationPoint(index).setColor(c);
+  }
+
+  // TODO ColorMap version Intervals
+  @XmlElement(name = "Intervals")
+  Intervals intervals = null;
+
+  public Intervals getIntervals() {
+    return this.intervals;
+  }
+
+  public void setIntervals(Intervals intervals) {
+    this.intervals = intervals;
+  }
+
+  @XmlTransient
+  public String getPropertyName() {
+    return this.propertyName;
+  }
+
+  public void setPropertyName(String propertyName) {
+    this.propertyName = propertyName;
+  }
+
+  public int getColor(double value) {
+    if (this.interpolate != null) {
+      InterpolationPoint previous = null;
+      for (InterpolationPoint point : this.interpolate
+          .getInterpolationPoint()) {
+        if (value <= point.getData()) {
+          if (previous == null) {
+            return point.getColor().getRGB();
+          }
+          return this.interpolateColor(value, previous.getData(),
+              previous.getColor(), point.getData(), point.getColor()).getRGB();
         }
-        return 0;
+        previous = point;
+      }
+      return previous.getColor().getRGB();
     }
-       
+    return 0;
+  }
 
-    private Color interpolateColor(double value, double data1, Color color1,
-            double data2, Color color2) {
-        double r1 = color1.getRed();
-        double g1 = color1.getGreen();
-        double b1 = color1.getBlue();
-        double r2 = color2.getRed();
-        double g2 = color2.getGreen();
-        double b2 = color2.getBlue();
-        return new Color(
-                (float) this.interpolate(value, data1, r1, data2, r2) / 255f,
-                (float) this.interpolate(value, data1, g1, data2, g2) / 255f,
-                (float) this.interpolate(value, data1, b1, data2, b2) / 255f);
-    }
+  private Color interpolateColor(double value, double data1, Color color1,
+      double data2, Color color2) {
+    double r1 = color1.getRed();
+    double g1 = color1.getGreen();
+    double b1 = color1.getBlue();
+    double r2 = color2.getRed();
+    double g2 = color2.getGreen();
+    double b2 = color2.getBlue();
+    return new Color(
+        (float) this.interpolate(value, data1, r1, data2, r2) / 255f,
+        (float) this.interpolate(value, data1, g1, data2, g2) / 255f,
+        (float) this.interpolate(value, data1, b1, data2, b2) / 255f);
+  }
 
-    private double interpolate(double value, double data1, double value1,
-            double data2, double value2) {
-        return value1 + (value - data1) * (value2 - value1) / (data2 - data1);
-    }
+  private double interpolate(double value, double data1, double value1,
+      double data2, double value2) {
+    return value1 + (value - data1) * (value2 - value1) / (data2 - data1);
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime
-                * result
-                + ((this.interpolate == null) ? 0 : this.interpolate.hashCode());
-        result = prime
-                * result
-                + ((this.propertyName == null) ? 0 : this.propertyName
-                        .hashCode());
-        return result;
-    }
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result
+        + ((this.interpolate == null) ? 0 : this.interpolate.hashCode());
+    result = prime * result
+        + ((this.propertyName == null) ? 0 : this.propertyName.hashCode());
+    return result;
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (this.getClass() != obj.getClass()) {
-            return false;
-        }
-        ColorMap other = (ColorMap) obj;
-        if (this.interpolate == null) {
-            if (other.interpolate != null) {
-                return false;
-            }
-        } else if (!this.interpolate.equals(other.interpolate)) {
-            return false;
-        }
-        if (this.propertyName == null) {
-            if (other.propertyName != null) {
-                return false;
-            }
-        } else if (!this.propertyName.equals(other.propertyName)) {
-            return false;
-        }
-        return true;
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
     }
-    
-    public boolean isCategorize() {
-        if (categorize!=null) {
-            return true;
-        } else {
-            return false;
-        }      
+    if (obj == null) {
+      return false;
     }
-    
-    public boolean isInterpolate() {
-        if (interpolate!=null) {
-            return true;
-        } else {
-            return false;
-        }
+    if (this.getClass() != obj.getClass()) {
+      return false;
     }
-    
-    public boolean isIntervals() {
-        if (intervals!=null) {
-            return true;
-        } else {
-            return false;
-        }
+    ColorMap other = (ColorMap) obj;
+    if (this.interpolate == null) {
+      if (other.interpolate != null) {
+        return false;
+      }
+    } else if (!this.interpolate.equals(other.interpolate)) {
+      return false;
     }
+    if (this.propertyName == null) {
+      if (other.propertyName != null) {
+        return false;
+      }
+    } else if (!this.propertyName.equals(other.propertyName)) {
+      return false;
+    }
+    return true;
+  }
+
+  public boolean isCategorize() {
+    if (categorize != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public boolean isInterpolate() {
+    if (interpolate != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public boolean isIntervals() {
+    if (intervals != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
 }

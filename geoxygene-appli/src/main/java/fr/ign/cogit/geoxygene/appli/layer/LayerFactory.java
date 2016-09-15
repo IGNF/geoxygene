@@ -110,10 +110,37 @@ public class LayerFactory {
     ShapefileReader.addActionListener(listener);
   }
 
+  /**
+   * Create a layer and associate an SLD style.
+   * @param filename the path to the file used to create the layer
+   * @param layertype the layer type (Shapefile, Geotiff, ArcGrid, ...)
+   * @param styleName the name of the SLD style to associate
+   * @return the created and symbolized layer
+   */
+  public Layer createLayer(String filename, LayerType layertype,
+      String styleName) {
+    Layer layer = createLayer(filename, layertype);
+    layer.setStyles(this.model.getLayer(styleName).getStyles());
+    return layer;
+  }
+
+  /**
+   * Create a layer in the current dataset.
+   * @param filename the path to the file used to create the layer
+   * @param layertype the layer type (Shapefile, Geotiff, ArcGrid, ...)
+   * @return the created layer
+   */
   public Layer createLayer(String filename, LayerType layertype) {
     return createLayer(filename, layertype, model.getDataSet());
   }
 
+  /**
+   * Create a layer in the specified dataset.
+   * @param filename the path to the file used to create the layer
+   * @param layertype the layer type (Shapefile, Geotiff, ArcGrid, ...)
+   * @param target_dataset the dataset where the layer will be created
+   * @return the created layer
+   */
   public Layer createLayer(String filename, LayerType layertype,
       DataSet target_dataset) {
     File f = new File(filename);
@@ -149,13 +176,14 @@ public class LayerFactory {
     }
   }
 
-  private synchronized Layer createShapeLayer(File file, DataSet target_dataset) {
+  private synchronized Layer createShapeLayer(File file,
+      DataSet target_dataset) {
     String populationName = popNameFromFile(file.getPath());
     ShapefileReader shapefileReader = new ShapefileReader(file.getPath(),
         populationName, target_dataset, true);
     shapefileReader.read();
-    Layer layer = this.createLayer(populationName, shapefileReader
-        .getPopulation().getFeatureType().getGeometryType());
+    Layer layer = this.createLayer(populationName,
+        shapefileReader.getPopulation().getFeatureType().getGeometryType());
     if (layer != null)
       layer.setCRS(shapefileReader.getCRS());
     return layer;
@@ -171,10 +199,11 @@ public class LayerFactory {
     Population<FT_Coverage> population = new Population<FT_Coverage>(
         populationName);
     org.opengis.geometry.Envelope envelope = coverage.getEnvelope();
-    population.setEnvelope(new GM_Envelope(envelope.getLowerCorner()
-        .getCoordinate()[0], envelope.getUpperCorner().getCoordinate()[0],
-        envelope.getLowerCorner().getCoordinate()[1], envelope.getUpperCorner()
-            .getCoordinate()[1]));
+    population.setEnvelope(
+        new GM_Envelope(envelope.getLowerCorner().getCoordinate()[0],
+            envelope.getUpperCorner().getCoordinate()[0],
+            envelope.getLowerCorner().getCoordinate()[1],
+            envelope.getUpperCorner().getCoordinate()[1]));
     population.add(new FT_Coverage(coverage));
     target_dataset.addPopulation(population);
     Layer layer = this.createLayer(populationName);
@@ -211,10 +240,11 @@ public class LayerFactory {
     org.opengis.geometry.Envelope envelope = coverage.getEnvelope();
 
     // put the envelope of the image in the population
-    population.setEnvelope(new GM_Envelope(envelope.getLowerCorner()
-        .getCoordinate()[0], envelope.getUpperCorner().getCoordinate()[0],
-        envelope.getLowerCorner().getCoordinate()[1], envelope.getUpperCorner()
-            .getCoordinate()[1]));
+    population.setEnvelope(
+        new GM_Envelope(envelope.getLowerCorner().getCoordinate()[0],
+            envelope.getUpperCorner().getCoordinate()[0],
+            envelope.getLowerCorner().getCoordinate()[1],
+            envelope.getUpperCorner().getCoordinate()[1]));
 
     // add the data to the population
     population.add(new FT_Coverage(coverage));
@@ -259,14 +289,14 @@ public class LayerFactory {
     ColorMap colorMap = new ColorMap();
     Interpolate interpolate = new Interpolate();
     double diff = max - min;
-    interpolate.getInterpolationPoint().add(
-        new InterpolationPoint(min, Color.blue));
-    interpolate.getInterpolationPoint().add(
-        new InterpolationPoint(min + diff / 3, Color.cyan));
-    interpolate.getInterpolationPoint().add(
-        new InterpolationPoint(min + 2 * diff / 3, Color.yellow));
-    interpolate.getInterpolationPoint().add(
-        new InterpolationPoint(max, Color.red));
+    interpolate.getInterpolationPoint()
+        .add(new InterpolationPoint(min, Color.blue));
+    interpolate.getInterpolationPoint()
+        .add(new InterpolationPoint(min + diff / 3, Color.cyan));
+    interpolate.getInterpolationPoint()
+        .add(new InterpolationPoint(min + 2 * diff / 3, Color.yellow));
+    interpolate.getInterpolationPoint()
+        .add(new InterpolationPoint(max, Color.red));
     colorMap.setInterpolate(interpolate);
     symbolizer.setColorMap(colorMap);
     // layer.setImage(symbolizer, coverage);
@@ -298,7 +328,10 @@ public class LayerFactory {
       /** Il existe déjà une population avec ce nom */
       int n = 2;
       while (this.model.getLayer(layerName + " (" + n //$NON-NLS-1$
-          + ")") != null) {n++;} //$NON-NLS-1$
+          + ")") != null) {
+        // $NON-NLS-0$
+        n++;
+      }
       layerName = layerName + " (" + n + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
     return layerName;
@@ -370,11 +403,9 @@ public class LayerFactory {
    */
   public Layer createLayer(String layerName,
       Class<? extends IGeometry> geometryType) {
-    return this.createLayer(
-        layerName,
-        geometryType,
-        new Color((float) Math.random(), (float) Math.random(), (float) Math
-            .random(), 0.5f));
+    return this.createLayer(layerName, geometryType,
+        new Color((float) Math.random(), (float) Math.random(),
+            (float) Math.random(), 0.5f));
   }
 
   /**
@@ -485,9 +516,9 @@ public class LayerFactory {
       Color fillColor, float opacity, float strokeWidth) {
 
     // Logger
-    LayerFactory.logger.info("create Layer " + layerName + " " + geometryType
-        + " " + strokeColor + " " + fillColor + " " + opacity + " "
-        + strokeWidth);
+    LayerFactory.logger.info(
+        "create Layer " + layerName + " " + geometryType + " " + strokeColor
+            + " " + fillColor + " " + opacity + " " + strokeWidth);
 
     // Create the Layer (by type)
     Layer layer = new NamedLayer(this.model, layerName);
@@ -498,9 +529,8 @@ public class LayerFactory {
 
     // Filling the style (sld)
     FeatureTypeStyle fts = new FeatureTypeStyle();
-    fts.getRules().add(
-        LayerFactory.createRule(geometryType, strokeColor, fillColor, opacity,
-            opacity, strokeWidth));
+    fts.getRules().add(LayerFactory.createRule(geometryType, strokeColor,
+        fillColor, opacity, opacity, strokeWidth));
     style.getFeatureTypeStyles().add(fts);
     layer.getStyles().add(style);
 
@@ -611,9 +641,8 @@ public class LayerFactory {
     UserStyle style = new UserStyle();
     style.setGroup(groupName);
     FeatureTypeStyle fts = new FeatureTypeStyle();
-    fts.getRules().add(
-        LayerFactory.createRule(geometryType, strokeColor, fillColor, opacity,
-            opacity, strokeWidth));
+    fts.getRules().add(LayerFactory.createRule(geometryType, strokeColor,
+        fillColor, opacity, opacity, strokeWidth));
     style.getFeatureTypeStyles().add(fts);
     return style;
   }
@@ -634,9 +663,9 @@ public class LayerFactory {
   // FIXME Les méthodes createStyle et createRule n'ont sans doute pas
   // vraiment leur place ici mais devraient être placées dans un factory et/ou
   // builder propre
-  public static Style createStyle(String name, String attrName,
-      Color textColor, Font font, Color haloColor, float haloRadius,
-      float dxPlacement, float dyPlacement, float rotation) {
+  public static Style createStyle(String name, String attrName, Color textColor,
+      Font font, Color haloColor, float haloRadius, float dxPlacement,
+      float dyPlacement, float rotation) {
     UserStyle style = new UserStyle();
     style.setName(name);
     FeatureTypeStyle fts = new FeatureTypeStyle();

@@ -648,17 +648,17 @@
 				<enabled>true</enabled>
 			</releases>
 		</repository>
-		<repository>
-			<id>iscpif-ign-releases</id>
-			<name>ISCPIF Release repository for IGN</name>
-			<url>http://maven.iscpif.fr/ign-releases</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
+<!-- 		<repository> -->
+<!-- 			<id>iscpif-ign-releases</id> -->
+<!-- 			<name>ISCPIF Release repository for IGN</name> -->
+<!-- 			<url>http://maven.iscpif.fr/ign-releases</url> -->
+<!-- 			<snapshots> -->
+<!-- 				<enabled>false</enabled> -->
+<!-- 			</snapshots> -->
+<!-- 			<releases> -->
+<!-- 				<enabled>true</enabled> -->
+<!-- 			</releases> -->
+<!-- 		</repository> -->
 	</repositories>
 
 	<pluginRepositories>
