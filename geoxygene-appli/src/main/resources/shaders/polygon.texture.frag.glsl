@@ -13,5 +13,6 @@ out vec4 outColor;
 
 void main(void) {
 	vec4 tcolor = texture(textureColor1, fragmentTextureCoord * textureScaleFactor );
-	outColor = vec4( tcolor.rgb * fragmentColor.rgb, tcolor.a*fragmentColor.a * globalOpacity );
+	/* tcolor.rgb/tcolor.a seems to be needed in case of a  KEEP_OUTSIDE TileDistributionTexture.*/
+	outColor = vec4( tcolor.rgb/tcolor.a,tcolor.a*fragmentColor.a * globalOpacity );
 }
