@@ -37,7 +37,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISolid;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
-import fr.ign.cogit.geoxygene.sig3d.convert.geom.FromGeomToSurface;
+import fr.ign.cogit.geoxygene.convert.FromGeomToSurface;
 import fr.ign.cogit.geoxygene.sig3d.equation.ApproximatedPlanEquation;
 import fr.ign.cogit.geoxygene.sig3d.representation.Default3DRep;
 import fr.ign.cogit.geoxygene.sig3d.representation.texture.TextureManager;

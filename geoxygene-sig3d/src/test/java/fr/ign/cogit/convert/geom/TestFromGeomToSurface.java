@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
-import fr.ign.cogit.geoxygene.sig3d.convert.geom.FromGeomToSurface;
+import fr.ign.cogit.geoxygene.convert.FromGeomToSurface;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
