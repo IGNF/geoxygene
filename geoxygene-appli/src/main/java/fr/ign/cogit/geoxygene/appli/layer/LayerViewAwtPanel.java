@@ -219,6 +219,10 @@ public class LayerViewAwtPanel extends LayerViewPanel {
 
   @Override
   public void saveAsImage(String fileName, int width, int height, boolean doSaveWorldFile) {
+    saveAsImage(fileName, width, height, doSaveWorldFile, true);
+  }
+
+  public void saveAsImage(String fileName, int width, int height, boolean doSaveWorldFile, boolean drawOverlay) {
     Color bg = this.getBackground();
     BufferedImage outImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
     Graphics2D graphics = outImage.createGraphics();
@@ -256,8 +260,8 @@ public class LayerViewAwtPanel extends LayerViewPanel {
     // We have to impose a bbox !!!
     this.getRenderingManager().copyTo(graphics);
 
-    // TODO ask to paint overlays
-    this.paintOverlays(graphics);
+    if (drawOverlay)
+      this.paintOverlays(graphics);
     graphics.dispose();
     try {
       ImgUtil.saveImage(outImage, fileName);
@@ -276,76 +280,6 @@ public class LayerViewAwtPanel extends LayerViewPanel {
         e.printStackTrace();
       }
     }
-
-    // Finally, rollback the canvas to its original size.
-    this.setSize(tmpw, tmph);
-    try {
-      // Zoom back to the "normal" extent
-      this.getViewport().zoom(env);
-    } catch (NoninvertibleTransformException e2) {
-      logger.error("In Image Export : failed to zoom back to the original LayerViewPanel extent.");
-      e2.printStackTrace();
-      return;
-    }
-  }
-
-  public void saveAsImage(String fileName, int width, int height) {
-    Color bg = this.getBackground();
-    BufferedImage outImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-    Graphics2D graphics = outImage.createGraphics();
-    // TEMP
-    graphics.setColor(bg);
-    graphics.fillRect(0, 0, width, height);
-    int tmpw = this.getWidth();
-    int tmph = this.getHeight();
-    // We save the old extent to force the Viewport to keep the old
-    // window in world coordinates.
-    IEnvelope env = this.getViewport().getEnvelopeInModelCoordinates();
-    // Artificially resize the canvas to the image dimensions.
-    this.setSize(width, height);
-    try {
-      // We zoom to the old extent in the resized canvas.
-      this.getViewport().zoom(env);
-    } catch (NoninvertibleTransformException e2) {
-      logger.error("In Image Export : failed to zoom in the correct extent.");
-      e2.printStackTrace();
-    }
-    this.renderingManager.renderAll();
-    long time = System.currentTimeMillis();
-    long twaited = 0;
-    while (this.renderingManager.isRendering() && twaited < 15000) {
-      // Wait for the rendering to end for a maximum of 15s. If the
-      // rendering is not finished after this delay,
-      // we give up.
-      twaited = System.currentTimeMillis() - time;
-    }
-    if (this.renderingManager.isRendering()) {
-      logger.error("Export to image : waited 15s but the rendering is still not finished. Abort.");
-      return;
-    }
-
-    // We have to impose a bbox !!!
-    this.getRenderingManager().copyTo(graphics);
-
-    // TODO ask to paint overlays
-    // this.paintOverlays(graphics);
-    graphics.dispose();
-    try {
-      ImgUtil.saveImage(outImage, fileName);
-    } catch (IOException e1) {
-      e1.printStackTrace();
-    }
-    // if (doSaveWorldFile) {
-    String wld = FilenameUtils.removeExtension(fileName) + ".wld";
-    try {
-      AffineTransform t = this.getViewport().getModelToViewTransform();
-      fr.ign.cogit.geoxygene.util.conversion.WorldFileWriter.write(new File(wld), t.getScaleX(), t.getScaleY(),
-          this.getViewport().getViewOrigin().getX(), this.getViewport().getViewOrigin().getY(), this.getHeight());
-    } catch (NoninvertibleTransformException e) {
-      logger.error("Failed to save the world file associated with the image file " + fileName);
-      e.printStackTrace();
-    }
-    // }
 
     // Finally, rollback the canvas to its original size.
     this.setSize(tmpw, tmph);

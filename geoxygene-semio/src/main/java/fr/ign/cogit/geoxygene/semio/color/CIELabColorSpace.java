@@ -29,6 +29,7 @@ package fr.ign.cogit.geoxygene.semio.color;
 
 import java.awt.color.ColorSpace;
 
+
 /**
  * CIE L*a*b* color space. All the calculations are made in double precision.
  * @See <a

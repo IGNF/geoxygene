@@ -31,22 +31,17 @@ import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
-import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 
@@ -478,15 +473,11 @@ public class TileDistributionTextureTask extends AbstractTextureTask<BasicTextur
         }
 
         Graphics2D g2 = (Graphics2D) bi.getGraphics();
-        g2.setComposite(AlphaComposite.Clear);
-        g2.fillRect(0, 0, this.getTextureWidth(), this.getTextureHeight());
+        g2.setBackground(new Color(0,0,0,0));
+        //g2.setColor(new Color(255, 255, 255, 0)); //White transparent
+        //g2.fillRect(0, 0, this.getTextureWidth(), this.getTextureHeight());
         g2.setComposite(AlphaComposite.SrcOver);
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        // if (clippingShape != null) {
-        // Shape screenSpaceShape =
-        // this.transform.createTransformedShape(clippingShape);
-        // g2.setClip(screenSpaceShape);
-        // }
+//        g2.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
         int nbSamples = sampler.getSampleCount();
         int nSample = 0;
         Iterator<Sample> sampleIterator = sampler.getSampleIterator();
@@ -500,8 +491,6 @@ public class TileDistributionTextureTask extends AbstractTextureTask<BasicTextur
             double xTexture = sample.getLocation().getX();
             double yTexture = sample.getLocation().getY();
             Tile tile = sample.getTile();
-            // Tile tile = sample.getTile() != null ? sample.getTile()
-            // : tileChooser.getTile(sample);
             if (tile == null) {
                 continue;
             }
@@ -523,8 +512,6 @@ public class TileDistributionTextureTask extends AbstractTextureTask<BasicTextur
                 if (this.getTextureDescriptor().getBlending() == TileBlendingType.GRAPHCUT) {
                     graphCut.pasteTile(tile, transform);
                 } else {
-                    // We flip vertically the image to draw the tiles with the
-                    // right orientation
                     BufferedImage tileImage = tile.getTransparentImage();
                     g2.drawImage(tileImage, transform, null);
                 }
