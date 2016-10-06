@@ -167,19 +167,19 @@ bibliothèque <a class="reference external" href="https://commons.apache.org/pro
 </div>
 </div>
 <p>L&#8217;objet principal du package est le <em>Solver</em> :</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Solver</span> <span class="n">solver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Solver</span><span class="o">();</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">Solver</span> <span class="n">solver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Solver</span><span class="o">();</span>
 </pre></div>
 </div>
 <p>L&#8217;intérêt principal du package est de pouvoir exprimer directement les contraintes
 sous forme algébrique (langage proche de Matlab) en chaine de caractères.
 Par exemple, pour définir une contrainte linéaire en x et y :</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Constraint</span> <span class="n">c1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;2*x + 3*y = 5&quot;</span><span class="o">);</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">Constraint</span> <span class="n">c1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;2*x + 3*y = 5&quot;</span><span class="o">);</span>
 </pre></div>
 </div>
 <p><em>Attention :</em> les expressions algébriques ne doivent contenir que des valeurs numériques (constantes) ou des paramètres
 à estimer (variables inconnues du problème). Le code ci-dessous est utilisé pour insérer des identificateurs
 Java dans l&#8217;expression des contraintes.</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kt">double</span> <span class="n">coeff1</span> <span class="o">=</span> <span class="mf">2.0</span><span class="o">;</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="kt">double</span> <span class="n">coeff1</span> <span class="o">=</span> <span class="mf">2.0</span><span class="o">;</span>
 <span class="kt">double</span> <span class="n">coeff2</span> <span class="o">=</span> <span class="mf">3.0</span><span class="o">;</span>
 
 <span class="n">Constraint</span> <span class="n">c1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="n">coeff1</span> <span class="o">+</span> <span class="s">&quot;*x + &quot;</span> <span class="o">+</span> <span class="n">coeff2</span> <span class="o">+</span> <span class="s">&quot;*y = 2&quot;</span><span class="o">);</span>
@@ -187,7 +187,7 @@ Java dans l&#8217;expression des contraintes.</p>
 </div>
 <p>Dans un deuxième temps, il est possible d&#8217;affecter des poids d&#8217;influence (ou directement des variances ou des écarts-types)
 aux différentes contraintes :</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">c1</span><span class="o">.</span><span class="na">setWeight</span><span class="o">(</span><span class="mf">4.0</span><span class="o">);</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">c1</span><span class="o">.</span><span class="na">setWeight</span><span class="o">(</span><span class="mf">4.0</span><span class="o">);</span>
 
 <span class="c1">// Ou de manière équivalente</span>
 <span class="n">c1</span><span class="o">.</span><span class="na">setVariance</span><span class="o">(</span><span class="mf">0.25</span><span class="o">);</span>
@@ -195,12 +195,12 @@ aux différentes contraintes :</p>
 </pre></div>
 </div>
 <p>Les contraintes sont alors ajoutées au <em>Solver</em> (ordre indépendant) :</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">solver</span><span class="o">.</span><span class="na">addConstraint</span><span class="o">(</span><span class="n">constraint</span><span class="o">);</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">solver</span><span class="o">.</span><span class="na">addConstraint</span><span class="o">(</span><span class="n">constraint</span><span class="o">);</span>
 </pre></div>
 </div>
 <p>Puis chaque variable utilisée dans les contraintes doit être déclarée dans le <em>solver</em>
 et être munie d&#8217;une valeur initiale (valeur approchée) :</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">solver</span><span class="o">.</span><span class="na">addParameter</span><span class="o">(</span><span class="s">&quot;x&quot;</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">solver</span><span class="o">.</span><span class="na">addParameter</span><span class="o">(</span><span class="s">&quot;x&quot;</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
 <span class="n">solver</span><span class="o">.</span><span class="na">addParameter</span><span class="o">(</span><span class="s">&quot;y&quot;</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
 </pre></div>
 </div>
@@ -209,7 +209,7 @@ les critères d&#8217;arrêts de l&#8217;algorithme. Dans le code ci-dessous, on
 d&#8217;itérations à 100, mais l&#8217;algorithme pourra terminer plus tôt si l&#8217;incrément sur toutes les
 variables entre deux itérations est inférieur à 0.01 (par défaut, ces deux paramètres
 sont fixés à 0, ce qui signifie qu&#8217;ils doivent impérativement être spécifiés).</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// Critère de convergence</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// Critère de convergence</span>
 <span class="n">solver</span><span class="o">.</span><span class="na">setConvergenceCriteria</span><span class="o">(</span><span class="mf">0.01</span><span class="o">)</span>
 
 <span class="c1">// Sécurité en cas de non convergence</span>
@@ -218,30 +218,30 @@ sont fixés à 0, ce qui signifie qu&#8217;ils doivent impérativement être sp�
 </div>
 <p>Il est également possible de définir les options de dérivation, i.e. le pas (0.1 par défaut)
 et l&#8217;ordre (2 par défaut) de dérivation :</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// Pour une dérivation plus fine</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// Pour une dérivation plus fine</span>
 <span class="n">solver</span><span class="o">.</span><span class="na">setDerivationStep</span><span class="o">(</span><span class="mf">0.01</span><span class="o">);</span>
 <span class="n">solver</span><span class="o">.</span><span class="na">setDerivationOrder</span><span class="o">(</span><span class="mi">4</span><span class="o">);</span>
 </pre></div>
 </div>
 <p>Enfin, un paramètre qui peut jouer un rôle important en cas de non convergence de l&#8217;algorithme :
 le facteur de réduction (qui réduit l&#8217;incrément entre deux itérations).</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// Pour une dérivation plus fine</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// Pour une dérivation plus fine</span>
 <span class="n">solver</span><span class="o">.</span><span class="na">setreducingFactor</span><span class="o">(</span><span class="mf">0.1</span><span class="o">);</span>
 </pre></div>
 </div>
 <p>Le calcul peut alors être lancé :</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">solver</span><span class="o">.</span><span class="na">compute</span><span class="o">();</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">solver</span><span class="o">.</span><span class="na">compute</span><span class="o">();</span>
 </pre></div>
 </div>
 <p>La fonction <em>displayResult()</em> permet un affichage standardisé des résultats obtenus.</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">solver</span><span class="o">.</span><span class="na">displayResults</span><span class="o">();</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">solver</span><span class="o">.</span><span class="na">displayResults</span><span class="o">();</span>
 </pre></div>
 </div>
 <p>Sinon, la fonction <em>getParameter()</em> permet de récupérer les variables estimées.
 A noter qu&#8217;un paramètre peut-être adressé par son nom ou par un index (ordre d&#8217;insertion dans le <em>Solver</em>).
 Ainsi, le code suivant permet d&#8217;afficher l&#8217;ensemble des paramètres estimés avec les noms associés,
 indépendamment du code qui précède :</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// Affichage personnalisé des résultats</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// Affichage personnalisé des résultats</span>
 
 <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">solver</span><span class="o">.</span><span class="na">getEffectiveIterationsNumber</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot; itérations ont été effectuées&quot;</span><span class="o">);</span>
 <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Les paramètres estimés sont : &quot;</span><span class="o">)</span>
@@ -303,7 +303,7 @@ L&#8217;équation de changement de repère pour un point (x1,y1) s&#8217;écrit 
 <div class="math">
 \[x2 = Tx + k*cos(θ)*x1 + k*sin(θ)*y1\]\[y2 = Ty - k*sin(θ)*x1 + k*cos(θ)*y1\]</div>
 <p>On donne ci-dessous le code Java permettant de résoudre ce problème :</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// Expression algébrique des 6 constraintes</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// Expression algébrique des 6 constraintes</span>
 <span class="n">Constraint</span> <span class="n">c11</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;Tx + k*cos(theta)*0.32 + k*sin(theta)*1.50 = 261000&quot;</span><span class="o">);</span>
 <span class="n">Constraint</span> <span class="n">c12</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;Ty - k*sin(theta)*0.32 + k*cos(theta)*1.50 = 608000&quot;</span><span class="o">);</span>
 <span class="n">Constraint</span> <span class="n">c21</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;Tx + k*cos(theta)*0.15 + k*sin(theta)*1.25 = 256000&quot;</span><span class="o">);</span>
@@ -342,7 +342,7 @@ L&#8217;équation de changement de repère pour un point (x1,y1) s&#8217;écrit 
 </pre></div>
 </div>
 <p>Le résultat obtenu dans la console est :</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="o">-----------------------------</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="o">-----------------------------</span>
  <span class="n">After</span> <span class="mi">4</span> <span class="n">iterations</span>
 <span class="o">-----------------------------</span>
 <span class="n">Tx</span>  <span class="o">=</span> <span class="mf">248716.4310955899</span> <span class="n">m</span>
@@ -409,7 +409,7 @@ L&#8217;équation de changement de repère pour un point (x1,y1) s&#8217;écrit 
 </div>
 </div>
 <p>On donne dans un premier temps le code permettant de recréer les données :</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Double</span><span class="o">&gt;</span> <span class="n">T</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Double</span><span class="o">&gt;();</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Double</span><span class="o">&gt;</span> <span class="n">T</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Double</span><span class="o">&gt;();</span>
 <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Double</span><span class="o">&gt;</span> <span class="n">D</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Double</span><span class="o">&gt;();</span>
 
 <span class="n">T</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mf">0.038</span><span class="o">);</span> <span class="n">D</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mf">0.050</span><span class="o">);</span>
@@ -422,7 +422,7 @@ L&#8217;équation de changement de repère pour un point (x1,y1) s&#8217;écrit 
 </pre></div>
 </div>
 <p>Puis le code permettant de trouver une estimation des paramètres de la fonction interpolante :</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Solver</span> <span class="n">solver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Solver</span><span class="o">();</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">Solver</span> <span class="n">solver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Solver</span><span class="o">();</span>
 
 <span class="c1">// Ajout des contraintes</span>
 <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">T</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">i</span><span class="o">++){</span>
@@ -449,7 +449,7 @@ L&#8217;équation de changement de repère pour un point (x1,y1) s&#8217;écrit 
 </pre></div>
 </div>
 <p>On obtient les lignes suivantes dans la console :</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="o">-----------------------------</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="o">-----------------------------</span>
  <span class="n">After</span> <span class="mi">6</span> <span class="n">iterations</span>
 <span class="o">-----------------------------</span>
 <span class="n">p1</span> <span class="o">=</span> <span class="mf">0.6488940374077881</span>
@@ -482,18 +482,18 @@ et <em>np</em> le nombre de paramètres à estimer, une solution pourra être tr
 <p>Une contrainte peut-être spécifiée comme étant impérative :</p>
 <ul>
 <li><p class="first">Soit en deux temps, avec la méthode <em>setImperative()</em></p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Constraint</span> <span class="n">c1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;2*x - y = 10&quot;</span><span class="o">);</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">Constraint</span> <span class="n">c1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;2*x - y = 10&quot;</span><span class="o">);</span>
 <span class="n">c1</span><span class="o">.</span><span class="na">setImperative</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first">Soit en passant l&#8217;argument booléen _imperative_ dans le constructeur de contrainte</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Constraint</span> <span class="n">c1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;2*x - y = 10&quot;</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">Constraint</span> <span class="n">c1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;2*x - y = 10&quot;</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first">Soit directement par l&#8217;emploi du signe &#8221;:=&#8221; dans l&#8217;expression algébrique de la contrainte</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Constraint</span> <span class="n">c1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;2*x - y := 10&quot;</span><span class="o">);</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">Constraint</span> <span class="n">c1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;2*x - y := 10&quot;</span><span class="o">);</span>
 </pre></div>
 </div>
 </li>
@@ -503,7 +503,7 @@ et <em>np</em> le nombre de paramètres à estimer, une solution pourra être tr
 Le problème contraint s&#8217;exprime alors de la manière suivante :</p>
 <p><em>Trouver une estimation des trois angles a, b et c sous la contrainte a + b + c = 180°</em></p>
 <p>Le code Java correspondant est le suivant :</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// Contraintes indicatives</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// Contraintes indicatives</span>
 <span class="n">Constraint</span> <span class="n">c1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;a = 60.27&quot;</span><span class="o">);</span>
 <span class="n">Constraint</span> <span class="n">c2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;b = 40.54&quot;</span><span class="o">);</span>
 <span class="n">Constraint</span> <span class="n">c3</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;c = 83.12&quot;</span><span class="o">);</span>
@@ -534,7 +534,7 @@ Le problème contraint s&#8217;exprime alors de la manière suivante :</p>
 </pre></div>
 </div>
 <p>Le résultat retourné en console est alors :</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="o">-----------------------------</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="o">-----------------------------</span>
 <span class="n">After</span> <span class="mi">5</span> <span class="n">iterations</span>
 <span class="o">-----------------------------</span>
 <span class="n">a</span> <span class="o">=</span> <span class="mf">58.960000000000065</span>
@@ -556,27 +556,27 @@ indicatives sont plus complexes que de simples affectations de variables.</p>
 de les ré-estimer a posteriori avec le calcul du facteur unitaire de variance, cf plus loin).</p>
 <p>Chaque équation est munie d&#8217;un poids correspondant :</p>
 <p>Soit à un réel arbitraire :</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">constraint</span><span class="o">.</span><span class="na">setWeight</span><span class="o">(</span><span class="mf">0.01</span><span class="o">);</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">constraint</span><span class="o">.</span><span class="na">setWeight</span><span class="o">(</span><span class="mf">0.01</span><span class="o">);</span>
 </pre></div>
 </div>
 <p>Soit à l&#8217;inverse de son écart-type de mesure au carré (la fonction prend alors en entrée l&#8217;écart-type) :</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">constraint</span><span class="o">.</span><span class="na">setStddev</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">constraint</span><span class="o">.</span><span class="na">setStddev</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
 </pre></div>
 </div>
 <p>Ou de manière équivalente, le raccourci &#8220;+/-&#8221; directement dans l&#8217;expression algébrique de la contrainte
 permet de spécifier +l&#8217;écart-type+ de l&#8217;observation :</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span>Constraint constraint = new Constraint(&quot;2*x + 3*y = 113 +/- 10)
+<div class="highlight-java"><div class="highlight"><pre>Constraint constraint = new Constraint(&quot;2*x + 3*y = 113 +/- 10)
 </pre></div>
 </div>
 <p>Soit à l&#8217;inverse de sa variance de mesure (la fonction prend alors en entrée la variance) :</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">constraint</span><span class="o">.</span><span class="na">setVariance</span><span class="o">(</span><span class="mi">100</span><span class="o">);</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">constraint</span><span class="o">.</span><span class="na">setVariance</span><span class="o">(</span><span class="mi">100</span><span class="o">);</span>
 </pre></div>
 </div>
 <p>Les indicateurs statistiques relatifs à l&#8217;estimation par moindres carrés peuvent être affichés
 dans la console à l&#8217;aide de la fonction <em>displayFullResults()</em> (version étendue de <em>displayResults()</em>).
 Les écart-types sur chaque paramètre estimé sont alors affichés avec le facteur unitaire de variance
 (pour la qualité globale de l&#8217;estimation) et les résidus (simples et normalisés).</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">solver</span><span class="o">.</span><span class="na">displayFullResults</span><span class="o">();</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">solver</span><span class="o">.</span><span class="na">displayFullResults</span><span class="o">();</span>
 </pre></div>
 </div>
 <p>Ces résultats peuvent également être obtenus individuellement à l&#8217;aide des méthodes suivantes :</p>
@@ -620,7 +620,7 @@ dont l&#8217;observation des positions a été entachée d&#8217;une erreur de m
 et est centré sur le point C avec Xc = 120.0 m et Yc = 50.0 m. On génère une série de points en coordonnées
 polaires par rapport au centre du cercle suivant deux lois uniformes en r et θ. Les coordonnées cartésiennes des points
 sont alors stockées dans deux tables X et Y. Soit N le nombre de points tirés.</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// ------------------------------------------------------------</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// ------------------------------------------------------------</span>
 <span class="c1">// Cercle solution</span>
 <span class="c1">// ------------------------------------------------------------</span>
 <span class="kt">double</span> <span class="n">Xc</span> <span class="o">=</span> <span class="mi">120</span><span class="o">;</span>
@@ -665,7 +665,7 @@ de cette équation.</p>
 <p>Choisissons comme écart-type : 1m (correspondant au 3m pris dans la construction du jeu de test).</p>
 <p>Le code suivant permet d&#8217;effectuer une estimation par moindres carrés des paramètres
 du cercle passant au mieux par les points simulés.</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// ------------------------------------------------------------</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// ------------------------------------------------------------</span>
 <span class="c1">// Estimation par moindres carrés</span>
 <span class="c1">// ------------------------------------------------------------</span>
 
@@ -702,7 +702,7 @@ du cercle passant au mieux par les points simulés.</p>
 </pre></div>
 </div>
 <p>Les résultats retournés par la console sont alors (sans les résidus) :</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// -----------------------------</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// -----------------------------</span>
 <span class="c1">//  Unit variance factor</span>
 <span class="c1">// -----------------------------</span>
 <span class="n">s02</span> <span class="o">=</span> <span class="mf">8.781224765741552</span>
@@ -738,11 +738,11 @@ du cercle passant au mieux par les points simulés.</p>
 <p>Modifions l&#8217;ennoncé du problème en y ajoutant une contrainte supplémentaire, de type impérative (ici avec le symbole &#8221;:=&#8221;).
 Ce problème devient un problème d&#8217;optimisation sous contrainte.</p>
 <p>Pour cela, spécifions que le cercle doit <strong>impérativement</strong> passer par un point donné : (0,0) dans notre exemple.</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">solver</span><span class="o">.</span><span class="na">addConstraint</span><span class="o">(</span><span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;sqrt(Xc^2+Yc^2)-Rc := 0&quot;</span><span class="o">));</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">solver</span><span class="o">.</span><span class="na">addConstraint</span><span class="o">(</span><span class="k">new</span> <span class="n">Constraint</span><span class="o">(</span><span class="s">&quot;sqrt(Xc^2+Yc^2)-Rc := 0&quot;</span><span class="o">));</span>
 </pre></div>
 </div>
 <p>Les résultats retournés sont alors :</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// -----------------------------</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// -----------------------------</span>
 <span class="c1">//  Unit variance factor</span>
 <span class="c1">// -----------------------------</span>
 <span class="n">s02</span> <span class="o">=</span> <span class="mf">752.6993782519672</span>

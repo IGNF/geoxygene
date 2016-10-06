@@ -150,7 +150,7 @@ et les plugins de type ProjectFrame sont initialisés à chaque nouvelle créati
 </div>
 <p>En général les plugins sont implémentés dans un module Maven dédié à un thème.</p>
 <p>Les plugins sont configurés dans le fichier <strong>geoxygene-configuration.xml</strong> stocké à la racine de votre module.</p>
-<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;</span>
+<div class="highlight-xml"><div class="highlight"><pre><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;</span>
 <span class="nt">&lt;GeOxygeneApplicationProperties&gt;</span>
     <span class="nt">&lt;plugin&gt;</span>fr.ign.cogit.geoxygene.appli.plugin.datamatching.NetworkDataMatchingPlugin<span class="nt">&lt;/plugin&gt;</span>
     <span class="nt">&lt;plugin&gt;</span>fr.ign.cogit.geoxygene.appli.plugin.datamatching.DataMatchingPlugin<span class="nt">&lt;/plugin&gt;</span>
@@ -180,7 +180,7 @@ qui permet de lancer un filtre gaussien (lissage) sur un réseau linéaire.</p>
 <li>Tout d&#8217;abord il faut ajouter la librairie &#8220;geoxygene-appli&#8221; à notre projet. Cette librairie contient les classes de l&#8217;interface graphique GeOxygene 2D.</li>
 </ol>
 <p>Ouvrir le fichier pom.xml de votre module Maven et ajouter une dépendance au module &#8220;geoxygene-appli&#8221; :</p>
-<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<div class="highlight-xml"><div class="highlight"><pre><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="nt">&lt;project&gt;</span>
 
     <span class="c">&lt;!-- Version number of GeOxygene --&gt;</span>
@@ -221,7 +221,7 @@ qui permet de lancer un filtre gaussien (lissage) sur un réseau linéaire.</p>
 <ol class="arabic simple" start="2">
 <li>Créer une nouvelle classe qui implémente GeOxygeneApplicationPlugin, par exemple GaussianFilterPlugin.java :</li>
 </ol>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">fr.ign.cogit.plugin</span><span class="o">;</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="kn">package</span> <span class="nn">fr.ign.cogit.plugin</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">java.awt.event.ActionEvent</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.awt.event.ActionListener</span><span class="o">;</span>
@@ -264,7 +264,7 @@ qui permet de lancer un filtre gaussien (lissage) sur un réseau linéaire.</p>
 </div>
 <p>3. Puis il faut surcharger la méthode &#8220;initialize&#8221; qui initialise le plugin.
 Dans notre exemple, on ajoute un nouveau bouton et un évènement sur celui-ci.</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span>  <span class="cm">/**</span>
+<div class="highlight-java"><div class="highlight"><pre>  <span class="cm">/**</span>
 <span class="cm">   * Initialize the plugin.</span>
 <span class="cm">   * @param application the application</span>
 <span class="cm">   */</span>
@@ -297,7 +297,7 @@ Dans notre exemple, on ajoute un nouveau bouton et un évènement sur celui-ci.<
 <ol class="arabic simple" start="4">
 <li>Enfin on définit notre processus dans la fonction qui traite l&#8217;évènement :</li>
 </ol>
-<div class="highlight-java"><div class="highlight"><pre><span></span>  <span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="s">&quot;unchecked&quot;</span><span class="o">)</span>
+<div class="highlight-java"><div class="highlight"><pre>  <span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="s">&quot;unchecked&quot;</span><span class="o">)</span>
   <span class="nd">@Override</span>
   <span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionPerformed</span><span class="o">(</span><span class="kd">final</span> <span class="n">ActionEvent</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
 
@@ -346,7 +346,7 @@ Dans notre exemple, on ajoute un nouveau bouton et un évènement sur celui-ci.<
 <li>Fichier de configuration</li>
 </ol>
 <p>Dans votre module, ajouter à la racine du projet un fichier geoxygene-configuration.xml qui contient ces lignes :</p>
-<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;</span>
+<div class="highlight-xml"><div class="highlight"><pre><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;</span>
 <span class="nt">&lt;GeOxygeneApplicationProperties&gt;</span>
     
     <span class="nt">&lt;plugin&gt;</span>fr.ign.cogit.geoxygene.appli.plugin.SymubruitExtractionPlugin<span class="nt">&lt;/plugin&gt;</span>

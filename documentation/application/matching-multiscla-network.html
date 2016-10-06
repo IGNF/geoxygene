@@ -143,7 +143,7 @@ niveaux de détail différents. Il prend en entrée deux ensembles de population
 d’objets formant un réseau (des lignes et éventuellement des points), et fournit en
 sortie un ensemble de liens d’appariement entre les objets.</p>
 <p>Package concerné : <strong>fr.ign.cogit.geoxygene.contrib.appariement.reseaux</strong></p>
-<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="nt">&lt;properties&gt;</span>
+<div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;properties&gt;</span>
     <span class="nt">&lt;project.build.sourceEncoding&gt;</span>UTF-8<span class="nt">&lt;/project.build.sourceEncoding&gt;</span>
     <span class="nt">&lt;geoxygene.version&gt;</span>1.7-SNAPSHOT<span class="nt">&lt;/geoxygene.version&gt;</span>
 <span class="nt">&lt;/properties&gt;</span>
@@ -166,7 +166,7 @@ passant par les options de prétraitement) doivent être définis avant de lance
 méthode (création d’un objet de la classe ParametresApp).</p>
 <p>La méthode renvoie un ensemble de liens de la classe EnsembleDeLiens du
 package appariement.</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// Import des réseaux</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// Import des réseaux</span>
 <span class="n">IPopulation</span><span class="o">&lt;</span><span class="n">IFeature</span><span class="o">&gt;</span> <span class="n">popRef</span> <span class="o">=</span> <span class="n">ShapefileReader</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="s">&quot;/home/glagaffe/reseau1.shp&quot;</span><span class="o">);</span>
 <span class="n">IPopulation</span><span class="o">&lt;</span><span class="n">IFeature</span><span class="o">&gt;</span> <span class="n">popComp</span> <span class="o">=</span> <span class="n">ShapefileReader</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="s">&quot;/home/glagaffe/reseau2.shp&quot;</span><span class="o">);</span>
     
@@ -354,7 +354,7 @@ les réseaux sont orientés (ex : hydrologie) ou non (ex : lignes électriques)<
 </ul>
 </li>
 </ul>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// Réseau le plus détaillé</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// Réseau le plus détaillé</span>
 <span class="n">param</span><span class="o">.</span><span class="na">populationsArcsAvecOrientationDouble1</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
 <span class="n">param</span><span class="o">.</span><span class="na">attributOrientation1</span> <span class="o">=</span> <span class="s">&quot;sens&quot;</span><span class="o">;</span>
 <span class="n">Map</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;</span> <span class="n">orientationMap1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;();</span>
@@ -386,7 +386,7 @@ approximation.</li>
 </ul>
 </li>
 </ul>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">param</span><span class="o">.</span><span class="na">distanceArcsMax</span> <span class="o">=</span> <span class="mi">50</span><span class="o">;</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">param</span><span class="o">.</span><span class="na">distanceArcsMax</span> <span class="o">=</span> <span class="mi">50</span><span class="o">;</span>
 <span class="n">param</span><span class="o">.</span><span class="na">distanceArcsMin</span> <span class="o">=</span> <span class="mi">10</span><span class="o">;</span>
 <span class="n">param</span><span class="o">.</span><span class="na">distanceNoeudsMax</span> <span class="o">=</span> <span class="mi">25</span><span class="o">;</span>
 <span class="n">param</span><span class="o">.</span><span class="na">distanceNoeudsImpassesMax</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
@@ -411,7 +411,7 @@ paramètres.</li>
 </ul>
 </li>
 </ul>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">param</span><span class="o">.</span><span class="na">topologieGraphePlanaire1</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">param</span><span class="o">.</span><span class="na">topologieGraphePlanaire1</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
 <span class="n">param</span><span class="o">.</span><span class="na">topologieFusionArcsDoubles1</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
 <span class="n">param</span><span class="o">.</span><span class="na">topologieSeuilFusionNoeuds1</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
 <span class="n">param</span><span class="o">.</span><span class="na">topologieElimineNoeudsAvecDeuxArcs1</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>  
@@ -434,7 +434,7 @@ donc de ne pas les utiliser en première approximation.</li>
 </ul>
 </li>
 </ul>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">param</span><span class="o">.</span><span class="na">projeteNoeuds1SurReseau2</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">param</span><span class="o">.</span><span class="na">projeteNoeuds1SurReseau2</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
 <span class="n">param</span><span class="o">.</span><span class="na">projeteNoeuds1SurReseau2DistanceNoeudArc</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
 <span class="n">param</span><span class="o">.</span><span class="na">projeteNoeuds1SurReseau2DistanceProjectionNoeud</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
 <span class="n">param</span><span class="o">.</span><span class="na">projeteNoeuds1SurReseau2ImpassesSeulement</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
@@ -452,7 +452,7 @@ besoins ponctuels.<ul>
 </ul>
 </li>
 </ul>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">param</span><span class="o">.</span><span class="na">varianteForceAppariementSimple</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">param</span><span class="o">.</span><span class="na">varianteForceAppariementSimple</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
 <span class="n">param</span><span class="o">.</span><span class="na">varianteRedecoupageArcsNonApparies</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
 <span class="n">param</span><span class="o">.</span><span class="na">varianteRedecoupageNoeudsNonApparies</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
 <span class="n">param</span><span class="o">.</span><span class="na">varianteRedecoupageNoeudsNonApparies_DistanceNoeudArc</span> <span class="o">=</span> <span class="mi">100</span><span class="o">;</span>
@@ -469,7 +469,7 @@ d’appariement trouvés, ainsi que l’affichage du texte pendant le calcul.</l
 </ul>
 </li>
 </ul>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">param</span><span class="o">.</span><span class="na">exportGeometrieLiens2vers1</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">param</span><span class="o">.</span><span class="na">exportGeometrieLiens2vers1</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
 <span class="n">param</span><span class="o">.</span><span class="na">debugAffichageCommentaires</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
 <span class="n">param</span><span class="o">.</span><span class="na">debugBilanSurObjetsGeo</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
 <span class="n">param</span><span class="o">.</span><span class="na">debugTirets</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
@@ -488,7 +488,7 @@ réseau sur un autre après l’appariement (classe Recalage). Cette bibliothèq
 d’outils est embryonnaire et demande à être testée et étendue : il faut utiliser ces
 outils avec précaution car ils n’ont pas été testés intensément et ils ont été conçus
 pour des cas relativement simples.</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// Liens génériques</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// Liens génériques</span>
 <span class="n">EnsembleDeLiens</span> <span class="n">liensGeneriques</span> <span class="o">=</span> <span class="n">LienReseaux</span><span class="o">.</span><span class="na">exportLiensAppariement</span><span class="o">(</span><span class="n">liens</span><span class="o">,</span> <span class="n">cartesTopo</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">),</span> <span class="n">param</span><span class="o">);</span>
 
 <span class="c1">// Recalage</span>

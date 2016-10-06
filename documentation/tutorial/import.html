@@ -145,19 +145,19 @@
 <li>de façon <em>asynchrone</em>. Pour ce, il faut créer un objet ShapefileReader et exécuter la méthode read dessus. Cela lance un nouveau processus qui lit les features et ajoute les objets à la population au fur et à mesure.</li>
 <li>de façon <em>synchrone</em>. Pour ce, il faut utiliser une des méthodes statiques : read ou chooseAndReadShapefile.</li>
 </ul>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">IPopulation</span><span class="o">&lt;</span><span class="n">IFeature</span><span class="o">&gt;</span> <span class="n">reseauRoutier</span> <span class="o">=</span> <span class="n">ShapefileReader</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="s">&quot;D:\\DATA\\bdtopo_routier.shp&quot;</span><span class="o">);</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">IPopulation</span><span class="o">&lt;</span><span class="n">IFeature</span><span class="o">&gt;</span> <span class="n">reseauRoutier</span> <span class="o">=</span> <span class="n">ShapefileReader</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="s">&quot;D:\\DATA\\bdtopo_routier.shp&quot;</span><span class="o">);</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="gpstextfilereader">
 <h3>GPSTextfileReader</h3>
 <p>A partir d&#8217;un fichier texte dont les 4 colonnes sont séparées par une tabulation :</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>Date <span class="o">(</span>UTC<span class="o">)</span>   Time <span class="o">(</span>UTC<span class="o">)</span>  Latitude        Longitude
+<div class="highlight-bash"><div class="highlight"><pre>Date <span class="o">(</span>UTC<span class="o">)</span>   Time <span class="o">(</span>UTC<span class="o">)</span>  Latitude        Longitude
 17-Jan-2009  20:27:37    47.66748333     -122.1070833
 </pre></div>
 </div>
 <p>on peut importer les données dans une population GeOxygene :</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Population</span><span class="o">&lt;</span><span class="n">DefaultFeature</span><span class="o">&gt;</span> <span class="n">gpsPop</span> <span class="o">=</span> <span class="n">GPSTextfileReader</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="s">&quot;D:\\data\\gps\\Seattle\\gps_data.txt&quot;</span><span class="o">);</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">Population</span><span class="o">&lt;</span><span class="n">DefaultFeature</span><span class="o">&gt;</span> <span class="n">gpsPop</span> <span class="o">=</span> <span class="n">GPSTextfileReader</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="s">&quot;D:\\data\\gps\\Seattle\\gps_data.txt&quot;</span><span class="o">);</span>
 </pre></div>
 </div>
 </div>
@@ -167,7 +167,7 @@
 <div class="section" id="connection-postgis-via-jdbc">
 <h3>Connection Postgis via JDBC</h3>
 <p>Dans le module <em>geoxygene-database</em>, la classe PostgisReader permet de créer une population de DefaultFeature en spécifiant un nom de table :</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">params</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span><span class="n">String</span><span class="o">&gt;();</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">params</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span><span class="n">String</span><span class="o">&gt;();</span>
 <span class="n">params</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;dbtype&quot;</span><span class="o">,</span> <span class="s">&quot;postgis&quot;</span><span class="o">);</span>
 <span class="n">params</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;host&quot;</span><span class="o">,</span> <span class="s">&quot;localhost&quot;</span><span class="o">);</span>
 <span class="n">params</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;port&quot;</span><span class="o">,</span> <span class="s">&quot;5433&quot;</span><span class="o">);</span>
@@ -180,7 +180,7 @@
 </pre></div>
 </div>
 <p>Il est possible d&#8217;ajouter un filtre (clause where) à la requête. Pour cela il faut notifier l&#8217;expression de filtre avec la norme CQL et la spécifier à la méthode _read(...)_ :</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">IPopulation</span><span class="o">&lt;</span><span class="n">IFeature</span><span class="o">&gt;</span> <span class="n">popDimSpatiale</span> <span class="o">=</span> <span class="n">PostgisReader</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="n">params</span><span class="o">,</span> <span class="n">NOM_TABLE</span><span class="o">,</span> <span class="n">NOM_TABLE</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">false</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="s">&quot;taille is null&quot;</span><span class="o">);</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">IPopulation</span><span class="o">&lt;</span><span class="n">IFeature</span><span class="o">&gt;</span> <span class="n">popDimSpatiale</span> <span class="o">=</span> <span class="n">PostgisReader</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="n">params</span><span class="o">,</span> <span class="n">NOM_TABLE</span><span class="o">,</span> <span class="n">NOM_TABLE</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">false</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="s">&quot;taille is null&quot;</span><span class="o">);</span>
 </pre></div>
 </div>
 </div>
@@ -192,7 +192,7 @@
 <div class="section" id="exporter-des-donnees-dans-un-shapefile">
 <h2>Exporter des données dans un shapefile</h2>
 <p>Pour exporter une population de feature dans un shapefile :</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">CoordinateReferenceSystem</span> <span class="n">crs</span> <span class="o">=</span> <span class="n">CRS</span><span class="o">.</span><span class="na">decode</span><span class="o">(</span><span class="s">&quot;EPSG:3035&quot;</span><span class="o">);</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">CoordinateReferenceSystem</span> <span class="n">crs</span> <span class="o">=</span> <span class="n">CRS</span><span class="o">.</span><span class="na">decode</span><span class="o">(</span><span class="s">&quot;EPSG:3035&quot;</span><span class="o">);</span>
 <span class="n">ShapefileWriter</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">reseau1</span><span class="o">.</span><span class="na">getPopArcs</span><span class="o">(),</span> <span class="s">&quot;D:\\Data\\troncon.shp&quot;</span><span class="o">,</span> <span class="n">crs</span><span class="o">);</span>
 </pre></div>
 </div>

@@ -17,7 +17,7 @@ GeOxygene Documentation
          developer/index
          tutorial/index
       
-      + `Online javadoc <http://oxygene-project.sourceforge.net/apidocs/index.html>`_
+      + `Online javadoc <https://ignf.github.io/geoxygene/apidocs/index.html>`_
       
    .. container:: rightside
    

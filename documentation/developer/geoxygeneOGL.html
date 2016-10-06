@@ -159,9 +159,17 @@
 <p class="caption"><span class="caption-text">Figure 2 : Configurer les librairies natives</span></p>
 </div>
 </li>
+<li><p class="first">Modifier les arguments de la VM dans le Run Configurations, en mettant le path vers les lib lwjgl et modifier l&#8217;allocation de mémoire pour la JVM (à ajuster selon les besoins..). Par ex :</p>
+<div class="chemin container">
+<p>-Djava.library.path={workspace}geoxygenegeoxygene-appliliblwjglwindows  -Xms1G -Xmx4G</p>
+</div>
+<div class="figure">
+<img alt="../../_images/openglVMargs.png" src="../../_images/openglVMargs.png" />
+</div>
+</li>
 </ol>
 <p>Si l&#8217;erreur suivante se présente, c&#8217;est qu&#8217;Eclipse n&#8217;a pas réussi à charger les librairies natives lwjgl :</p>
-<div class="highlight-none"><div class="highlight"><pre><span></span>
+<div class="highlight-none"><div class="highlight"><pre>
 Exception in thread &quot;AWT-EventQueue-0&quot; java.lang.UnsatisfiedLinkError: no lwjgl in java.library.path
     at java.lang.ClassLoader.loadLibrary(ClassLoader.java:1886)
     at java.lang.Runtime.loadLibrary0(Runtime.java:849)
@@ -193,7 +201,7 @@ Exception in thread &quot;AWT-EventQueue-0&quot; java.lang.UnsatisfiedLinkError:
 <li><p class="first">Modifier le style</p>
 <div class="twocol container">
 <div class="leftside container">
-<div class="highlight-xml"><div class="highlight"><pre><span></span>...
+<div class="highlight-xml"><div class="highlight"><pre>...
 <span class="nt">&lt;PolygonSymbolizer</span> <span class="na">uom=</span><span class="s">&quot;http://www.opengeospatial.org/se/units/metre&quot;</span><span class="nt">&gt;</span>
    <span class="nt">&lt;Stroke&gt;</span>
       <span class="nt">&lt;CssParameter</span> <span class="na">name=</span><span class="s">&quot;stroke&quot;</span><span class="nt">&gt;</span>#347302<span class="nt">&lt;/CssParameter&gt;</span>

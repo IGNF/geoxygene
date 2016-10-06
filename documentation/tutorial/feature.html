@@ -192,7 +192,7 @@ Cette technique est utilisée pour la généralisation, car elle permet de sauve
 <p class="caption"><span class="caption-text">Figure 3 : Mapping relationnel / objet</span></p>
 </div>
 </div>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">fr.ign.cogit.geoxygene.feature.FT_Feature</span><span class="o">;</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">fr.ign.cogit.geoxygene.feature.FT_Feature</span><span class="o">;</span>
 
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">TronconDeRoute</span> <span class="kd">extends</span> <span class="n">FT_Feature</span> <span class="o">{</span>
   
@@ -218,7 +218,7 @@ Cette technique est utilisée pour la généralisation, car elle permet de sauve
 <blockquote>
 <div><p>Un <em>FeatureType</em> fournit les métadonnées d&#8217;un Feature, c&#8217;est à dire une description des informations d&#8217;un objet géographique.</p>
 <p>Ci-dessous un exemple de FeatureType pour un Feature <em>TRONCON_ROUTE</em></p>
-<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="nt">&lt;FeatureType</span> <span class="na">id=</span><span class="s">&quot;1&quot;</span><span class="nt">&gt;</span>
+<div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;FeatureType</span> <span class="na">id=</span><span class="s">&quot;1&quot;</span><span class="nt">&gt;</span>
     <span class="nt">&lt;typeName&gt;</span>route<span class="nt">&lt;/typeName&gt;</span>
     <span class="nt">&lt;definition&gt;</span>les routes sur lesquelles on roule<span class="nt">&lt;/definition&gt;</span>
     <span class="nt">&lt;positionInitiale&gt;</span>10,10<span class="nt">&lt;/positionInitiale&gt;</span>
@@ -297,7 +297,7 @@ ce schéma contient aussi une référence vers le schéma conceptuel : le featur
 <ol class="arabic">
 <li><p class="first">Afficher la valeur de l&#8217;attribut <strong>OBJECTID</strong> :</p>
 <blockquote>
-<div><div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// IFeature feature = itCollection.next();</span>
+<div><div class="highlight-java"><div class="highlight"><pre><span class="c1">// IFeature feature = itCollection.next();</span>
 <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">feature</span><span class="o">.</span><span class="na">getFeatureType</span><span class="o">().</span><span class="na">getFeatureAttributes</span><span class="o">().</span><span class="na">size</span><span class="o">();</span> <span class="n">k</span><span class="o">++)</span> <span class="o">{</span>
   <span class="n">GF_AttributeType</span> <span class="n">attributeType</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="na">getFeatureType</span><span class="o">().</span><span class="na">getFeatureAttributes</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">k</span><span class="o">);</span>
   <span class="k">if</span> <span class="o">(</span><span class="n">attributeType</span><span class="o">.</span><span class="na">getMemberName</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;OBJECTID&quot;</span><span class="o">))</span> <span class="o">{</span>
@@ -310,7 +310,7 @@ ce schéma contient aussi une référence vers le schéma conceptuel : le featur
 </li>
 <li><p class="first">Ajouter un élément à une collection de DefaultFeature (le Schéma et le FeatureType sont déjà renseignés) :</p>
 <blockquote>
-<div><div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">DefaultFeature</span> <span class="n">n</span> <span class="o">=</span> <span class="n">entrees</span><span class="o">.</span><span class="na">nouvelElement</span><span class="o">(</span><span class="n">first</span><span class="o">.</span><span class="na">toGM_Point</span><span class="o">());</span>
+<div><div class="highlight-java"><div class="highlight"><pre><span class="n">DefaultFeature</span> <span class="n">n</span> <span class="o">=</span> <span class="n">entrees</span><span class="o">.</span><span class="na">nouvelElement</span><span class="o">(</span><span class="n">first</span><span class="o">.</span><span class="na">toGM_Point</span><span class="o">());</span>
 <span class="n">Object</span><span class="o">[]</span> <span class="n">attributes</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Object</span><span class="o">[]</span> <span class="o">{</span> <span class="n">t</span><span class="o">.</span><span class="na">getId</span><span class="o">(),</span> <span class="n">t</span><span class="o">.</span><span class="na">getLargeurVoie</span><span class="o">(),</span> <span class="k">new</span> <span class="n">Integer</span><span class="o">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span> <span class="o">};</span>
 <span class="n">n</span><span class="o">.</span><span class="na">setAttributes</span><span class="o">(</span><span class="n">attributes</span><span class="o">);</span>
 </pre></div>
@@ -319,7 +319,7 @@ ce schéma contient aussi une référence vers le schéma conceptuel : le featur
 </li>
 <li><p class="first">Création d&#8217;une collection de features, du schéma et du featureType</p>
 <blockquote>
-<div><div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// Créer un featuretype du jeu correspondant</span>
+<div><div class="highlight-java"><div class="highlight"><pre><span class="c1">// Créer un featuretype du jeu correspondant</span>
 <span class="n">FeatureType</span> <span class="n">newFeatureType</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FeatureType</span><span class="o">();</span>
 <span class="n">newFeatureType</span><span class="o">.</span><span class="na">setTypeName</span><span class="o">(</span><span class="s">&quot;troncon&quot;</span><span class="o">);</span>
 <span class="n">newFeatureType</span><span class="o">.</span><span class="na">setGeometryType</span><span class="o">(</span><span class="n">ILineString</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>

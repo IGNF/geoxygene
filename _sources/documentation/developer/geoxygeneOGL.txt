@@ -43,6 +43,13 @@ Pour configurer Eclipse :
         
         Figure 2 : Configurer les librairies natives
         
+9. Modifier les arguments de la VM dans le Run Configurations, en mettant le path vers les lib lwjgl et modifier l'allocation de mémoire pour la JVM (à ajuster selon les besoins..). Par ex : 
+
+   .. container:: chemin
+
+      -Djava.library.path={workspace}\geoxygene\geoxygene-appli\lib\lwjgl\windows  -Xms1G -Xmx4G
+   
+   .. figure:: /documentation/resources/img/ogl/openglVMargs.png
 
 Si l'erreur suivante se présente, c'est qu'Eclipse n'a pas réussi à charger les librairies natives lwjgl :
 
