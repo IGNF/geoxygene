@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<StyledLayerDescriptor xmlns:ogc="http://www.opengis.net/ogc">
+        
+    <NamedLayer>
+    	<Name>contributors</Name>
+    	<UserStyle>
+    		<Name>Points</Name>
+    		<IsDefault>false</IsDefault>
+			<FeatureTypeStyle>
+    			<Rule>
+    				<Name>New</Name>
+    				<Filter>
+    				    <PropertyIsLessThan matchCase="true">
+                            <PropertyName>nbContributions</PropertyName>
+                            <Literal>10</Literal>
+                        </PropertyIsLessThan>
+                    </Filter>
+    				<PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+   						<Graphic>
+   						<Mark>
+       						<WellKnownName>cross</WellKnownName>
+       						<Fill>
+         							<CssParameter name="fill">#000000</CssParameter>
+       						</Fill>
+       						<Stroke>
+         							<CssParameter name="stroke-opacity">0.0</CssParameter>
+       						</Stroke>
+     					</Mark>
+     					<Size>50</Size>
+   						</Graphic>
+ 					</PointSymbolizer>    						
+    			</Rule>
+    			<Rule>
+    				<Name>Non_recurring</Name>
+    				<Filter>
+    					<And>
+                        <PropertyIsLessThan matchCase="true">
+                            <PropertyName>nbContributions</PropertyName>
+                            <Literal>10</Literal>
+                        </PropertyIsLessThan>
+                        <PropertyIsGreaterThan matchCase="true">
+                            <PropertyName>nbContributions</PropertyName>
+                            <Literal>1</Literal>
+                        </PropertyIsGreaterThan>
+                        </And>
+                    </Filter>
+    				<PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+   						<Graphic>
+   						<Mark>
+       						<WellKnownName>cross</WellKnownName>
+       						<Fill>
+         							<CssParameter name="fill">#fe1b00</CssParameter>
+       						</Fill>
+       						<Stroke>
+         							<CssParameter name="stroke-opacity">0.0</CssParameter>
+       						</Stroke>
+     					</Mark>
+     					<Size>50</Size>
+   						</Graphic>
+ 					</PointSymbolizer>    						
+    			</Rule>
+    			<Rule>
+    				<Name>Junior</Name>
+    				<Filter>
+    					<And>
+                        <PropertyIsLessThan matchCase="true">
+                            <PropertyName>nbContributions</PropertyName>
+                            <Literal>100</Literal>
+                        </PropertyIsLessThan>
+                        <PropertyIsGreaterThan matchCase="true">
+                            <PropertyName>nbContributions</PropertyName>
+                            <Literal>10</Literal>
+                        </PropertyIsGreaterThan>
+                        </And>
+                    </Filter>
+    				<PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+   						<Graphic>
+   						<Mark>
+       						<WellKnownName>cross</WellKnownName>
+       						<Fill>
+         							<CssParameter name="fill">#ff7f00</CssParameter>
+       						</Fill>
+       						<Stroke>
+         							<CssParameter name="stroke-opacity">0.0</CssParameter>
+       						</Stroke>
+     					</Mark>
+     					<Size>50</Size>
+   						</Graphic>
+ 					</PointSymbolizer>    						
+    			</Rule>
+    			<Rule>
+    				<Name>Senior</Name>
+    				<Filter>
+    					<And>
+                        <PropertyIsLessThan matchCase="true">
+                            <PropertyName>nbContributions</PropertyName>
+                            <Literal>500</Literal>
+                        </PropertyIsLessThan>
+                        <PropertyIsGreaterThan matchCase="true">
+                            <PropertyName>nbContributions</PropertyName>
+                            <Literal>100</Literal>
+                        </PropertyIsGreaterThan>
+                        </And>
+                    </Filter>
+    				<PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+   						<Graphic>
+   						<Mark>
+       						<WellKnownName>cross</WellKnownName>
+       						<Fill>
+         							<CssParameter name="fill">#008020</CssParameter>
+       						</Fill>
+       						<Stroke>
+         							<CssParameter name="stroke-opacity">0.0</CssParameter>
+       						</Stroke>
+     					</Mark>
+     					<Size>50</Size>
+   						</Graphic>
+ 					</PointSymbolizer>    						
+    			</Rule>
+    			<Rule>
+    				<Name>Senior_plus</Name>
+    				<Filter>
+    					<And>
+                        <PropertyIsLessThan matchCase="true">
+                            <PropertyName>nbContributions</PropertyName>
+                            <Literal>2000</Literal>
+                        </PropertyIsLessThan>
+                        <PropertyIsGreaterThan matchCase="true">
+                            <PropertyName>nbContributions</PropertyName>
+                            <Literal>500</Literal>
+                        </PropertyIsGreaterThan>
+                        </And>
+                    </Filter>
+    				<PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+   						<Graphic>
+   						<Mark>
+       						<WellKnownName>cross</WellKnownName>
+       						<Fill>
+         							<CssParameter name="fill">#9e0e40</CssParameter>
+       						</Fill>
+       						<Stroke>
+         							<CssParameter name="stroke-opacity">0.0</CssParameter>
+       						</Stroke>
+     					</Mark>
+     					<Size>50</Size>
+   						</Graphic>
+ 					</PointSymbolizer>    						
+    			</Rule>	  
+    			<Rule>
+    				<Name>Gold</Name>
+    				<Filter>
+                        <PropertyIsGreaterThan matchCase="true">
+                            <PropertyName>nbContributions</PropertyName>
+                            <Literal>2000</Literal>
+                        </PropertyIsGreaterThan>
+                    </Filter>
+    				<PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+   						<Graphic>
+   						<Mark>
+       						<WellKnownName>cross</WellKnownName>
+       						<Fill>
+         							<CssParameter name="fill">#ffd700</CssParameter>
+       						</Fill>
+       						<Stroke>
+         							<CssParameter name="stroke-opacity">0.0</CssParameter>
+       						</Stroke>
+     					</Mark>
+     					<Size>50</Size>
+   						</Graphic>
+ 					</PointSymbolizer>    						
+    			</Rule>	    			    			    			    			    			
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+</StyledLayerDescriptor>
