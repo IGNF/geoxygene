@@ -98,6 +98,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
@@ -108,7 +109,10 @@ import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenProjectPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.SelectionUtil;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
+import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
+import fr.ign.cogit.geoxygene.feature.SchemaDefaultFeature;
+import fr.ign.cogit.geoxygene.osm.contributor.OSMContributor;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMLoader;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMLoader.OsmLoadingTask;
 import fr.ign.cogit.geoxygene.osm.importexport.OpenStreetMapDb;
@@ -128,18 +132,27 @@ import fr.ign.cogit.geoxygene.osm.schema.landuse.OsmLandUseTypology;
 import fr.ign.cogit.geoxygene.osm.schema.network.OsmNetworkSection;
 import fr.ign.cogit.geoxygene.osm.schema.urban.OsmBuilding;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
+import fr.ign.cogit.geoxygene.style.Fill;
+import fr.ign.cogit.geoxygene.style.Graphic;
 import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.style.Mark;
 import fr.ign.cogit.geoxygene.style.NamedLayer;
+import fr.ign.cogit.geoxygene.style.PointSymbolizer;
+import fr.ign.cogit.geoxygene.style.Rule;
+import fr.ign.cogit.geoxygene.style.Stroke;
+import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
+import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.UserStyle;
 import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
 import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
 import fr.ign.cogit.geoxygene.util.math.Combination;
 import fr.ign.cogit.geoxygene.util.math.CombinationSet;
 
-public class OSMPlugin implements ProjectFramePlugin,
-    GeOxygeneApplicationPlugin {
+public class OSMPlugin
+    implements ProjectFramePlugin, GeOxygeneApplicationPlugin {
 
   private GeOxygeneApplication application = null;
   private Runnable fillLayersTask;
@@ -177,14 +190,20 @@ public class OSMPlugin implements ProjectFramePlugin,
     analysisMenu.add(new JMenuItem(new LodSensitivityAction()));
     JMenu harmoniseMenu = new JMenu("LoD Harmonisation");
     harmoniseMenu.add(new JMenuItem(new HarmonisationFrameAction()));
+    JMenu userMenu = new JMenu("Contributor Analysis");
+    userMenu.add(new JMenuItem(new ShowUsersAction()));
+    userMenu.add(new JMenuItem(new ShowUserContribsAction()));
+    userMenu.add(new JMenuItem(new ShowUserContribsDayAction()));
     JMenu utilMenu = new JMenu("Tools");
     utilMenu.add(new JMenuItem(new CreateFeatureTypeAction()));
     menu.add(analysisMenu);
     menu.add(harmoniseMenu);
+    menu.add(userMenu);
+    menu.addSeparator();
     menu.add(utilMenu);
 
-    application.getMainFrame().getMenuBar()
-        .add(menu, application.getMainFrame().getMenuBar().getMenuCount() - 2);
+    application.getMainFrame().getMenuBar().add(menu,
+        application.getMainFrame().getMenuBar().getMenuCount() - 2);
   }
 
   @Override
@@ -200,8 +219,8 @@ public class OSMPlugin implements ProjectFramePlugin,
    * @author GTouya
    * 
    */
-  public class ImportOSMFileAction extends AbstractAction implements
-      PropertyChangeListener {
+  public class ImportOSMFileAction extends AbstractAction
+      implements PropertyChangeListener {
 
     /****/
     private static final long serialVersionUID = 1L;
@@ -293,8 +312,8 @@ public class OSMPlugin implements ProjectFramePlugin,
       if ("progress" == evt.getPropertyName()) {
         int progress = (Integer) evt.getNewValue();
         progressBar.setValue(progress);
-        taskOutput.append(String.format("Completed %d%% of task.\n",
-            loader.getProgress()));
+        taskOutput.append(
+            String.format("Completed %d%% of task.\n", loader.getProgress()));
         if (!currentTask.equals(loader.getCurrentTask())) {
           currentTask = loader.getCurrentTask();
           taskLabel.setText(currentTask.getLabel() + " loading...");
@@ -331,7 +350,7 @@ public class OSMPlugin implements ProjectFramePlugin,
         setTitle("Import OSM File");
         setIconImage(new ImageIcon(
             GeOxygeneApplication.class.getResource("/images/icons/map_add.png"))
-            .getImage());
+                .getImage());
 
         initPanel();
 
@@ -353,8 +372,8 @@ public class OSMPlugin implements ProjectFramePlugin,
           JFileChooser fc = new JFileChooser();
           fc.setFileFilter(new OsmFileFilter());
           // fc.setCurrentDirectory(new File("src/main/resources/xml/"));
-          fc.setCurrentDirectory(new File(application.getProperties()
-              .getLastOpenedFile()));
+          fc.setCurrentDirectory(
+              new File(application.getProperties().getLastOpenedFile()));
           int returnVal = fc
               .showSaveDialog(application.getMainFrame().getGui());
           if (returnVal != JFileChooser.APPROVE_OPTION) {
@@ -397,16 +416,16 @@ public class OSMPlugin implements ProjectFramePlugin,
         currentProjections.put("UTM 23S (Rio)", "32723");
         currentProjections.put("UTM 55S (Melbourne)", "32755");
         currentProjections.put("Gauss-Krueger zone 4 (East Germany)", "31468");
-        currentProjections
-            .put("Gauss-Krueger zone 3 (Center Germany)", "31467");
+        currentProjections.put("Gauss-Krueger zone 3 (Center Germany)",
+            "31467");
         this.setPreferredSize(new Dimension(350, 150));
 
         // JPanel filePanel = new JPanel();
         add(new JLabel("File : "), cc.xy(2, 2));
         txtPath = new JTextField(40);
         add(txtPath, cc.xyw(3, 2, 6));
-        browseBtn = new JButton(new ImageIcon(this.getClass().getResource(
-            "/images/icons/magnifier.png")));
+        browseBtn = new JButton(new ImageIcon(
+            this.getClass().getResource("/images/icons/magnifier.png")));
         browseBtn.addActionListener(this);
         browseBtn.setActionCommand("browse");
         add(browseBtn, cc.xy(9, 2));
@@ -484,8 +503,8 @@ public class OSMPlugin implements ProjectFramePlugin,
   class BrowseTagsAction extends AbstractAction {
 
     /**
-   * 
-   */
+    * 
+    */
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -502,7 +521,8 @@ public class OSMPlugin implements ProjectFramePlugin,
         selectedObjs.add((OsmGeneObj) obj);
       }
       try {
-        OSMTagBrowser browser = new OSMTagBrowser(new Point(x, y), selectedObjs);
+        OSMTagBrowser browser = new OSMTagBrowser(new Point(x, y),
+            selectedObjs);
         browser.setVisible(true);
       } catch (IllegalArgumentException e) {
         e.printStackTrace();
@@ -520,12 +540,12 @@ public class OSMPlugin implements ProjectFramePlugin,
    * @author GTouya
    * 
    */
-  class ImportOSMNamedFileAction extends AbstractAction implements
-      PropertyChangeListener {
+  class ImportOSMNamedFileAction extends AbstractAction
+      implements PropertyChangeListener {
     private OSMFile file;
     /**
-   * 
-   */
+    * 
+    */
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -533,8 +553,8 @@ public class OSMPlugin implements ProjectFramePlugin,
       CartAGenDoc doc = CartAGenDoc.getInstance();
       String name = null;
       if (doc.getName() == null) {
-        name = file.getFile().getName()
-            .substring(0, file.getFile().getName().length() - 4);
+        name = file.getFile().getName().substring(0,
+            file.getFile().getName().length() - 4);
         doc.setName(name);
         if (file.isCreateDb()) {
           try {
@@ -605,8 +625,8 @@ public class OSMPlugin implements ProjectFramePlugin,
       if ("progress" == evt.getPropertyName()) {
         int progress = (Integer) evt.getNewValue();
         progressBar.setValue(progress);
-        taskOutput.append(String.format("Completed %d%% of task.\n",
-            loader.getProgress()));
+        taskOutput.append(
+            String.format("Completed %d%% of task.\n", loader.getProgress()));
         if (!currentTask.equals(loader.getCurrentTask())) {
           currentTask = loader.getCurrentTask();
           taskLabel.setText(currentTask.getLabel() + " loading...");
@@ -625,8 +645,8 @@ public class OSMPlugin implements ProjectFramePlugin,
   class AggrBuildingsAction extends AbstractAction {
 
     /**
-   * 
-   */
+    * 
+    */
     private static final long serialVersionUID = 1L;
 
     @SuppressWarnings("unchecked")
@@ -710,8 +730,8 @@ public class OSMPlugin implements ProjectFramePlugin,
   class RailSideTracksAction extends AbstractAction {
 
     /**
-   * 
-   */
+    * 
+    */
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -753,8 +773,8 @@ public class OSMPlugin implements ProjectFramePlugin,
   class PlanarNetworkAction extends AbstractAction {
 
     /**
-   * 
-   */
+    * 
+    */
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -816,10 +836,10 @@ public class OSMPlugin implements ProjectFramePlugin,
             for (int i = 1; i < section.getCorrespondants().size(); i++) {
               ILineString newLine = (ILineString) section.getCorrespondants()
                   .get(i).getGeom();
-              OsmNetworkSection newObj = (OsmNetworkSection) constr
-                  .newInstance(section.getContributor(), newLine,
-                      section.getId(), section.getChangeSet(),
-                      section.getVersion(), section.getUid(), section.getDate());
+              OsmNetworkSection newObj = (OsmNetworkSection) constr.newInstance(
+                  section.getContributor(), newLine, section.getId(),
+                  section.getChangeSet(), section.getVersion(),
+                  section.getUid(), section.getDate());
               newObj.setTags(section.getTags());
               newObj.setImportance(section.getImportance());
               pop.add(newObj);
@@ -870,8 +890,8 @@ public class OSMPlugin implements ProjectFramePlugin,
       this.getContentPane().add(this.combo);
       this.getContentPane().add(Box.createVerticalGlue());
       this.getContentPane().add(pButtons);
-      this.getContentPane().setLayout(
-          new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+      this.getContentPane()
+          .setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
       this.pack();
     }
   }
@@ -917,8 +937,8 @@ public class OSMPlugin implements ProjectFramePlugin,
         @SuppressWarnings("unchecked")
         ClassificationResult decision = computeDecision(
             (Set<Criterion>) comb.getSubSet(), obj);
-        dataset.incrementValue(1.0, "Number of inferences", LoDCategory
-            .valueOf(decision.getCategory()).ordinal() + 1);
+        dataset.incrementValue(1.0, "Number of inferences",
+            LoDCategory.valueOf(decision.getCategory()).ordinal() + 1);
       }
       JFreeChart chart = ChartFactory.createBarChart(
           "LoD Inference Sensitivity", "LoD Category", "Number of inferences",
@@ -929,8 +949,8 @@ public class OSMPlugin implements ProjectFramePlugin,
       // on met en valeur la colonne du diagramme correspondant à la décision à
       // 7 critères
       CategoryPlot plot = chart.getCategoryPlot();
-      final BarRenderer renderer = new CustomRenderer(LoDCategory.valueOf(
-          decision.getCategory()).ordinal(), Color.BLUE);
+      final BarRenderer renderer = new CustomRenderer(
+          LoDCategory.valueOf(decision.getCategory()).ordinal(), Color.BLUE);
       plot.setRenderer(renderer);
 
       String nom = obj.toString() + " Satisfaction Distribution";
@@ -988,16 +1008,16 @@ public class OSMPlugin implements ProjectFramePlugin,
      */
     private DefaultCategoryDataset buildEmptyDataset() {
       DefaultCategoryDataset newDataset = new DefaultCategoryDataset();
-      newDataset.addValue(0.0, "Number of inferences", new Integer(
-          LoDCategory.STREET.ordinal() + 1));
-      newDataset.addValue(0.0, "Number of inferences", new Integer(
-          LoDCategory.CITY.ordinal() + 1));
-      newDataset.addValue(0.0, "Number of inferences", new Integer(
-          LoDCategory.COUNTY.ordinal() + 1));
-      newDataset.addValue(0.0, "Number of inferences", new Integer(
-          LoDCategory.REGION.ordinal() + 1));
-      newDataset.addValue(0.0, "Number of inferences", new Integer(
-          LoDCategory.COUNTRY.ordinal() + 1));
+      newDataset.addValue(0.0, "Number of inferences",
+          new Integer(LoDCategory.STREET.ordinal() + 1));
+      newDataset.addValue(0.0, "Number of inferences",
+          new Integer(LoDCategory.CITY.ordinal() + 1));
+      newDataset.addValue(0.0, "Number of inferences",
+          new Integer(LoDCategory.COUNTY.ordinal() + 1));
+      newDataset.addValue(0.0, "Number of inferences",
+          new Integer(LoDCategory.REGION.ordinal() + 1));
+      newDataset.addValue(0.0, "Number of inferences",
+          new Integer(LoDCategory.COUNTRY.ordinal() + 1));
 
       return newDataset;
     }
@@ -1013,8 +1033,8 @@ public class OSMPlugin implements ProjectFramePlugin,
       // on remplit les valeurs courantes à partir du block courant
       Map<String, Double> valeursCourantes = new HashMap<String, Double>();
       for (Criterion crit : criteria) {
-        Map<String, Object> param = LoDMultiCriteria.initParameters(
-            (OsmGeneObj) obj, crit);
+        Map<String, Object> param = LoDMultiCriteria
+            .initParameters((OsmGeneObj) obj, crit);
         valeursCourantes.put(crit.getName(), new Double(crit.value(param)));
       }
       return electre.decision(criteria, valeursCourantes, conclusion);
@@ -1034,8 +1054,8 @@ public class OSMPlugin implements ProjectFramePlugin,
   class HarmonisationFrameAction extends AbstractAction {
 
     /**
-   * 
-   */
+    * 
+    */
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -1163,8 +1183,8 @@ public class OSMPlugin implements ProjectFramePlugin,
     float opacity = 0.8f;
     float strokeWidth = 1.0f;
     for (GeographicClass geoClass : database.getClasses()) {
-      String populationName = database.getDataSet().getPopNameFromFeatType(
-          geoClass.getFeatureTypeName());
+      String populationName = database.getDataSet()
+          .getPopNameFromFeatType(geoClass.getFeatureTypeName());
       if (frame.getSld().getLayer(populationName) == null) {
         Color fillColor = new Color((float) Math.random(),
             (float) Math.random(), (float) Math.random());
@@ -1173,17 +1193,14 @@ public class OSMPlugin implements ProjectFramePlugin,
           continue;
         if (defaultSld.getLayer(populationName) != null) {
           layer.getStyles().clear();
-          layer.getStyles().addAll(
-              defaultSld.getLayer(populationName).getStyles());
+          layer.getStyles()
+              .addAll(defaultSld.getLayer(populationName).getStyles());
         } else {
           UserStyle style = new UserStyle();
           style.setName("Style créé pour le layer " + populationName);//$NON-NLS-1$
           FeatureTypeStyle fts = new FeatureTypeStyle();
-          fts.getRules()
-              .add(
-                  LayerFactory.createRule(geoClass.getGeometryType(),
-                      fillColor.darker(), fillColor, opacity, opacity,
-                      strokeWidth));
+          fts.getRules().add(LayerFactory.createRule(geoClass.getGeometryType(),
+              fillColor.darker(), fillColor, opacity, opacity, strokeWidth));
           style.getFeatureTypeStyles().add(fts);
           layer.getStyles().add(style);
         }
@@ -1198,60 +1215,60 @@ public class OSMPlugin implements ProjectFramePlugin,
   private StyledLayerDescriptor compileOsmSlds() throws JAXBException {
     // load road sld
     StyledLayerDescriptor defaultSld = StyledLayerDescriptor
-        .unmarshall(OSMLoader.class.getClassLoader().getResourceAsStream(
-            "sld/roads_sld.xml")); //$NON-NLS-1$
+        .unmarshall(OSMLoader.class.getClassLoader()
+            .getResourceAsStream("sld/roads_sld.xml")); //$NON-NLS-1$
     // load buildings sld
     StyledLayerDescriptor buildingSld = StyledLayerDescriptor
-        .unmarshall(OSMLoader.class.getClassLoader().getResourceAsStream(
-            "sld/buildings_sld.xml")); //$NON-NLS-1$
+        .unmarshall(OSMLoader.class.getClassLoader()
+            .getResourceAsStream("sld/buildings_sld.xml")); //$NON-NLS-1$
     for (Layer layer : buildingSld.getLayers())
       defaultSld.add(layer);
     // load waterway sld
     StyledLayerDescriptor waterSld = StyledLayerDescriptor
-        .unmarshall(OSMLoader.class.getClassLoader().getResourceAsStream(
-            "sld/waterway_sld.xml")); //$NON-NLS-1$
+        .unmarshall(OSMLoader.class.getClassLoader()
+            .getResourceAsStream("sld/waterway_sld.xml")); //$NON-NLS-1$
     for (Layer layer : waterSld.getLayers())
       defaultSld.add(layer);
     // load landuse sld
     StyledLayerDescriptor landuseSld = StyledLayerDescriptor
-        .unmarshall(OSMLoader.class.getClassLoader().getResourceAsStream(
-            "sld/landuse_sld.xml")); //$NON-NLS-1$
+        .unmarshall(OSMLoader.class.getClassLoader()
+            .getResourceAsStream("sld/landuse_sld.xml")); //$NON-NLS-1$
     for (Layer layer : landuseSld.getLayers())
       defaultSld.add(layer);
     // load point features sld
     StyledLayerDescriptor ptsSld = StyledLayerDescriptor
-        .unmarshall(OSMLoader.class.getClassLoader().getResourceAsStream(
-            "sld/point_features_sld.xml")); //$NON-NLS-1$
+        .unmarshall(OSMLoader.class.getClassLoader()
+            .getResourceAsStream("sld/point_features_sld.xml")); //$NON-NLS-1$
     for (Layer layer : ptsSld.getLayers())
       defaultSld.add(layer);
     // load railways sld
     StyledLayerDescriptor railSld = StyledLayerDescriptor
-        .unmarshall(OSMLoader.class.getClassLoader().getResourceAsStream(
-            "sld/railway_sld.xml")); //$NON-NLS-1$
+        .unmarshall(OSMLoader.class.getClassLoader()
+            .getResourceAsStream("sld/railway_sld.xml")); //$NON-NLS-1$
     for (Layer layer : railSld.getLayers())
       defaultSld.add(layer);
     // load natural sld
     StyledLayerDescriptor naturalSld = StyledLayerDescriptor
-        .unmarshall(OSMLoader.class.getClassLoader().getResourceAsStream(
-            "sld/natural_sld.xml")); //$NON-NLS-1$
+        .unmarshall(OSMLoader.class.getClassLoader()
+            .getResourceAsStream("sld/natural_sld.xml")); //$NON-NLS-1$
     for (Layer layer : naturalSld.getLayers())
       defaultSld.add(layer);
     // load leisure sld
     StyledLayerDescriptor leisureSld = StyledLayerDescriptor
-        .unmarshall(OSMLoader.class.getClassLoader().getResourceAsStream(
-            "sld/leisure_sld.xml")); //$NON-NLS-1$
+        .unmarshall(OSMLoader.class.getClassLoader()
+            .getResourceAsStream("sld/leisure_sld.xml")); //$NON-NLS-1$
     for (Layer layer : leisureSld.getLayers())
       defaultSld.add(layer);
     // load airport sld
     StyledLayerDescriptor airportSld = StyledLayerDescriptor
-        .unmarshall(OSMLoader.class.getClassLoader().getResourceAsStream(
-            "sld/airport_sld.xml")); //$NON-NLS-1$
+        .unmarshall(OSMLoader.class.getClassLoader()
+            .getResourceAsStream("sld/airport_sld.xml")); //$NON-NLS-1$
     for (Layer layer : airportSld.getLayers())
       defaultSld.add(layer);
     // load amenity sld
     StyledLayerDescriptor amenitySld = StyledLayerDescriptor
-        .unmarshall(OSMLoader.class.getClassLoader().getResourceAsStream(
-            "sld/amenity_sld.xml")); //$NON-NLS-1$
+        .unmarshall(OSMLoader.class.getClassLoader()
+            .getResourceAsStream("sld/amenity_sld.xml")); //$NON-NLS-1$
     for (Layer layer : amenitySld.getLayers())
       defaultSld.add(layer);
     // TODO fill with the other SLDs
@@ -1268,8 +1285,8 @@ public class OSMPlugin implements ProjectFramePlugin,
   class CreateFeatureTypeAction extends AbstractAction {
 
     /**
-   * 
-   */
+    * 
+    */
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -1314,8 +1331,8 @@ public class OSMPlugin implements ProjectFramePlugin,
       if (attrs.get("createDb").equals("true"))
         createDb = true;
       String tagFilter = attrs.get("tagFilter");
-      this.recentFiles.add(new OSMFile(new File(path), epsg, createDb,
-          tagFilter));
+      this.recentFiles
+          .add(new OSMFile(new File(path), epsg, createDb, tagFilter));
     }
     if (params.hasParameter("Recent OSM file 2")) {
       String path = (String) params.getParameterValue("Recent OSM file 2");
@@ -1326,8 +1343,8 @@ public class OSMPlugin implements ProjectFramePlugin,
       if (attrs.get("createDb").equals("true"))
         createDb = true;
       String tagFilter = attrs.get("tagFilter");
-      this.recentFiles.add(new OSMFile(new File(path), epsg, createDb,
-          tagFilter));
+      this.recentFiles
+          .add(new OSMFile(new File(path), epsg, createDb, tagFilter));
     }
     if (params.hasParameter("Recent OSM file 3")) {
       String path = (String) params.getParameterValue("Recent OSM file 3");
@@ -1338,8 +1355,8 @@ public class OSMPlugin implements ProjectFramePlugin,
       if (attrs.get("createDb").equals("true"))
         createDb = true;
       String tagFilter = attrs.get("tagFilter");
-      this.recentFiles.add(new OSMFile(new File(path), epsg, createDb,
-          tagFilter));
+      this.recentFiles
+          .add(new OSMFile(new File(path), epsg, createDb, tagFilter));
     }
     if (params.hasParameter("Recent OSM file 4")) {
       String path = (String) params.getParameterValue("Recent OSM file 4");
@@ -1350,8 +1367,8 @@ public class OSMPlugin implements ProjectFramePlugin,
       if (attrs.get("createDb").equals("true"))
         createDb = true;
       String tagFilter = attrs.get("tagFilter");
-      this.recentFiles.add(new OSMFile(new File(path), epsg, createDb,
-          tagFilter));
+      this.recentFiles
+          .add(new OSMFile(new File(path), epsg, createDb, tagFilter));
     }
     if (params.hasParameter("Recent OSM file 5")) {
       String path = (String) params.getParameterValue("Recent OSM file 5");
@@ -1362,8 +1379,8 @@ public class OSMPlugin implements ProjectFramePlugin,
       if (attrs.get("createDb").equals("true"))
         createDb = true;
       String tagFilter = attrs.get("tagFilter");
-      this.recentFiles.add(new OSMFile(new File(path), epsg, createDb,
-          tagFilter));
+      this.recentFiles
+          .add(new OSMFile(new File(path), epsg, createDb, tagFilter));
     }
   }
 
@@ -1375,8 +1392,8 @@ public class OSMPlugin implements ProjectFramePlugin,
       attributes.put("createDb",
           String.valueOf(recentFiles.get(i - 1).isCreateDb()));
       attributes.put("tagFilter", recentFiles.get(i - 1).getTagFilter());
-      params.setParameter("Recent OSM file " + i, recentFiles.get(i - 1)
-          .getFile().getPath(), attributes);
+      params.setParameter("Recent OSM file " + i,
+          recentFiles.get(i - 1).getFile().getPath(), attributes);
     }
   }
 
@@ -1482,5 +1499,317 @@ public class OSMPlugin implements ProjectFramePlugin,
       return OSMPlugin.this;
     }
 
+  }
+
+  /**
+   * Show the users of the current dataset in a new layer with the centroid as a
+   * geometry.
+   * 
+   * @author GTouya
+   * 
+   */
+  class ShowUsersAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      OsmDataset dataset = (OsmDataset) CartAGenDoc.getInstance()
+          .getCurrentDataset();
+      Collection<OsmGeneObj> features = new HashSet<>();
+      for (IGeneObj obj : dataset.getAllDatasetFeatures())
+        features.add((OsmGeneObj) obj);
+
+      // get the contributors from the contributions
+      Collection<OSMContributor> contributors = OSMContributor
+          .findContributors(features);
+      System.out.println(contributors.size() + " contributors found");
+
+      Collection<DefaultFeature> contributorFeats = new HashSet<>();
+      FeatureType ft = new FeatureType();
+      ft.setGeometryType(IPoint.class);
+      ft.setNomClasse("contributors");
+      SchemaDefaultFeature schema = new SchemaDefaultFeature();
+      schema.setFeatureType(ft);
+      ft.setSchema(schema);
+      Map<Integer, String[]> attLookup = new HashMap<Integer, String[]>(0);
+      schema.setAttLookup(attLookup);
+      AttributeType attName = new AttributeType();
+      attName.setNomField("name");
+      attName.setMemberName("name");
+      attName.setValueType("String");
+      ft.addFeatureAttribute(attName);
+      AttributeType attNb = new AttributeType();
+      attNb.setNomField("nbContributions");
+      attNb.setMemberName("nbContributions");
+      attNb.setValueType("Integer");
+      ft.addFeatureAttribute(attNb);
+      schema.getAttLookup().put(0, new String[] { "name", "nbContributions" });
+      for (OSMContributor contributor : contributors) {
+        DefaultFeature feat = new DefaultFeature(
+            contributor.getContributionsCentre());
+        feat.setFeatureType(ft);
+        feat.setAttributes(new Object[2]);
+        feat.setSchema(schema);
+        feat.setAttribute(attName, contributor.getName());
+        System.out.println(contributor.getName());
+        feat.setAttribute(attNb, contributor.getContributions().size());
+        System.out.println(contributor.getContributions().size());
+        contributorFeats.add(feat);
+      }
+
+      ProjectFrame pFrame = application.getMainFrame()
+          .getSelectedProjectFrame();
+      Layer layer = pFrame.getSld().createLayer("contributors", IPoint.class,
+          Color.RED);
+      StyledLayerDescriptor defaultSld;
+      try {
+        defaultSld = StyledLayerDescriptor
+            .unmarshall(IGeneObj.class.getClassLoader()
+                .getResourceAsStream("sld/sld_osm_contributors.xml"));
+        layer.getStyles()
+            .addAll(defaultSld.getLayer("contributors").getStyles());
+      } catch (JAXBException e1) {
+        e1.printStackTrace();
+      }
+      IPopulation<IFeature> pop = new Population<>("contributors");
+      pop.setFeatureType(ft);
+      pop.addAll(contributorFeats);
+      pFrame.getSld().getDataSet().addPopulation(pop);
+      pFrame.getSld().add(layer);
+    }
+
+    public ShowUsersAction() {
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Show OSM users of the dataset with the centroid of their contributions as geometry");
+      this.putValue(Action.NAME, "Show OSM users");
+    }
+  }
+
+  /**
+   * Show the contributions of one OSM user in a new layer, with dots centred on
+   * each contribution
+   * 
+   * @author GTouya
+   * 
+   */
+  class ShowUserContribsAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      // String contribName = JOptionPane
+      // .showInputDialog("Enter the name of the user");
+      String contribName = "Balaïtous";
+      OsmDataset dataset = (OsmDataset) CartAGenDoc.getInstance()
+          .getCurrentDataset();
+      Collection<OsmGeneObj> features = new HashSet<>();
+      for (IGeneObj obj : dataset.getAllDatasetFeatures())
+        features.add((OsmGeneObj) obj);
+
+      // get the contributors from the contributions
+      Collection<OSMContributor> contributors = OSMContributor
+          .findContributors(features);
+      System.out.println(contributors.size() + " contributors found");
+      String layerName = contribName + "_contributions";
+
+      Collection<DefaultFeature> contributorFeats = new HashSet<>();
+      FeatureType ft = new FeatureType();
+      ft.setGeometryType(IPoint.class);
+      ft.setNomClasse(layerName);
+
+      for (OSMContributor contributor : contributors) {
+        if (contributor.getName().equals(contribName)) {
+          for (OsmGeneObj obj : contributor.getContributions()) {
+            DefaultFeature feat = new DefaultFeature(
+                obj.getGeom().centroid().toGM_Point());
+            feat.setFeatureType(ft);
+            contributorFeats.add(feat);
+          }
+        }
+      }
+
+      ProjectFrame pFrame = application.getMainFrame()
+          .getSelectedProjectFrame();
+      Layer layer = pFrame.getSld().createLayer(layerName, IPoint.class,
+          Color.RED);
+      // create the style of dots
+      List<Style> styles = new ArrayList<>();
+      FeatureTypeStyle ftStyle = new FeatureTypeStyle();
+      ftStyle.setName("dot");
+      Rule rule = new Rule();
+      PointSymbolizer symbo = new PointSymbolizer();
+      symbo.setGeometryPropertyName("geom");
+      symbo.setUnitOfMeasure(Symbolizer.PIXEL);
+      Graphic graphic = new Graphic();
+      Mark mark = new Mark();
+      mark.setWellKnownName("circle");
+      Fill fill = new Fill();
+      fill.setColor(Color.RED);
+      mark.setFill(fill);
+      Stroke stroke = new Stroke();
+      stroke.setColor(Color.RED);
+      stroke.setStrokeWidth(0);
+      mark.setStroke(stroke);
+      graphic.getMarks().add(mark);
+      graphic.setSize(graphic.getSize() * 5);
+      symbo.setGraphic(graphic);
+      rule.getSymbolizers().add(symbo);
+      ftStyle.getRules().add(rule);
+      Style style = new UserStyle();
+      style.addFeatureTypeStyle(ftStyle);
+      styles.add(style);
+      layer.getStyles().addAll(styles);
+
+      IPopulation<IFeature> pop = new Population<>(layerName);
+      pop.setFeatureType(ft);
+      pop.addAll(contributorFeats);
+      pFrame.getSld().getDataSet().addPopulation(pop);
+      pFrame.getSld().add(layer);
+    }
+
+    public ShowUserContribsAction() {
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Show one OSM user contributions in a new layer");
+      this.putValue(Action.NAME, "Show one user contributions");
+    }
+  }
+
+  /**
+   * Show the contributions of one OSM user in a new layer, with dots centred on
+   * each contribution, differentiated into week and weekend contributions
+   * 
+   * @author GTouya
+   * 
+   */
+  class ShowUserContribsDayAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      // String contribName = JOptionPane
+      // .showInputDialog("Enter the name of the user");
+      String contribName = "Balaïtous";
+      OsmDataset dataset = (OsmDataset) CartAGenDoc.getInstance()
+          .getCurrentDataset();
+      Collection<OsmGeneObj> features = new HashSet<>();
+      for (IGeneObj obj : dataset.getAllDatasetFeatures())
+        features.add((OsmGeneObj) obj);
+
+      // get the contributors from the contributions
+      Collection<OSMContributor> contributors = OSMContributor
+          .findContributors(features);
+      System.out.println(contributors.size() + " contributors found");
+      String layerName = contribName + "_contributions";
+      String layerNameWeek = layerName + "_week";
+      String layerNameWeekend = layerName + "_weekend";
+
+      Collection<DefaultFeature> contributorFeatsWeek = new HashSet<>();
+      Collection<DefaultFeature> contributorFeatsWeekEnd = new HashSet<>();
+      FeatureType ft = new FeatureType();
+      ft.setGeometryType(IPoint.class);
+      ft.setNomClasse(layerName);
+
+      for (OSMContributor contributor : contributors) {
+        if (contributor.getName().equals(contribName)) {
+          for (OsmGeneObj obj : contributor.getWeekContributions()) {
+            DefaultFeature feat = new DefaultFeature(
+                obj.getGeom().centroid().toGM_Point());
+            feat.setFeatureType(ft);
+            contributorFeatsWeek.add(feat);
+          }
+          for (OsmGeneObj obj : contributor.getWeekEndContributions()) {
+            DefaultFeature feat = new DefaultFeature(
+                obj.getGeom().centroid().toGM_Point());
+            feat.setFeatureType(ft);
+            contributorFeatsWeekEnd.add(feat);
+          }
+        }
+      }
+
+      ProjectFrame pFrame = application.getMainFrame()
+          .getSelectedProjectFrame();
+      Layer layerWeek = pFrame.getSld().createLayer(layerNameWeek, IPoint.class,
+          Color.GREEN);
+      Layer layerWeekend = pFrame.getSld().createLayer(layerNameWeekend,
+          IPoint.class, Color.RED);
+      // create the style of dots
+      List<Style> styles1 = new ArrayList<>();
+      FeatureTypeStyle ftStyle1 = new FeatureTypeStyle();
+      ftStyle1.setName("dot");
+      Rule rule1 = new Rule();
+      PointSymbolizer symbo1 = new PointSymbolizer();
+      symbo1.setGeometryPropertyName("geom");
+      symbo1.setUnitOfMeasure(Symbolizer.PIXEL);
+      Graphic graphic1 = new Graphic();
+      Mark mark1 = new Mark();
+      mark1.setWellKnownName("circle");
+      Fill fill1 = new Fill();
+      fill1.setColor(Color.GREEN);
+      mark1.setFill(fill1);
+      Stroke stroke1 = new Stroke();
+      stroke1.setColor(Color.RED);
+      stroke1.setStrokeWidth(0);
+      mark1.setStroke(stroke1);
+      graphic1.getMarks().add(mark1);
+      graphic1.setSize(graphic1.getSize() * 2);
+      symbo1.setGraphic(graphic1);
+      rule1.getSymbolizers().add(symbo1);
+      ftStyle1.getRules().add(rule1);
+      Style style1 = new UserStyle();
+      style1.addFeatureTypeStyle(ftStyle1);
+      styles1.add(style1);
+      layerWeek.getStyles().addAll(styles1);
+
+      List<Style> styles2 = new ArrayList<>();
+      FeatureTypeStyle ftStyle2 = new FeatureTypeStyle();
+      ftStyle2.setName("dot");
+      Rule rule2 = new Rule();
+      PointSymbolizer symbo2 = new PointSymbolizer();
+      symbo2.setGeometryPropertyName("geom");
+      symbo2.setUnitOfMeasure(Symbolizer.PIXEL);
+      Graphic graphic2 = new Graphic();
+      Mark mark2 = new Mark();
+      mark2.setWellKnownName("circle");
+      Fill fill2 = new Fill();
+      fill2.setColor(Color.RED);
+      mark2.setFill(fill2);
+      Stroke stroke2 = new Stroke();
+      stroke2.setColor(Color.RED);
+      stroke2.setStrokeWidth(0);
+      mark2.setStroke(stroke2);
+      graphic2.getMarks().add(mark2);
+      graphic2.setSize(graphic2.getSize() * 2);
+      symbo2.setGraphic(graphic2);
+      rule2.getSymbolizers().add(symbo2);
+      ftStyle2.getRules().add(rule2);
+      Style style2 = new UserStyle();
+      style2.addFeatureTypeStyle(ftStyle2);
+      styles2.add(style2);
+      layerWeekend.getStyles().addAll(styles2);
+
+      IPopulation<IFeature> popWeek = new Population<>(layerNameWeek);
+      IPopulation<IFeature> popWeekend = new Population<>(layerNameWeekend);
+      popWeek.setFeatureType(ft);
+      popWeek.addAll(contributorFeatsWeek);
+      pFrame.getSld().getDataSet().addPopulation(popWeek);
+      pFrame.getSld().add(layerWeek);
+      popWeekend.setFeatureType(ft);
+      popWeekend.addAll(contributorFeatsWeekEnd);
+      pFrame.getSld().getDataSet().addPopulation(popWeekend);
+      pFrame.getSld().add(layerWeekend);
+    }
+
+    public ShowUserContribsDayAction() {
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Show one OSM user week and weekend contributions in two new layers");
+      this.putValue(Action.NAME,
+          "Show one user week and weekend contributions");
+    }
   }
 }

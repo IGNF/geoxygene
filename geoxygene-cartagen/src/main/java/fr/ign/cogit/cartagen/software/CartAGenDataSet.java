@@ -12,6 +12,9 @@
  */
 package fr.ign.cogit.cartagen.software;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
@@ -97,8 +100,8 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
  * 
  */
 public class CartAGenDataSet extends DataSet {
-  private static Logger logger = Logger.getLogger(CartAGenDataSet.class
-      .getName());
+  private static Logger logger = Logger
+      .getLogger(CartAGenDataSet.class.getName());
 
   /**
    * Default constructor
@@ -713,8 +716,8 @@ public class CartAGenDataSet extends DataSet {
 
   @SuppressWarnings("unchecked")
   public IPopulation<IGeneObj> getCartagenPop(String nomPopulation) {
-    IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) super
-        .getPopulation(nomPopulation);
+    IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) super.getPopulation(
+        nomPopulation);
     return pop;
   }
 
@@ -734,8 +737,8 @@ public class CartAGenDataSet extends DataSet {
    */
   @SuppressWarnings("unchecked")
   public IPopulation<IUrbanBlock> getBlocks() {
-    return (IPopulation<IUrbanBlock>) this.getCartagenPop(
-        CartAGenDataSet.BLOCKS_POP, IUrbanBlock.FEAT_TYPE_NAME);
+    return (IPopulation<IUrbanBlock>) this
+        .getCartagenPop(CartAGenDataSet.BLOCKS_POP, IUrbanBlock.FEAT_TYPE_NAME);
   }
 
   /**
@@ -764,8 +767,8 @@ public class CartAGenDataSet extends DataSet {
    */
   @SuppressWarnings("unchecked")
   public IPopulation<IRoadLine> getRoads() {
-    return (IPopulation<IRoadLine>) this.getCartagenPop(
-        CartAGenDataSet.ROADS_POP, IRoadLine.FEAT_TYPE_NAME);
+    return (IPopulation<IRoadLine>) this
+        .getCartagenPop(CartAGenDataSet.ROADS_POP, IRoadLine.FEAT_TYPE_NAME);
   }
 
   /**
@@ -784,8 +787,8 @@ public class CartAGenDataSet extends DataSet {
    */
   @SuppressWarnings("unchecked")
   public IPopulation<IPathLine> getPaths() {
-    return (IPopulation<IPathLine>) this.getCartagenPop(
-        CartAGenDataSet.PATHS_POP, IPathLine.FEAT_TYPE_NAME);
+    return (IPopulation<IPathLine>) this
+        .getCartagenPop(CartAGenDataSet.PATHS_POP, IPathLine.FEAT_TYPE_NAME);
   }
 
   /**
@@ -1141,8 +1144,8 @@ public class CartAGenDataSet extends DataSet {
    */
   @SuppressWarnings("unchecked")
   public IPopulation<ICemetery> getCemeteries() {
-    return (IPopulation<ICemetery>) this.getCartagenPop(
-        CartAGenDataSet.CEMETERY_POP, ICemetery.FEAT_TYPE_NAME);
+    return (IPopulation<ICemetery>) this
+        .getCartagenPop(CartAGenDataSet.CEMETERY_POP, ICemetery.FEAT_TYPE_NAME);
   }
 
   /**
@@ -1521,4 +1524,20 @@ public class CartAGenDataSet extends DataSet {
     return IGeometry.class;
   }
 
+  /**
+   * Get all the features in the populations of the dataset.
+   * @return
+   */
+  public Collection<IGeneObj> getAllDatasetFeatures() {
+    Collection<IGeneObj> features = new HashSet<>();
+    for (IPopulation<? extends IFeature> pop : this.getPopulations()) {
+      if (pop.isEmpty())
+        continue;
+      for (IFeature feat : pop) {
+        if (feat instanceof IGeneObj)
+          features.add((IGeneObj) feat);
+      }
+    }
+    return features;
+  }
 }
