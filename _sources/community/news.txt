@@ -3,8 +3,46 @@
 Blog Archive
 ##############
 
+2016
+------
+
+* October 11, 2016 - **Version 1.8 released**
+
+    This is the last stable version supporting Java 1.7 and GeoTools 8.4
+    From the next snapshot (1.9-SNAPSHOT), the JDK 8 is forced in the main pom and the current set of dependencies my be updated (besides GeoTools which is upgraded to v15.1)
+
+    * Line morphing algorithms in cartagen plugin
+    * Functionalities to analyse the OSM contributors of a loaded OSM file
+    * API loaders for Twitter, Foursquare, Panoramio and FlickR data
+    * Expressive rendering tools and extension of the OGC specifications SLD and SE coming from the MapStyle project in the OpenGL rendering engine.
+	* Added linear stylisation to Line Symbolizer through the SE extension `<ExpressiveStroke>`.
+	* Added patch-fill rendering to Polygon Symbolizer, with graph-cut or alpha blending through the SE extension `<ExpressiveFill>`.
+	* Added the possibility to set a global background texture to the rendered map through the SLD extension `<Background>`.
+	* Added Overlay, Multiply, Normal and HighTone blending modes between layers in Symbolizers through the XML tag `<BlendingMode>`.
+	* Enable animation of Raster Symbolizer + Tide simulation based on a DTM data, through the SE extensions `<Animation>` and `<Tide>`.
+
+
 2015
 ------
+
+* October 19, 2015 - **Version 1.7 released**
+
+    Among the novelties :
+    
+    * Students works : dot density analysis, measures of complexity of map. 
+    
+    * Minkowski 2D operations (sum between two polygons A and B, subtraction of A and B with reference to the center of mass B, etc.)
+    
+    * Generic algorithms (linear and nonlinear) of the least squares estimator
+    
+    * Polygons squaring by least squares compensation
+    
+    * A "lenses" plugin that can : show a more detailed view over a less detailed layer, view a portion of the raster layer over the vector one, etc.
+    
+    * OpenGL rendered 2D GUI added.
+    
+    * Probably last version using java 7  
+
 
 * October 1, 2015 - **Mapstyle demonstration** 
 

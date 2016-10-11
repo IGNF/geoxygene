@@ -9,9 +9,9 @@ Cette page a pour objectif de guider le développeur dans son installation de la
 
 .. note::
 
-  A compter de ce jour, GeOxygene passe au minimum en Java 1.7, la version Java 1.8 est recommandée.
+  A compter de ce jour (à partir de la version 1.9-SNAPSHOT), la version Java 1.8 est obligatoire.
   
-  Eclipse Mars est recommandé avec les plugins subclipse (>1.10.8) et m2 (>1.5.0), sachant que le plugin m2 est déjà installé dans Eclipse Mars.
+  Eclipse en version >=Mars est recommandé avec les plugins subclipse (>1.10.8) et m2 (>1.5.0), sachant que le plugin m2 est déjà installé à partir d'Eclipse Mars.
   
   **Attention** : le connector subclipse pour Maven doit être installé à la main comme indiqué plus bas et non pas via le marketplace
 
@@ -363,7 +363,74 @@ Maintenant, Eclipse est prêt pour l'installation des plugins nécessaires à Ge
  
 Vous aurez besoin essentiellement des plugins EGit, Subversion (subclipse) et Maven (m2eclipse) ainsi que de ses connecteurs pour git et svn.
 
-Les plugin EGit et m2e sont déja installés dans Eclipse Mars, il ne reste qu'à installer éventuellement Subclipse (si on accès au SVN privé du COGIT), ainsi que les connecteurs m2e pour Subclipse et EGit.
+À partir d'Eclipse Mars, il ne reste qu'à installer éventuellement Subclipse (si on accès au SVN privé du COGIT), ainsi que les connecteurs m2e pour Subclipse et EGit.
+
+
+Connector EGit for Maven
+========================================
+
+Pour installer le connector EGit on pourra faire dans le menu d'Eclipse
+
+.. container:: chemin
+
+	File >> Import
+
+.. container:: twocol
+
+	.. container:: leftside
+	
+	   Puis dans la fenêtre qui s'ouvre
+	
+	   .. container:: chemin
+		
+	      Maven >> Check out Maven Projects from SCM 
+	   Faire "Next"
+	   
+	.. container:: rightside     
+	       
+	   .. container:: centerside
+		      
+	      .. figure:: /documentation/resources/img/install/fileImport.png
+	         :width: 350px
+		      
+	         Figure 25 : Import 
+	      
+.. container:: twocol
+
+	.. container:: leftside
+	
+	   Cliquer sur "Find more SCM connectors in the m2e Marketplace"
+	  
+	.. container:: rightside     
+	       
+	   .. container:: centerside
+		      
+	      .. figure:: /documentation/resources/img/install/m2eMarketplace.png
+	         :width: 350px
+		      
+	         Figure 26 : m2e Marketplace 
+
+.. container:: twocol
+
+	.. container:: leftside
+	
+	   Chercher dans **m2e Team providers** le connecteur **m2e-egit** et le sélectionner, puis faire "Finish"
+	  
+	.. container:: rightside     
+	       
+	   .. container:: centerside
+		      
+	      .. figure:: /documentation/resources/img/install/m2e-egit.png
+	         :width: 350px
+		      
+	         Figure 27 : m2e-egit connector
+
+.. container:: centerside
+
+	Cliquer sur **OK**, cocher le composant à installer et finir l'installation comme habituellement (securité, licenses, restart Eclipse...).
+
+
+**Si SVN n'est pas utilisé, on pourra passer à la partie suivante, Maven Preferences**
  
 Plugin Subclipse (optionnel pour la partie publique de GeOxygene)
 ======================
@@ -483,91 +550,6 @@ Subclipse est un plugin Eclipse permettant d'utiliser Subversion (SVN) directeme
             Figure 17 : SVN interface
 
 
-Plugin M2E (optionnel car déjà installé si Eclipse Mars)
-=========================
-**Attention**
-Le plugin est sans doute déja installé pour une version récente d'Eclipse ( > Luna), passer directement à l'installation des connecteurs subclipse (si besoin) et egit dans ce cas.
-
-GeOxygene est construit à partir de Maven. Le projet m2eclipse fournit un support afin d'utiliser les fonctionnalités de Maven
-dans l'éditeur Eclipse. L'intégration Maven pour Eclipse est composé d'un plugin (le core) et de connectors. 
-Pour installer GeOxygene il faut le plugin m2e et le connector subclipse.
-
-.. container:: twocol
-
-   .. container:: leftside
-
-      **Etape 1** : Cliquer dans le menu d'Eclipse :
-
-	     .. container:: chemin
-	
-	           Help >> Eclipse Marketplace ...
-	           
-	     1. dans la zone de recherche, saisir **maven**
-	     
-	     2. clicker sur **go** afin de rechercher le plugin
-	     
-	     3. dans la liste des plugins, clicker sur **install** du plugin Maven Integration for Eclipse(Luna) 1.5.0
-   
-   .. container:: rightside     
-       
-       .. container:: centerside
-	      
-	      .. figure:: /documentation/resources/img/install/LunaM2Eclipse.png
-	         :width: 350px
-	      
-	         Figure 18 : Maven Integration for Eclipse(Luna) 1.5.0 
-
-
-.. container:: twocol
-
-   .. container:: leftside
-            
-      **Etape 2** : Confirmer la sélection de l'unique composant "Maven Integration for Eclipse" à installer. 
-
-   .. container:: rightside     
-   
-      .. container:: centerside
-      
-         .. figure:: /documentation/resources/img/install/LunaM2Eclipse_02.png
-            :width: 450px
-       
-            Figure 19 : Confirm Selected Features  
-
-
-.. container:: twocol
-
-   .. container:: leftside
-
-      **Etape 3** : Accepter les termes de la licence de m2eclipse sur la page "Review Licences" et cliquer sur "Finish" pour commencer l'installation.
-   
-   .. container:: rightside
-      
-      .. container:: centerside
-      
-         .. figure:: /documentation/resources/img/install/LunaM2Eclipse_03.png
-            :width: 450px
-         
-            Figure 20 : Review Licenses
-            
-            
-.. container:: twocol
-
-   .. container:: leftside
-   
-      **Etape 4** : Une fois l'installation terminée, préférer "Restart Now" dans la prochaine boite de dialogue. 
-      
-      Le plugin m2eclipse sera opérationnel après le redémarrage d'Eclipse.
-   
-   .. container:: rightside
-      
-      .. container:: centerside
-      
-         .. figure:: /documentation/resources/img/install/pluginRestart.png
-            :width: 350px
-
-            Figure 21 : Restart
-
-
 
 Connector Subclipse for Maven (optionnel pour la partie publique de GeOxygene)
 ========================================
@@ -645,68 +627,6 @@ Il faut installer le connector subclipse pour Maven si on veut pouvoir importer 
 	
 
 
-Connector EGit for Maven
-========================================
-
-Pour installer le connector EGit on pourra faire dans le menu d'Eclipse
-
-.. container:: chemin
-
-	File >> Import
-
-.. container:: twocol
-
-	.. container:: leftside
-	
-	   Puis dans la fenêtre qui s'ouvre
-	
-	   .. container:: chemin
-		
-	      Maven >> Check out Maven Projects from SCM 
-	   Faire "Next"
-	   
-	.. container:: rightside     
-	       
-	   .. container:: centerside
-		      
-	      .. figure:: /documentation/resources/img/install/fileImport.png
-	         :width: 350px
-		      
-	         Figure 25 : Import 
-	      
-.. container:: twocol
-
-	.. container:: leftside
-	
-	   Cliquer sur "Find more SCM connectors in the m2e Marketplace"
-	  
-	.. container:: rightside     
-	       
-	   .. container:: centerside
-		      
-	      .. figure:: /documentation/resources/img/install/m2eMarketplace.png
-	         :width: 350px
-		      
-	         Figure 26 : m2e Marketplace 
-
-.. container:: twocol
-
-	.. container:: leftside
-	
-	   Chercher dans **m2e Team providers** le connecteur **m2e-egit** et le sélectionner, puis faire "Finish"
-	  
-	.. container:: rightside     
-	       
-	   .. container:: centerside
-		      
-	      .. figure:: /documentation/resources/img/install/m2e-egit.png
-	         :width: 350px
-		      
-	         Figure 27 : m2e-egit connector
-
-.. container:: centerside
-
-	Cliquer sur **OK**, cocher le composant à installer et finir l'installation comme habituellement (securité, licenses, restart Eclipse...).
 
 
 

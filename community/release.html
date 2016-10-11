@@ -83,6 +83,7 @@
     <ul>
 <li><a class="reference internal" href="#">GeOxygene releases</a><ul>
 <li><a class="reference internal" href="#history-of-changes">History of Changes</a><ul>
+<li><a class="reference internal" href="#version-1-8-2016-10-11">Version 1.8 (2016/10/11)</a></li>
 <li><a class="reference internal" href="#version-1-7-2015-10-19">Version 1.7 (2015/10/19)</a></li>
 <li><a class="reference internal" href="#version-1-6-2014-01-23">Version 1.6 (2014/01/23)</a></li>
 <li><a class="reference internal" href="#version-1-5-2013-01-07">Version 1.5 (2013/01/07)</a></li>
@@ -133,11 +134,38 @@
             
   <div class="section" id="geoxygene-releases">
 <h1>GeOxygene releases</h1>
-<p>The current development version is GeOxygene-1.8-SNAPSHOT. The latest stable release is <strong>GeOxygene 1.7</strong>.</p>
-<p>All releases can be obtained from the <a class="reference external" href="http://sourceforge.net/projects/oxygene-project/files/?source=navbar">SourceForge download area</a> .
+<p>The current development version is GeOxygene-1.9-SNAPSHOT. The latest stable release is <strong>GeOxygene 1.8</strong>.</p>
+<p>Releases can be obtained from the <a class="reference external" href="https://github.com/IGNF/geoxygene/releases">GitHub releases</a> .
 Snapshots and releases are also available from the <a class="reference external" href="https://forge-cogit.ign.fr/nexus/content/repositories/">COGIT repositories</a>.</p>
 <div class="section" id="history-of-changes">
 <h2>History of Changes</h2>
+<div class="section" id="version-1-8-2016-10-11">
+<h3>Version 1.8 (2016/10/11)</h3>
+<blockquote>
+<div><ul>
+<li><p class="first">Last version using java 7</p>
+</li>
+<li><p class="first">Line morphing algorithms in cartagen plugin</p>
+</li>
+<li><p class="first">Functionalities to analyse the OSM contributors of a loaded OSM file</p>
+</li>
+<li><p class="first">API loaders for Twitter, Foursquare, Panoramio and FlickR data</p>
+</li>
+<li><dl class="first docutils">
+<dt>Expressive rendering tools and extension of the OGC specifications SLD and SE coming from the MapStyle project in the OpenGL rendering engine.</dt>
+<dd><ul class="first last simple">
+<li>Added linear stylisation to Line Symbolizer through the SE extension <cite>&lt;ExpressiveStroke&gt;</cite>.</li>
+<li>Added patch-fill rendering to Polygon Symbolizer, with graph-cut or alpha blending through the SE extension <cite>&lt;ExpressiveFill&gt;</cite>.</li>
+<li>Added the possibility to set a global background texture to the rendered map through the SLD extension <cite>&lt;Background&gt;</cite>.</li>
+<li>Added Overlay, Multiply, Normal and HighTone blending modes between layers in Symbolizers through the XML tag <cite>&lt;BlendingMode&gt;</cite>.</li>
+<li>Enable animation of Raster Symbolizer + Tide simulation based on a DTM data, through the SE extensions <cite>&lt;Animation&gt;</cite> and <cite>&lt;Tide&gt;</cite>.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
 <div class="section" id="version-1-7-2015-10-19">
 <h3>Version 1.7 (2015/10/19)</h3>
 <blockquote>

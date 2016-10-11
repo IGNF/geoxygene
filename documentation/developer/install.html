@@ -101,10 +101,9 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#eclipse-plugins">Eclipse Plugins</a><ul>
-<li><a class="reference internal" href="#plugin-subclipse-optionnel-pour-la-partie-publique-de-geoxygene">Plugin Subclipse (optionnel pour la partie publique de GeOxygene)</a></li>
-<li><a class="reference internal" href="#plugin-m2e-optionnel-car-deja-installe-si-eclipse-mars">Plugin M2E (optionnel car déjà installé si Eclipse Mars)</a></li>
-<li><a class="reference internal" href="#connector-subclipse-for-maven-optionnel-pour-la-partie-publique-de-geoxygene">Connector Subclipse for Maven (optionnel pour la partie publique de GeOxygene)</a></li>
 <li><a class="reference internal" href="#connector-egit-for-maven">Connector EGit for Maven</a></li>
+<li><a class="reference internal" href="#plugin-subclipse-optionnel-pour-la-partie-publique-de-geoxygene">Plugin Subclipse (optionnel pour la partie publique de GeOxygene)</a></li>
+<li><a class="reference internal" href="#connector-subclipse-for-maven-optionnel-pour-la-partie-publique-de-geoxygene">Connector Subclipse for Maven (optionnel pour la partie publique de GeOxygene)</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#maven-preferences">Maven preferences</a><ul>
@@ -155,8 +154,8 @@
 <p>Cette page a pour objectif de guider le développeur dans son installation de la plateforme de développement de GeOxygene.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>A compter de ce jour, GeOxygene passe au minimum en Java 1.7, la version Java 1.8 est recommandée.</p>
-<p>Eclipse Mars est recommandé avec les plugins subclipse (&gt;1.10.8) et m2 (&gt;1.5.0), sachant que le plugin m2 est déjà installé dans Eclipse Mars.</p>
+<p>A compter de ce jour (à partir de la version 1.9-SNAPSHOT), la version Java 1.8 est obligatoire.</p>
+<p>Eclipse en version &gt;=Mars est recommandé avec les plugins subclipse (&gt;1.10.8) et m2 (&gt;1.5.0), sachant que le plugin m2 est déjà installé à partir d&#8217;Eclipse Mars.</p>
 <p class="last"><strong>Attention</strong> : le connector subclipse pour Maven doit être installé à la main comme indiqué plus bas et non pas via le marketplace</p>
 </div>
 <div class="section" id="java">
@@ -451,7 +450,56 @@ Préférences &gt;&gt; General &gt;&gt; Editors &gt;&gt; Text Editors</div>
 <h2>Eclipse Plugins</h2>
 <p>Maintenant, Eclipse est prêt pour l&#8217;installation des plugins nécessaires à GeOxygene.</p>
 <p>Vous aurez besoin essentiellement des plugins EGit, Subversion (subclipse) et Maven (m2eclipse) ainsi que de ses connecteurs pour git et svn.</p>
-<p>Les plugin EGit et m2e sont déja installés dans Eclipse Mars, il ne reste qu&#8217;à installer éventuellement Subclipse (si on accès au SVN privé du COGIT), ainsi que les connecteurs m2e pour Subclipse et EGit.</p>
+<p>À partir d&#8217;Eclipse Mars, il ne reste qu&#8217;à installer éventuellement Subclipse (si on accès au SVN privé du COGIT), ainsi que les connecteurs m2e pour Subclipse et EGit.</p>
+<div class="section" id="connector-egit-for-maven">
+<h3>Connector EGit for Maven</h3>
+<p>Pour installer le connector EGit on pourra faire dans le menu d&#8217;Eclipse</p>
+<div class="chemin container">
+File &gt;&gt; Import</div>
+<div class="twocol container">
+<div class="leftside container">
+<p>Puis dans la fenêtre qui s&#8217;ouvre</p>
+<div class="chemin container">
+Maven &gt;&gt; Check out Maven Projects from SCM</div>
+<p>Faire &#8220;Next&#8221;</p>
+</div>
+<div class="rightside container">
+<div class="centerside container">
+<div class="figure" id="id13">
+<a class="reference internal image-reference" href="../../_images/fileImport.png"><img alt="../../_images/fileImport.png" src="../../_images/fileImport.png" style="width: 350px;" /></a>
+<p class="caption"><span class="caption-text">Figure 25 : Import</span></p>
+</div>
+</div>
+</div>
+</div>
+<div class="twocol container">
+<div class="leftside container">
+Cliquer sur &#8220;Find more SCM connectors in the m2e Marketplace&#8221;</div>
+<div class="rightside container">
+<div class="centerside container">
+<div class="figure" id="id14">
+<a class="reference internal image-reference" href="../../_images/m2eMarketplace.png"><img alt="../../_images/m2eMarketplace.png" src="../../_images/m2eMarketplace.png" style="width: 350px;" /></a>
+<p class="caption"><span class="caption-text">Figure 26 : m2e Marketplace</span></p>
+</div>
+</div>
+</div>
+</div>
+<div class="twocol container">
+<div class="leftside container">
+Chercher dans <strong>m2e Team providers</strong> le connecteur <strong>m2e-egit</strong> et le sélectionner, puis faire &#8220;Finish&#8221;</div>
+<div class="rightside container">
+<div class="centerside container">
+<div class="figure" id="id15">
+<a class="reference internal image-reference" href="../../_images/m2e-egit.png"><img alt="../../_images/m2e-egit.png" src="../../_images/m2e-egit.png" style="width: 350px;" /></a>
+<p class="caption"><span class="caption-text">Figure 27 : m2e-egit connector</span></p>
+</div>
+</div>
+</div>
+</div>
+<div class="centerside container">
+Cliquer sur <strong>OK</strong>, cocher le composant à installer et finir l&#8217;installation comme habituellement (securité, licenses, restart Eclipse...).</div>
+<p><strong>Si SVN n&#8217;est pas utilisé, on pourra passer à la partie suivante, Maven Preferences</strong></p>
+</div>
 <div class="section" id="plugin-subclipse-optionnel-pour-la-partie-publique-de-geoxygene">
 <h3>Plugin Subclipse (optionnel pour la partie publique de GeOxygene)</h3>
 <p>Subclipse est un plugin Eclipse permettant d&#8217;utiliser Subversion (SVN) directement depuis votre éditeur préféré.</p>
@@ -470,7 +518,7 @@ Help &gt;&gt; Eclipse Marketplace ...</div>
 </div>
 <div class="rightside container">
 <div class="centerside container">
-<div class="figure" id="id13">
+<div class="figure" id="id16">
 <a class="reference internal image-reference" href="../../_images/LunaSubclipse.png"><img alt="../../_images/LunaSubclipse.png" src="../../_images/LunaSubclipse.png" style="width: 350px;" /></a>
 <p class="caption"><span class="caption-text">Figure 12 : Subclipse 1.10.8 in Marketplace</span></p>
 </div>
@@ -482,7 +530,7 @@ Help &gt;&gt; Eclipse Marketplace ...</div>
 <strong>Etape 2</strong> : Confirmer la sélection des composants à installer.</div>
 <div class="rightside container">
 <div class="centerside container">
-<div class="figure" id="id14">
+<div class="figure" id="id17">
 <a class="reference internal image-reference" href="../../_images/LunaSubclipse_02.png"><img alt="../../_images/LunaSubclipse_02.png" src="../../_images/LunaSubclipse_02.png" style="width: 500px;" /></a>
 <p class="caption"><span class="caption-text">Figure 13 : Confirm Selected Features</span></p>
 </div>
@@ -494,7 +542,7 @@ Help &gt;&gt; Eclipse Marketplace ...</div>
 <strong>Etape 3</strong> : Accepter les termes de la licence de subeclipse sur la page &#8220;Review Licences&#8221; et cliquer sur &#8220;Finish&#8221; pour commencer l&#8217;installation.</div>
 <div class="rightside container">
 <div class="centerside container">
-<div class="figure" id="id15">
+<div class="figure" id="id18">
 <a class="reference internal image-reference" href="../../_images/LunaSubclipse_03.png"><img alt="../../_images/LunaSubclipse_03.png" src="../../_images/LunaSubclipse_03.png" style="width: 450px;" /></a>
 <p class="caption"><span class="caption-text">Figure 14 : Review Licenses</span></p>
 </div>
@@ -507,7 +555,7 @@ Help &gt;&gt; Eclipse Marketplace ...</div>
 ne sont pas signés. Cliquer sur &#8220;OK&#8221; pour continuer l&#8217;installation.</div>
 <div class="rightside container">
 <div class="centerside container">
-<div class="figure" id="id16">
+<div class="figure" id="id19">
 <a class="reference internal image-reference" href="../../_images/LunaSubclipse_04.png"><img alt="../../_images/LunaSubclipse_04.png" src="../../_images/LunaSubclipse_04.png" style="width: 350px;" /></a>
 <p class="caption"><span class="caption-text">Figure 15 : Security warning</span></p>
 </div>
@@ -521,7 +569,7 @@ ne sont pas signés. Cliquer sur &#8220;OK&#8221; pour continuer l&#8217;install
 </div>
 <div class="rightside container">
 <div class="centerside container">
-<div class="figure" id="id17">
+<div class="figure" id="id20">
 <a class="reference internal image-reference" href="../../_images/pluginRestart.png"><img alt="../../_images/pluginRestart.png" src="../../_images/pluginRestart.png" style="width: 350px;" /></a>
 <p class="caption"><span class="caption-text">Figure 16 : Restart</span></p>
 </div>
@@ -539,77 +587,9 @@ Window &gt;&gt; Preferences &gt;&gt; Team &gt;&gt; SVN</div>
 </div>
 <div class="rightside container">
 <div class="centerside container">
-<div class="figure" id="id18">
+<div class="figure" id="id21">
 <a class="reference internal image-reference" href="../../_images/subeclipseInterface.png"><img alt="../../_images/subeclipseInterface.png" src="../../_images/subeclipseInterface.png" style="width: 450px;" /></a>
 <p class="caption"><span class="caption-text">Figure 17 : SVN interface</span></p>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="section" id="plugin-m2e-optionnel-car-deja-installe-si-eclipse-mars">
-<h3>Plugin M2E (optionnel car déjà installé si Eclipse Mars)</h3>
-<p><strong>Attention</strong>
-Le plugin est sans doute déja installé pour une version récente d&#8217;Eclipse ( &gt; Luna), passer directement à l&#8217;installation des connecteurs subclipse (si besoin) et egit dans ce cas.</p>
-<p>GeOxygene est construit à partir de Maven. Le projet m2eclipse fournit un support afin d&#8217;utiliser les fonctionnalités de Maven
-dans l&#8217;éditeur Eclipse. L&#8217;intégration Maven pour Eclipse est composé d&#8217;un plugin (le core) et de connectors.
-Pour installer GeOxygene il faut le plugin m2e et le connector subclipse.</p>
-<div class="twocol container">
-<div class="leftside container">
-<p><strong>Etape 1</strong> : Cliquer dans le menu d&#8217;Eclipse :</p>
-<blockquote>
-<div><div class="chemin container">
-Help &gt;&gt; Eclipse Marketplace ...</div>
-<ol class="arabic simple">
-<li>dans la zone de recherche, saisir <strong>maven</strong></li>
-<li>clicker sur <strong>go</strong> afin de rechercher le plugin</li>
-<li>dans la liste des plugins, clicker sur <strong>install</strong> du plugin Maven Integration for Eclipse(Luna) 1.5.0</li>
-</ol>
-</div></blockquote>
-</div>
-<div class="rightside container">
-<div class="centerside container">
-<div class="figure" id="id19">
-<a class="reference internal image-reference" href="../../_images/LunaM2Eclipse.png"><img alt="../../_images/LunaM2Eclipse.png" src="../../_images/LunaM2Eclipse.png" style="width: 350px;" /></a>
-<p class="caption"><span class="caption-text">Figure 18 : Maven Integration for Eclipse(Luna) 1.5.0</span></p>
-</div>
-</div>
-</div>
-</div>
-<div class="twocol container">
-<div class="leftside container">
-<strong>Etape 2</strong> : Confirmer la sélection de l&#8217;unique composant &#8220;Maven Integration for Eclipse&#8221; à installer.</div>
-<div class="rightside container">
-<div class="centerside container">
-<div class="figure" id="id20">
-<a class="reference internal image-reference" href="../../_images/LunaM2Eclipse_02.png"><img alt="../../_images/LunaM2Eclipse_02.png" src="../../_images/LunaM2Eclipse_02.png" style="width: 450px;" /></a>
-<p class="caption"><span class="caption-text">Figure 19 : Confirm Selected Features</span></p>
-</div>
-</div>
-</div>
-</div>
-<div class="twocol container">
-<div class="leftside container">
-<strong>Etape 3</strong> : Accepter les termes de la licence de m2eclipse sur la page &#8220;Review Licences&#8221; et cliquer sur &#8220;Finish&#8221; pour commencer l&#8217;installation.</div>
-<div class="rightside container">
-<div class="centerside container">
-<div class="figure" id="id21">
-<a class="reference internal image-reference" href="../../_images/LunaM2Eclipse_03.png"><img alt="../../_images/LunaM2Eclipse_03.png" src="../../_images/LunaM2Eclipse_03.png" style="width: 450px;" /></a>
-<p class="caption"><span class="caption-text">Figure 20 : Review Licenses</span></p>
-</div>
-</div>
-</div>
-</div>
-<div class="twocol container">
-<div class="leftside container">
-<p><strong>Etape 4</strong> : Une fois l&#8217;installation terminée, préférer &#8220;Restart Now&#8221; dans la prochaine boite de dialogue.</p>
-<p>Le plugin m2eclipse sera opérationnel après le redémarrage d&#8217;Eclipse.</p>
-</div>
-<div class="rightside container">
-<div class="centerside container">
-<div class="figure" id="id22">
-<a class="reference internal image-reference" href="../../_images/pluginRestart.png"><img alt="../../_images/pluginRestart.png" src="../../_images/pluginRestart.png" style="width: 350px;" /></a>
-<p class="caption"><span class="caption-text">Figure 21 : Restart</span></p>
 </div>
 </div>
 </div>
@@ -637,7 +617,7 @@ Help &gt;&gt; Eclipse Marketplace ...</div>
 </div>
 <div class="rightside container">
 <div class="centerside container">
-<div class="figure" id="id23">
+<div class="figure" id="id22">
 <a class="reference internal image-reference" href="../../_images/pluginInstall.png"><img alt="../../_images/pluginInstall.png" src="../../_images/pluginInstall.png" style="width: 350px;" /></a>
 <p class="caption"><span class="caption-text">Figure 22 : Install new Software</span></p>
 </div>
@@ -650,7 +630,7 @@ Help &gt;&gt; Eclipse Marketplace ...</div>
 </div>
 <div class="rightside container">
 <div class="centerside container">
-<div class="figure" id="id24">
+<div class="figure" id="id23">
 <a class="reference internal image-reference" href="../../_images/pluginNewUrl.png"><img alt="../../_images/pluginNewUrl.png" src="../../_images/pluginNewUrl.png" style="width: 500px;" /></a>
 <p class="caption"><span class="caption-text">Figure 23 : Add new update site</span></p>
 </div>
@@ -663,7 +643,7 @@ Help &gt;&gt; Eclipse Marketplace ...</div>
 </div>
 <div class="rightside container">
 <div class="centerside container">
-<div class="figure" id="id25">
+<div class="figure" id="id24">
 <a class="reference internal image-reference" href="../../_images/ConnectorM2eSubclipse.png"><img alt="../../_images/ConnectorM2eSubclipse.png" src="../../_images/ConnectorM2eSubclipse.png" style="width: 500px;" /></a>
 <p class="caption"><span class="caption-text">Figure 24 : Add new local site</span></p>
 </div>
@@ -676,54 +656,6 @@ Help &gt;&gt; Eclipse Marketplace ...</div>
 </li>
 </ol>
 </div>
-<div class="section" id="connector-egit-for-maven">
-<h3>Connector EGit for Maven</h3>
-<p>Pour installer le connector EGit on pourra faire dans le menu d&#8217;Eclipse</p>
-<div class="chemin container">
-File &gt;&gt; Import</div>
-<div class="twocol container">
-<div class="leftside container">
-<p>Puis dans la fenêtre qui s&#8217;ouvre</p>
-<div class="chemin container">
-Maven &gt;&gt; Check out Maven Projects from SCM</div>
-<p>Faire &#8220;Next&#8221;</p>
-</div>
-<div class="rightside container">
-<div class="centerside container">
-<div class="figure" id="id26">
-<a class="reference internal image-reference" href="../../_images/fileImport.png"><img alt="../../_images/fileImport.png" src="../../_images/fileImport.png" style="width: 350px;" /></a>
-<p class="caption"><span class="caption-text">Figure 25 : Import</span></p>
-</div>
-</div>
-</div>
-</div>
-<div class="twocol container">
-<div class="leftside container">
-Cliquer sur &#8220;Find more SCM connectors in the m2e Marketplace&#8221;</div>
-<div class="rightside container">
-<div class="centerside container">
-<div class="figure" id="id27">
-<a class="reference internal image-reference" href="../../_images/m2eMarketplace.png"><img alt="../../_images/m2eMarketplace.png" src="../../_images/m2eMarketplace.png" style="width: 350px;" /></a>
-<p class="caption"><span class="caption-text">Figure 26 : m2e Marketplace</span></p>
-</div>
-</div>
-</div>
-</div>
-<div class="twocol container">
-<div class="leftside container">
-Chercher dans <strong>m2e Team providers</strong> le connecteur <strong>m2e-egit</strong> et le sélectionner, puis faire &#8220;Finish&#8221;</div>
-<div class="rightside container">
-<div class="centerside container">
-<div class="figure" id="id28">
-<a class="reference internal image-reference" href="../../_images/m2e-egit.png"><img alt="../../_images/m2e-egit.png" src="../../_images/m2e-egit.png" style="width: 350px;" /></a>
-<p class="caption"><span class="caption-text">Figure 27 : m2e-egit connector</span></p>
-</div>
-</div>
-</div>
-</div>
-<div class="centerside container">
-Cliquer sur <strong>OK</strong>, cocher le composant à installer et finir l&#8217;installation comme habituellement (securité, licenses, restart Eclipse...).</div>
-</div>
 </div>
 <div class="section" id="maven-preferences">
 <h2>Maven preferences</h2>
@@ -735,7 +667,7 @@ Cliquer sur <strong>OK</strong>, cocher le composant à installer et finir l&#82
 <li>Download Artifact Javadoc</li>
 </ul>
 <div class="centerside container">
-<div class="figure" id="id29">
+<div class="figure" id="id25">
 <a class="reference internal image-reference" href="../../_images/MavenConfiguration.png"><img alt="../../_images/MavenConfiguration.png" src="../../_images/MavenConfiguration.png" style="width: 500px;" /></a>
 <p class="caption"><span class="caption-text">Figure 29 : Eclipse preferences pour Maven</span></p>
 </div>

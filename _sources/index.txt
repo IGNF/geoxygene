@@ -221,6 +221,29 @@ Démo
 News
 ----------
 
+* October 11, 2016 - **Version 1.8 released**
+
+    This is the last stable version supporting Java 1.7 and GeoTools 8.4
+    From the next snapshot (1.9-SNAPSHOT), the JDK 8 is forced in the main pom and the current set of dependencies may be updated (besides GeoTools which is upgraded to v15.1)
+
+    - Line morphing algorithms in cartagen plugin
+
+    - Functionalities to analyse the OSM contributors of a loaded OSM file
+
+    - API loaders for Twitter, Foursquare, Panoramio and FlickR data
+
+    - Expressive rendering tools and extension of the OGC specifications SLD and SE coming from the MapStyle project in the OpenGL rendering engine.
+
+        * Added linear stylisation to Line Symbolizer through the SE extension `<ExpressiveStroke>`.
+        * Added patch-fill rendering to Polygon Symbolizer, with graph-cut or alpha blending through the SE extension `<ExpressiveFill>`.
+        * Added the possibility to set a global background texture to the rendered map through the SLD extension `<Background>`.
+        * Added Overlay, Multiply, Normal and HighTone blending modes between layers in Symbolizers through the XML tag `<BlendingMode>`.
+        * Enable animation of Raster Symbolizer + Tide simulation based on a DTM data, through the SE extensions `<Animation>` and `<Tide>`.
+
+    **Associated References :**
+      Christophe S., Dumenieu B., Turbet J., Hoarau C., Mellado N., Ory J., Loi H., Masse A., Arbelot B., Vergne R., Brédif M., Hurtut T., Thollot J., Vanderhaeghe D. (2016). Map Style Formalization: Rendering Techniques Extension for Cartography, Pierre Bénard; Holger Winnemöller. Expressive 2016 The Joint Symposium on Computational Aesthetics and Sketch-Based Interfaces and Modeling and Non-Photorealistic Animation and Rendering, May 2016, Lisbonne, Portugal. The Eurographics Association, Non-Photorealistic Animation and Rendering.
+      Masse, A. and Christophe, S. (2015) Homogeneous geovisualization of costal areas from heterogeneous spatio-temporal data, Int. Arch. Photogramm. Remote Sens. Spatial Inf. Sci., XL-3/W3, 509-516, doi:10.5194/isprsarchives-XL-3-W3-509-2015, 2015.
+
 * October 19, 2015 - **Version 1.7 released**
 
     Among the novelties :

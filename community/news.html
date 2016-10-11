@@ -82,9 +82,10 @@
 	<h4>Table Of Contents</h4>
     <ul>
 <li><a class="reference internal" href="#">Blog Archive</a><ul>
-<li><a class="reference internal" href="#id1">2015</a></li>
-<li><a class="reference internal" href="#id2">2014</a></li>
-<li><a class="reference internal" href="#id3">2013</a></li>
+<li><a class="reference internal" href="#id1">2016</a></li>
+<li><a class="reference internal" href="#id2">2015</a></li>
+<li><a class="reference internal" href="#id3">2014</a></li>
+<li><a class="reference internal" href="#id4">2013</a></li>
 </ul>
 </li>
 </ul>
@@ -126,8 +127,53 @@
   <div class="section" id="blog-archive">
 <h1>Blog Archive</h1>
 <div class="section" id="id1">
+<h2>2016</h2>
+<ul>
+<li><p class="first">October 11, 2016 - <strong>Version 1.8 released</strong></p>
+<blockquote>
+<div><p>This is the last stable version supporting Java 1.7 and GeoTools 8.4
+From the next snapshot (1.9-SNAPSHOT), the JDK 8 is forced in the main pom and the current set of dependencies my be updated (besides GeoTools which is upgraded to v15.1)</p>
+<ul>
+<li><p class="first">Line morphing algorithms in cartagen plugin</p>
+</li>
+<li><p class="first">Functionalities to analyse the OSM contributors of a loaded OSM file</p>
+</li>
+<li><p class="first">API loaders for Twitter, Foursquare, Panoramio and FlickR data</p>
+</li>
+<li><dl class="first docutils">
+<dt>Expressive rendering tools and extension of the OGC specifications SLD and SE coming from the MapStyle project in the OpenGL rendering engine.</dt>
+<dd><ul class="first last simple">
+<li>Added linear stylisation to Line Symbolizer through the SE extension <cite>&lt;ExpressiveStroke&gt;</cite>.</li>
+<li>Added patch-fill rendering to Polygon Symbolizer, with graph-cut or alpha blending through the SE extension <cite>&lt;ExpressiveFill&gt;</cite>.</li>
+<li>Added the possibility to set a global background texture to the rendered map through the SLD extension <cite>&lt;Background&gt;</cite>.</li>
+<li>Added Overlay, Multiply, Normal and HighTone blending modes between layers in Symbolizers through the XML tag <cite>&lt;BlendingMode&gt;</cite>.</li>
+<li>Enable animation of Raster Symbolizer + Tide simulation based on a DTM data, through the SE extensions <cite>&lt;Animation&gt;</cite> and <cite>&lt;Tide&gt;</cite>.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="id2">
 <h2>2015</h2>
 <ul>
+<li><p class="first">October 19, 2015 - <strong>Version 1.7 released</strong></p>
+<blockquote>
+<div><p>Among the novelties :</p>
+<ul class="simple">
+<li>Students works : dot density analysis, measures of complexity of map.</li>
+<li>Minkowski 2D operations (sum between two polygons A and B, subtraction of A and B with reference to the center of mass B, etc.)</li>
+<li>Generic algorithms (linear and nonlinear) of the least squares estimator</li>
+<li>Polygons squaring by least squares compensation</li>
+<li>A &#8220;lenses&#8221; plugin that can : show a more detailed view over a less detailed layer, view a portion of the raster layer over the vector one, etc.</li>
+<li>OpenGL rendered 2D GUI added.</li>
+<li>Probably last version using java 7</li>
+</ul>
+</div></blockquote>
+</li>
 <li><p class="first">October 1, 2015 - <strong>Mapstyle demonstration</strong></p>
 <blockquote>
 <div><p>Two demonstrations of using GeOxygene library at the GeoVIS Workshop, ISPRS GeoSpatial Week. Watch the video !</p>
@@ -135,7 +181,7 @@
 </li>
 </ul>
 </div>
-<div class="section" id="id2">
+<div class="section" id="id3">
 <h2>2014</h2>
 <ul>
 <li><p class="first">June 5, 2014 - <strong>CartAGen demonstration</strong></p>
@@ -152,7 +198,7 @@ showcased tools developed in his thesis to estimate geometric measurements impre
 </li>
 </ul>
 </div>
-<div class="section" id="id3">
+<div class="section" id="id4">
 <h2>2013</h2>
 <ul>
 <li><p class="first">June 10, 2013 - <strong>What’s New in GeOxygene 1.5</strong></p>

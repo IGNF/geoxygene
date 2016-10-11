@@ -3,14 +3,33 @@
 GeOxygene releases
 ####################
 
-The current development version is GeOxygene-1.8-SNAPSHOT. The latest stable release is **GeOxygene 1.7**.
+The current development version is GeOxygene-1.9-SNAPSHOT. The latest stable release is **GeOxygene 1.8**.
 
-All releases can be obtained from the `SourceForge download area <http://sourceforge.net/projects/oxygene-project/files/?source=navbar>`_ .
+Releases can be obtained from the `GitHub releases <https://github.com/IGNF/geoxygene/releases>`_ .
 Snapshots and releases are also available from the `COGIT repositories <https://forge-cogit.ign.fr/nexus/content/repositories/>`_.
 
 
 History of Changes
 -------------------
+
+Version 1.8 (2016/10/11)
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+   * Last version using java 7
+  
+   * Line morphing algorithms in cartagen plugin
+
+   * Functionalities to analyse the OSM contributors of a loaded OSM file
+
+   * API loaders for Twitter, Foursquare, Panoramio and FlickR data
+
+   * Expressive rendering tools and extension of the OGC specifications SLD and SE coming from the MapStyle project in the OpenGL rendering engine.
+      * Added linear stylisation to Line Symbolizer through the SE extension `<ExpressiveStroke>`.
+      * Added patch-fill rendering to Polygon Symbolizer, with graph-cut or alpha blending through the SE extension `<ExpressiveFill>`.
+      * Added the possibility to set a global background texture to the rendered map through the SLD extension `<Background>`.
+      * Added Overlay, Multiply, Normal and HighTone blending modes between layers in Symbolizers through the XML tag `<BlendingMode>`.
+      * Enable animation of Raster Symbolizer + Tide simulation based on a DTM data, through the SE extensions `<Animation>` and `<Tide>`.
+
 
 Version 1.7 (2015/10/19)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
