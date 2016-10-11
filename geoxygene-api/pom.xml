@@ -3,21 +3,21 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<parent>
 		<artifactId>geoxygene</artifactId>
 		<groupId>fr.ign.cogit</groupId>
-		<version>1.8</version>
+		<version>1.9-SNAPSHOT</version>
 	</parent>
-	
+
 	<artifactId>geoxygene-api</artifactId>
-    <packaging>jar</packaging>	
+	<packaging>jar</packaging>
 	<name>geoxygene-api</name>
-	
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	
+
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
@@ -32,14 +32,14 @@
 			</testResource>
 		</testResources>
 	</build>
-	
-	
+
+
 	<dependencies>
 		<dependency>
 			<groupId>org.hibernate.javax.persistence</groupId>
-			<artifactId>hibernate-jpa-2.0-api</artifactId>
-			<version>1.0.1.Final</version>
+			<artifactId>hibernate-jpa-2.1-api</artifactId>
+			<version>1.0.0.Final</version>
 		</dependency>
 	</dependencies>
-	
+
 </project>

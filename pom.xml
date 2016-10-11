@@ -8,7 +8,7 @@
 	<!-- ==================================================== -->
 	<groupId>fr.ign.cogit</groupId>
 	<artifactId>geoxygene</artifactId>
-	<version>1.8</version>
+	<version>1.9-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>GeOxygene</name>
 	<url>http://oxygene-project.sourceforge.net/</url>
@@ -58,9 +58,12 @@
 
 		<jts.version>1.13</jts.version>
 		<log4j.version>1.2.16</log4j.version>
-		<geotools.version>8.4</geotools.version>
-		<jfreechart.version>1.0.12</jfreechart.version>
+		<geotools.version>15.1</geotools.version>
+		<jfreechart.version>1.0.13</jfreechart.version>
 		<jgrapht.version>0.9.0</jgrapht.version>
+		<postgresql.version>9.1-901-1.jdbc4</postgresql.version>
+		<postgis.jdbc.version>2.2.0</postgis.jdbc.version>
+		<hibernate.version>5.1.0.Final</hibernate.version>
 
 		<!-- <skip.unit.tests>false</skip.unit.tests> -->
 		<!-- <skip.integration.tests>true</skip.integration.tests> -->
@@ -317,10 +320,10 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<compilerVersion>1.7</compilerVersion>
-					<source>1.7</source>
-					<complianceLevel>1.7</complianceLevel>
-					<target>1.7</target>
+					<compilerVersion>1.8</compilerVersion>
+					<source>1.8</source>
+					<complianceLevel>1.8</complianceLevel>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 			<!-- <plugin>
@@ -473,7 +476,7 @@
 				<configuration>
 					<!-- <reportOutputDirectory>javadoc</reportOutputDirectory> -->
 					<aggregate>true</aggregate>
-					<source>1.7</source>             <!-- Enables javadoc to handle assertions present in J2SE 1.4. -->
+					<source>1.8</source>             <!-- Enables javadoc to handle assertions present in J2SE 1.4. -->
 					<encoding>UTF-8</encoding>       <!-- The encoding of the source files. -->
 					<docencoding>UTF-8</docencoding> <!-- The encoding of the generated HTML files. -->
 					<charset>UTF-8</charset>
@@ -536,7 +539,7 @@
 				</reportSets>
 				<configuration>
 					<!-- <reportOutputDirectory>javadoc</reportOutputDirectory> -->
-					<source>1.6</source>             <!-- Enables javadoc to handle assertions present in J2SE 1.4. -->
+					<source>1.8</source>             <!-- Enables javadoc to handle assertions present in J2SE 1.4. -->
 					<encoding>UTF-8</encoding>       <!-- The encoding of the source files. -->
 					<docencoding>UTF-8</docencoding> <!-- The encoding of the generated HTML files. -->
 					<charset>UTF-8</charset>
@@ -604,6 +607,16 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+		
+		<repository>
+			<id>Central2</id>
+			<name>Central Repository 2</name>
+			<url>http://repo.maven.apache.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+
 		<repository>
 			<id>cogit-snapshots</id>
 			<name>Cogit Snapshots Repository</name>
@@ -648,17 +661,6 @@
 				<enabled>true</enabled>
 			</releases>
 		</repository>
-<!-- 		<repository> -->
-<!-- 			<id>iscpif-ign-releases</id> -->
-<!-- 			<name>ISCPIF Release repository for IGN</name> -->
-<!-- 			<url>http://maven.iscpif.fr/ign-releases</url> -->
-<!-- 			<snapshots> -->
-<!-- 				<enabled>false</enabled> -->
-<!-- 			</snapshots> -->
-<!-- 			<releases> -->
-<!-- 				<enabled>true</enabled> -->
-<!-- 			</releases> -->
-<!-- 		</repository> -->
 	</repositories>
 
 	<pluginRepositories>
@@ -746,6 +748,7 @@
 		<module>geoxygene-schemageo</module>
 		<module>geoxygene-semio</module>
 		<module>geoxygene-sig3d</module>
+		<module>geoxygene-sig3d-gui</module>		
 		<module>geoxygene-spatial</module>
 		<module>geoxygene-style</module>
 		<module>geoxygene-util</module>

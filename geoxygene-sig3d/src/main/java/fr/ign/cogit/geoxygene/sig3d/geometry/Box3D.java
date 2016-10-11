@@ -271,5 +271,20 @@ public class Box3D {
         .getURDP().getZ());
 
   }
+  
+  public double getXDiff(){
+	  return (this
+		        .getURDP().getX() - this.getLLDP().getX());
+  }
+  
+  public double getYdiff(){
+	  return (this
+		        .getURDP().getY() - this.getLLDP().getY());
+  }
+  
+  public double getHeight(){
+	  return (this
+		        .getURDP().getZ() - this.getLLDP().getZ());
+  }
 
 }

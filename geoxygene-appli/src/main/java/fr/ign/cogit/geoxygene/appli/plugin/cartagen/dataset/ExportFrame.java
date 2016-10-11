@@ -257,7 +257,7 @@ public class ExportFrame extends JFrame implements ActionListener {
           .toURI().toURL());
 
       // specify the geometry type
-      String specs = "geom:"; //$NON-NLS-1$
+      String specs = "the_geom:"; //$NON-NLS-1$
       specs += AdapterFactory.toJTSGeometryType(geomType).getSimpleName();
 
       // specify the attributes: there is only one the MRDB link
@@ -276,7 +276,7 @@ public class ExportFrame extends JFrame implements ActionListener {
       featureTypeName = featureTypeName.replace('.', '_');
       SimpleFeatureType type = DataUtilities.createType(featureTypeName, specs);
       store.createSchema(type);
-      FeatureStore featureStore = (FeatureStore) store
+      FeatureStore<SimpleFeatureType, SimpleFeature> featureStore = (FeatureStore<SimpleFeatureType, SimpleFeature>) store
           .getFeatureSource(featureTypeName);
       Transaction t = new DefaultTransaction();
       List<SimpleFeature> collection = new ArrayList<SimpleFeature>();

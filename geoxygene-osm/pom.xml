@@ -8,7 +8,7 @@
   <parent>
     <groupId>fr.ign.cogit</groupId>
     <artifactId>geoxygene</artifactId>
-    <version>1.8</version>
+    <version>1.9-SNAPSHOT</version>
   </parent>
 
   <artifactId>geoxygene-osm</artifactId>
@@ -41,21 +41,21 @@
       </testResource>
     </testResources>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <compilerVersion>1.7</compilerVersion>
-          <source>1.7</source>
-          <complianceLevel>1.7</complianceLevel>
-          <target>1.7</target>
-          <includes>
-            <include>**/*</include>
-          </includes>
-          <excludes>
-          </excludes>
-        </configuration>
-      </plugin>
+<!--       <plugin> -->
+<!--         <groupId>org.apache.maven.plugins</groupId> -->
+<!--         <artifactId>maven-compiler-plugin</artifactId> -->
+<!--         <configuration> -->
+<!--           <compilerVersion>1.7</compilerVersion> -->
+<!--           <source>1.7</source> -->
+<!--           <complianceLevel>1.7</complianceLevel> -->
+<!--           <target>1.7</target> -->
+<!--           <includes> -->
+<!--             <include>**/*</include> -->
+<!--           </includes> -->
+<!--           <excludes> -->
+<!--           </excludes> -->
+<!--         </configuration> -->
+<!--       </plugin> -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
@@ -179,16 +179,16 @@
     </dependency>
 
 
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-annotations</artifactId>
-      <version>3.5.6-Final</version>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate.javax.persistence</groupId>
-      <artifactId>hibernate-jpa-2.0-api</artifactId>
-      <version>1.0.1.Final</version>
-    </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+  <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+            <version>1.0.1.Final</version>
+        </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
       <artifactId>gt-epsg-hsql</artifactId>

@@ -24,7 +24,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
-import org.geotools.data.shapefile.ShpFiles;
+import org.geotools.data.shapefile.files.ShpFiles;
 import org.geotools.data.shapefile.shp.ShapefileException;
 import org.geotools.data.shapefile.shp.ShapefileReader;
 import org.geotools.data.shapefile.shp.ShapefileReader.Record;
@@ -313,7 +313,7 @@ public class LoaderUtil {
     // load the extent of the zone from a shapefile if needed
     if (ImportDataFrame.extentFile) {
       String path = systemPath + "/" + ImportDataFrame.extentClass + ".shp";
-      ShpFiles shpf = new ShpFiles(path);
+			ShpFiles shpf = new ShpFiles(path);
       ShapefileReader shr = new ShapefileReader(shpf, true, false,
           new GeometryFactory());
       Record objet = shr.nextRecord();

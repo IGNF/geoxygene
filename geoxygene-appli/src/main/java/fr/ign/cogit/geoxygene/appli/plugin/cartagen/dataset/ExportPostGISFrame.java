@@ -359,7 +359,7 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
       }
 
       // specify the geometry type
-      String specs = "geom:"; //$NON-NLS-1$
+      String specs = "the_geom:"; //$NON-NLS-1$
       specs += AdapterFactory.toJTSGeometryType(geomType).getSimpleName();
 
       // specify the attributes: there is only one the MRDB link
@@ -383,7 +383,7 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
       String featureTypeName = tableName;
       SimpleFeatureType type = DataUtilities.createType(featureTypeName, specs);
       dataStore.createSchema(type);
-      FeatureStore featureStore = (FeatureStore) dataStore
+      FeatureStore<SimpleFeatureType, SimpleFeature> featureStore = (FeatureStore<SimpleFeatureType, SimpleFeature>) dataStore
           .getFeatureSource(featureTypeName);
       Transaction t = new DefaultTransaction();
       List<SimpleFeature> collection = new ArrayList<SimpleFeature>();

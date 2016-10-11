@@ -4,11 +4,13 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 
+	
 	<parent>
 		<artifactId>geoxygene</artifactId>
 		<groupId>fr.ign.cogit</groupId>
-		<version>1.8</version>
+		<version>1.9-SNAPSHOT</version>
 	</parent>
+	
 
 	<artifactId>geoxygene-cartagen</artifactId>
 	<packaging>jar</packaging>
@@ -50,14 +52,6 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-		<repository>
-			<id>hibernatespatial</id>
-			<name>hibernatespatial Repository</name>
-			<url>http://www.hibernatespatial.org/repository</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
         <repository>
             <id>apache.snapshots</id>
             <name>Apache commons</name>
@@ -156,7 +150,16 @@
 			<artifactId>collections-generic</artifactId>
 			<version>4.01</version>
 		</dependency>
-
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-spatial</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-referencing</artifactId>
@@ -191,35 +194,18 @@
 		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>8.4-701.jdbc4</version>
+			<version>${postgresql.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.postgis</groupId>
-			<artifactId>postgis-jdbc</artifactId>
-			<version>1.3.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>3.5.6-Final</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-annotations</artifactId>
-			<version>3.5.6-Final</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate.javax.persistence</groupId>
-			<artifactId>hibernate-jpa-2.0-api</artifactId>
-			<version>1.0.1.Final</version>
-		</dependency>
+ 	<dependency>
+		    <groupId>net.postgis</groupId>
+		    <artifactId>postgis-jdbc</artifactId>
+		    <version>${postgis.jdbc.version}</version>
+		</dependency> 
 		<dependency>
 			<groupId>net.sf.opencsv</groupId>
 			<artifactId>opencsv</artifactId>
 			<version>2.3</version>
 		</dependency>
-
 		<dependency>
 			<groupId>xml-apis</groupId>
 			<artifactId>xml-apis</artifactId>

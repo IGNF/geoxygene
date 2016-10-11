@@ -10,7 +10,6 @@ package fr.ign.cogit.geoxygene.datatools.hibernate;
 import java.io.File;
 
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
 
 public class HibernateUtil {
@@ -41,7 +40,7 @@ public class HibernateUtil {
    */
   public static Configuration getConfiguration() {
     if (HibernateUtil.configuration == null) {
-      HibernateUtil.configuration = new AnnotationConfiguration();
+      HibernateUtil.configuration = new Configuration();
     }
     return HibernateUtil.configuration;
   }

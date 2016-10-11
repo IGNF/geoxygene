@@ -32,11 +32,10 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Triangle;
  */
 public class FromPolygonToTriangle {
 
-  private final static Logger logger = Logger
-      .getLogger(FromPolygonToTriangle.class.getName());
+
 
   public static List<ITriangle> convertAndTriangle(
-      List<IOrientableSurface> polygonList) {
+      List<? extends IOrientableSurface> polygonList) {
     List<ITriangle> lT = new ArrayList<ITriangle>();
 
     int nbPoly = polygonList.size();

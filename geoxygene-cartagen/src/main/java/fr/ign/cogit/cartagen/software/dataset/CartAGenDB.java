@@ -27,7 +27,7 @@ import javax.xml.transform.TransformerException;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.cfg.Configuration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -39,428 +39,429 @@ import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 
 public abstract class CartAGenDB {
 
-  /**
-   * List of the geographic classes that the data set is composed of. Geographic
-   * classes can be ShapeFiles, PostGIS table, etc.
-   */
-  private List<GeographicClass> classes;
+	/**
+	 * List of the geographic classes that the data set is composed of.
+	 * Geographic classes can be ShapeFiles, PostGIS table, etc.
+	 */
+	private List<GeographicClass> classes;
 
-  /**
-   * The enrichments added to the dataset.
-   */
-  protected Set<CartAGenEnrichment> enrichments = new HashSet<CartAGenEnrichment>();
+	/**
+	 * The enrichments added to the dataset.
+	 */
+	protected Set<CartAGenEnrichment> enrichments = new HashSet<CartAGenEnrichment>();
 
-  /**
-   * The current GeneralisationDataSet object that gathers all the geo objects.
-   */
-  private CartAGenDataSet dataSet;
+	/**
+	 * The current GeneralisationDataSet object that gathers all the geo
+	 * objects.
+	 */
+	private CartAGenDataSet dataSet;
 
-  /**
-   * The DB type of the CartAGen database, e.g. DLM or DCM.
-   */
-  private DBType type;
+	/**
+	 * The DB type of the CartAGen database, e.g. DLM or DCM.
+	 */
+	private DBType type;
 
-  /**
-   * The document this database is opened in.
-   */
-  private CartAGenDoc document;
+	/**
+	 * The document this database is opened in.
+	 */
+	private CartAGenDoc document;
 
-  /**
-   * The source DLM the database derives from (e.g. BD_CARTO).
-   */
-  private SourceDLM sourceDLM;
+	/**
+	 * The source DLM the database derives from (e.g. BD_CARTO).
+	 */
+	private SourceDLM sourceDLM;
 
-  /**
-   * The name of the dataset.
-   */
-  private String name;
+	/**
+	 * The name of the dataset.
+	 */
+	private String name;
 
-  /**
-   * The xml File that stores the database information
-   */
-  private File xmlFile = null;
+	/**
+	 * The xml File that stores the database information
+	 */
+	private File xmlFile = null;
 
-  private int symboScale;
+	private int symboScale;
 
-  /**
-   * The persistent classes in this database.
-   */
-  private Set<Class<?>> persistentClasses;
-  private boolean persistent = false;
+	/**
+	 * The persistent classes in this database.
+	 */
+	private Set<Class<?>> persistentClasses;
+	private boolean persistent = false;
 
-  /**
-   * The {@link GeneObjImplementation} for {@code this} database. e. g. the
-   * default implementation, i.e. the classes extending {@link GeneObjDefault}.
-   */
-  private GeneObjImplementation geneObjImpl;
+	/**
+	 * The {@link GeneObjImplementation} for {@code this} database. e. g. the
+	 * default implementation, i.e. the classes extending {@link GeneObjDefault}
+	 * .
+	 */
+	private GeneObjImplementation geneObjImpl;
 
-  /**
-   * Constructeur à partir d'un fichier XML détaillant les classes à intégrer au
-   * jeux de données ainsi que les détails de la zone. <en> Constructor from the
-   * XML file storing the classes to integrate to the dataset and the details of
-   * the zone.
-   * @param file
-   * @throws ParserConfigurationException
-   * @throws IOException
-   * @throws SAXException
-   * @throws ClassNotFoundException
-   */
-  public CartAGenDB(File file) throws ParserConfigurationException,
-      SAXException, IOException, ClassNotFoundException {
-    openFromXml(file);
-  }
+	/**
+	 * Constructeur à partir d'un fichier XML détaillant les classes à intégrer
+	 * au jeux de données ainsi que les détails de la zone. <en> Constructor
+	 * from the XML file storing the classes to integrate to the dataset and the
+	 * details of the zone.
+	 * 
+	 * @param file
+	 * @throws ParserConfigurationException
+	 * @throws IOException
+	 * @throws SAXException
+	 * @throws ClassNotFoundException
+	 */
+	public CartAGenDB(File file)
+			throws ParserConfigurationException, SAXException, IOException, ClassNotFoundException {
+		openFromXml(file);
+	}
 
-  public CartAGenDB() {
-    this.geneObjImpl = GeneObjImplementation.getDefaultImplementation();
-    classes = new ArrayList<GeographicClass>();
-  }
+	public CartAGenDB() {
+		this.geneObjImpl = GeneObjImplementation.getDefaultImplementation();
+		classes = new ArrayList<GeographicClass>();
+	}
 
-  /**
-   * Fills the zone and classes fields of the data set from XML file.
-   * @param file
-   * @throws ParserConfigurationException
-   * @throws IOException
-   * @throws SAXException
-   * @throws ClassNotFoundException
-   */
-  public abstract void openFromXml(File file)
-      throws ParserConfigurationException, SAXException, IOException,
-      ClassNotFoundException;
+	/**
+	 * Fills the zone and classes fields of the data set from XML file.
+	 * 
+	 * @param file
+	 * @throws ParserConfigurationException
+	 * @throws IOException
+	 * @throws SAXException
+	 * @throws ClassNotFoundException
+	 */
+	public abstract void openFromXml(File file)
+			throws ParserConfigurationException, SAXException, IOException, ClassNotFoundException;
 
-  /**
-   * Stores the data set into XML file.
-   * @param file
-   * @throws IOException
-   * @throws TransformerException
-   */
-  public abstract void saveToXml(File file) throws IOException,
-      TransformerException;
+	/**
+	 * Stores the data set into XML file.
+	 * 
+	 * @param file
+	 * @throws IOException
+	 * @throws TransformerException
+	 */
+	public abstract void saveToXml(File file) throws IOException, TransformerException;
 
-  /**
-   * Populate the Generalisation Dataset related to this by importing data
-   * according to the classes.
-   */
-  public abstract void populateDataset(int scale);
+	/**
+	 * Populate the Generalisation Dataset related to this by importing data
+	 * according to the classes.
+	 */
+	public abstract void populateDataset(int scale);
 
-  /**
-   * Load a geographic class into the dataset using the appropriate loading
-   * method
-   * @param geoClass
-   */
-  protected abstract void load(GeographicClass geoClass, int scale);
+	/**
+	 * Load a geographic class into the dataset using the appropriate loading
+	 * method
+	 * 
+	 * @param geoClass
+	 */
+	protected abstract void load(GeographicClass geoClass, int scale);
 
-  /**
-   * Overwrite a geographic class into the dataset re-importing the initial
-   * data.
-   * @param geoClass
-   */
-  public abstract void overwrite(GeographicClass geoClass);
+	/**
+	 * Overwrite a geographic class into the dataset re-importing the initial
+	 * data.
+	 * 
+	 * @param geoClass
+	 */
+	public abstract void overwrite(GeographicClass geoClass);
 
-  /**
-   * Trigger the automatic enrichments that were stored as non persistent.
-   */
-  protected abstract void triggerEnrichments();
+	/**
+	 * Trigger the automatic enrichments that were stored as non persistent.
+	 */
+	protected abstract void triggerEnrichments();
 
-  /**
-   * Add the generated cartagen id to the files storing geo data (e.g.
-   * shapefiles...)
-   */
-  public abstract void addCartagenId();
+	/**
+	 * Add the generated cartagen id to the files storing geo data (e.g.
+	 * shapefiles...)
+	 */
+	public abstract void addCartagenId();
 
-  /**
-   * Load the features of the persistent classes into the dataset related to
-   * {@code this} {@link ShapeFileDB}
-   * @throws NoSuchFieldException
-   * @throws SecurityException
-   * @throws IllegalAccessException
-   * @throws IllegalArgumentException
-   */
-  @SuppressWarnings("unchecked")
-  protected Set<Class<?>> loadPersistentClasses() throws SecurityException,
-      NoSuchFieldException, IllegalArgumentException, IllegalAccessException,
-      HibernateException {
-    // open a connection with the current PostGISDB
-    AnnotationConfiguration hibConfig = new AnnotationConfiguration();
-    hibConfig = hibConfig.configure(new File(PostgisDB.class.getResource(
-        PostgisDB.getDefaultConfigPath()).getFile()));
-    hibConfig.setProperty("hibernate.connection.url", PostgisDB.getUrl());
+	/**
+	 * Load the features of the persistent classes into the dataset related to
+	 * {@code this} {@link ShapeFileDB}
+	 * 
+	 * @throws NoSuchFieldException
+	 * @throws SecurityException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 */
+	@SuppressWarnings("unchecked")
+	protected Set<Class<?>> loadPersistentClasses() throws SecurityException, NoSuchFieldException,
+			IllegalArgumentException, IllegalAccessException, HibernateException {
+		// open a connection with the current PostGISDB
+		Configuration hibConfig = new Configuration();
+		hibConfig = hibConfig
+				.configure(new File(PostgisDB.class.getResource(PostgisDB.getDefaultConfigPath()).getFile()));
+		hibConfig.setProperty("hibernate.connection.url", PostgisDB.getUrl());
 
-    // loop on the persistent classes
-    Set<Class<?>> displayedClasses = new HashSet<Class<?>>();
-    HashSet<IGeneObj> persistObjs = new HashSet<IGeneObj>();
-    for (Class<?> classObj : getPersistentClasses()) {
-      // TODO only the cartagen geo classes are loaded for now
-      if (!IGeneObj.class.isAssignableFrom(classObj))
-        continue;
-      if (!classObj.isAnnotationPresent(Entity.class))
-        continue;
-      // first, get the population related to classObj
-      String popName = this.getDataSet().getPopNameFromClass(classObj);
-      Field field = classObj.getField("FEAT_TYPE_NAME");
-      String featType = (String) field.get(null);
-      IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) this.getDataSet()
-          .getCartagenPop(popName, featType);
-      // then, get the features stored in PostGIS
-      hibConfig.addAnnotatedClass(classObj);
-      Session session = hibConfig.buildSessionFactory().openSession(
-          PostgisDB.getConnection());
-      CartAGenDoc.getInstance().setPostGisSession(session);
+		// loop on the persistent classes
+		Set<Class<?>> displayedClasses = new HashSet<Class<?>>();
+		HashSet<IGeneObj> persistObjs = new HashSet<IGeneObj>();
+		for (Class<?> classObj : getPersistentClasses()) {
+			// TODO only the cartagen geo classes are loaded for now
+			if (!IGeneObj.class.isAssignableFrom(classObj))
+				continue;
+			if (!classObj.isAnnotationPresent(Entity.class))
+				continue;
+			// first, get the population related to classObj
+			String popName = this.getDataSet().getPopNameFromClass(classObj);
+			Field field = classObj.getField("FEAT_TYPE_NAME");
+			String featType = (String) field.get(null);
+			IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) this.getDataSet().getCartagenPop(popName, featType);
+			// then, get the features stored in PostGIS
+			hibConfig.addAnnotatedClass(classObj);
+			// Session session = hibConfig.buildSessionFactory().openSession(
+			// PostgisDB.getConnection());
 
-      // query the objects of this class in this DB
-      Query q = session.createQuery("from " + classObj.getSimpleName());
-      for (Object o : q.list()) {
-        IGeneObj geneObj = (IGeneObj) o;
-        if (geneObj.getDbName().equals(getName())) {
-          if (!displayedClasses.contains(geneObj.getClass().getSimpleName())) {
-            displayedClasses.add(geneObj.getClass());
-          }
-          pop.add(geneObj);
-          persistObjs.add(geneObj);
-        }
-      }
-    }
+			Session session = hibConfig.buildSessionFactory().openSession();
+			CartAGenDoc.getInstance().setPostGisSession(session);
 
-    // fill the relations between the persistent objects
-    for (IGeneObj obj : persistObjs) {
-      try {
-        obj.fillRelationsFromIds();
-        obj.restoreGeoxObjects();
-      } catch (InvocationTargetException e) {
-        e.printStackTrace();
-      } catch (NoSuchMethodException e) {
-        e.printStackTrace();
-      }
-    }
+			// query the objects of this class in this DB
+			Query q = session.createQuery("from " + classObj.getSimpleName());
+			for (Object o : q.list()) {
+				IGeneObj geneObj = (IGeneObj) o;
+				if (geneObj.getDbName().equals(getName())) {
+					if (!displayedClasses.contains(geneObj.getClass().getSimpleName())) {
+						displayedClasses.add(geneObj.getClass());
+					}
+					pop.add(geneObj);
+					persistObjs.add(geneObj);
+				}
+			}
+		}
 
-    // fill the relations between the geoxygene objects
-    for (IGeneObj obj : persistObjs) {
-      obj.restoreGeoxRelations();
-    }
+		// fill the relations between the persistent objects
+		for (IGeneObj obj : persistObjs) {
+			try {
+				obj.fillRelationsFromIds();
+				obj.restoreGeoxObjects();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			} catch (NoSuchMethodException e) {
+				e.printStackTrace();
+			}
+		}
 
-    return displayedClasses;
-  }
+		// fill the relations between the geoxygene objects
+		for (IGeneObj obj : persistObjs) {
+			obj.restoreGeoxRelations();
+		}
 
-  public void setClasses(List<GeographicClass> classes) {
-    this.classes = classes;
-  }
+		return displayedClasses;
+	}
 
-  public List<GeographicClass> getClasses() {
-    return classes;
-  }
+	public void setClasses(List<GeographicClass> classes) {
+		this.classes = classes;
+	}
 
-  public void addClass(GeographicClass c) {
-    this.classes.add(c);
-  }
+	public List<GeographicClass> getClasses() {
+		return classes;
+	}
 
-  public void setDataSet(CartAGenDataSet genDataSet) {
-    this.dataSet = genDataSet;
-    if (genDataSet.getCartAGenDB() == null)
-      genDataSet.setCartAGenDB(this);
-    else if (!genDataSet.getCartAGenDB().equals(this))
-      genDataSet.setCartAGenDB(this);
-  }
+	public void addClass(GeographicClass c) {
+		this.classes.add(c);
+	}
 
-  public CartAGenDataSet getDataSet() {
-    return dataSet;
-  }
+	public void setDataSet(CartAGenDataSet genDataSet) {
+		this.dataSet = genDataSet;
+		if (genDataSet.getCartAGenDB() == null)
+			genDataSet.setCartAGenDB(this);
+		else if (!genDataSet.getCartAGenDB().equals(this))
+			genDataSet.setCartAGenDB(this);
+	}
 
-  public void setName(String name) {
-    this.name = name;
-  }
+	public CartAGenDataSet getDataSet() {
+		return dataSet;
+	}
 
-  public String getName() {
-    return name;
-  }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-  public DBType getType() {
-    return type;
-  }
+	public String getName() {
+		return name;
+	}
 
-  public void setType(DBType type) {
-    this.type = type;
-  }
+	public DBType getType() {
+		return type;
+	}
 
-  public SourceDLM getSourceDLM() {
-    return sourceDLM;
-  }
+	public void setType(DBType type) {
+		this.type = type;
+	}
 
-  public void setSourceDLM(SourceDLM sourceDLM) {
-    this.sourceDLM = sourceDLM;
-  }
+	public SourceDLM getSourceDLM() {
+		return sourceDLM;
+	}
 
-  public Set<CartAGenEnrichment> getEnrichments() {
-    return enrichments;
-  }
+	public void setSourceDLM(SourceDLM sourceDLM) {
+		this.sourceDLM = sourceDLM;
+	}
 
-  public void setEnrichments(Set<CartAGenEnrichment> enrichments) {
-    this.enrichments = enrichments;
-  }
+	public Set<CartAGenEnrichment> getEnrichments() {
+		return enrichments;
+	}
 
-  public void setXmlFile(File xmlFile) {
-    this.xmlFile = xmlFile;
-  }
+	public void setEnrichments(Set<CartAGenEnrichment> enrichments) {
+		this.enrichments = enrichments;
+	}
 
-  public File getXmlFile() {
-    return xmlFile;
-  }
+	public void setXmlFile(File xmlFile) {
+		this.xmlFile = xmlFile;
+	}
 
-  public void setSymboScale(int symboScale) {
-    this.symboScale = symboScale;
-  }
+	public File getXmlFile() {
+		return xmlFile;
+	}
 
-  public int getSymboScale() {
-    return symboScale;
-  }
+	public void setSymboScale(int symboScale) {
+		this.symboScale = symboScale;
+	}
 
-  public void setPersistentClasses(Set<Class<?>> persistentClasses) {
-    this.persistentClasses = persistentClasses;
-  }
+	public int getSymboScale() {
+		return symboScale;
+	}
 
-  public Set<Class<?>> getPersistentClasses() {
-    return persistentClasses;
-  }
+	public void setPersistentClasses(Set<Class<?>> persistentClasses) {
+		this.persistentClasses = persistentClasses;
+	}
 
-  public void setPersistent(boolean persistent) {
-    this.persistent = persistent;
-  }
+	public Set<Class<?>> getPersistentClasses() {
+		return persistentClasses;
+	}
 
-  public boolean isPersistent() {
-    return persistent;
-  }
+	public void setPersistent(boolean persistent) {
+		this.persistent = persistent;
+	}
 
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((classes == null) ? 0 : classes.hashCode());
-    result = prime * result + ((dataSet == null) ? 0 : dataSet.hashCode());
-    result = prime * result + ((name == null) ? 0 : name.hashCode());
-    return result;
-  }
+	public boolean isPersistent() {
+		return persistent;
+	}
 
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    CartAGenDB other = (CartAGenDB) obj;
-    if (classes == null) {
-      if (other.classes != null)
-        return false;
-    } else if (!classes.equals(other.classes))
-      return false;
-    if (dataSet == null) {
-      if (other.dataSet != null)
-        return false;
-    } else if (!dataSet.equals(other.dataSet))
-      return false;
-    if (name == null) {
-      if (other.name != null)
-        return false;
-    } else if (!name.equals(other.name))
-      return false;
-    return true;
-  }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((classes == null) ? 0 : classes.hashCode());
+		result = prime * result + ((dataSet == null) ? 0 : dataSet.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
 
-  /**
-   * Give the Class of a CartAGenDataSet stored in the input XML file.
-   * @param file
-   * @return
-   * @throws ParserConfigurationException
-   * @throws IOException
-   * @throws SAXException
-   * @throws ClassNotFoundException
-   */
-  @SuppressWarnings("unchecked")
-  public static Class<? extends CartAGenDB> readType(File file)
-      throws ParserConfigurationException, SAXException, IOException,
-      ClassNotFoundException {
-    // first open the XML document in order to parse it
-    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    DocumentBuilder db;
-    db = dbf.newDocumentBuilder();
-    Document doc;
-    doc = db.parse(file);
-    doc.getDocumentElement().normalize();
-    // then read the document to fill the fields
-    Element root = (Element) doc.getElementsByTagName("cartagen-dataset").item(
-        0);
-    // The DataSet type
-    Element typeElem = (Element) root.getElementsByTagName("type").item(0);
-    String type = typeElem.getChildNodes().item(0).getNodeValue();
-    return (Class<? extends CartAGenDB>) Class.forName(type);
-  }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CartAGenDB other = (CartAGenDB) obj;
+		if (classes == null) {
+			if (other.classes != null)
+				return false;
+		} else if (!classes.equals(other.classes))
+			return false;
+		if (dataSet == null) {
+			if (other.dataSet != null)
+				return false;
+		} else if (!dataSet.equals(other.dataSet))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
+	}
 
-  /**
-   * Give the Class of a CartAGenDataSet stored in the input XML file.
-   * @param file
-   * @return
-   * @throws ParserConfigurationException
-   * @throws IOException
-   * @throws SAXException
-   * @throws ClassNotFoundException
-   */
-  public static Class<?> readDatasetType(File file)
-      throws ParserConfigurationException, SAXException, IOException,
-      ClassNotFoundException {
-    // first open the XML document in order to parse it
-    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    DocumentBuilder db;
-    db = dbf.newDocumentBuilder();
-    Document doc;
-    doc = db.parse(file);
-    doc.getDocumentElement().normalize();
-    // then read the document to fill the fields
-    Element root = (Element) doc.getElementsByTagName("cartagen-dataset").item(
-        0);
-    // The DataSet type
-    if (root.getElementsByTagName("dataset-type").getLength() == 0)
-      return CartAGenDataSet.class;
-    Element typeElem = (Element) root.getElementsByTagName("dataset-type")
-        .item(0);
-    String type = typeElem.getChildNodes().item(0).getNodeValue();
-    return (Class<?>) Class.forName(type);
-  }
+	/**
+	 * Give the Class of a CartAGenDataSet stored in the input XML file.
+	 * 
+	 * @param file
+	 * @return
+	 * @throws ParserConfigurationException
+	 * @throws IOException
+	 * @throws SAXException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	public static Class<? extends CartAGenDB> readType(File file)
+			throws ParserConfigurationException, SAXException, IOException, ClassNotFoundException {
+		// first open the XML document in order to parse it
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder db;
+		db = dbf.newDocumentBuilder();
+		Document doc;
+		doc = db.parse(file);
+		doc.getDocumentElement().normalize();
+		// then read the document to fill the fields
+		Element root = (Element) doc.getElementsByTagName("cartagen-dataset").item(0);
+		// The DataSet type
+		Element typeElem = (Element) root.getElementsByTagName("type").item(0);
+		String type = typeElem.getChildNodes().item(0).getNodeValue();
+		return (Class<? extends CartAGenDB>) Class.forName(type);
+	}
 
-  public static int readScale(File file) throws ParserConfigurationException,
-      SAXException, IOException {
-    // first open the XML document in order to parse it
-    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    DocumentBuilder db;
-    db = dbf.newDocumentBuilder();
-    Document doc;
-    doc = db.parse(file);
-    doc.getDocumentElement().normalize();
-    // then read the document to fill the fields
-    Element root = (Element) doc.getElementsByTagName("cartagen-dataset").item(
-        0);
-    // The DataSet type
-    Element scaleElem = (Element) root.getElementsByTagName("scale").item(0);
-    return Integer.valueOf(scaleElem.getChildNodes().item(0).getNodeValue());
-  }
+	/**
+	 * Give the Class of a CartAGenDataSet stored in the input XML file.
+	 * 
+	 * @param file
+	 * @return
+	 * @throws ParserConfigurationException
+	 * @throws IOException
+	 * @throws SAXException
+	 * @throws ClassNotFoundException
+	 */
+	public static Class<?> readDatasetType(File file)
+			throws ParserConfigurationException, SAXException, IOException, ClassNotFoundException {
+		// first open the XML document in order to parse it
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder db;
+		db = dbf.newDocumentBuilder();
+		Document doc;
+		doc = db.parse(file);
+		doc.getDocumentElement().normalize();
+		// then read the document to fill the fields
+		Element root = (Element) doc.getElementsByTagName("cartagen-dataset").item(0);
+		// The DataSet type
+		if (root.getElementsByTagName("dataset-type").getLength() == 0)
+			return CartAGenDataSet.class;
+		Element typeElem = (Element) root.getElementsByTagName("dataset-type").item(0);
+		String type = typeElem.getChildNodes().item(0).getNodeValue();
+		return (Class<?>) Class.forName(type);
+	}
 
-  @Override
-  public String toString() {
-    return name;
-  }
+	public static int readScale(File file) throws ParserConfigurationException, SAXException, IOException {
+		// first open the XML document in order to parse it
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder db;
+		db = dbf.newDocumentBuilder();
+		Document doc;
+		doc = db.parse(file);
+		doc.getDocumentElement().normalize();
+		// then read the document to fill the fields
+		Element root = (Element) doc.getElementsByTagName("cartagen-dataset").item(0);
+		// The DataSet type
+		Element scaleElem = (Element) root.getElementsByTagName("scale").item(0);
+		return Integer.valueOf(scaleElem.getChildNodes().item(0).getNodeValue());
+	}
 
-  public void setGeneObjImpl(GeneObjImplementation geneObjImpl) {
-    this.geneObjImpl = geneObjImpl;
-  }
+	@Override
+	public String toString() {
+		return name;
+	}
 
-  public GeneObjImplementation getGeneObjImpl() {
-    return geneObjImpl;
-  }
+	public void setGeneObjImpl(GeneObjImplementation geneObjImpl) {
+		this.geneObjImpl = geneObjImpl;
+	}
 
-  public CartAGenDoc getDocument() {
-    return document;
-  }
+	public GeneObjImplementation getGeneObjImpl() {
+		return geneObjImpl;
+	}
 
-  public void setDocument(CartAGenDoc document) {
-    this.document = document;
-  }
+	public CartAGenDoc getDocument() {
+		return document;
+	}
+
+	public void setDocument(CartAGenDoc document) {
+		this.document = document;
+	}
 
 }

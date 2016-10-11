@@ -8,7 +8,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ITriangle;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
-import fr.ign.cogit.geoxygene.sig3d.convert.geom.FromGeomToSurface;
+import fr.ign.cogit.geoxygene.convert.FromGeomToSurface;
 import fr.ign.cogit.geoxygene.sig3d.convert.geom.FromPolygonToTriangle;
 import fr.ign.cogit.geoxygene.sig3d.equation.PlanEquation;
 import fr.ign.cogit.geoxygene.sig3d.geometry.topology.Edge;

@@ -7,7 +7,7 @@
 	<parent>
 		<artifactId>geoxygene</artifactId>
 		<groupId>fr.ign.cogit</groupId>
-		<version>1.8</version>
+		<version>1.9-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>geoxygene-schemageo</artifactId>
@@ -59,16 +59,16 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>org.hibernate.javax.persistence</groupId>
-			<artifactId>hibernate-jpa-2.0-api</artifactId>
-			<version>1.0.1.Final</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-annotations</artifactId>
-			<version>3.5.6-Final</version>
-		</dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+  <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+            <version>1.0.1.Final</version>
+        </dependency>
 	</dependencies>
 
 </project>

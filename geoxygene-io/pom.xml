@@ -7,7 +7,7 @@
 	<parent>
 		<artifactId>geoxygene</artifactId>
 		<groupId>fr.ign.cogit</groupId>
-		<version>1.8</version>
+		<version>1.9-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>geoxygene-io</artifactId>
@@ -109,6 +109,11 @@
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-metadata</artifactId>
+			<version>${geotools.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-epsg-hsql</artifactId>
 			<version>${geotools.version}</version>
 		</dependency>
 		<dependency>
