@@ -82,6 +82,8 @@ public class AttractionPointDetection {
       if (includeTrainStation & building.getNature().equals("Gare")) {
         // first get the node near this attraction point
         IRoadNode nearest = getRoadNode(building);
+        if (nearest == null)
+          continue;
         // then, create or update the attraction point
         if (createdPts.containsKey(nearest)) {
           AttractionPoint pt = createdPts.get(nearest);

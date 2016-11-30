@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Angle;
 
@@ -32,83 +34,81 @@ import fr.ign.cogit.geoxygene.contrib.geometrie.Angle;
  * <p>
  * English: a group is a set of nodes/arcs/faces of a topological map.
  * 
- * // /////////////////////////////////////////////////
- * // Pour les relations de composition :
- * // - un groupe contient PLUSIEURS noeuds, arcs et faces
- * // - un groupe appartient à UNE carte topo
- * // /////////////////////////////////////////////////
+ * // ///////////////////////////////////////////////// // Pour les relations de
+ * composition : // - un groupe contient PLUSIEURS noeuds, arcs et faces // - un
+ * groupe appartient à UNE carte topo //
+ * /////////////////////////////////////////////////
  * 
  * @author Sébastien Mustière
  * @author Olivier Bonin
  * @version 1.0
  */
 public class Groupe extends ElementCarteTopo {
-    
-    private double length = 0.0;
-    /** Noeuds composants du groupe. */
-    private List<Noeud> listeNoeuds = new ArrayList<Noeud>(0);
-    /** Arcs composants du groupe. */
-    private List<Arc> listeArcs = new ArrayList<Arc>(0);
-    /** Faces composants du groupe. */
-    private List<Face> listeFaces = new ArrayList<Face>(0);
-    
-    /**
-     * Default constructor
-     */
-    public Groupe() {
-    }
-  
-    
-    
 
-    public double getLength() {
-        return this.length;
-    }
+  /** Logger. */
+  protected final static Logger LOGGER = Logger.getLogger(Groupe.class
+      .getName());
 
-    public void setLength(double length) {
-        this.length = length;
-    }
+  private double length = 0.0;
+  /** Noeuds composants du groupe. */
+  private List<Noeud> listeNoeuds = new ArrayList<Noeud>(0);
+  /** Arcs composants du groupe. */
+  private List<Arc> listeArcs = new ArrayList<Arc>(0);
+  /** Faces composants du groupe. */
+  private List<Face> listeFaces = new ArrayList<Face>(0);
 
-    /** Renvoie la liste des noeuds de self. */
-    public List<Noeud> getListeNoeuds() {
-        return this.listeNoeuds;
-    }
+  /**
+   * Default constructor
+   */
+  public Groupe() {
+  }
 
-    /** Définit la liste des noeuds de self. */
-    public void setListeNoeuds(List<Noeud> liste) {
-        this.listeNoeuds = liste;
-    }
+  public double getLength() {
+    return this.length;
+  }
 
-    /** Ajoute un noeud à self. */
-    public void addNoeud(Noeud noeud) {
-        this.addNoeud(noeud, true);
-    }
+  public void setLength(double length) {
+    this.length = length;
+  }
 
-    /** Ajoute un noeud à self. */
-    public void addNoeud(Noeud noeud, boolean addGroupToNode) {
-        if (noeud != null && !this.listeNoeuds.contains(noeud)) {
-            this.listeNoeuds.add(noeud);
-            if (addGroupToNode && !noeud.getListeGroupes().contains(this)) {
-                noeud.addGroupe(this);
-            }
-        }
-    }
+  /** Renvoie la liste des noeuds de self. */
+  public List<Noeud> getListeNoeuds() {
+    return this.listeNoeuds;
+  }
 
-    /** Ajoute une liste de noeuds à self **/
-    public void addAllNoeuds(List<Noeud> liste) {
-        this.addAllNoeuds(liste, true);
-    }
+  /** Définit la liste des noeuds de self. */
+  public void setListeNoeuds(List<Noeud> liste) {
+    this.listeNoeuds = liste;
+  }
 
-    /** Ajoute une liste de noeuds à self **/
-    public void addAllNoeuds(List<Noeud> liste, boolean addGroupToNodes) {
-        Iterator<Noeud> itObj = liste.iterator();
-        while (itObj.hasNext()) {
-            Noeud objet = itObj.next();
-            this.addNoeud(objet, addGroupToNodes);
-        }
-    }
+  /** Ajoute un noeud à self. */
+  public void addNoeud(Noeud noeud) {
+    this.addNoeud(noeud, true);
+  }
 
-  
+  /** Ajoute un noeud à self. */
+  public void addNoeud(Noeud noeud, boolean addGroupToNode) {
+    if (noeud != null && !this.listeNoeuds.contains(noeud)) {
+      this.listeNoeuds.add(noeud);
+      if (addGroupToNode && !noeud.getListeGroupes().contains(this)) {
+        noeud.addGroupe(this);
+      }
+    }
+  }
+
+  /** Ajoute une liste de noeuds à self **/
+  public void addAllNoeuds(List<Noeud> liste) {
+    this.addAllNoeuds(liste, true);
+  }
+
+  /** Ajoute une liste de noeuds à self **/
+  public void addAllNoeuds(List<Noeud> liste, boolean addGroupToNodes) {
+    Iterator<Noeud> itObj = liste.iterator();
+    while (itObj.hasNext()) {
+      Noeud objet = itObj.next();
+      this.addNoeud(objet, addGroupToNodes);
+    }
+  }
 
   /** Renvoie la liste des arcs de self */
   public List<Arc> getListeArcs() {
@@ -146,8 +146,6 @@ public class Groupe extends ElementCarteTopo {
       this.addArc(arc, addGroupToEdges);
     }
   }
-
-  
 
   /** Renvoie la liste des faces de self */
   public List<Face> getListeFaces() {
@@ -230,7 +228,8 @@ public class Groupe extends ElementCarteTopo {
    * est 2 fois dans la liste
    */
   public List<Arc> getAdjacents() {
-    List<Arc> arcs = new ArrayList<Arc>(this.getSortants().size() + this.getEntrants().size());
+    List<Arc> arcs = new ArrayList<Arc>(this.getSortants().size()
+        + this.getEntrants().size());
     arcs.addAll(this.getSortants());
     arcs.addAll(this.getEntrants());
     return arcs;
@@ -277,13 +276,13 @@ public class Groupe extends ElementCarteTopo {
   /**
    * Arcs incidents à un noeuds, classés en tournant autour du noeud dans
    * l'ordre trigonométrique, et qualifiés d'entrants ou sortants, au sens de la
-   * géoémtrie (utile particulièrement à la gestion des boucles).
-   * NB : renvoie une liste de liste: Liste.get(0) = liste des arcs (de la
-   * classe 'Arc') Liste.get(1) = liste des orientations de type Boolean, true =
-   * entrant, false = sortant) NB : Classement effectué sur la direction donnée
-   * par le premier point de l'arc après le noeud. NB : Le premier arc est celui
-   * dont la direction est la plus proche de l'axe des X, en tournant dans le
-   * sens trigo. NB : Ce classement est recalculé en fonction de la géométrie à
+   * géoémtrie (utile particulièrement à la gestion des boucles). NB : renvoie
+   * une liste de liste: Liste.get(0) = liste des arcs (de la classe 'Arc')
+   * Liste.get(1) = liste des orientations de type Boolean, true = entrant,
+   * false = sortant) NB : Classement effectué sur la direction donnée par le
+   * premier point de l'arc après le noeud. NB : Le premier arc est celui dont
+   * la direction est la plus proche de l'axe des X, en tournant dans le sens
+   * trigo. NB : Ce classement est recalculé en fonction de la géométrie à
    * chaque appel de la méthode.
    */
   public List<Object> arcsClasses() {
@@ -311,8 +310,8 @@ public class Groupe extends ElementCarteTopo {
     itArcs = arcsEntrants.iterator();
     while (itArcs.hasNext()) {
       arc = itArcs.next();
-      angle = new Angle(arc.getCoord().get(arc.getCoord().size() - 1), arc.getCoord().get(
-          arc.getCoord().size() - 2));
+      angle = new Angle(arc.getCoord().get(arc.getCoord().size() - 1), arc
+          .getCoord().get(arc.getCoord().size() - 2));
       arcs.add(arc);
       angles.add(angle);
       orientations.add(new Boolean(true));
@@ -376,7 +375,8 @@ public class Groupe extends ElementCarteTopo {
   /**
    * Pour copier un groupe.
    * <ul>
-   * <li>NB 1 : on crée un nouveau groupe pointant vers les mêmes objets composants
+   * <li>NB 1 : on crée un nouveau groupe pointant vers les mêmes objets
+   * composants
    * <li>NB 2 : ce groupe n'est PAS ajouté à la carteTopo
    * </ul>
    */
@@ -387,7 +387,8 @@ public class Groupe extends ElementCarteTopo {
   /**
    * Pour copier un groupe.
    * <ul>
-   * <li>NB 1 : on crée un nouveau groupe pointant vers les mêmes objets composants
+   * <li>NB 1 : on crée un nouveau groupe pointant vers les mêmes objets
+   * composants
    * <li>NB 2 : ce groupe n'est PAS ajouté à la carteTopo
    * </ul>
    */
@@ -411,7 +412,8 @@ public class Groupe extends ElementCarteTopo {
    * Decompose un groupe en plusieurs groupes connexes, et vide le groupe self.
    * La liste en sortie contient des Groupes.
    * <p>
-   * ATTENTION : LE GROUPE EN ENTREE EST VIDE AU COURS DE LA METHODE PUIS ENLEVE DE LA CARTE TOPO.
+   * ATTENTION : LE GROUPE EN ENTREE EST VIDE AU COURS DE LA METHODE PUIS ENLEVE
+   * DE LA CARTE TOPO.
    */
   public List<Groupe> decomposeConnexes() {
     return this.decomposeConnexes(true);
@@ -421,33 +423,40 @@ public class Groupe extends ElementCarteTopo {
    * Decompose un groupe en plusieurs groupes connexes, et vide le groupe self.
    * La liste en sortie contient des Groupes.
    * <p>
-   * ATTENTION : LE GROUPE EN ENTREE EST VIDE AU COURS DE LA METHODE PUIS ENLEVE DE LA CARTE TOPO.
+   * ATTENTION : LE GROUPE EN ENTREE EST VIDE AU COURS DE LA METHODE PUIS ENLEVE
+   * DE LA CARTE TOPO.
    */
   public List<Groupe> decomposeConnexes(boolean addGroupToEdges) {
     List<Groupe> groupesConnexes = new ArrayList<Groupe>(0);
     try {
-//      if (this.getPopulation() == null) {
-//        Groupe.LOGGER.error("ATTENTION : le groupe " + this + " n'a pas de population associée");
-//        Groupe.LOGGER.error("\tImpossible de le décomposer en groupes connexes");
-//        return null;
-//      }
-//      if (this.getCarteTopo() == null) {
-//        Groupe.LOGGER.error("ATTENTION : le groupe " + this + " ne fait pas partie d'une carte topo");
-//        Groupe.LOGGER.error("\tImpossible de le décomposer en groupes connexes");
-//        return null;
-//      }
-//      if (this.getCarteTopo().getPopArcs() == null) {
-//        Groupe.LOGGER.error("ATTENTION : le groupe " + this
-//            + " fait partie d'une carte topo sans population d'arcs");
-//        Groupe.LOGGER.error("\tImpossible de le décomposer en groupes connexes");
-//        return null;
-//      }
-//      if (this.getCarteTopo().getPopNoeuds() == null) {
-//        Groupe.LOGGER.error("ATTENTION : le groupe " + this
-//            + " fait partie d'une carte topo sans population de noeuds");
-//        Groupe.LOGGER.error("\tImpossible de le décomposer en groupes connexes");
-//        return null;
-//      }
+      // if (this.getPopulation() == null) {
+      // Groupe.LOGGER.error("ATTENTION : le groupe " + this
+      // + " n'a pas de population associée");
+      // Groupe.LOGGER
+      // .error("\tImpossible de le décomposer en groupes connexes");
+      // return null;
+      // }
+      // if (this.getCarteTopo() == null) {
+      // Groupe.LOGGER.error("ATTENTION : le groupe " + this
+      // + " ne fait pas partie d'une carte topo");
+      // Groupe.LOGGER
+      // .error("\tImpossible de le décomposer en groupes connexes");
+      // return null;
+      // }
+      // if (this.getCarteTopo().getPopArcs() == null) {
+      // Groupe.LOGGER.error("ATTENTION : le groupe " + this
+      // + " fait partie d'une carte topo sans population d'arcs");
+      // Groupe.LOGGER
+      // .error("\tImpossible de le décomposer en groupes connexes");
+      // return null;
+      // }
+      // if (this.getCarteTopo().getPopNoeuds() == null) {
+      // Groupe.LOGGER.error("ATTENTION : le groupe " + this
+      // + " fait partie d'une carte topo sans population de noeuds");
+      // Groupe.LOGGER
+      // .error("\tImpossible de le décomposer en groupes connexes");
+      // return null;
+      // }
       while (!this.getListeNoeuds().isEmpty()) {
         Groupe groupeConnexe = null;
         if (this.getPopulation() == null) {
@@ -475,8 +484,10 @@ public class Groupe extends ElementCarteTopo {
       }
       return groupesConnexes;
     } catch (Exception e) {
-      Groupe.logger.error("----- ERREUR dans décomposition en groupes connxes: ");
-      Groupe.logger.error("\tSource possible : Nom de la classe des groupes pas ou mal renseigné dans la carte topo");
+      Groupe.logger
+          .error("----- ERREUR dans décomposition en groupes connxes: ");
+      Groupe.logger
+          .error("\tSource possible : Nom de la classe des groupes pas ou mal renseigné dans la carte topo");
       e.printStackTrace();
       return null;
     }
@@ -489,8 +500,8 @@ public class Groupe extends ElementCarteTopo {
   }
 
   /**
-   * Methode nécessaire à DecomposeConnexe : ajoute le noeud au groupe connexe, cherche ses voisins,
-   * puis l'enlève du goupe total.
+   * Methode nécessaire à DecomposeConnexe : ajoute le noeud au groupe connexe,
+   * cherche ses voisins, puis l'enlève du goupe total.
    * @param noeud
    * @param groupeTotal
    */
@@ -509,8 +520,8 @@ public class Groupe extends ElementCarteTopo {
   }
 
   /**
-   * Methode nécessaire à DecomposeConnexe : Recherche les arcs de groupeTotal ayant pour extrémité
-   * des noeuds de this.
+   * Methode nécessaire à DecomposeConnexe : Recherche les arcs de groupeTotal
+   * ayant pour extrémité des noeuds de this.
    * @param groupeTotal
    */
   @SuppressWarnings("unused")
@@ -519,8 +530,8 @@ public class Groupe extends ElementCarteTopo {
   }
 
   /**
-   * Methode nécessaire à DecomposeConnexe : Recherche les arcs de groupeTotal ayant pour extrémité
-   * des noeuds de this.
+   * Methode nécessaire à DecomposeConnexe : Recherche les arcs de groupeTotal
+   * ayant pour extrémité des noeuds de this.
    * @param groupeTotal
    */
   private void arcsDansGroupe(Groupe groupeTotal, boolean addGroupToEdges) {
@@ -583,6 +594,7 @@ public class Groupe extends ElementCarteTopo {
 
   @Override
   public String toString() {
-    return this.getClass().getSimpleName() + " " + this.getGeom() + " " + this.longueur(); //$NON-NLS-1$ //$NON-NLS-2$
+    return this.getClass().getSimpleName()
+        + " " + this.getGeom() + " " + this.longueur(); //$NON-NLS-1$ //$NON-NLS-2$
   }
 }
