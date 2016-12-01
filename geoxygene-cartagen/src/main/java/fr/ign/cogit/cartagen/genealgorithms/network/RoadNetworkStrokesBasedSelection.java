@@ -116,4 +116,8 @@ public class RoadNetworkStrokesBasedSelection {
     this.attributeName = attributeName;
   }
 
+  public RoadStrokesNetwork getStroke() {
+    return this.strokes;
+  }
+
 }

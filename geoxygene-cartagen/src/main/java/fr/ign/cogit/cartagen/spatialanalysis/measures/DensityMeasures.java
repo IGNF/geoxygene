@@ -20,6 +20,7 @@ import fr.ign.cogit.cartagen.spatialanalysis.measures.section.SectionSymbol;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 
 public class DensityMeasures {
 
@@ -44,7 +45,6 @@ public class DensityMeasures {
       }
       buildingArea += elem.getSymbolArea();
     }
-
     // computes the area of the roads inside the block
     IGeometry symbols = null;
     for (INetworkSection road : blockRoads) {
@@ -52,15 +52,17 @@ public class DensityMeasures {
       if (symbols == null) {
         symbols = geom;
       } else {
-        symbols.union(geom);
+        symbols = Operateurs.unionRobuste(symbols, geom, 0.1, 1.0);
       }
     }
     if (symbols == null) {
       return 0.0;
     }
-
     // Computes the density ratio
-    symbols = symbols.intersection(block);
+    symbols = Operateurs.intersectionRobuste(symbols, block, 0.1, 1.0);
+    if (symbols == null) {
+      return 0.0;
+    }
     double symbolArea = symbols.area();
     return (buildingArea + symbolArea) / block.area();
 
@@ -71,8 +73,8 @@ public class DensityMeasures {
    * road symbols are taken into account.
    */
   public static double getBlockBuildingsDensity(IUrbanBlock block) {
-    return DensityMeasures.getBlockBuildingsDensity(block.getGeom(), block
-        .getUrbanElements(), block.getSurroundingNetwork());
+    return DensityMeasures.getBlockBuildingsDensity(block.getGeom(),
+        block.getUrbanElements(), block.getSurroundingNetwork());
   }
 
   /**
@@ -101,7 +103,7 @@ public class DensityMeasures {
       if (symbols == null) {
         symbols = geom;
       } else {
-        symbols.union(geom);
+        symbols = Operateurs.unionRobuste(symbols, geom, 0.1, 1.0);
       }
     }
     if (symbols == null) {
@@ -109,7 +111,7 @@ public class DensityMeasures {
     }
 
     // Computes the density ratio
-    symbols = symbols.intersection(block);
+    symbols = Operateurs.intersectionRobuste(symbols, block, 0.1, 1.0);
     double symbolArea = symbols.area();
     return (buildingArea + symbolArea) / block.area();
 
@@ -131,9 +133,8 @@ public class DensityMeasures {
   public static double getBlockBuildingsSimulatedDensity(IPolygon block,
       Collection<IUrbanElement> components,
       IFeatureCollection<INetworkSection> blockRoads, double buildingMinSize) {
-
     // computes the sum of the areas of the non deleted buildings
-    if (components == null) {
+    if (components == null || components.isEmpty()) {
       return 0.0;
     }
     double buildingArea = 0.0;
@@ -144,8 +145,8 @@ public class DensityMeasures {
       if (!block.intersects(elem.getSymbolGeom())) {
         continue;
       }
-      buildingArea += Math.min(buildingMinSize, BlockBuildingsMeasures
-          .getBuildingGoalArea(elem));
+      buildingArea += Math.min(buildingMinSize,
+          BlockBuildingsMeasures.getBuildingGoalArea(elem));
     }
 
     // computes the area of the roads inside the block
@@ -155,7 +156,7 @@ public class DensityMeasures {
       if (symbols == null) {
         symbols = geom;
       } else {
-        symbols.union(geom);
+        symbols = Operateurs.unionRobuste(symbols, geom, 0.1, 1.0);
       }
     }
     if (symbols == null) {
@@ -163,7 +164,7 @@ public class DensityMeasures {
     }
 
     // Computes the density ratio
-    symbols = symbols.intersection(block);
+    symbols = Operateurs.intersectionRobuste(symbols, block, 0.1, 1.0);
     double symbolArea = symbols.area();
     return (buildingArea + symbolArea) / block.area();
 
@@ -212,8 +213,8 @@ public class DensityMeasures {
       if (!block.intersects(elem.getSymbolGeom())) {
         continue;
       }
-      buildingArea += Math.min(buildingMinSize, BlockBuildingsMeasures
-          .getBuildingGoalArea(elem));
+      buildingArea += Math.min(buildingMinSize,
+          BlockBuildingsMeasures.getBuildingGoalArea(elem));
     }
 
     // computes the area of the roads inside the block
@@ -223,7 +224,7 @@ public class DensityMeasures {
       if (symbols == null) {
         symbols = geom;
       } else {
-        symbols.union(geom);
+        symbols = Operateurs.unionRobuste(symbols, geom, 0.1, 1.0);
       }
     }
     if (symbols == null) {
@@ -231,7 +232,7 @@ public class DensityMeasures {
     }
 
     // Computes the density ratio
-    symbols = symbols.intersection(block);
+    symbols = Operateurs.intersectionRobuste(symbols, block, 0.1, 1.0);
     double symbolArea = symbols.area();
     return (buildingArea + symbolArea) / block.area();
 
@@ -248,9 +249,9 @@ public class DensityMeasures {
         * Legend.getSYMBOLISATI0N_SCALE()
         * Legend.getSYMBOLISATI0N_SCALE()
         / 1000000;
-    return DensityMeasures.getBlockBuildingsInitialSimulatedDensity(block
-        .getGeom(), block.getUrbanElements(), block.getSurroundingNetwork(),
-        buildingMinSize);
+    return DensityMeasures.getBlockBuildingsInitialSimulatedDensity(
+        block.getGeom(), block.getUrbanElements(),
+        block.getSurroundingNetwork(), buildingMinSize);
   }
 
 }

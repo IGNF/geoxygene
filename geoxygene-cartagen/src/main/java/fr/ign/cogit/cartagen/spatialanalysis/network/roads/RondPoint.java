@@ -1,11 +1,11 @@
 /*******************************************************************************
  * This software is released under the licence CeCILL
- *  
- *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
- *  
- *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
- *  
- *  @copyright IGN
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
  ******************************************************************************/
 package fr.ign.cogit.cartagen.spatialanalysis.network.roads;
 
@@ -88,7 +88,8 @@ public class RondPoint extends CarrefourComplexeImpl {
     double millerIndex = 4 * java.lang.Math.PI * area / (perimeter * perimeter);
 
     // if millerIndex < 0,97, it is not a roundabout (Sheeren, 2004)
-    if (millerIndex < 0.97) {
+    if (millerIndex < 0.95) {
+      /** @author mdumont test valeur **/
       return false;
     }
 

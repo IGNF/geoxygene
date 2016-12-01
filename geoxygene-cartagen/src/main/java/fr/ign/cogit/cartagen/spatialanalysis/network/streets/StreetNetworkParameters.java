@@ -1,11 +1,11 @@
 /*******************************************************************************
  * This software is released under the licence CeCILL
- *  
- *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
- *  
- *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
- *  
- *  @copyright IGN
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
  ******************************************************************************/
 package fr.ign.cogit.cartagen.spatialanalysis.network.streets;
 
@@ -34,6 +34,17 @@ public class StreetNetworkParameters {
   // standard criteria)
   public static double surfMed = 150000.0;
   // the importance value for a road under which it is considered as a city axis
-  public static int importanceThreshold = 2;
+  public static int importanceThreshold = 0;
 
+  public StreetNetworkParameters(double costLarge, double costSmall,
+      double costMed, double surfLarge, double surfSmall, double surfMed,
+      int importanceThreshold) {
+    StreetNetworkParameters.costLarge = costLarge;
+    StreetNetworkParameters.costSmall = costSmall;
+    StreetNetworkParameters.costMed = costMed;
+    StreetNetworkParameters.surfLarge = surfLarge;
+    StreetNetworkParameters.surfSmall = surfSmall;
+    StreetNetworkParameters.surfMed = surfMed;
+    StreetNetworkParameters.importanceThreshold = importanceThreshold;
+  }
 }
