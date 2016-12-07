@@ -92,3 +92,4 @@ vec4 computeFragmentColor( in vec4 brushColor, in vec4 paperColor, in DataPainti
 	return vec4( color, globalOpacity * opacity * fragmentData.color.a);
 }
 
+

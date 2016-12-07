@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadStroke;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.spatialanalysis.network.Stroke;
 import fr.ign.cogit.cartagen.spatialanalysis.network.StrokesNetwork;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -83,6 +84,7 @@ public class RoadStrokesNetwork extends StrokesNetwork {
 
       // add the stroke to the strokes set
       this.getStrokes().add(stroke);
+
     }
 
   }
@@ -139,11 +141,13 @@ public class RoadStrokesNetwork extends StrokesNetwork {
   public IFeatureCollection<IRoadStroke> getStrokesFeat() {
     IFeatureCollection<IRoadStroke> featColn = new FT_FeatureCollection<IRoadStroke>();
     for (Stroke str : this.getStrokes()) {
-      featColn.add((IRoadStroke) str);
+      IRoadStroke geneObj = CartAGenDoc.getInstance().getCurrentDataset()
+          .getCartAGenDB().getGeneObjImpl().getCreationFactory()
+          .createRoadStroke(str.getGeomStroke(), (RoadStroke) str);
+      featColn.add(geneObj);
     }
     return featColn;
   }
-
   // //////////////////////////////////////////
   // Protected methods //
   // //////////////////////////////////////////

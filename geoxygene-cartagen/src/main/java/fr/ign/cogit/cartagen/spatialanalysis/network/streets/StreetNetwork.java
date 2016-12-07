@@ -66,7 +66,7 @@ public class StreetNetwork extends AbstractFeature {
   // //////////////////////////////////////////
 
   // All static fields //
-  public static String ROAD_TRAFFIC_ATTRIBUTE = "";
+  public static String ROAD_TRAFFIC_ATTRIBUTE = "accessWeight";
   private static Logger logger = Logger
       .getLogger(StreetNetwork.class.getName());
   private static double sMinT = 3250.0;// 1 mm * 1.3 mm map at 1:50 000.
@@ -720,6 +720,10 @@ public class StreetNetwork extends AbstractFeature {
         traffic, centrality, building, density, crossing);
   }
 
+  public void setAggregationCriteria(StreetNetworkCriterionSet sncs) {
+    this.criteria = sncs;
+  }
+
   /**
    * <p>
    * Core of the street selection algorithm by block aggregation : the city
@@ -793,7 +797,7 @@ public class StreetNetwork extends AbstractFeature {
    * 
    */
   public void aggregationAlgorithm() {
-
+    CartAGenDataSet dataSet = CartAGenDoc.getInstance().getCurrentDataset();
     // first, get the city blocks to treat in the algorithm
     HashSet<IUrbanBlock> blocksToTreat;
     if (this.criteria.densBuildCrit) {
@@ -801,7 +805,6 @@ public class StreetNetwork extends AbstractFeature {
     } else {
       blocksToTreat = this.getBlocksToTreat();
     }
-
     // while blocks remain to treat, continue
     while (blocksToTreat.size() > 0) {
       // first, get the best city block to treat
@@ -811,7 +814,6 @@ public class StreetNetwork extends AbstractFeature {
       if (block == null) {
         return;
       }
-
       // get the best neighbour for aggregation
       BestNeighbourResult result = this.chooseBestNeighbour(block,
           blocksToTreat);
@@ -826,14 +828,15 @@ public class StreetNetwork extends AbstractFeature {
       }
 
       // Then, the two blocks can be aggregated
-      // remove neigbour from the blocks to treat
-      blocksToTreat.remove(neigh);
-
       // aggregate blocks
       IUrbanBlock newBlock = block.aggregateWithBlock(neigh);
-      this.cityBlocks.remove(neigh);
-      this.cityBlocks.remove(block);
-      this.cityBlocks.add(newBlock);
+      dataSet.getBlocks().add(newBlock);
+
+      // update blockToTreat
+      blocksToTreat.remove(block);
+      blocksToTreat.remove(neigh);
+      blocksToTreat.add(newBlock);
+
       StreetNetwork.logger.info(block + " has been aggregated to " + neigh);
     }// while(blocksToTreat.size()>0)
   }// agregationSituations()
@@ -950,8 +953,18 @@ public class StreetNetwork extends AbstractFeature {
       // get the topological primitives of the block
       for (IFeature prim : block.getCorrespondants(topoBlock.getPopFaces())) {
         Face face = (Face) prim;
-        for (Face voisin : face.voisins()) {
-          block.getNeighbours().add((IUrbanBlock) voisin.getCorrespondant(0));
+        if (!face.voisins().isEmpty()) {
+          for (Face voisin : face.voisins()) {
+            block.getNeighbours().add((IUrbanBlock) voisin.getCorrespondant(0));
+          }
+        } else {
+          // find the face which contains this holeBlock
+          for (Face faceContenante : topoBlock.getPopFaces()) {
+            if (faceContenante.getGeometrie().contains(block.getGeom())
+                && !faceContenante.equals(face))
+              block.getNeighbours().add(
+                  (IUrbanBlock) faceContenante.getCorrespondant(0));
+          }
         }
       }
     }// while, boucle sur les situations du réseau
@@ -1080,8 +1093,8 @@ public class StreetNetwork extends AbstractFeature {
       }
       // compute list mean
       this.meanTraffic = Statistics.calculateMean(traffics);
-      logger
-          .info("Street network mean traffic assessment: " + this.meanTraffic);
+      logger.debug("Street network mean traffic assessment: "
+          + this.meanTraffic);
     } else {
       this.meanTraffic = 1.0;
     }
@@ -1140,6 +1153,10 @@ public class StreetNetwork extends AbstractFeature {
 
     // loop on the city blocks
     for (IUrbanBlock block : this.cityBlocks) {
+      // test if the block is a road structure
+      if (!block.isStandard()) {
+        continue;
+      }
       // if area is bigger than threshold, the block is not kept
       if (block.getGeom().area() > threshold) {
         continue;
@@ -1153,11 +1170,6 @@ public class StreetNetwork extends AbstractFeature {
         // created by cutting the with the city limits: add it.
       } else if (block.getInitialGeoxBlocks().size() == 0) {
         treated.add(block);
-        continue;
-      }
-
-      // test if the block is a road structure
-      if (!block.isStandard()) {
         continue;
       }
 
@@ -1180,9 +1192,19 @@ public class StreetNetwork extends AbstractFeature {
     // initialisation
     HashSet<IUrbanBlock> treated = new HashSet<IUrbanBlock>();
     double seuil = Math.max(StreetNetwork.sMinT, this.sMinD);
-
     // loop on the city blocks
     for (IUrbanBlock block : this.cityBlocks) {
+
+      // test if the block is a road structure
+      if (!block.isStandard()) {
+        continue;
+      }
+
+      // if the block is an hole block, add to treated
+      if (block.isHoleBlock()) {
+        treated.add(block);
+        continue;
+      }
 
       // if the block is an edge block, continue
       if (block.isEdge()) {
@@ -1190,11 +1212,6 @@ public class StreetNetwork extends AbstractFeature {
       }
       // the big blocks are not chosen for treatment
       if (block.getGeom().area() > seuil) {
-        continue;
-      }
-
-      // test if the block is a road structure
-      if (!block.isStandard()) {
         continue;
       }
 
@@ -1297,7 +1314,7 @@ public class StreetNetwork extends AbstractFeature {
     StreetNetwork.logger.trace(block + " has " + neighbourSet.size()
         + " neighbours");
     // filter to keep only the disolvable neighbours
-    neighbourSet.retainAll(disolvableBlocks);
+    // neighbourSet.retainAll(disolvableBlocks);
     StreetNetwork.logger.trace(neighbourSet.size()
         + " neighbours remain for aggregation");
     // get the City axes surrounding block
@@ -1309,6 +1326,8 @@ public class StreetNetwork extends AbstractFeature {
       if (!neigh.getPartition().equals(block.getPartition())) {
         continue;
       }
+      if (!neigh.isStandard())
+        continue;
       // check that the union of both blocks is a polygon
       if (!(neigh.getGeom().union(block.getGeom()) instanceof IPolygon))
         continue;
@@ -1596,7 +1615,7 @@ public class StreetNetwork extends AbstractFeature {
     cost = (1.0001 - compactness) * (1.0001 - compactness)
         * (1.0001 - compactness) * coefComp * areaCoef
         * Math.sqrt((coefDegree + coefProxi + coefInter) / 3.0) * (traffic + 1)
-        / this.meanTraffic * strokesCoef * densCoef * (0.1 + densBatiments);
+        / this.meanTraffic * strokesCoef * densCoef; // * (1 / densBatiments);
 
     return cost;
   }
@@ -1641,13 +1660,19 @@ public class StreetNetwork extends AbstractFeature {
 
     // loop on the blocks to treat
     for (IUrbanBlock b : blocksToTreat) {
-      // get the partition density
-      double density = b.getPartition().getDensity();
-      // weight the area by the density ratio
-      double area = b.getGeom().area() * this.cityDensity / density;
-      if (area <= minArea) {
-        minArea = area;
+      // priority to hole blocks
+      if (b.isHoleBlock()) {
         best = b;
+        break;
+      } else {
+        // get the partition density
+        double density = b.getPartition().getDensity();
+        // weight the area by the density ratio
+        double area = b.getGeom().area() * this.cityDensity / density;
+        if (area <= minArea) {
+          minArea = area;
+          best = b;
+        }
       }
     }
     return best;
@@ -1872,7 +1897,6 @@ public class StreetNetwork extends AbstractFeature {
   private void computeHoleBlocks() {
     // loop on the city blocks
     for (IUrbanBlock block : new HashSet<IUrbanBlock>(this.cityBlocks)) {
-
       if (block.getNeighbours().size() != 1) {
         block.setHoleBlock(false);
         continue;
