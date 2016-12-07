@@ -13,7 +13,7 @@ import java.util.Map;
 
 import javax.persistence.Transient;
 
-import fr.ign.cogit.cartagen.core.carto.SLDUtil;
+import fr.ign.cogit.cartagen.core.carto.SLDUtilCartagen;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -61,12 +61,12 @@ public class OsmRailwayLine extends OsmNetworkSection implements IRailwayLine {
 
   @Override
   public double getWidth() {
-    return SLDUtil.getSymbolMaxWidthMapMm(this);
+    return SLDUtilCartagen.getSymbolMaxWidthMapMm(this);
   }
 
   @Override
   public double getInternWidth() {
-    return SLDUtil.getSymbolInnerWidthMapMm(this);
+    return SLDUtilCartagen.getSymbolInnerWidthMapMm(this);
   }
 
   @Override

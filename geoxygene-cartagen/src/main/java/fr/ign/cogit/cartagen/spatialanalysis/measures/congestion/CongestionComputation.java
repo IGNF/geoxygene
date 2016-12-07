@@ -29,7 +29,7 @@ public class CongestionComputation {
   // Logger.getLogger(CalculEncombrement.class.getName());
 
   /**
-	 */
+   */
   private int nbSegmentsBatiBati = 0;
 
   /**
@@ -40,7 +40,7 @@ public class CongestionComputation {
   }
 
   /**
-	 */
+   */
   private double[] encombrements;
 
   /**
@@ -79,9 +79,10 @@ public class CongestionComputation {
       }
 
       // recupere l'autre agent lie par le segment
-      IGraphLinkableFeature feat = s.getInitialNode().getGraphLinkableFeature() == feature ? s
-          .getFinalNode().getGraphLinkableFeature()
-          : s.getInitialNode().getGraphLinkableFeature();
+      IGraphLinkableFeature feat = s.getInitialNode()
+          .getGraphLinkableFeature() == feature
+              ? s.getFinalNode().getGraphLinkableFeature()
+              : s.getInitialNode().getGraphLinkableFeature();
       ag = feat.getFeature();
 
       // compte les segments bati-bati
@@ -95,8 +96,8 @@ public class CongestionComputation {
       // calcul de la direction de l'encombrement en radians, dans [0, 2PI[
       // (recupere les coordonnees des points les plus proches entre les deux
       // agents du segment)
-      IDirectPositionList dl = CommonAlgorithms.getPointsLesPlusProches(feature
-          .getSymbolGeom(), ag.getSymbolGeom());
+      IDirectPositionList dl = CommonAlgorithms
+          .getPointsLesPlusProches(feature.getSymbolGeom(), ag.getSymbolGeom());
       coord = dl.get(0);
       coordAg = dl.get(1);
       orientationEncombrement = Math.atan2(coordAg.getY() - coord.getY(),

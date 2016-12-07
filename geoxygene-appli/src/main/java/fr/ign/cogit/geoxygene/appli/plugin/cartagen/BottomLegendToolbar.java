@@ -30,7 +30,7 @@ import javax.swing.JButton;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
-import fr.ign.cogit.cartagen.core.carto.SLDUtil;
+import fr.ign.cogit.cartagen.core.carto.SLDUtilCartagen;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.LayerLegendPanel;
@@ -129,7 +129,7 @@ public class BottomLegendToolbar extends JToolBar {
           initialSld = frame.getSld();
         if (rawSld == null) {
           // generate the raw sld from the symbolised sld
-          rawSld = SLDUtil.computeRawSld(initialSld);
+          rawSld = SLDUtilCartagen.computeRawSld(initialSld);
           frame.setSld(rawSld);
           for (Layer layer : rawSld.getLayers())
             frame.getLayerViewPanel().layerAdded(layer);
@@ -166,7 +166,7 @@ public class BottomLegendToolbar extends JToolBar {
         }
       } else {
         // remove all the styles named "displayIds" in the sld
-        SLDUtil.removeNamedStyles(frame.getSld(), "IdDisplay");
+        SLDUtilCartagen.removeNamedStyles(frame.getSld(), "IdDisplay");
       }
       frame.getLayerViewPanel().repaint();
     }
@@ -192,7 +192,7 @@ public class BottomLegendToolbar extends JToolBar {
           initialSld = frame.getSld();
         if (elimSld == null) {
           // generate the raw sld from the symbolised sld
-          elimSld = SLDUtil.computeEliminatedSld(initialSld);
+          elimSld = SLDUtilCartagen.computeEliminatedSld(initialSld);
           frame.setSld(elimSld);
           for (Layer layer : elimSld.getLayers())
             frame.getLayerViewPanel().layerAdded(layer);

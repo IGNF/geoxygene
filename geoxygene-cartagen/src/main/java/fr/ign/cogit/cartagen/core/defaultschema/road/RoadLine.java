@@ -20,7 +20,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.carto.SLDUtil;
+import fr.ign.cogit.cartagen.core.carto.SLDUtilCartagen;
 import fr.ign.cogit.cartagen.core.defaultschema.network.NetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.SymbolShape;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
@@ -174,7 +174,7 @@ public class RoadLine extends NetworkSection implements IRoadLine {
 
     } else if (this.getSymbolId() == -2) {// SLD width
 
-      return SLDUtil.getSymbolMaxWidthMapMm(this);
+      return SLDUtilCartagen.getSymbolMaxWidthMapMm(this);
 
     } else { // the new way of calculating the width
       SymbolShape symbolShape = CartAGenDocOld.getInstance()
@@ -207,7 +207,7 @@ public class RoadLine extends NetworkSection implements IRoadLine {
       }
     } else if (this.getSymbolId() == -2) {// SLD width
 
-      return SLDUtil.getSymbolInnerWidthMapMm(this);
+      return SLDUtilCartagen.getSymbolInnerWidthMapMm(this);
 
     } else { // the new way of calculating the width
       SymbolShape symbolShape = CartAGenDocOld.getInstance()

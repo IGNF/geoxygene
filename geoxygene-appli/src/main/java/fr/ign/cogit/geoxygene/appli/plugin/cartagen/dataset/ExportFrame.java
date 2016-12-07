@@ -44,9 +44,9 @@ import javax.swing.JTextField;
 
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultTransaction;
-import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
 import org.geotools.data.shapefile.ShapefileDataStore;
+import org.geotools.data.store.ContentFeatureStore;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.opengis.feature.simple.SimpleFeature;
@@ -92,16 +92,15 @@ public class ExportFrame extends JFrame implements ActionListener {
     this.setSize(new Dimension(400, 300));
     this.setLocation(100, 100);
     this.setTitle(CartAGenPlugin.getInstance().getApplication().getMainFrame()
-        .getGui().getTitle()
-        + " - export généralisation");
+        .getGui().getTitle() + " - export généralisation");
     this.setAlwaysOnTop(true);
 
-    this.getContentPane().setLayout(
-        new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+    this.getContentPane()
+        .setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
     JPanel dirPanel = new JPanel();
-    JButton dirButton = new JButton(new ImageIcon(this.getClass().getResource(
-        "/images/icons/magnifier.png")));
+    JButton dirButton = new JButton(new ImageIcon(
+        this.getClass().getResource("/images/icons/magnifier.png")));
     dirButton.addActionListener(this);
     dirButton.setActionCommand("directory");
     txtDir = new JTextField();
@@ -144,7 +143,7 @@ public class ExportFrame extends JFrame implements ActionListener {
   }
 
   /**
-	 */
+   */
   private JButton bExportTout, bExport, bExportSelection;
   private JTextField txtDir;
 
@@ -207,8 +206,8 @@ public class ExportFrame extends JFrame implements ActionListener {
       // get the features to export
       Collection<? extends IFeature> iterable = layer.getFeatureCollection();
       if (selection)
-        iterable = SelectionUtil.getSelectedObjects(CartAGenPlugin
-            .getInstance().getApplication(), layer.getName());
+        iterable = SelectionUtil.getSelectedObjects(
+            CartAGenPlugin.getInstance().getApplication(), layer.getName());
       IFeatureCollection<IFeature> features = new FT_FeatureCollection<IFeature>();
       for (IFeature obj : iterable) {
 
@@ -234,14 +233,15 @@ public class ExportFrame extends JFrame implements ActionListener {
       }
 
       // write the shapefile
-      write(features, geomType, this.exportDir + "\\" + shapeFileName);
+      write(features, geomType, this.exportDir + "\\" + shapeFileName,
+          layer.getName());
     }
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public <Feature extends IFeature> void write(
       IFeatureCollection<IFeature> featurePop,
-      Class<? extends IGeometry> geomType, String shpName) {
+      Class<? extends IGeometry> geomType, String shpName, String layerName) {
     if (featurePop == null) {
       return;
     }
@@ -253,8 +253,8 @@ public class ExportFrame extends JFrame implements ActionListener {
       if (!shapefileName.contains(".shp")) { //$NON-NLS-1$
         shapefileName = shapefileName + ".shp"; //$NON-NLS-1$
       }
-      ShapefileDataStore store = new ShapefileDataStore(new File(shapefileName)
-          .toURI().toURL());
+      ShapefileDataStore store = new ShapefileDataStore(
+          new File(shapefileName).toURI().toURL());
 
       // specify the geometry type
       String specs = "the_geom:"; //$NON-NLS-1$
@@ -270,16 +270,19 @@ public class ExportFrame extends JFrame implements ActionListener {
         specs += result.get(1);
       }
 
-      String featureTypeName = shapefileName.substring(
-          shapefileName.lastIndexOf("/") + 1, //$NON-NLS-1$
-          shapefileName.lastIndexOf(".")); //$NON-NLS-1$
-      featureTypeName = featureTypeName.replace('.', '_');
-      SimpleFeatureType type = DataUtilities.createType(featureTypeName, specs);
+      /*
+       * String featureTypeName = shapefileName.substring(
+       * shapefileName.lastIndexOf("/") + 1, //$NON-NLS-1$
+       * shapefileName.lastIndexOf(".")); //$NON-NLS-1$ featureTypeName =
+       * featureTypeName.replace('.', '_');
+       */
+
+      SimpleFeatureType type = DataUtilities.createType(layerName, specs);
       store.createSchema(type);
-      FeatureStore<SimpleFeatureType, SimpleFeature> featureStore = (FeatureStore<SimpleFeatureType, SimpleFeature>) store
-          .getFeatureSource(featureTypeName);
+      ContentFeatureStore featureStore = (ContentFeatureStore) store
+          .getFeatureSource(layerName);
       Transaction t = new DefaultTransaction();
-      List<SimpleFeature> collection = new ArrayList<SimpleFeature>();
+      Collection features = new HashSet<>();
       int i = 1;
       for (IFeature feature : featurePop) {
         if (feature.isDeleted()) {
@@ -300,9 +303,9 @@ public class ExportFrame extends JFrame implements ActionListener {
         }
         SimpleFeature simpleFeature = SimpleFeatureBuilder.build(type,
             liste.toArray(), String.valueOf(i++));
-        collection.add(simpleFeature);
+        features.add(simpleFeature);
       }
-      featureStore.addFeatures(DataUtilities.collection(collection));
+      featureStore.addFeatures(features);
       t.commit();
       t.close();
       store.dispose();

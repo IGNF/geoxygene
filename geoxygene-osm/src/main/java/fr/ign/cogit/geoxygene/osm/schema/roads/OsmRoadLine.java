@@ -5,7 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Transient;
 
-import fr.ign.cogit.cartagen.core.carto.SLDUtil;
+import fr.ign.cogit.cartagen.core.carto.SLDUtilCartagen;
 import fr.ign.cogit.cartagen.core.genericschema.SymbolShape;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
@@ -65,7 +65,7 @@ public class OsmRoadLine extends OsmNetworkSection implements IRoadLine {
       }
 
     } else if (this.getSymbolId() == -2) {// SLD width
-      return SLDUtil.getSymbolMaxWidthMapMm(this);
+      return SLDUtilCartagen.getSymbolMaxWidthMapMm(this);
     } else { // the new way of calculating the width
       SymbolShape symbolShape = CartAGenDocOld.getInstance()
           .getCurrentDataset().getSymbols()
@@ -95,7 +95,7 @@ public class OsmRoadLine extends OsmNetworkSection implements IRoadLine {
         return GeneralisationLegend.ROUTIER_LARGEUR_DESSUS_4;
       }
     } else if (this.getSymbolId() == -2) {// SLD width
-      return SLDUtil.getSymbolInnerWidthMapMm(this);
+      return SLDUtilCartagen.getSymbolInnerWidthMapMm(this);
     } else { // the new way of calculating the width
       SymbolShape symbolShape = CartAGenDocOld.getInstance()
           .getCurrentDataset().getSymbols()

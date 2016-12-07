@@ -14,6 +14,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
@@ -22,27 +24,39 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import javax.xml.parsers.ParserConfigurationException;
 
+import org.xml.sax.SAXException;
+
+import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.XMLFileFilter;
 import fr.ign.cogit.cartagen.spatialanalysis.network.roads.CrossRoadDetection;
 import fr.ign.cogit.cartagen.spatialanalysis.network.roads.RondPoint;
+import fr.ign.cogit.cartagen.spatialanalysis.urban.BuildingClassifierSVM;
+import fr.ign.cogit.cartagen.spatialanalysis.urban.BuildingClassifierSVM.BuildingClass;
+import fr.ign.cogit.cartagen.spatialanalysis.urban.BuildingClassifierSVM.BuildingDescriptor;
+import fr.ign.cogit.cartagen.spatialanalysis.urban.BuildingClassifierSVM.TrainingData;
 import fr.ign.cogit.cartagen.spatialanalysis.urban.UrbanAreaComputationJTS;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -69,12 +83,16 @@ import fr.ign.cogit.geoxygene.schemageo.impl.bati.IlotImpl;
 import fr.ign.cogit.geoxygene.schemageo.impl.routier.NoeudRoutierImpl;
 import fr.ign.cogit.geoxygene.schemageo.impl.routier.TronconDeRouteImpl;
 import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.ReseauImpl;
+import fr.ign.cogit.geoxygene.style.Fill;
 import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
+import fr.ign.cogit.geoxygene.style.SLDUtil;
+import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.measure.shape.PolygonSignatureFunction;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.measure.shape.PolygonTurningFunction;
 
-public class SpatialAnalysisPlugin implements ProjectFramePlugin,
-    GeOxygeneApplicationPlugin {
+public class SpatialAnalysisPlugin
+    implements ProjectFramePlugin, GeOxygeneApplicationPlugin {
 
   private GeOxygeneApplication application = null;
   private Map<TronconDeRoute, IFeature> roadsMap = new HashMap<TronconDeRoute, IFeature>();
@@ -91,6 +109,10 @@ public class SpatialAnalysisPlugin implements ProjectFramePlugin,
     JMenu urbanMenu = new JMenu("Urban areas");
     urbanMenu.add(new JMenuItem(new BoffetUrbanAreasAction()));
     urbanMenu.add(new JMenuItem(new CitinessUrbanAreasAction()));
+    JMenu buildClassifMenu = new JMenu("Building Classification");
+    buildClassifMenu.add(new JMenuItem(new AddTrainingDataAction()));
+    buildClassifMenu.add(new JMenuItem(new BuildingClassifSVMAction()));
+    urbanMenu.add(buildClassifMenu);
     menu.add(roadMenu);
     menu.add(riverMenu);
     menu.add(railMenu);
@@ -101,8 +123,8 @@ public class SpatialAnalysisPlugin implements ProjectFramePlugin,
     shapeMenu.add(new JMenuItem(new DisplaySignatureFuncAction()));
     shapeMenu.add(new JMenuItem(new CompareSignatureFuncsAction()));
     menu.add(shapeMenu);
-    application.getMainFrame().getMenuBar()
-        .add(menu, application.getMainFrame().getMenuBar().getMenuCount() - 2);
+    application.getMainFrame().getMenuBar().add(menu,
+        application.getMainFrame().getMenuBar().getMenuCount() - 2);
 
   }
 
@@ -122,8 +144,8 @@ public class SpatialAnalysisPlugin implements ProjectFramePlugin,
   class RoundaboutAction extends AbstractAction {
 
     /**
-   * 
-   */
+    * 
+    */
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -196,8 +218,8 @@ public class SpatialAnalysisPlugin implements ProjectFramePlugin,
   class ExportRoundaboutAction extends AbstractAction {
 
     /**
-   * 
-   */
+    * 
+    */
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -415,8 +437,8 @@ public class SpatialAnalysisPlugin implements ProjectFramePlugin,
       this.getContentPane().add(infoPanel);
       this.getContentPane().add(Box.createVerticalGlue());
       this.getContentPane().add(btnPanel);
-      this.getContentPane().setLayout(
-          new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+      this.getContentPane()
+          .setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
       this.setAlwaysOnTop(true);
       this.pack();
     }
@@ -432,8 +454,8 @@ public class SpatialAnalysisPlugin implements ProjectFramePlugin,
   class BoffetUrbanAreasAction extends AbstractAction {
 
     /**
-   * 
-   */
+    * 
+    */
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -537,8 +559,8 @@ public class SpatialAnalysisPlugin implements ProjectFramePlugin,
       spinBuffer.setPreferredSize(new Dimension(60, 20));
       spinBuffer.setMaximumSize(new Dimension(60, 20));
       spinBuffer.setMinimumSize(new Dimension(60, 20));
-      SpinnerModel areaModel = new SpinnerNumberModel(10000.0, 1000.0,
-          200000.0, 1000.0);
+      SpinnerModel areaModel = new SpinnerNumberModel(10000.0, 1000.0, 200000.0,
+          1000.0);
       spinArea = new JSpinner(areaModel);
       spinArea.setPreferredSize(new Dimension(80, 20));
       spinArea.setMaximumSize(new Dimension(80, 20));
@@ -609,8 +631,8 @@ public class SpatialAnalysisPlugin implements ProjectFramePlugin,
       this.getContentPane().add(paramPanel);
       this.getContentPane().add(Box.createVerticalGlue());
       this.getContentPane().add(btnPanel);
-      this.getContentPane().setLayout(
-          new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+      this.getContentPane()
+          .setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
       this.setAlwaysOnTop(true);
       this.pack();
     }
@@ -626,8 +648,8 @@ public class SpatialAnalysisPlugin implements ProjectFramePlugin,
   class CitinessUrbanAreasAction extends AbstractAction {
 
     /**
-   * 
-   */
+    * 
+    */
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -637,8 +659,7 @@ public class SpatialAnalysisPlugin implements ProjectFramePlugin,
     }
 
     public CitinessUrbanAreasAction() {
-      this.putValue(
-          Action.SHORT_DESCRIPTION,
+      this.putValue(Action.SHORT_DESCRIPTION,
           "Create urban areas from buildings using the method from (Chaudhry & Mackaness 2008)");
       this.putValue(Action.NAME,
           "Create urban areas from buildings (Chaudhry & Mackaness 2008)");
@@ -730,8 +751,8 @@ public class SpatialAnalysisPlugin implements ProjectFramePlugin,
       spinNbNeighbours.setPreferredSize(new Dimension(60, 20));
       spinNbNeighbours.setMaximumSize(new Dimension(60, 20));
       spinNbNeighbours.setMinimumSize(new Dimension(60, 20));
-      SpinnerModel areaModel = new SpinnerNumberModel(10000.0, 1000.0,
-          200000.0, 1000.0);
+      SpinnerModel areaModel = new SpinnerNumberModel(10000.0, 1000.0, 200000.0,
+          1000.0);
       spinArea = new JSpinner(areaModel);
       spinArea.setPreferredSize(new Dimension(80, 20));
       spinArea.setMaximumSize(new Dimension(80, 20));
@@ -802,8 +823,8 @@ public class SpatialAnalysisPlugin implements ProjectFramePlugin,
       this.getContentPane().add(paramPanel);
       this.getContentPane().add(Box.createVerticalGlue());
       this.getContentPane().add(btnPanel);
-      this.getContentPane().setLayout(
-          new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+      this.getContentPane()
+          .setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
       this.setAlwaysOnTop(true);
       this.pack();
     }
@@ -834,7 +855,8 @@ public class SpatialAnalysisPlugin implements ProjectFramePlugin,
     public DisplayTurningFuncAction() {
       this.putValue(Action.SHORT_DESCRIPTION,
           "Display in a frame the turning function of selected polygon feature");
-      this.putValue(Action.NAME, "Display turning function of selected polygon");
+      this.putValue(Action.NAME,
+          "Display turning function of selected polygon");
     }
   }
 
@@ -853,8 +875,8 @@ public class SpatialAnalysisPlugin implements ProjectFramePlugin,
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      Iterator<IFeature> iterator = SelectionUtil.getSelectedObjects(
-          application).iterator();
+      Iterator<IFeature> iterator = SelectionUtil
+          .getSelectedObjects(application).iterator();
       IFeature feat1 = iterator.next();
       IFeature feat2 = iterator.next();
       if (feat1.getGeom() instanceof IPolygon
@@ -868,8 +890,7 @@ public class SpatialAnalysisPlugin implements ProjectFramePlugin,
     }
 
     public CompareTurningFuncsAction() {
-      this.putValue(
-          Action.SHORT_DESCRIPTION,
+      this.putValue(Action.SHORT_DESCRIPTION,
           "Compare the two turning functions of the two selected features in a single plot");
       this.putValue(Action.NAME, "Compare two turning functions");
     }
@@ -921,8 +942,8 @@ public class SpatialAnalysisPlugin implements ProjectFramePlugin,
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      Iterator<IFeature> iterator = SelectionUtil.getSelectedObjects(
-          application).iterator();
+      Iterator<IFeature> iterator = SelectionUtil
+          .getSelectedObjects(application).iterator();
       IFeature feat1 = iterator.next();
       IFeature feat2 = iterator.next();
       if (feat1.getGeom() instanceof IPolygon
@@ -936,10 +957,287 @@ public class SpatialAnalysisPlugin implements ProjectFramePlugin,
     }
 
     public CompareSignatureFuncsAction() {
-      this.putValue(
-          Action.SHORT_DESCRIPTION,
+      this.putValue(Action.SHORT_DESCRIPTION,
           "Compare the two signature functions of the two selected features in a single plot");
       this.putValue(Action.NAME, "Compare two signature functions");
     }
   }
+
+  /**
+   * Add training data to a training data file that can be used to train a SVM
+   * building classifier.
+   * 
+   * @author GTouya
+   * 
+   */
+  class AddTrainingDataAction extends AbstractAction {
+
+    /**
+    * 
+    */
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      AddTrainingDataFrame frame = new AddTrainingDataFrame(application);
+      frame.setVisible(true);
+    }
+
+    public AddTrainingDataAction() {
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Add training data to classify buildings using the method from (Steiniger et al 2008)");
+      this.putValue(Action.NAME, "Add Training Data");
+    }
+  }
+
+  class AddTrainingDataFrame extends JFrame implements ActionListener {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+    private GeOxygeneApplication application;
+    private JComboBox<BuildingClass> comboClass;
+    private JComboBox<String> comboLayer;
+    private JRadioButton radioNew, radioExisting;
+    private JTextField txtFile;
+    private JButton btnBrowse;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      if (e.getActionCommand().equals("OK")) {
+        Set<IFeature> buildings = SelectionUtil.getSelectedObjects(application);
+        if (radioNew.isSelected()) {
+          try {
+            createNewTrainingSet(buildings);
+          } catch (Exception e1) {
+            e1.printStackTrace();
+          }
+        } else {
+          try {
+            addToTrainingSet(buildings);
+          } catch (Exception e1) {
+            e1.printStackTrace();
+          }
+        }
+        this.dispose();
+      }
+      if (e.getActionCommand().equals("browse")) {
+        // On choisit le fichier
+        JFileChooser fc = new JFileChooser();
+        fc.setFileFilter(new XMLFileFilter());
+        int returnVal = fc.showDialog(null, "Choose the training set file");
+        if (returnVal != JFileChooser.APPROVE_OPTION) {
+          return;
+        }
+
+        // path est le chemin jusqu'au fichier
+        File path = fc.getSelectedFile();
+        this.txtFile.setText(path.getPath());
+
+      } else {
+        this.dispose();
+      }
+    }
+
+    private void addToTrainingSet(Set<IFeature> buildings) throws Exception {
+      IFeatureCollection<IFeature> fc = new FT_FeatureCollection<>();
+      for (IFeature feat : application.getMainFrame().getSelectedProjectFrame()
+          .getLayer((String) comboLayer.getSelectedItem())
+          .getFeatureCollection()) {
+        if (feat.getGeom() instanceof IPolygon)
+          fc.add(feat);
+      }
+      BuildingClassifierSVM classifier = new BuildingClassifierSVM(fc);
+      TrainingData trainingData = classifier.new TrainingData(
+          new File(txtFile.getText()), classifier.getDescriptorNames());
+      if (((BuildingClass) comboClass.getSelectedItem())
+          .equals(BuildingClass.INNER_CITY))
+        classifier.addInnerCityExamples(trainingData, buildings);
+      if (((BuildingClass) comboClass.getSelectedItem())
+          .equals(BuildingClass.URBAN))
+        classifier.addUrbanExamples(trainingData, buildings);
+      if (((BuildingClass) comboClass.getSelectedItem())
+          .equals(BuildingClass.SUBURBAN))
+        classifier.addSuburbanExamples(trainingData, buildings);
+      if (((BuildingClass) comboClass.getSelectedItem())
+          .equals(BuildingClass.RURAL))
+        classifier.addRuralExamples(trainingData, buildings);
+      if (((BuildingClass) comboClass.getSelectedItem())
+          .equals(BuildingClass.INDUSTRY))
+        classifier.addIndustrialExamples(trainingData, buildings);
+
+      trainingData.writeToXml(new File(txtFile.getText()));
+    }
+
+    private void createNewTrainingSet(Set<IFeature> buildings)
+        throws Exception {
+      IFeatureCollection<IFeature> fc = new FT_FeatureCollection<>();
+      for (IFeature feat : application.getMainFrame().getSelectedProjectFrame()
+          .getLayer((String) comboLayer.getSelectedItem())
+          .getFeatureCollection()) {
+        if (feat.getGeom() instanceof IPolygon)
+          fc.add(feat);
+      }
+      BuildingClassifierSVM classifier = new BuildingClassifierSVM(fc);
+      TrainingData trainingData = classifier.new TrainingData();
+      if (((BuildingClass) comboClass.getSelectedItem())
+          .equals(BuildingClass.INNER_CITY))
+        classifier.addInnerCityExamples(trainingData, buildings);
+      if (((BuildingClass) comboClass.getSelectedItem())
+          .equals(BuildingClass.URBAN))
+        classifier.addUrbanExamples(trainingData, buildings);
+      if (((BuildingClass) comboClass.getSelectedItem())
+          .equals(BuildingClass.SUBURBAN))
+        classifier.addSuburbanExamples(trainingData, buildings);
+      if (((BuildingClass) comboClass.getSelectedItem())
+          .equals(BuildingClass.RURAL))
+        classifier.addRuralExamples(trainingData, buildings);
+      if (((BuildingClass) comboClass.getSelectedItem())
+          .equals(BuildingClass.INDUSTRY))
+        classifier.addIndustrialExamples(trainingData, buildings);
+
+      trainingData.writeToXml(new File(txtFile.getText()));
+    }
+
+    public AddTrainingDataFrame(GeOxygeneApplication application) {
+      super("Add training data to a file for the SVM building classifier");
+      this.application = application;
+      this.setPreferredSize(new Dimension(750, 200));
+
+      // define a panel with the OK and Cancel buttons
+      JPanel btnPanel = new JPanel();
+      JButton okBtn = new JButton("OK");
+      okBtn.addActionListener(this);
+      okBtn.setActionCommand("OK");
+      JButton cancelBtn = new JButton("Cancel");
+      cancelBtn.addActionListener(this);
+      cancelBtn.setActionCommand("cancel");
+      btnPanel.add(okBtn);
+      btnPanel.add(cancelBtn);
+      btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.X_AXIS));
+
+      JPanel infoPanel = new JPanel();
+      comboClass = new JComboBox<BuildingClass>(BuildingClass.values());
+      comboClass.setPreferredSize(new Dimension(150, 20));
+      comboClass.setMaximumSize(new Dimension(150, 20));
+      comboClass.setMinimumSize(new Dimension(150, 20));
+      radioNew = new JRadioButton("new training set");
+      radioExisting = new JRadioButton("existing training set");
+      ButtonGroup bg = new ButtonGroup();
+      bg.add(radioNew);
+      bg.add(radioExisting);
+      radioNew.setSelected(true);
+      infoPanel.add(new JLabel("Building class of the chosen examples"));
+      infoPanel.add(comboClass);
+      infoPanel.add(Box.createHorizontalGlue());
+      infoPanel.add(radioNew);
+      infoPanel.add(radioExisting);
+      infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS));
+
+      JPanel filePanel = new JPanel();
+      txtFile = new JTextField();
+      txtFile.setPreferredSize(new Dimension(250, 20));
+      txtFile.setMaximumSize(new Dimension(250, 20));
+      txtFile.setMinimumSize(new Dimension(250, 20));
+      btnBrowse = new JButton();
+      btnBrowse.addActionListener(this);
+      btnBrowse.setActionCommand("browse");
+      DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+      for (Layer layer : application.getMainFrame().getSelectedProjectFrame()
+          .getLayers())
+        model.addElement(layer.getName());
+      comboLayer = new JComboBox<String>(model);
+      comboLayer.setPreferredSize(new Dimension(150, 20));
+      comboLayer.setMaximumSize(new Dimension(150, 20));
+      comboLayer.setMinimumSize(new Dimension(150, 20));
+      filePanel.add(txtFile);
+      filePanel.add(btnBrowse);
+      filePanel.add(Box.createHorizontalGlue());
+      filePanel.add(comboLayer);
+      filePanel.setLayout(new BoxLayout(filePanel, BoxLayout.X_AXIS));
+
+      this.getContentPane().add(infoPanel);
+      this.getContentPane().add(Box.createVerticalGlue());
+      this.getContentPane().add(filePanel);
+      this.getContentPane().add(Box.createVerticalGlue());
+      this.getContentPane().add(btnPanel);
+      this.getContentPane()
+          .setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+      this.setAlwaysOnTop(true);
+      this.pack();
+    }
+  }
+
+  /**
+   * Given a training set, classifies the selected buildings with a SVM
+   * classifier.
+   * 
+   * @author GTouya
+   * 
+   */
+  class BuildingClassifSVMAction extends AbstractAction {
+
+    /**
+    * 
+    */
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      IFeatureCollection<IFeature> buildings = new FT_FeatureCollection<>();
+      Layer layer = null;
+      for (IFeature feat : SelectionUtil.getSelectedObjects(application)) {
+        if (feat.getGeom() instanceof IPolygon)
+          buildings.add(feat);
+        if (layer == null)
+          layer = application.getMainFrame().getSelectedProjectFrame()
+              .getLayerFromFeature(feat);
+      }
+      // On choisit le fichier
+      JFileChooser fc = new JFileChooser();
+      fc.setFileFilter(new XMLFileFilter());
+      int returnVal = fc.showDialog(null, "Choose the training set file");
+      if (returnVal != JFileChooser.APPROVE_OPTION) {
+        return;
+      }
+
+      // path est le chemin jusqu'au fichier
+      File path = fc.getSelectedFile();
+
+      Style style = layer.getStyles().get(layer.getStyles().size() - 1);
+
+      BuildingClassifierSVM classifier = new BuildingClassifierSVM(buildings);
+      classifier.removeDescriptor(BuildingDescriptor.BCy);
+      try {
+        TrainingData trainingData = classifier.new TrainingData(path,
+            classifier.getDescriptorNames());
+        System.out.println("start training...");
+        classifier.train(trainingData);
+        System.out.println("...end of training");
+        for (IFeature building : buildings) {
+          BuildingClass result = classifier.predict(building);
+          System.out.println(
+              "prediction for building " + building + " is: " + result.name());
+          // display the output
+          PolygonSymbolizer symbolizer = new PolygonSymbolizer();
+          Fill fill = new Fill();
+          fill.setColor(result.getColor());
+          symbolizer.setFill(fill);
+          SLDUtil.addFeatureRule(style, building, "classifier output",
+              symbolizer);
+        }
+      } catch (ParserConfigurationException | SAXException | IOException e) {
+        e.printStackTrace();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+
+    }
+
+    public BuildingClassifSVMAction() {
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Classifies the selected building using a SVM Building Classifier and the method from (Steiniger et al 2008)");
+      this.putValue(Action.NAME, "SVM Building Classifier");
+    }
+  }
+
 }

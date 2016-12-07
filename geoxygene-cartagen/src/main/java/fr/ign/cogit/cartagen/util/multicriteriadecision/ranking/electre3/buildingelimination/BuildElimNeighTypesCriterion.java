@@ -15,6 +15,13 @@ import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.spatialanalysis.measures.congestion.CongestionComputation;
 import fr.ign.cogit.cartagen.util.multicriteriadecision.ranking.electre3.ELECTREIIICriterion;
 
+/**
+ * A criteria for building elimination in a block based on the types on
+ * neighbours in the block triangulation: the value of the criterion decreases
+ * when the some of the neighbours are roads.
+ * @author GTouya
+ *
+ */
 public class BuildElimNeighTypesCriterion extends ELECTREIIICriterion {
 
   // //////////////////////////////////////////
@@ -47,7 +54,7 @@ public class BuildElimNeighTypesCriterion extends ELECTREIIICriterion {
     this.setWeight(1.0);
     this.setIndifference(0.1);
     this.setPreference(0.2);
-    this.setVeto(0.2);
+    this.setVeto(0.7);
   }
 
   // Getters and setters //

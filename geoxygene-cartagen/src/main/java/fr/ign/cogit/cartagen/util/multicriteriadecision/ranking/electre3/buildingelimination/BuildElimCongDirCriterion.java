@@ -47,7 +47,7 @@ public class BuildElimCongDirCriterion extends ELECTREIIICriterion {
     this.setWeight(1.0);
     this.setIndifference(0.2);
     this.setPreference(0.3);
-    this.setVeto(0.1);
+    this.setVeto(0.5);
   }
 
   // Getters and setters //

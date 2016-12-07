@@ -38,7 +38,7 @@ import javax.swing.SpinnerNumberModel;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.cartagen.core.carto.SLDUtil;
+import fr.ign.cogit.cartagen.core.carto.SLDUtilCartagen;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
@@ -639,7 +639,7 @@ public class GeometryPoolMenu extends JMenu {
       for (int i = 0; i < layers.size(); i++) {
         Layer layer = layers.get(i);
         String name = layer.getName();
-        FeatureTypeStyle style = SLDUtil.getLayerInitialDisplay(layer);
+        FeatureTypeStyle style = SLDUtilCartagen.getLayerInitialDisplay(layer);
         boolean display = false;
         Color color = Color.RED;
         int width = 1;

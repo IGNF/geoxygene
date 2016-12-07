@@ -18,7 +18,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.carto.SLDUtil;
+import fr.ign.cogit.cartagen.core.carto.SLDUtilCartagen;
 import fr.ign.cogit.cartagen.core.defaultschema.network.NetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
@@ -85,7 +85,7 @@ public class RailwayLine extends NetworkSection implements IRailwayLine {
   @Transient
   public double getWidth() {
     if (this.getSymbolId() == -2) {// SLD width
-      return SLDUtil.getSymbolMaxWidthMapMm(this);
+      return SLDUtilCartagen.getSymbolMaxWidthMapMm(this);
     }
     return GeneralisationLegend.RES_FER_LARGEUR;
   }
@@ -94,7 +94,7 @@ public class RailwayLine extends NetworkSection implements IRailwayLine {
   @Transient
   public double getInternWidth() {
     if (this.getSymbolId() == -2) {// SLD width
-      return SLDUtil.getSymbolInnerWidthMapMm(this);
+      return SLDUtilCartagen.getSymbolInnerWidthMapMm(this);
     }
     return GeneralisationLegend.RES_FER_LARGEUR;
   }

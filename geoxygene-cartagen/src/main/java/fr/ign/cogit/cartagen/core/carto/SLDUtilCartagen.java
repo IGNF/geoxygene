@@ -10,8 +10,6 @@
 package fr.ign.cogit.cartagen.core.carto;
 
 import java.awt.Color;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -36,15 +34,17 @@ import fr.ign.cogit.geoxygene.style.NamedLayer;
 import fr.ign.cogit.geoxygene.style.PointSymbolizer;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.Rule;
+import fr.ign.cogit.geoxygene.style.SLDUtil;
 import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.UserStyle;
 
-public class SLDUtil {
+public class SLDUtilCartagen extends SLDUtil {
 
-  private static Logger logger = Logger.getLogger(SLDUtil.class.getName());
+  private static Logger logger = Logger
+      .getLogger(SLDUtilCartagen.class.getName());
 
   /**
    * Gets the symbol width of a linear object from the SLD value for this
@@ -136,7 +136,8 @@ public class SLDUtil {
    * given layer, on top of the symbols.
    * @param obj
    */
-  public static void addInitialGeomDisplay(Layer layer, Color color, int width) {
+  public static void addInitialGeomDisplay(Layer layer, Color color,
+      int width) {
     UserStyle style = new UserStyle();
     FeatureTypeStyle ftStyle = new FeatureTypeStyle();
     ftStyle.setName("initial geometry");
@@ -189,8 +190,8 @@ public class SLDUtil {
   public static void removeInitialGeomDisplay(Layer layer) {
     Style initialStyle = null;
     for (Style style : layer.getStyles()) {
-      if ("initial geometry".equals(style.getFeatureTypeStyles().get(0)
-          .getName())) {
+      if ("initial geometry"
+          .equals(style.getFeatureTypeStyles().get(0).getName())) {
         initialStyle = style;
         break;
       }
@@ -206,8 +207,8 @@ public class SLDUtil {
    */
   public static boolean layerHasInitialDisplay(Layer layer) {
     for (Style style : layer.getStyles()) {
-      if ("initial geometry".equals(style.getFeatureTypeStyles().get(0)
-          .getName())) {
+      if ("initial geometry"
+          .equals(style.getFeatureTypeStyles().get(0).getName())) {
         return true;
       }
     }
@@ -221,8 +222,8 @@ public class SLDUtil {
    */
   public static FeatureTypeStyle getLayerInitialDisplay(Layer layer) {
     for (Style style : layer.getStyles()) {
-      if ("initial geometry".equals(style.getFeatureTypeStyles().get(0)
-          .getName())) {
+      if ("initial geometry"
+          .equals(style.getFeatureTypeStyles().get(0).getName())) {
         return style.getFeatureTypeStyles().get(0);
       }
     }
@@ -358,8 +359,8 @@ public class SLDUtil {
     if (layer.getSymbolizer() instanceof PointSymbolizer) {
       if (((PointSymbolizer) layer.getSymbolizer()).getGraphic().getMarks()
           .size() != 0)
-        return ((PointSymbolizer) layer.getSymbolizer()).getGraphic()
-            .getMarks().get(0).getFill().getColor();
+        return ((PointSymbolizer) layer.getSymbolizer()).getGraphic().getMarks()
+            .get(0).getFill().getColor();
       else
         return Color.BLACK;
     } else if (layer.getSymbolizer() instanceof PolygonSymbolizer) {
@@ -380,35 +381,4 @@ public class SLDUtil {
     return Color.BLACK;
   }
 
-  /**
-   * Removes from a SLD, for each layer, all the styles with a given group name.
-   * @param sld
-   * @param styleName
-   */
-  public static void removeGroupNamedStyles(StyledLayerDescriptor sld,
-      String groupName) {
-    for (Layer layer : sld.getLayers()) {
-      Set<Style> layerStyles = new HashSet<Style>(layer.getStyles());
-      for (Style style : layerStyles) {
-        if (groupName.equals(style.getGroup()))
-          layer.getStyles().remove(style);
-      }
-    }
-  }
-
-  /**
-   * Removes from a SLD, for each layer, all the styles with a given name.
-   * @param sld
-   * @param styleName
-   */
-  public static void removeNamedStyles(StyledLayerDescriptor sld, String name) {
-    for (Layer layer : sld.getLayers()) {
-      Set<Style> layerStyles = new HashSet<Style>(layer.getStyles());
-      for (Style style : layerStyles) {
-        if (name.equals(style.getName())) {
-          layer.getStyles().remove(style);
-        }
-      }
-    }
-  }
 }

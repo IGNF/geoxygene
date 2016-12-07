@@ -32,7 +32,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import fr.ign.cogit.cartagen.core.carto.SLDUtil;
+import fr.ign.cogit.cartagen.core.carto.SLDUtilCartagen;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
@@ -63,7 +63,7 @@ public class DisplayInitialGeomsFrame extends JFrame implements ActionListener {
     for (int i = 0; i < layers.size(); i++) {
       Layer layer = layers.get(i);
       String name = layer.getName();
-      FeatureTypeStyle style = SLDUtil.getLayerInitialDisplay(layer);
+      FeatureTypeStyle style = SLDUtilCartagen.getLayerInitialDisplay(layer);
       boolean display = false;
       Color color = Color.RED;
       int width = 1;
@@ -132,10 +132,10 @@ public class DisplayInitialGeomsFrame extends JFrame implements ActionListener {
           width = Integer.valueOf((String) widthVal);
         else
           width = (Integer) widthVal;
-        SLDUtil.addInitialGeomDisplay(layer, color, width);
+        SLDUtilCartagen.addInitialGeomDisplay(layer, color, width);
         frame.getLayerViewPanel().getRenderingManager().addLayer(layer);
       } else
-        SLDUtil.removeInitialGeomDisplay(layer);
+        SLDUtilCartagen.removeInitialGeomDisplay(layer);
       // IGeneObj obj;
       // for (IFeature f: layer.getFeatureCollection()){
       // obj = (IGeneObj) f;

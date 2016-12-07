@@ -122,7 +122,7 @@ public class Compactness {
    * @return double
    */
   public double getSchummIndex() {
-    // on r�cup�re le plus long diam�tre
+    // on récupère le plus long diamètre
     double diametre = CommonAlgorithmsFromCartAGen.getPolygonDiameter(geom)
         .length();
     return 2 * Math.sqrt(geom.area() / Math.PI) / diametre;
@@ -186,8 +186,8 @@ public class Compactness {
     }
     // on calcule le terme principal de la formule de compacité
     for (int i = 0; i < n; i++) {
-      sommeTotale += Math.abs(100.0 * listeRayons.get(i).doubleValue()
-          / sommeRayons - 100.0 / n);
+      sommeTotale += Math.abs(
+          100.0 * listeRayons.get(i).doubleValue() / sommeRayons - 100.0 / n);
     }
 
     // calcul final de la compacit�

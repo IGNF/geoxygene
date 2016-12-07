@@ -80,6 +80,9 @@ public class RotationLabel {
     if (object == null) {
       return this.getRotationValue();
     }
+    if (propertyName == null) {
+      return this.rotangle;
+    }
     Object value = this.propertyName.evaluate(object);
     if (value == null) {
       return this.rotangle;

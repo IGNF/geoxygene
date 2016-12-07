@@ -4,7 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Transient;
 
-import fr.ign.cogit.cartagen.core.carto.SLDUtil;
+import fr.ign.cogit.cartagen.core.carto.SLDUtilCartagen;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
 import fr.ign.cogit.cartagen.software.GeneralisationLegend;
@@ -32,7 +32,7 @@ public class OsmWaterLine extends OsmNetworkSection implements IWaterLine {
   @Override
   public double getWidth() {
     if (this.getSymbolId() == -2) {// SLD width
-      return SLDUtil.getSymbolMaxWidthMapMm(this);
+      return SLDUtilCartagen.getSymbolMaxWidthMapMm(this);
     }
     return GeneralisationLegend.RES_EAU_LARGEUR;
   }
@@ -40,7 +40,7 @@ public class OsmWaterLine extends OsmNetworkSection implements IWaterLine {
   @Override
   public double getInternWidth() {
     if (this.getSymbolId() == -2) {// SLD width
-      return SLDUtil.getSymbolInnerWidthMapMm(this);
+      return SLDUtilCartagen.getSymbolInnerWidthMapMm(this);
     }
     return GeneralisationLegend.RES_EAU_LARGEUR;
   }

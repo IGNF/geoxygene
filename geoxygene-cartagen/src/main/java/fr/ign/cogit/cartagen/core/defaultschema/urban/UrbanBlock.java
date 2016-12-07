@@ -130,7 +130,8 @@ public class UrbanBlock extends GeneObjSurfDefault implements IUrbanBlock {
   }
 
   public UrbanBlock(Ilot block, CityPartition partition, StreetNetwork net,
-      Collection<IUrbanElement> buildings, Collection<IRoadLine> surroundRoads) {
+      Collection<IUrbanElement> buildings,
+      Collection<IRoadLine> surroundRoads) {
     super();
     this.geoxObj = block;
     this.setInitialGeom(this.geoxObj.getGeom());
@@ -154,7 +155,8 @@ public class UrbanBlock extends GeneObjSurfDefault implements IUrbanBlock {
   }
 
   public UrbanBlock(IPolygon poly, CityPartition partition, StreetNetwork net,
-      Collection<IUrbanElement> buildings, Collection<IRoadLine> surroundRoads) {
+      Collection<IUrbanElement> buildings,
+      Collection<IRoadLine> surroundRoads) {
     super();
     this.geoxObj = new IlotImpl(poly);
     this.setInitialGeom(this.geoxObj.getGeom());
@@ -234,7 +236,8 @@ public class UrbanBlock extends GeneObjSurfDefault implements IUrbanBlock {
    * @author GTouya
    */
   public UrbanBlock(Ilot block, CityPartition partition, StreetNetwork net,
-      IPolygon geom, Set<IUrbanElement> buildings, Set<IRoadLine> surroundRoads) {
+      IPolygon geom, Set<IUrbanElement> buildings,
+      Set<IRoadLine> surroundRoads) {
     this.geoxObj = block;
     this.setInitialGeom(this.geoxObj.getGeom());
     this.setEliminated(false);
@@ -283,7 +286,8 @@ public class UrbanBlock extends GeneObjSurfDefault implements IUrbanBlock {
   }
 
   @Override
-  public void setUrbanElements(IFeatureCollection<IUrbanElement> urbanElements) {
+  public void setUrbanElements(
+      IFeatureCollection<IUrbanElement> urbanElements) {
     this.urbanElements = urbanElements;
   }
 
@@ -510,18 +514,18 @@ public class UrbanBlock extends GeneObjSurfDefault implements IUrbanBlock {
   // //////////////////////////////////////////
   @Override
   public IUrbanBlock aggregateWithBlock(IUrbanBlock neighbour) {
-    UrbanBlock.logger.fine(this.toString() + " is aggregated to "
-        + neighbour.toString());
+    UrbanBlock.logger
+        .fine(this.toString() + " is aggregated to " + neighbour.toString());
 
     // create the new geometry of the block
-    IPolygon newGeom = (IPolygon) this.getCityBlockGeom().union(
-        neighbour.getCityBlockGeom());
+    IPolygon newGeom = (IPolygon) this.getCityBlockGeom()
+        .union(neighbour.getCityBlockGeom());
 
     Set<IRoadLine> blockRoads = new HashSet<IRoadLine>();
 
     // mark the between roads as eliminated
-    IGeometry line = this.getCityBlockGeom().intersection(
-        neighbour.getCityBlockGeom());
+    IGeometry line = this.getCityBlockGeom()
+        .intersection(neighbour.getCityBlockGeom());
     HashSet<IRoadLine> roads = new HashSet<IRoadLine>();
     // test if the intersection worked
     if (line instanceof IAggregate<?>) {
@@ -568,8 +572,8 @@ public class UrbanBlock extends GeneObjSurfDefault implements IUrbanBlock {
     aggrBlock.getInitialGeoxBlocks().addAll(neighbour.getInitialGeoxBlocks());
     aggrBlock.getAxes().addAll(this.axes);
     aggrBlock.getAxes().addAll(neighbour.getAxes());
-    aggrBlock.setAggregLevel(this.getAggregLevel() + neighbour.getAggregLevel()
-        + 1);
+    aggrBlock
+        .setAggregLevel(this.getAggregLevel() + neighbour.getAggregLevel() + 1);
 
     // update the neighbour link the other way round
     for (IUrbanBlock b : neighbour.getNeighbours()) {
@@ -672,8 +676,8 @@ public class UrbanBlock extends GeneObjSurfDefault implements IUrbanBlock {
     if (this.net != null) {
       buildMinSize = this.net.getBuildingMinSize();
     }
-    return DensityMeasures
-        .getBlockBuildingsSimulatedDensity(this, buildMinSize);
+    return DensityMeasures.getBlockBuildingsSimulatedDensity(this,
+        buildMinSize);
   }
 
   @Override
@@ -721,7 +725,8 @@ public class UrbanBlock extends GeneObjSurfDefault implements IUrbanBlock {
   @CollectionTable(name = "SurroundingNetworkIds", joinColumns = @JoinColumn(name = "block"))
   @Column(name = "SurroundingNetworkIds")
   @Access(AccessType.FIELD)
-  @EncodedRelation(targetEntities = { RoadLine.class, WaterLine.class }, inverse = false, methodName = "SurroundingNetwork", nToM = false, collectionType = CollectionType.FEATURE_COLLECTION)
+  @EncodedRelation(targetEntities = { RoadLine.class,
+      WaterLine.class }, inverse = false, methodName = "SurroundingNetwork", nToM = false, collectionType = CollectionType.FEATURE_COLLECTION)
   public List<Integer> getSurroundingNetworkIds() {
     return this.surroundingNetworkIds;
   }
@@ -759,8 +764,8 @@ public class UrbanBlock extends GeneObjSurfDefault implements IUrbanBlock {
 
   @Override
   public void addUrbanElement(IUrbanElement urbanElement) {
-    // TODO Auto-generated method stub
-
+    this.urbanElements.add(urbanElement);
+    this.urbanElementsIds.add(urbanElement.getId());
   }
 
 }

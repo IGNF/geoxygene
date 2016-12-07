@@ -22,6 +22,15 @@ import fr.ign.cogit.cartagen.util.multicriteriadecision.ranking.electre3.buildin
 import fr.ign.cogit.cartagen.util.multicriteriadecision.ranking.electre3.buildingelimination.BuildElimSizeCriterion;
 import fr.ign.cogit.geoxygene.schemageo.api.bati.Ilot;
 
+/**
+ * Algorithm to sort the buildings of a block with the first one being the first
+ * to be deleted, and the last one should be the last to be deleted. Uses the
+ * ELECTRE III multiple criteria decision technique, and the following criteria:
+ * congestion, congestion direction, corner buildings, size and the types of the
+ * neighbours.
+ * @author GTouya
+ *
+ */
 public class BuildingsDeletionProximityMultiCriterion {
 
   private static Collection<ELECTREIIICriterion> criteria;
@@ -67,23 +76,24 @@ public class BuildingsDeletionProximityMultiCriterion {
       parameters.put(BuildElimSizeCriterion.PARAM_SIM_AREA,
           Math.max(area, minArea));
       // distanceMax
-      parameters.put(BuildElimCongestionCriterion.PARAM_BUILDING,
+      parameters.put(BuildElimCongestionCriterion.PARAM_DIST_MAX,
           GeneralisationSpecifications.DISTANCE_MAX_PROXIMITE);
       // building
       parameters.put(BuildElimCornerCriterion.PARAM_BUILDING, urbanElement);
       // sizeThreshold
       parameters.put(BuildElimSizeCriterion.PARAM_AREA_THRESH,
           GeneralisationSpecifications.AIRE_SEUIL_SUPPRESSION_BATIMENT);
-      // getGeoxObj
-      actions.add(new ELECTREIIIAction(urbanElement, parameters));
+      // create the action object
+      ELECTREIIIAction action = new ELECTREIIIAction(urbanElement, parameters);
+      actions.add(action);
     }
 
     ELECTREIIIMethod method = new ELECTREIIIMethod(getCriteria(), actions, 0.5);
 
     List<ELECTREIIIAction> decision = method.decision();
-    for (int i = 0; i < decision.size(); i++)
-      removedBuildings.add((IBuilding) method.decision().get(i).getObj());
-
+    for (int i = 0; i < decision.size(); i++) {
+      removedBuildings.add((IBuilding) decision.get(i).getObj());
+    }
     return removedBuildings;
   }
 

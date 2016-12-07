@@ -72,6 +72,15 @@ public class ELECTREIIIAction {
   }
 
   // Other public methods //
+  @Override
+  public String toString() {
+    // TODO Auto-generated method stub
+    StringBuffer buff = new StringBuffer("action" + id + " (" + obj.toString());
+    for (String param : parameters.keySet()) {
+      buff.append(",[" + param + "," + parameters.get(param).toString() + "])");
+    }
+    return buff.toString();
+  }
 
   // //////////////////////////////////////////
   // Protected methods //

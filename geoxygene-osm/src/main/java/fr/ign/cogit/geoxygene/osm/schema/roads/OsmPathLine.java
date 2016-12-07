@@ -13,7 +13,7 @@ import java.awt.Color;
 
 import javax.persistence.Transient;
 
-import fr.ign.cogit.cartagen.core.carto.SLDUtil;
+import fr.ign.cogit.cartagen.core.carto.SLDUtilCartagen;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkFace;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
@@ -110,7 +110,7 @@ public class OsmPathLine extends OsmGeneObjLin implements IPathLine {
       return GeneralisationLegend.ROUTIER_LARGEUR_DESSOUS_0;
     }
     if (this.getSymbolId() == -2)
-      return SLDUtil.getSymbolMaxWidthMapMm(this);
+      return SLDUtilCartagen.getSymbolMaxWidthMapMm(this);
     return 0.0;
   }
 

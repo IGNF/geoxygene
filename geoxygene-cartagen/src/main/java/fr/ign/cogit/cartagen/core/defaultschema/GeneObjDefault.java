@@ -50,8 +50,8 @@ import fr.ign.cogit.geoxygene.util.algo.CommonAlgorithms;
  */
 public class GeneObjDefault extends FT_Feature implements IGeneObj {
 
-  private static Logger logger = Logger.getLogger(GeneObjDefault.class
-      .getName());
+  private static Logger logger = Logger
+      .getLogger(GeneObjDefault.class.getName());
 
   /**
    * The initial geometry of the GeneObj
@@ -369,8 +369,7 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
   public IPopulation<? extends IGeneObj> getPopulation() {
 
     @SuppressWarnings("unchecked")
-    IPopulation<? extends IGeneObj> population = (IPopulation<? extends IGeneObj>) super
-        .getPopulation();
+    IPopulation<? extends IGeneObj> population = (IPopulation<? extends IGeneObj>) super.getPopulation();
 
     if (population != null) {
       return population;
@@ -379,13 +378,9 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
     String popName = CartAGenDoc.getInstance().getCurrentDataset()
         .getPopNameFromObj(this);
     try {
-      return CartAGenDoc
-          .getInstance()
-          .getCurrentDataset()
-          .getCartagenPop(
-              popName,
-              (String) this.getClass().getDeclaredField("FEAT_TYPE_NAME")
-                  .get(null));
+      return CartAGenDoc.getInstance().getCurrentDataset()
+          .getCartagenPop(popName, (String) this.getClass()
+              .getDeclaredField("FEAT_TYPE_NAME").get(null));
     } catch (IllegalArgumentException e) {
       e.printStackTrace();
     } catch (SecurityException e) {
@@ -502,8 +497,8 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
     this.antecedents = new HashSet<IGeneObj>();
     this.featureType = new FeatureType();
     this.featureType.setTypeName(IGeneObj.FEAT_TYPE_NAME);
-    this.setDbName(CartAGenDoc.getInstance().getCurrentDataset()
-        .getCartAGenDB().getName());
+    this.setDbName(CartAGenDoc.getInstance().getCurrentDataset().getCartAGenDB()
+        .getName());
     // this.setDbName("CartAGen_initial_dataset");
   }
 
@@ -588,9 +583,9 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
    * @throws NoSuchFieldException
    */
   @Override
-  public void updateRelationIds() throws SecurityException,
-      NoSuchMethodException, IllegalArgumentException, IllegalAccessException,
-      InvocationTargetException, NoSuchFieldException {
+  public void updateRelationIds()
+      throws SecurityException, NoSuchMethodException, IllegalArgumentException,
+      IllegalAccessException, InvocationTargetException, NoSuchFieldException {
     // loop on the methods of the class
     for (Method m : this.getClass().getDeclaredMethods()) {
       // test if the method is annotated
@@ -707,8 +702,8 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
         if (encodedAnnotation.collectionType().equals(CollectionType.LIST)) {
           objs = new ArrayList<IGeneObj>();
         }
-        if (encodedAnnotation.collectionType().equals(
-            CollectionType.FEATURE_COLLECTION)) {
+        if (encodedAnnotation.collectionType()
+            .equals(CollectionType.FEATURE_COLLECTION)) {
           objs = new FT_FeatureCollection<IGeneObj>();
         }
 
@@ -771,8 +766,9 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
         // invoke the setter to set the relation
         Class<?> declaredClass = encodedAnnotation.collectionType()
             .getClassObject();
-        ReflectionUtil.getInheritedMethod(this.getClass(), methodName,
-            declaredClass).invoke(this, objs);
+        ReflectionUtil
+            .getInheritedMethod(this.getClass(), methodName, declaredClass)
+            .invoke(this, objs);
       } else {
         // 1 to 1 relation case
         // get its value
@@ -815,8 +811,9 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
 
         // invoke the setter to set the relation
         Class<?> declaredClass = encoded1To1Annotation.invClass();
-        ReflectionUtil.getInheritedMethod(this.getClass(), methodName,
-            declaredClass).invoke(this, obj);
+        ReflectionUtil
+            .getInheritedMethod(this.getClass(), methodName, declaredClass)
+            .invoke(this, obj);
       }
     }
   }
@@ -840,6 +837,8 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
   public Object getAttribute(String nomAttribut) {
     if (nomAttribut.equals("initialGeom"))
       return this.getInitialGeom();
+    if (nomAttribut.equals("id"))
+      return this.getId();
     return super.getAttribute(nomAttribut);
   }
 

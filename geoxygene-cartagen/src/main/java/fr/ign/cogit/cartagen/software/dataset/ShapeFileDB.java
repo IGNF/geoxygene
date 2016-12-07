@@ -49,6 +49,8 @@ import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ICemetery;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ISportsField;
+import fr.ign.cogit.cartagen.core.genericschema.urban.ITown;
+import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
 import fr.ign.cogit.cartagen.software.interfacecartagen.GeneralisationLeftPanelComplement;
 import fr.ign.cogit.cartagen.software.interfacecartagen.annexes.CartAGenProgressBar;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolList;
@@ -88,8 +90,8 @@ public class ShapeFileDB extends CartAGenDB {
     doc.getDocumentElement().normalize();
 
     // then read the document to fill the fields
-    Element root = (Element) doc.getElementsByTagName("cartagen-dataset").item(
-        0);
+    Element root = (Element) doc.getElementsByTagName("cartagen-dataset")
+        .item(0);
     // The DataSet type
     Element typeElem = (Element) root.getElementsByTagName("type").item(0);
     String type = typeElem.getChildNodes().item(0).getNodeValue();
@@ -104,8 +106,8 @@ public class ShapeFileDB extends CartAGenDB {
 
     // The DataSet symbolisation scale
     Element scaleElem = (Element) root.getElementsByTagName("scale").item(0);
-    this.setSymboScale(Integer.valueOf(scaleElem.getChildNodes().item(0)
-        .getNodeValue()));
+    this.setSymboScale(
+        Integer.valueOf(scaleElem.getChildNodes().item(0).getNodeValue()));
 
     // The DataSet system path
     Element systemPathElem = (Element) root.getElementsByTagName("system-path")
@@ -115,18 +117,19 @@ public class ShapeFileDB extends CartAGenDB {
     // the source DLM
     Element sourceElem = (Element) root.getElementsByTagName("source-dlm")
         .item(0);
-    SourceDLM source = SourceDLM.valueOf(sourceElem.getChildNodes().item(0)
-        .getNodeValue());
+    SourceDLM source = SourceDLM
+        .valueOf(sourceElem.getChildNodes().item(0).getNodeValue());
     this.setSourceDLM(source);
 
     // the list of classes
     Element classesElem = (Element) root.getElementsByTagName("classes-list")
         .item(0);
-    for (int i = 0; i < classesElem.getElementsByTagName("class").getLength(); i++) {
+    for (int i = 0; i < classesElem.getElementsByTagName("class")
+        .getLength(); i++) {
       Element classElem = (Element) classesElem.getElementsByTagName("class")
           .item(i);
-      Element pathElem = (Element) classElem.getElementsByTagName("path").item(
-          0);
+      Element pathElem = (Element) classElem.getElementsByTagName("path")
+          .item(0);
       String path = pathElem.getChildNodes().item(0).getNodeValue();
       // Essai Cecile (pour l'instant laissé en commentaires
       // Pour être sûr que les shapefiles sont referencés "en absolu" en
@@ -137,8 +140,8 @@ public class ShapeFileDB extends CartAGenDB {
       // On concatène le chemain récupéré dans le xml avec le répertoire courant
       // String path = System.getProperty("user.dir") + "/"
       // + pathElem.getChildNodes().item(0).getNodeValue();
-      Element popElem = (Element) classElem
-          .getElementsByTagName("feature-type").item(0);
+      Element popElem = (Element) classElem.getElementsByTagName("feature-type")
+          .item(0);
       String featureType = popElem.getChildNodes().item(0).getNodeValue();
       Class<? extends IGeometry> geometryType = IGeometry.class;
       if (classElem.getElementsByTagName("geometry-type").getLength() != 0) {
@@ -149,7 +152,8 @@ public class ShapeFileDB extends CartAGenDB {
 
     // the enrichments
     this.enrichments = new HashSet<CartAGenEnrichment>();
-    for (int i = 0; i < root.getElementsByTagName("enrichment").getLength(); i++) {
+    for (int i = 0; i < root.getElementsByTagName("enrichment")
+        .getLength(); i++) {
       Element enrichElem = (Element) root.getElementsByTagName("enrichment")
           .item(i);
       String enrich = enrichElem.getChildNodes().item(0).getNodeValue();
@@ -157,27 +161,27 @@ public class ShapeFileDB extends CartAGenDB {
     }
 
     // the GeneObjImplementation
-    Element implElem = (Element) root.getElementsByTagName(
-        "geneobj-implementation").item(0);
-    Element implNameElem = (Element) implElem.getElementsByTagName(
-        "implementation-name").item(0);
+    Element implElem = (Element) root
+        .getElementsByTagName("geneobj-implementation").item(0);
+    Element implNameElem = (Element) implElem
+        .getElementsByTagName("implementation-name").item(0);
     String implName = implNameElem.getChildNodes().item(0).getNodeValue();
-    Element implPackElem = (Element) implElem.getElementsByTagName(
-        "implementation-package").item(0);
+    Element implPackElem = (Element) implElem
+        .getElementsByTagName("implementation-package").item(0);
     String packName = implPackElem.getChildNodes().item(0).getNodeValue();
     Package rootPackage = Package.getPackage(packName);
-    Element implClassElem = (Element) implElem.getElementsByTagName(
-        "implementation-root-class").item(0);
+    Element implClassElem = (Element) implElem
+        .getElementsByTagName("implementation-root-class").item(0);
     String className = implClassElem.getChildNodes().item(0).getNodeValue();
     Class<?> rootClass = Class.forName(className);
-    Element factClassElem = (Element) implElem.getElementsByTagName(
-        "implementation-factory").item(0);
+    Element factClassElem = (Element) implElem
+        .getElementsByTagName("implementation-factory").item(0);
     String factClassName = factClassElem.getChildNodes().item(0).getNodeValue();
     Class<?> factClass = Class.forName(factClassName);
     try {
       this.setGeneObjImpl(new GeneObjImplementation(implName, rootPackage,
-          rootClass, (AbstractCreationFactory) factClass.getConstructor()
-              .newInstance()));
+          rootClass,
+          (AbstractCreationFactory) factClass.getConstructor().newInstance()));
     } catch (IllegalArgumentException e) {
       e.printStackTrace();
     } catch (SecurityException e) {
@@ -195,23 +199,23 @@ public class ShapeFileDB extends CartAGenDB {
     // the persistent classes
     Element persistElem = (Element) root.getElementsByTagName("persistent")
         .item(0);
-    this.setPersistent(Boolean.valueOf(persistElem.getChildNodes().item(0)
-        .getNodeValue()));
+    this.setPersistent(
+        Boolean.valueOf(persistElem.getChildNodes().item(0).getNodeValue()));
     this.setPersistentClasses(new HashSet<Class<?>>());
-    Element persistClassesElem = (Element) root.getElementsByTagName(
-        "persistent-classes").item(0);
+    Element persistClassesElem = (Element) root
+        .getElementsByTagName("persistent-classes").item(0);
     // get the class loader for the geoxygene-cartagen project
     ClassLoader loader = IGeneObj.class.getClassLoader();
-    for (int i = 0; i < persistClassesElem.getElementsByTagName(
-        "persistent-class").getLength(); i++) {
+    for (int i = 0; i < persistClassesElem
+        .getElementsByTagName("persistent-class").getLength(); i++) {
       Element persistClassElem = (Element) persistClassesElem
           .getElementsByTagName("persistent-class").item(i);
       String className1 = persistClassElem.getChildNodes().item(0)
           .getNodeValue();
       this.getPersistentClasses().add(Class.forName(className1, true, loader));
     }
-    this.setPersistentClasses(this.getGeneObjImpl().filterClasses(
-        this.getPersistentClasses()));
+    this.setPersistentClasses(
+        this.getGeneObjImpl().filterClasses(this.getPersistentClasses()));
 
     this.setXmlFile(file);
   }
@@ -306,8 +310,8 @@ public class ShapeFileDB extends CartAGenDB {
     implClassElem.appendChild(n);
     implElem.appendChild(implClassElem);
     Element factClassElem = xmlDoc.createElement("implementation-factory");
-    n = xmlDoc.createTextNode(this.getGeneObjImpl().getCreationFactory()
-        .getClass().getName());
+    n = xmlDoc.createTextNode(
+        this.getGeneObjImpl().getCreationFactory().getClass().getName());
     factClassElem.appendChild(n);
     implElem.appendChild(factClassElem);
 
@@ -360,13 +364,13 @@ public class ShapeFileDB extends CartAGenDB {
   @Override
   protected void load(GeographicClass geoClass, int scale) {
     ShapeFileClass shape = (ShapeFileClass) geoClass;
-    SymbolList symbols = SymbolList.getSymbolList(SymbolsUtil.getSymbolGroup(
-        this.getSourceDLM(), this.getSymboScale()));
+    SymbolList symbols = SymbolList.getSymbolList(
+        SymbolsUtil.getSymbolGroup(this.getSourceDLM(), this.getSymboScale()));
     this.getDataSet().setSymbols(symbols);
     try {
       if (shape.getFeatureTypeName().equals(IBuilding.FEAT_TYPE_NAME)) {
-        ShapeFileLoader
-            .loadBuildingsFromSHP(shape.getPath(), this.getDataSet());
+        ShapeFileLoader.loadBuildingsFromSHP(shape.getPath(),
+            this.getDataSet());
       }
       if (shape.getFeatureTypeName().equals(IRoadLine.FEAT_TYPE_NAME)) {
         ShapeFileLoader.loadRoadLinesFromSHP(shape.getPath(),
@@ -392,7 +396,8 @@ public class ShapeFileDB extends CartAGenDB {
         ShapeFileLoader.loadContourLinesFromSHP(shape.getPath(), symbols,
             this.getDataSet());
       }
-      if (shape.getFeatureTypeName().equals(IReliefElementLine.FEAT_TYPE_NAME)) {
+      if (shape.getFeatureTypeName()
+          .equals(IReliefElementLine.FEAT_TYPE_NAME)) {
         ShapeFileLoader.loadReliefElementLinesFromSHP(shape.getPath(), symbols,
             this.getDataSet());
       }
@@ -407,6 +412,13 @@ public class ShapeFileDB extends CartAGenDB {
       if (shape.getFeatureTypeName().equals(ICemetery.FEAT_TYPE_NAME)) {
         ShapeFileLoader.loadCemeteriesBDTFromSHP(shape.getPath(),
             this.getDataSet());
+      }
+
+      if (shape.getFeatureTypeName().equals(IUrbanBlock.FEAT_TYPE_NAME)) {
+        ShapeFileLoader.loadBlocksFromSHP(shape.getPath(), this.getDataSet());
+      }
+      if (shape.getFeatureTypeName().equals(ITown.FEAT_TYPE_NAME)) {
+        ShapeFileLoader.loadTownsFromSHP(shape.getPath(), this.getDataSet());
       }
 
       if (shape.getFeatureTypeName().equals(ILabelPoint.FEAT_TYPE_NAME)) {
@@ -427,7 +439,8 @@ public class ShapeFileDB extends CartAGenDB {
       if (shape.getFeatureTypeName().equals(IMask.FEAT_TYPE_NAME)) {
         ShapeFileLoader.loadMaskFromSHP(shape.getPath(), this.getDataSet());
       }
-      if (shape.getFeatureTypeName().equals(ISimpleLandUseArea.FEAT_TYPE_NAME)) {
+      if (shape.getFeatureTypeName()
+          .equals(ISimpleLandUseArea.FEAT_TYPE_NAME)) {
         int type = 0;
         if (shape.getName().equalsIgnoreCase("ZONE_VEGETATION")) {
           type = 1;
@@ -456,8 +469,8 @@ public class ShapeFileDB extends CartAGenDB {
   public void overwrite(GeographicClass geoClass) {
     ShapeFileClass shape = (ShapeFileClass) geoClass;
 
-    SymbolList symbols = SymbolList.getSymbolList(SymbolsUtil.getSymbolGroup(
-        this.getSourceDLM(), this.getSymboScale()));
+    SymbolList symbols = SymbolList.getSymbolList(
+        SymbolsUtil.getSymbolGroup(this.getSourceDLM(), this.getSymboScale()));
 
     try {
       if (shape.getFeatureTypeName().equals(IBuilding.FEAT_TYPE_NAME)) {
@@ -488,17 +501,18 @@ public class ShapeFileDB extends CartAGenDB {
         ShapeFileLoader.overwriteContourLinesFromSHP(shape.getPath(), 2.0,
             symbols, this.getDataSet());
       }
-      if (shape.getFeatureTypeName().equals(IReliefElementLine.FEAT_TYPE_NAME)) {
-        ShapeFileLoader.overwriteReliefElementLinesFromSHP(shape.getPath(),
-            2.0, symbols, this.getDataSet());
+      if (shape.getFeatureTypeName()
+          .equals(IReliefElementLine.FEAT_TYPE_NAME)) {
+        ShapeFileLoader.overwriteReliefElementLinesFromSHP(shape.getPath(), 2.0,
+            symbols, this.getDataSet());
       }
       if (shape.getFeatureTypeName().equals(ISpotHeight.FEAT_TYPE_NAME)) {
         ShapeFileLoader.overwriteSpotHeightsFromSHP(shape.getPath(), symbols,
             this.getDataSet());
       }
       if (shape.getFeatureTypeName().equals(IMask.FEAT_TYPE_NAME)) {
-        ShapeFileLoader
-            .overwriteMaskFromSHP(shape.getPath(), this.getDataSet());
+        ShapeFileLoader.overwriteMaskFromSHP(shape.getPath(),
+            this.getDataSet());
       }
 
     } catch (IOException e) {
@@ -573,8 +587,8 @@ public class ShapeFileDB extends CartAGenDB {
         Set<Class<?>> displayedClasses = ShapeFileDB.this
             .loadPersistentClasses();
         for (Class<?> displayedClass : displayedClasses) {
-          GeneralisationLeftPanelComplement.getInstance().setLayerDisplay(
-              displayedClass);
+          GeneralisationLeftPanelComplement.getInstance()
+              .setLayerDisplay(displayedClass);
         }
         // now build the dataset networks from the loaded data
         INetwork roadNet = ShapeFileDB.this.getDataSet().getRoadNetwork();

@@ -74,7 +74,9 @@ public class PropertyName extends Expression {
 
   @Override
   public Object evaluate(Object object) {
-    String getterName = "get" + this.getPropertyName().substring(0, 1).toUpperCase() + this.getPropertyName().substring(1); //$NON-NLS-1$
+    String getterName = "get" //$NON-NLS-1$
+        + this.getPropertyName().substring(0, 1).toUpperCase()
+        + this.getPropertyName().substring(1);
     if (object instanceof IFeature) {
       IFeature feature = (IFeature) object;
       Object resultat = feature.getAttribute(this.getPropertyName());
@@ -95,17 +97,17 @@ public class PropertyName extends Expression {
         }
         return resultat;
       } catch (SecurityException e) {
-        PropertyName.logger.error("La méthode " + getterName
-            + " n'est pas autorisée sur la classe " + object.getClass() + " / "
-            + classe);
+        PropertyName.logger.error(
+            "La méthode " + getterName + " n'est pas autorisée sur la classe "
+                + object.getClass() + " / " + classe);
       } catch (NoSuchMethodException e) {
-        PropertyName.logger.error("La méthode " + getterName
-            + " n'existe pas dans la classe " + object.getClass() + " / "
-            + classe);
+        PropertyName.logger
+            .error("La méthode " + getterName + " n'existe pas dans la classe "
+                + object.getClass() + " / " + classe);
       } catch (IllegalArgumentException e) {
-        PropertyName.logger.error("Arguments illégaux pour la méthode "
-            + getterName + " de la classe " + object.getClass() + " / "
-            + classe);
+        PropertyName.logger
+            .error("Arguments illégaux pour la méthode " + getterName
+                + " de la classe " + object.getClass() + " / " + classe);
       } catch (IllegalAccessException e) {
         PropertyName.logger.error("accès illégal à la méthode " + getterName
             + " de la classe " + object.getClass() + " / " + classe);
@@ -116,8 +118,8 @@ public class PropertyName extends Expression {
       }
       classe = classe.getSuperclass();
     }
-    PropertyName.logger.error("On a échoué sur l'objet " + object
-        + " avec le getter " + getterName);
+    PropertyName.logger.error(
+        "On a échoué sur l'objet " + object + " avec le getter " + getterName);
     return null;
   }
 

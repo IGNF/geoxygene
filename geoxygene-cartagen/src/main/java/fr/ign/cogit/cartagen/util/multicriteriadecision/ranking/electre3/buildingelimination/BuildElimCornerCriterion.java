@@ -48,7 +48,7 @@ public class BuildElimCornerCriterion extends ELECTREIIICriterion {
     this.setWeight(0.8);
     this.setIndifference(0.2);
     this.setPreference(0.4);
-    this.setVeto(0.3);
+    this.setVeto(0.5);
   }
 
   // Getters and setters //

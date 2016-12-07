@@ -9,14 +9,17 @@
  ******************************************************************************/
 /*
  * ###### IGN / Projet Nouvelle Carte de Base ###### Title: Squareness
- * Description: Classe pour la mesure concernant la rectangularit� des
- * b�timents Author: C. Greschner Version: 1.0 Changes: 0.1 (25/10/04) :
- * creation 0.2 (28/10/04) : mise au propre des commentaires 0.3 (09/12/04) :
- * remplacement de la fonction qui calcul squareness par un constructeur, mise
- * au propre des commentaires 1.0 (12/05/05) : Tidy up by Jenny Trevisan
+ * Description: Classe pour la mesure concernant la rectangularit� des b�timents
+ * Author: C. Greschner Version: 1.0 Changes: 0.1 (25/10/04) : creation 0.2
+ * (28/10/04) : mise au propre des commentaires 0.3 (09/12/04) : remplacement de
+ * la fonction qui calcul squareness par un constructeur, mise au propre des
+ * commentaires 1.0 (12/05/05) : Tidy up by Jenny Trevisan
  */
 
 package fr.ign.cogit.cartagen.spatialanalysis.urban;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
@@ -50,8 +53,7 @@ public class Squareness {
    */
   private boolean done = false;
   /**
-   * percentage of the corners that have 90�, given as a value between 0 and
-   * 1.
+   * percentage of the corners that have 90�, given as a value between 0 and 1.
    */
   private double squaredCorners = 0.0;
   /**
@@ -63,6 +65,11 @@ public class Squareness {
    * used as a boolean value to indicate if the geometry has holes.
    */
   private boolean hasHoles = false;
+
+  /**
+   * The list of deviations to perpendicular angles.
+   */
+  private List<Double> deviations = new ArrayList<>();
 
   /**
    * <p>
@@ -82,11 +89,11 @@ public class Squareness {
     int nbAngles = 0;
     int nbAnglesDroits = 0;
     int nbAnglesPresqueDroits = 0;
-    double deltaMin = Math.PI; // On pourrait �ventuellement sortir deltaMin
+    double deltaMin = Math.PI; // On pourrait éventuellement sortir deltaMin
                                // en
     // attribut
 
-    // on v�rifie que la g�ometrie est bien une surface simple ou une ligne
+    // on vérifie que la géometrie est bien une surface simple ou une ligne
     // simple
     if (!(geom instanceof ILineString || geom instanceof IPolygon)) {
       throw new Exception(
@@ -106,18 +113,18 @@ public class Squareness {
       outerRing = (ILineString) geom;
     }
 
-    // on r�cup�re le nombre des vertices
+    // on récupère le nombre des vertices
     double angle, deltaPiSur2;
     int outerNbPts = outerRing.numPoints();
     if (outerNbPts > 2) {
       // dans le cas ou la surface a suffisamment de points pour
       // calculer un angle
-      // on r�cup�re et stoche les deux premiers points
+      // on récupère et stoche les deux premiers points
       IDirectPosition xy1 = outerRing.coord().get(0);
       IDirectPosition xy2 = outerRing.coord().get(1);
 
       // passage en revue des coins
-      for (int i = 2; i < outerNbPts + 2; i++) {
+      for (int i = 2; i < outerNbPts; i++) {
         IDirectPosition xy3 = outerRing.coord().get(i);
 
         // calcul de l'angle
@@ -125,8 +132,9 @@ public class Squareness {
             .getValeur();
         nbAngles = nbAngles + 1;
         deltaPiSur2 = Math.abs(angle - Math.PI);
+        deviations.add(deltaPiSur2);
 
-        // l'angle est droite
+        // l'angle est droit
         if (deltaPiSur2 <= flex) {
           nbAnglesDroits = nbAnglesDroits + 1;
         } else if (deltaPiSur2 <= tol) {
@@ -155,8 +163,8 @@ public class Squareness {
       } else if (nbAngles != nbAnglesDroits) {
         // on d�duit les pourcentages
         this.setSquaredCorners((nbAnglesDroits + 0.0) / (nbAngles + 0.0));
-        this.setNearlySquaredCorners((nbAnglesPresqueDroits + 0.0)
-            / (nbAngles + 0.0));
+        this.setNearlySquaredCorners(
+            (nbAnglesPresqueDroits + 0.0) / (nbAngles + 0.0));
 
       }
       this.setDone(true);
@@ -199,5 +207,13 @@ public class Squareness {
 
   public double getSquaredCorners() {
     return this.squaredCorners;
+  }
+
+  public List<Double> getDeviations() {
+    return deviations;
+  }
+
+  public void setDeviations(List<Double> deviations) {
+    this.deviations = deviations;
   }
 }

@@ -26,6 +26,7 @@ import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
 import fr.ign.cogit.cartagen.core.genericschema.misc.ILabelPoint;
 import fr.ign.cogit.cartagen.core.genericschema.misc.ILabelPoint.LabelCategory;
+import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.partition.IMask;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IContourLine;
@@ -40,6 +41,9 @@ import fr.ign.cogit.cartagen.core.genericschema.urban.ICemetery;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ICemetery.CemeteryType;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ISportsField;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ISportsField.SportsFieldType;
+import fr.ign.cogit.cartagen.core.genericschema.urban.ITown;
+import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
+import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanElement;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.interfacecartagen.GeneralisationLeftPanelComplement;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.RoadSymbolResult;
@@ -53,6 +57,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.Reseau;
@@ -2977,6 +2982,171 @@ public class ShapeFileLoader {
         }
         label.setId(pop.size() + 1);
         pop.add(label);
+
+      } else {
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
+      }
+      j++;
+    }
+
+    shr.close();
+    dbr.close();
+
+    return true;
+  }
+
+  /**
+   * Charge des blocks depuis un shapefile sans remplir les liens avec bâtiments
+   * et villes.
+   * @param chemin
+   * @throws IOException
+   */
+  public static boolean loadBlocksFromSHP(String chemin,
+      CartAGenDataSet dataset) throws IOException {
+    ShapefileReader shr = null;
+    DbaseFileReader dbr = null;
+    if (!chemin.endsWith(".shp"))
+      chemin = chemin + ".shp";
+    try {
+      ShpFiles shpf = new ShpFiles(chemin);
+      shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
+      dbr = new DbaseFileReader(shpf, true, Charset.defaultCharset());
+    } catch (FileNotFoundException e) {
+      if (logger.isDebugEnabled()) {
+        logger.debug("fichier " + chemin + " non trouve.");
+      }
+      e.printStackTrace();
+      return false;
+    }
+
+    if (logger.isInfoEnabled()) {
+      logger.info("Loading: " + chemin);
+    }
+
+    IPopulation<IUrbanBlock> pop = dataset.getBlocks();
+
+    int j = 0;
+    while (shr.hasNext()) {
+      Record objet = shr.nextRecord();
+
+      Object[] champs = dbr.readEntry();
+      Map<String, Object> fields = new HashMap<String, Object>();
+      for (int i = 0; i < dbr.getHeader().getNumFields(); i++) {
+        fields.put(dbr.getHeader().getFieldName(i), champs[i]);
+      }
+
+      IGeometry geom = null;
+      try {
+        geom = AdapterFactory.toGM_Object((Geometry) objet.shape());
+      } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+      }
+
+      if (geom instanceof IPolygon) {
+        IUrbanBlock block = dataset.getCartAGenDB().getGeneObjImpl()
+            .getCreationFactory().createUrbanBlock((IPolygon) geom,
+                new FT_FeatureCollection<IUrbanElement>(),
+                new FT_FeatureCollection<INetworkSection>());
+
+        if (fields.containsKey("CARTAGEN_ID")) {
+          block.setId((Integer) fields.get("CARTAGEN_ID"));
+        } else {
+          block.setShapeId(j);
+        }
+        block.setId(pop.size() + 1);
+        pop.add(block);
+
+      } else if (geom instanceof IMultiSurface<?>) {
+        for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
+          IUrbanBlock block = dataset.getCartAGenDB().getGeneObjImpl()
+              .getCreationFactory()
+              .createUrbanBlock((IPolygon) ((IMultiSurface<?>) geom).get(i),
+                  new FT_FeatureCollection<IUrbanElement>(),
+                  new FT_FeatureCollection<INetworkSection>());
+          if (fields.containsKey("CARTAGEN_ID")) {
+            block.setId((Integer) fields.get("CARTAGEN_ID"));
+          } else {
+            block.setShapeId(j);
+          }
+          j++;
+          pop.add(block);
+        }
+      } else {
+        logger.error("ERREUR lors du chargement de shp " + chemin
+            + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
+      }
+      j++;
+    }
+
+    shr.close();
+    dbr.close();
+
+    return true;
+  }
+
+  /**
+   * Charge des villes depuis un shapefile sans remplir les liens avec
+   * bâtiments, îlots et réseau.
+   * @param chemin
+   * @throws IOException
+   */
+  public static boolean loadTownsFromSHP(String chemin, CartAGenDataSet dataset)
+      throws IOException {
+    ShapefileReader shr = null;
+    DbaseFileReader dbr = null;
+    if (!chemin.endsWith(".shp"))
+      chemin = chemin + ".shp";
+    try {
+      ShpFiles shpf = new ShpFiles(chemin);
+      shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
+      dbr = new DbaseFileReader(shpf, true, Charset.defaultCharset());
+    } catch (FileNotFoundException e) {
+      if (logger.isDebugEnabled()) {
+        logger.debug("fichier " + chemin + " non trouve.");
+      }
+      e.printStackTrace();
+      return false;
+    }
+
+    if (logger.isInfoEnabled()) {
+      logger.info("Loading: " + chemin);
+    }
+
+    IPopulation<ITown> pop = dataset.getTowns();
+
+    int j = 0;
+    while (shr.hasNext()) {
+      Record objet = shr.nextRecord();
+
+      Object[] champs = dbr.readEntry();
+      Map<String, Object> fields = new HashMap<String, Object>();
+      for (int i = 0; i < dbr.getHeader().getNumFields(); i++) {
+        fields.put(dbr.getHeader().getFieldName(i), champs[i]);
+      }
+
+      IGeometry geom = null;
+      try {
+        geom = AdapterFactory.toGM_Object((Geometry) objet.shape());
+      } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+      }
+
+      if (geom instanceof IPolygon) {
+        ITown block = dataset.getCartAGenDB().getGeneObjImpl()
+            .getCreationFactory().createTown(((IPolygon) geom));
+
+        if (fields.containsKey("CARTAGEN_ID")) {
+          block.setId((Integer) fields.get("CARTAGEN_ID"));
+        } else {
+          block.setShapeId(j);
+        }
+        block.setId(pop.size() + 1);
+        pop.add(block);
 
       } else {
         logger.error("ERREUR lors du chargement de shp " + chemin
