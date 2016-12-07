@@ -74,6 +74,7 @@ import fr.ign.cogit.cartagen.core.genericschema.road.IRoadNode;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadRoute;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadStroke;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoundAbout;
+import fr.ign.cogit.cartagen.core.genericschema.urban.BuildingCategory;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildArea;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildPoint;
@@ -137,8 +138,8 @@ import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.Reseau;
 
 public abstract class AbstractCreationFactory {
 
-  private static Logger logger = Logger.getLogger(AbstractCreationFactory.class
-      .getName());
+  private static Logger logger = Logger
+      .getLogger(AbstractCreationFactory.class.getName());
 
   // /////////////////
   // URBAN
@@ -173,6 +174,13 @@ public abstract class AbstractCreationFactory {
     return null;
   }
 
+  @SuppressWarnings("unused")
+  public IBuilding createBuilding(IPolygon poly, String nature,
+      BuildingCategory category) {
+    AbstractCreationFactory.logger
+        .error("Non implemented creation factory method for IBuilding");
+    return null;
+  }
   // BuildArea
 
   @SuppressWarnings("unused")
@@ -230,16 +238,17 @@ public abstract class AbstractCreationFactory {
   }
 
   @SuppressWarnings("unused")
-  public IUrbanAlignment createUrbanAlignment(List<IUrbanElement> urbanElements) {
+  public IUrbanAlignment createUrbanAlignment(
+      List<IUrbanElement> urbanElements) {
     AbstractCreationFactory.logger
         .error("Non implemented creation factory method for IUrbanAlignment");
     return null;
   }
 
   @SuppressWarnings("unused")
-  public IUrbanAlignment createUrbanAlignment(
-      List<IUrbanElement> urbanElements, ILineString shapeLine,
-      IUrbanElement initialElement, IUrbanElement finalElement) {
+  public IUrbanAlignment createUrbanAlignment(List<IUrbanElement> urbanElements,
+      ILineString shapeLine, IUrbanElement initialElement,
+      IUrbanElement finalElement) {
     AbstractCreationFactory.logger
         .error("Non implemented creation factory method for IUrbanAlignment");
     return null;
@@ -415,7 +424,8 @@ public abstract class AbstractCreationFactory {
   }
 
   @SuppressWarnings("unused")
-  public IRoadLine createRoadLine(ILineString line, int importance, int symbolId) {
+  public IRoadLine createRoadLine(ILineString line, int importance,
+      int symbolId) {
     AbstractCreationFactory.logger
         .error("Non implemented creation factory method for IRoadLine");
     return null;
@@ -513,38 +523,38 @@ public abstract class AbstractCreationFactory {
   // RoadFacilityPoint
 
   public IRoadFacilityPoint createRoadFacilityPoint() {
-    AbstractCreationFactory.logger
-        .error("Non implemented creation factory method for IRoadFacilityPoint");
+    AbstractCreationFactory.logger.error(
+        "Non implemented creation factory method for IRoadFacilityPoint");
     return null;
   }
 
   @SuppressWarnings("unused")
   public IRoadFacilityPoint createRoadFacilityPoint(IPoint point) {
-    AbstractCreationFactory.logger
-        .error("Non implemented creation factory method for IRoadFacilityPoint");
+    AbstractCreationFactory.logger.error(
+        "Non implemented creation factory method for IRoadFacilityPoint");
     return null;
   }
 
   @SuppressWarnings("unused")
   public IRoadFacilityPoint createRoadFacilityPoint(EquipementRoutier geoxObj) {
-    AbstractCreationFactory.logger
-        .error("Non implemented creation factory method for IRoadFacilityPoint");
+    AbstractCreationFactory.logger.error(
+        "Non implemented creation factory method for IRoadFacilityPoint");
     return null;
   }
 
   // BranchingCrossroad
 
   public IBranchingCrossroad createBranchingCrossroad() {
-    AbstractCreationFactory.logger
-        .error("Non implemented creation factory method for IBranchingCrossroad");
+    AbstractCreationFactory.logger.error(
+        "Non implemented creation factory method for IBranchingCrossroad");
     return null;
   }
 
   @SuppressWarnings("unused")
   public IBranchingCrossroad createBranchingCrossroad(PatteOie geoxObj,
       Collection<IRoadLine> roads, Collection<IRoadNode> nodes) {
-    AbstractCreationFactory.logger
-        .error("Non implemented creation factory method for IBranchingCrossroad");
+    AbstractCreationFactory.logger.error(
+        "Non implemented creation factory method for IBranchingCrossroad");
     return null;
   }
 
@@ -592,7 +602,8 @@ public abstract class AbstractCreationFactory {
   // dual carriageways
 
   @SuppressWarnings("unused")
-  public IDualCarriageWay createDualCarriageways(IPolygon poly, int importance) {
+  public IDualCarriageWay createDualCarriageways(IPolygon poly,
+      int importance) {
     AbstractCreationFactory.logger
         .error("Non implemented creation factory method for IDualCarriageWay");
     return null;
@@ -688,7 +699,8 @@ public abstract class AbstractCreationFactory {
   }
 
   @SuppressWarnings("unused")
-  public IElectricityLine createElectricityLine(ILineString line, int importance) {
+  public IElectricityLine createElectricityLine(ILineString line,
+      int importance) {
     AbstractCreationFactory.logger
         .error("Non implemented creation factory method for IElectricityLine");
     return null;
@@ -944,16 +956,16 @@ public abstract class AbstractCreationFactory {
 
   @SuppressWarnings("unused")
   public IReliefElementPoint createReliefElementPoint(IPoint point) {
-    AbstractCreationFactory.logger
-        .error("Non implemented creation factory method for IReliefElementPoint");
+    AbstractCreationFactory.logger.error(
+        "Non implemented creation factory method for IReliefElementPoint");
     return null;
   }
 
   @SuppressWarnings("unused")
   public IReliefElementPoint createReliefElementPoint(
       ElementCaracteristiqueDuRelief geoxObj) {
-    AbstractCreationFactory.logger
-        .error("Non implemented creation factory method for IReliefElementPoint");
+    AbstractCreationFactory.logger.error(
+        "Non implemented creation factory method for IReliefElementPoint");
     return null;
   }
 
@@ -961,16 +973,16 @@ public abstract class AbstractCreationFactory {
 
   @SuppressWarnings("unused")
   public IReliefElementLine createReliefElementLine(ILineString line) {
-    AbstractCreationFactory.logger
-        .error("Non implemented creation factory method for IReliefElementLine");
+    AbstractCreationFactory.logger.error(
+        "Non implemented creation factory method for IReliefElementLine");
     return null;
   }
 
   @SuppressWarnings("unused")
   public IReliefElementLine createReliefElementLine(
       ElementCaracteristiqueDuRelief geoxObj) {
-    AbstractCreationFactory.logger
-        .error("Non implemented creation factory method for IReliefElementLine");
+    AbstractCreationFactory.logger.error(
+        "Non implemented creation factory method for IReliefElementLine");
     return null;
   }
 
@@ -978,16 +990,16 @@ public abstract class AbstractCreationFactory {
 
   @SuppressWarnings("unused")
   public IReliefElementArea createReliefElementArea(IPolygon poly) {
-    AbstractCreationFactory.logger
-        .error("Non implemented creation factory method for IReliefElementArea");
+    AbstractCreationFactory.logger.error(
+        "Non implemented creation factory method for IReliefElementArea");
     return null;
   }
 
   @SuppressWarnings("unused")
   public IReliefElementArea createReliefElementArea(
       ElementCaracteristiqueDuRelief geoxObj) {
-    AbstractCreationFactory.logger
-        .error("Non implemented creation factory method for IReliefElementArea");
+    AbstractCreationFactory.logger.error(
+        "Non implemented creation factory method for IReliefElementArea");
     return null;
   }
 
@@ -1009,15 +1021,16 @@ public abstract class AbstractCreationFactory {
 
   @SuppressWarnings("unused")
   public ISimpleLandUseArea createSimpleLandUseArea(IPolygon poly, int type) {
-    AbstractCreationFactory.logger
-        .error("Non implemented creation factory method for ISimpleLandUseArea");
+    AbstractCreationFactory.logger.error(
+        "Non implemented creation factory method for ISimpleLandUseArea");
     return null;
   }
 
   @SuppressWarnings("unused")
-  public ISimpleLandUseArea createSimpleLandUseArea(ZoneOccSol geoxObj, int type) {
-    AbstractCreationFactory.logger
-        .error("Non implemented creation factory method for ISimpleLandUseArea");
+  public ISimpleLandUseArea createSimpleLandUseArea(ZoneOccSol geoxObj,
+      int type) {
+    AbstractCreationFactory.logger.error(
+        "Non implemented creation factory method for ISimpleLandUseArea");
     return null;
   }
 
@@ -1025,15 +1038,15 @@ public abstract class AbstractCreationFactory {
 
   @SuppressWarnings("unused")
   public ICompositeLandUseArea createCompositeLandUseArea(IPolygon poly) {
-    AbstractCreationFactory.logger
-        .error("Non implemented creation factory method for ICompositeLandUseArea");
+    AbstractCreationFactory.logger.error(
+        "Non implemented creation factory method for ICompositeLandUseArea");
     return null;
   }
 
   @SuppressWarnings("unused")
   public ICompositeLandUseArea createCompositeLandUseArea(ZoneOccSol geoxObj) {
-    AbstractCreationFactory.logger
-        .error("Non implemented creation factory method for ICompositeLandUseArea");
+    AbstractCreationFactory.logger.error(
+        "Non implemented creation factory method for ICompositeLandUseArea");
     return null;
   }
 
@@ -1094,16 +1107,16 @@ public abstract class AbstractCreationFactory {
 
   @SuppressWarnings("unused")
   public ICompositeAdminUnit createCompositeAdminUnit(IPolygon poly) {
-    AbstractCreationFactory.logger
-        .error("Non implemented creation factory method for ICompositeAdminUnit");
+    AbstractCreationFactory.logger.error(
+        "Non implemented creation factory method for ICompositeAdminUnit");
     return null;
   }
 
   @SuppressWarnings("unused")
   public ICompositeAdminUnit createCompositeAdminUnit(
       UniteAdministrativeComposite geoxObj) {
-    AbstractCreationFactory.logger
-        .error("Non implemented creation factory method for ICompositeAdminUnit");
+    AbstractCreationFactory.logger.error(
+        "Non implemented creation factory method for ICompositeAdminUnit");
     return null;
   }
 
@@ -1166,7 +1179,8 @@ public abstract class AbstractCreationFactory {
   }
 
   @SuppressWarnings("unused")
-  public ILabelPoint createLabelPoint(PointRepresentatifActiviteInteret geoxObj) {
+  public ILabelPoint createLabelPoint(
+      PointRepresentatifActiviteInteret geoxObj) {
     AbstractCreationFactory.logger
         .error("Non implemented creation factory method for ILabelPoint");
     return null;

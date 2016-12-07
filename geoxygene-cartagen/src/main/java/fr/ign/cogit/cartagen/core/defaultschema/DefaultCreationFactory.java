@@ -126,6 +126,7 @@ import fr.ign.cogit.cartagen.core.genericschema.road.IRoadNode;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadRoute;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadStroke;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoundAbout;
+import fr.ign.cogit.cartagen.core.genericschema.urban.BuildingCategory;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildArea;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildPoint;
@@ -188,8 +189,8 @@ import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.Reseau;
 
 public class DefaultCreationFactory extends AbstractCreationFactory {
 
-  private static Logger logger = Logger.getLogger(DefaultCreationFactory.class
-      .getName());
+  private static Logger logger = Logger
+      .getLogger(DefaultCreationFactory.class.getName());
 
   // /////////////////
   // URBAN
@@ -215,6 +216,12 @@ public class DefaultCreationFactory extends AbstractCreationFactory {
   @Override
   public IBuilding createBuilding(IPolygon poly, String nature) {
     return new Building(poly, nature);
+  }
+
+  @Override
+  public IBuilding createBuilding(IPolygon poly, String nature,
+      BuildingCategory category) {
+    return new Building(poly, nature, category);
   }
 
   // BuildArea
@@ -261,14 +268,15 @@ public class DefaultCreationFactory extends AbstractCreationFactory {
   }
 
   @Override
-  public IUrbanAlignment createUrbanAlignment(List<IUrbanElement> urbanElements) {
+  public IUrbanAlignment createUrbanAlignment(
+      List<IUrbanElement> urbanElements) {
     return new UrbanAlignment(urbanElements);
   }
 
   @Override
-  public IUrbanAlignment createUrbanAlignment(
-      List<IUrbanElement> urbanElements, ILineString shapeLine,
-      IUrbanElement initialElement, IUrbanElement finalElement) {
+  public IUrbanAlignment createUrbanAlignment(List<IUrbanElement> urbanElements,
+      ILineString shapeLine, IUrbanElement initialElement,
+      IUrbanElement finalElement) {
     return new UrbanAlignment(urbanElements, shapeLine, initialElement,
         finalElement);
   }
@@ -306,7 +314,8 @@ public class DefaultCreationFactory extends AbstractCreationFactory {
   public IUrbanBlock createUrbanBlock(Ilot block, CityPartition partition,
       StreetNetwork net, IPolygon geom, Set<IUrbanElement> buildings,
       Set<IRoadLine> surroundRoads) {
-    return new UrbanBlock(block, partition, net, geom, buildings, surroundRoads);
+    return new UrbanBlock(block, partition, net, geom, buildings,
+        surroundRoads);
   }
 
   @Override
@@ -404,7 +413,8 @@ public class DefaultCreationFactory extends AbstractCreationFactory {
   }
 
   @Override
-  public IRoadLine createRoadLine(ILineString line, int importance, int symbolId) {
+  public IRoadLine createRoadLine(ILineString line, int importance,
+      int symbolId) {
     return new RoadLine(line, importance, symbolId);
   }
 
@@ -556,7 +566,8 @@ public class DefaultCreationFactory extends AbstractCreationFactory {
   }
 
   @Override
-  public IDualCarriageWay createDualCarriageways(IPolygon poly, int importance) {
+  public IDualCarriageWay createDualCarriageways(IPolygon poly,
+      int importance) {
     return new DualCarriageway(poly, importance);
   }
 
@@ -612,7 +623,8 @@ public class DefaultCreationFactory extends AbstractCreationFactory {
   }
 
   @Override
-  public IElectricityLine createElectricityLine(ILineString line, int importance) {
+  public IElectricityLine createElectricityLine(ILineString line,
+      int importance) {
     return new ElectricityLine(line, importance);
   }
 
@@ -884,7 +896,8 @@ public class DefaultCreationFactory extends AbstractCreationFactory {
   }
 
   @Override
-  public ISimpleLandUseArea createSimpleLandUseArea(ZoneOccSol geoxObj, int type) {
+  public ISimpleLandUseArea createSimpleLandUseArea(ZoneOccSol geoxObj,
+      int type) {
     return new SimpleLandUseArea(geoxObj, type);
   }
 
@@ -1001,7 +1014,8 @@ public class DefaultCreationFactory extends AbstractCreationFactory {
   }
 
   @Override
-  public ILabelPoint createLabelPoint(PointRepresentatifActiviteInteret geoxObj) {
+  public ILabelPoint createLabelPoint(
+      PointRepresentatifActiviteInteret geoxObj) {
     return new LabelPoint(geoxObj);
   }
 

@@ -2,6 +2,7 @@ package fr.ign.cogit.geoxygene.osm.schema.urban;
 
 import java.util.Date;
 
+import fr.ign.cogit.cartagen.core.genericschema.urban.BuildingCategory;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
@@ -11,6 +12,7 @@ import fr.ign.cogit.geoxygene.osm.schema.OsmGeneObjSurf;
 public class OsmBuilding extends OsmGeneObjSurf implements IBuilding {
 
   private String nature;
+  private BuildingCategory category = BuildingCategory.UNKNOWN;
 
   public OsmBuilding(String contributor, IGeometry geom, int id, int changeSet,
       int version, int uid, Date date) {
@@ -55,5 +57,15 @@ public class OsmBuilding extends OsmGeneObjSurf implements IBuilding {
       nature = getTags().get("aeroway");
     else
       nature = "unknown";
+  }
+
+  @Override
+  public BuildingCategory getBuildingCategory() {
+    return category;
+  }
+
+  @Override
+  public void setBuildingCategory(BuildingCategory category) {
+    this.category = category;
   }
 }

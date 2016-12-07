@@ -26,4 +26,12 @@ public interface IBuilding extends IUrbanElement, IGeneObjSurf {
   public String getNature();
 
   public void setNature(String nature);
+
+  /**
+   * The category of the building.
+   * @return
+   */
+  public BuildingCategory getBuildingCategory();
+
+  public void setBuildingCategory(BuildingCategory category);
 }

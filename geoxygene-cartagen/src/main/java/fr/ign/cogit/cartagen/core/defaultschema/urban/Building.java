@@ -18,6 +18,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
 
+import fr.ign.cogit.cartagen.core.genericschema.urban.BuildingCategory;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
@@ -39,6 +40,7 @@ public class Building extends UrbanElement implements IBuilding {
    */
   private Batiment geoxObj;
   private String nature = "Indifferencie"; //$NON-NLS-1$
+  private BuildingCategory category = BuildingCategory.UNKNOWN;
 
   /**
    * Constructor
@@ -63,6 +65,16 @@ public class Building extends UrbanElement implements IBuilding {
     this.setNature(nature);
     this.setInitialGeom(poly);
     this.setEliminated(false);
+    this.setBuildingCategory(BuildingCategory.fromNatureName(nature));
+  }
+
+  public Building(IPolygon poly, String nature, BuildingCategory category) {
+    super();
+    this.geoxObj = new BatimentImpl(poly);
+    this.setNature(nature);
+    this.setInitialGeom(poly);
+    this.setEliminated(false);
+    this.setBuildingCategory(category);
   }
 
   /**
@@ -135,6 +147,16 @@ public class Building extends UrbanElement implements IBuilding {
   @Override
   public void setNature(String nature) {
     this.nature = nature;
+  }
+
+  @Override
+  public BuildingCategory getBuildingCategory() {
+    return category;
+  }
+
+  @Override
+  public void setBuildingCategory(BuildingCategory category) {
+    this.category = category;
   }
 
 }

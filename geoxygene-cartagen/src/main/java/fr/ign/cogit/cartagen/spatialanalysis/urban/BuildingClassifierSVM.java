@@ -108,7 +108,7 @@ public class BuildingClassifierSVM {
     super();
     this.buildings = buildings;
     this.svm = new SVM<double[]>(new GaussianKernel(8.0), 5.0, 5,
-        SVM.Multiclass.ONE_VS_ONE);
+        SVM.Multiclass.ONE_VS_ALL);
     this.descriptorsUsed = new ArrayList<>();
     this.descriptorsUsed.add(BuildingDescriptor.valueOf("BAr"));
     this.descriptorsUsed.add(BuildingDescriptor.valueOf("BCo"));
