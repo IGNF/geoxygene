@@ -40,7 +40,6 @@ import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMRelation.RoleMembre;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMRelation.TypeRelation;
-import fr.ign.cogit.geoxygene.osm.schema.OsmCaptureTool;
 import fr.ign.cogit.geoxygene.osm.schema.OsmGeneObj;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
@@ -52,44 +51,44 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  * @author MDVan-Damme
  */
 public class OsmXmlParser {
-  
+
   private static final Logger LOGGER = Logger.getLogger(OsmXmlParser.class);
-  
+
   private Set<OSMResource> nodes;
   private Set<OSMResource> ways;
   private Set<OSMResource> relations;
-  
+
   private Population<DefaultFeature> popParking;
   private Population<DefaultFeature> popPolice;
   private Population<DefaultFeature> popSchool;
   private Population<DefaultFeature> popPointOSM;
   private Population<DefaultFeature> popLigneOSM;
   private Population<DefaultFeature> popRouteOSM;
-  
+
   public Population<DefaultFeature> getPopParking() {
     return this.popParking;
   }
-  
+
   public Population<DefaultFeature> getPopPolice() {
     return this.popPolice;
   }
-  
+
   public Population<DefaultFeature> getPopSchool() {
     return this.popSchool;
   }
-  
+
   public Population<DefaultFeature> getPopPointOSM() {
     return this.popPointOSM;
   }
-  
+
   public Population<DefaultFeature> getPopLigneOSM() {
     return this.popLigneOSM;
   }
-  
+
   public Population<DefaultFeature> getPopRouteOSM() {
     return this.popRouteOSM;
   }
-  
+
   /**
    * 
    * @param doc
@@ -97,87 +96,96 @@ public class OsmXmlParser {
    * @throws IOException
    * @throws ParserConfigurationException
    */
-  public void loadOsm(Document doc) throws SAXException, IOException,
-    ParserConfigurationException {
-    
+  public void loadOsm(Document doc)
+      throws SAXException, IOException, ParserConfigurationException {
+
     this.nodes = new HashSet<OSMResource>();
     this.ways = new HashSet<OSMResource>();
     this.relations = new HashSet<OSMResource>();
-    
-    // popParking  popPolice   popSchool
-    popParking = new Population<DefaultFeature>(false, "parkings", DefaultFeature.class, true);
+
+    // popParking popPolice popSchool
+    popParking = new Population<DefaultFeature>(false, "parkings",
+        DefaultFeature.class, true);
     FeatureType parkingFeatureType = new FeatureType();
     parkingFeatureType.setTypeName("parkings");
     parkingFeatureType.setGeometryType(IPoint.class);
     popParking.setFeatureType(parkingFeatureType);
-    
-    popPolice = new Population<DefaultFeature>(false, "police", DefaultFeature.class, true);
+
+    popPolice = new Population<DefaultFeature>(false, "police",
+        DefaultFeature.class, true);
     FeatureType policeFeatureType = new FeatureType();
     policeFeatureType.setTypeName("police");
     policeFeatureType.setGeometryType(IPoint.class);
     popPolice.setFeatureType(policeFeatureType);
-    
-    popSchool = new Population<DefaultFeature>(false, "school", DefaultFeature.class, true);
+
+    popSchool = new Population<DefaultFeature>(false, "school",
+        DefaultFeature.class, true);
     FeatureType schoolFeatureType = new FeatureType();
     schoolFeatureType.setTypeName("school");
     schoolFeatureType.setGeometryType(IPoint.class);
     popSchool.setFeatureType(schoolFeatureType);
-    
-    popPointOSM = new Population<DefaultFeature>(false, "points", DefaultFeature.class, true);
+
+    popPointOSM = new Population<DefaultFeature>(false, "points",
+        DefaultFeature.class, true);
     FeatureType pointFeatureType = new FeatureType();
     pointFeatureType.setTypeName("point");
     pointFeatureType.setGeometryType(IPoint.class);
     popPointOSM.setFeatureType(pointFeatureType);
-    
-    popLigneOSM = new Population<DefaultFeature>(false, "lignes", DefaultFeature.class, true);
+
+    popLigneOSM = new Population<DefaultFeature>(false, "lignes",
+        DefaultFeature.class, true);
     FeatureType ligneFeatureType = new FeatureType();
     ligneFeatureType.setTypeName("ligne");
     ligneFeatureType.setGeometryType(ILineString.class);
     popLigneOSM.setFeatureType(ligneFeatureType);
-    
-    popRouteOSM = new Population<DefaultFeature>(false, "Routes", DefaultFeature.class, true);
+
+    popRouteOSM = new Population<DefaultFeature>(false, "Routes",
+        DefaultFeature.class, true);
     FeatureType routeFeatureType = new FeatureType();
     routeFeatureType.setTypeName("route");
     routeFeatureType.setGeometryType(ILineString.class);
     popRouteOSM.setFeatureType(ligneFeatureType);
-    
+
     doc.getDocumentElement().normalize();
     Element root = (Element) doc.getElementsByTagName("osm").item(0);
-    
+
     // On charge les objets ponctuels
     int nbNoeuds = root.getElementsByTagName(OsmGeneObj.TAG_NODE).getLength();
     for (int i = 0; i < nbNoeuds; i++) {
-      
+
       Element elem = (Element) root.getElementsByTagName(OsmGeneObj.TAG_NODE)
           .item(i);
-      
+
       // On récupère son ID
       long id = Long.valueOf(elem.getAttribute(OsmGeneObj.ATTR_ID));
       // String versionAttr = elem.getAttribute(OsmGeneObj.ATTR_VERSION);
-      
+
       // on récupère sa géométrie
       double lat = Double.valueOf(elem.getAttribute(OsmGeneObj.ATTR_LAT));
       double lon = Double.valueOf(elem.getAttribute(OsmGeneObj.ATTR_LON));
       OSMNode geom = new OSMNode(lat, lon);
-      
+
       if (elem.getElementsByTagName("tag").getLength() > 0) {
-        
+
         DefaultFeature n = null;
         String type = this.instancierTagsObjet(elem);
         if (type.equals("parking")) {
-          n = popParking.nouvelElement(new GM_Point(CRSConversion.wgs84ToLambert93(geom.getLatitude(), geom.getLongitude())));
+          n = popParking.nouvelElement(new GM_Point(CRSConversion
+              .wgs84ToLambert93(geom.getLatitude(), geom.getLongitude())));
         } else if (type.equals("school")) {
-          n = popSchool.nouvelElement(new GM_Point(CRSConversion.wgs84ToLambert93(geom.getLatitude(), geom.getLongitude())));
+          n = popSchool.nouvelElement(new GM_Point(CRSConversion
+              .wgs84ToLambert93(geom.getLatitude(), geom.getLongitude())));
         } else if (type.equals("police")) {
-          n = popPolice.nouvelElement(new GM_Point(CRSConversion.wgs84ToLambert93(geom.getLatitude(), geom.getLongitude())));
+          n = popPolice.nouvelElement(new GM_Point(CRSConversion
+              .wgs84ToLambert93(geom.getLatitude(), geom.getLongitude())));
         } else {
-          n = popPointOSM.nouvelElement(new GM_Point(CRSConversion.wgs84ToLambert93(geom.getLatitude(), geom.getLongitude())));
+          n = popPointOSM.nouvelElement(new GM_Point(CRSConversion
+              .wgs84ToLambert93(geom.getLatitude(), geom.getLongitude())));
         }
         n.setFeatureType(pointFeatureType);
-        
-        
+
       }
-      
+
       // On construit le nouvel objet ponctuel
       OSMResource obj = new OSMResource("", geom, id, 0, 0, 1, null);
       geom.setObjet(obj);
@@ -187,17 +195,16 @@ public class OsmXmlParser {
     }
     LOGGER.info(nbNoeuds + " points chargés");
 
-    
     // On charge les objets linéaires
     int nbWays = root.getElementsByTagName(OsmGeneObj.TAG_WAY).getLength();
     for (int i = 0; i < nbWays; i++) {
-      
+
       Element elem = (Element) root.getElementsByTagName(OsmGeneObj.TAG_WAY)
           .item(i);
-      
+
       // on récupère les attributs de l'élément
       int id = Integer.valueOf(elem.getAttribute(OsmGeneObj.ATTR_ID));
-      
+
       boolean isRoad = false;
       if (elem.getElementsByTagName("tag").getLength() > 0) {
         for (int j = 0; j < elem.getElementsByTagName("tag").getLength(); j++) {
@@ -205,24 +212,22 @@ public class OsmXmlParser {
           String cle = tagElem.getAttribute("k");
           if (cle.equals("highway")) {
             isRoad = true;
-            /*String value = this.getTags().get("highway");
-            if (value.equals("motorway") || value.equals("motorway_link")
-                || value.equals("trunk") || value.equals("trunk_link"))
-              setImportance(4);
-            else if (value.equals("primary") || value.equals("primary_link"))
-              setImportance(3);
-            else if (value.equals("secondary") || value.equals("secondary_link")
-                || value.equals("tertiary") || value.equals("tertiary_link"))
-              setImportance(2);
-            else if (value.equals("road") || value.equals("residential")
-                || value.equals("pedestrian"))
-              setImportance(1);
-            else
-              setImportance(0);*/
+            /*
+             * String value = this.getTags().get("highway"); if
+             * (value.equals("motorway") || value.equals("motorway_link") ||
+             * value.equals("trunk") || value.equals("trunk_link"))
+             * setImportance(4); else if (value.equals("primary") ||
+             * value.equals("primary_link")) setImportance(3); else if
+             * (value.equals("secondary") || value.equals("secondary_link") ||
+             * value.equals("tertiary") || value.equals("tertiary_link"))
+             * setImportance(2); else if (value.equals("road") ||
+             * value.equals("residential") || value.equals("pedestrian"))
+             * setImportance(1); else setImportance(0);
+             */
           }
         }
       }
-      
+
       // On récupère sa géométrie
       ArrayList<Long> vertices = new ArrayList<Long>();
       for (int j = 0; j < elem.getElementsByTagName("nd").getLength(); j++) {
@@ -231,7 +236,7 @@ public class OsmXmlParser {
         vertices.add(ref);
       }
       OSMWay way = new OSMWay(vertices);
-      
+
       // On récupère sa géométrie
       IDirectPositionList coord = new DirectPositionList();
       for (long index : way.getVertices()) {
@@ -243,8 +248,8 @@ public class OsmXmlParser {
           }
         }
         if (vertex != null) {
-          IDirectPosition pt = CRSConversion.wgs84ToLambert93(
-              vertex.getLatitude(), vertex.getLongitude());
+          IDirectPosition pt = CRSConversion
+              .wgs84ToLambert93(vertex.getLatitude(), vertex.getLongitude());
           coord.add(pt);
         }
       }
@@ -255,15 +260,15 @@ public class OsmXmlParser {
         } else {
           n = popLigneOSM.nouvelElement(new GM_LineString(coord));
         }
-        
+
         n.setFeatureType(ligneFeatureType);
         this.instancierTagsObjet(elem);
-        
+
         OSMWay geom = new OSMWay(vertices);
         // on construit le nouvel objet ponctuel
         OSMResource obj = new OSMResource("", geom, id, 0, 0, 1, null);
         geom.setObjet(obj);
-        
+
         // On ajoute obj aux objets chargés
         this.ways.add(obj);
       }
@@ -273,13 +278,13 @@ public class OsmXmlParser {
     // On charge les relations
     int nbRels = root.getElementsByTagName(OsmGeneObj.TAG_REL).getLength();
     for (int i = 0; i < nbRels; i++) {
-      
+
       Element elem = (Element) root.getElementsByTagName(OsmGeneObj.TAG_REL)
           .item(i);
-      
+
       // on récupère les attributs de l'élément
       int id = Integer.valueOf(elem.getAttribute(OsmGeneObj.ATTR_ID));
-      
+
       // On récupère sa primitive
       TypeRelation type = TypeRelation.NON_DEF;
       for (int j = 0; j < elem.getElementsByTagName("tag").getLength(); j++) {
@@ -290,12 +295,13 @@ public class OsmXmlParser {
         }
       }
       List<OsmRelationMember> membres = new ArrayList<OsmRelationMember>();
-      for (int j = 0; j < elem.getElementsByTagName("member").getLength(); j++) {
+      for (int j = 0; j < elem.getElementsByTagName("member")
+          .getLength(); j++) {
         Element memElem = (Element) elem.getElementsByTagName("member").item(j);
         long ref = Long.valueOf(memElem.getAttribute("ref"));
         String role = memElem.getAttribute("role");
-        membres.add(new OsmRelationMember(RoleMembre.valueOfTexte(role), true,
-            ref));
+        membres.add(
+            new OsmRelationMember(RoleMembre.valueOfTexte(role), true, ref));
       }
       OSMRelation geom = new OSMRelation(type, membres);
       OSMResource obj = new OSMResource("", geom, id, 0, 0, 1, null);
@@ -305,27 +311,28 @@ public class OsmXmlParser {
       this.relations.add(obj);
     }
     LOGGER.info(nbRels + " relations chargées");
-    
+
     int nbResources = nbNoeuds + nbWays + nbRels;
     LOGGER.info(nbResources + " ressources chargées");
   }
-  
-  
+
   private String instancierTagsObjet(Element elem) {
     for (int j = 0; j < elem.getElementsByTagName("tag").getLength(); j++) {
       Element tagElem = (Element) elem.getElementsByTagName("tag").item(j);
       String cle = tagElem.getAttribute("k");
       // cas du tag outil
       if (cle.equals(OsmGeneObj.TAG_OUTIL)) {
-        /*String txt = tagElem.getAttribute("v");
-        OsmCaptureTool outil = OsmCaptureTool.valueOfTexte(txt);
-        //obj.setCaptureTool(outil);*/
+        /*
+         * String txt = tagElem.getAttribute("v"); OsmCaptureTool outil =
+         * OsmCaptureTool.valueOfTexte(txt); //obj.setCaptureTool(outil);
+         */
         continue;
       }
       // cas du tag source
       if (cle.equals(OsmGeneObj.TAG_SOURCE)) {
-        /*String txt = tagElem.getAttribute("v");
-        //obj.setSource(txt);*/
+        /*
+         * String txt = tagElem.getAttribute("v"); //obj.setSource(txt);
+         */
         continue;
       }
       // autres tags
@@ -335,10 +342,10 @@ public class OsmXmlParser {
           return tagElem.getAttribute("v");
         }
       }
-      //obj.addTag(cle, tagElem.getAttribute("v"));*/
+      // obj.addTag(cle, tagElem.getAttribute("v"));*/
     }
     // System.out.println("");
     return "";
   }
-  
+
 }

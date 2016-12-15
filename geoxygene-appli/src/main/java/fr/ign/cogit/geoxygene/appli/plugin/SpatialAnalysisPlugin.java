@@ -21,6 +21,7 @@ import java.sql.DriverManager;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -47,10 +49,26 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import org.xml.sax.SAXException;
 
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.XMLFileFilter;
+import fr.ign.cogit.cartagen.spatialanalysis.landmarks.LandmarksFinder;
+import fr.ign.cogit.cartagen.spatialanalysis.landmarks.LandmarksFinderTrainer;
+import fr.ign.cogit.cartagen.spatialanalysis.learningdescriptor.CategoryLearningDescr;
+import fr.ign.cogit.cartagen.spatialanalysis.learningdescriptor.CompactnessLearningDescr;
+import fr.ign.cogit.cartagen.spatialanalysis.learningdescriptor.CompactnessLearningDescr.CompactnessMethod;
+import fr.ign.cogit.cartagen.spatialanalysis.learningdescriptor.DensityLearningDescr;
+import fr.ign.cogit.cartagen.spatialanalysis.learningdescriptor.DistToCrossroadLearningDescr;
+import fr.ign.cogit.cartagen.spatialanalysis.learningdescriptor.ElongationLearningDescr;
+import fr.ign.cogit.cartagen.spatialanalysis.learningdescriptor.LearningDescriptor;
+import fr.ign.cogit.cartagen.spatialanalysis.learningdescriptor.NbAdjacentLearningDescr;
+import fr.ign.cogit.cartagen.spatialanalysis.learningdescriptor.NbNeighboursLearningDescr;
+import fr.ign.cogit.cartagen.spatialanalysis.learningdescriptor.OrientationLearningDescr;
+import fr.ign.cogit.cartagen.spatialanalysis.learningdescriptor.SizeLearningDescr;
+import fr.ign.cogit.cartagen.spatialanalysis.learningdescriptor.SquarenessLearningDescr;
+import fr.ign.cogit.cartagen.spatialanalysis.learningdescriptor.VerticesNbLearningDescr;
 import fr.ign.cogit.cartagen.spatialanalysis.network.roads.CrossRoadDetection;
 import fr.ign.cogit.cartagen.spatialanalysis.network.roads.RondPoint;
 import fr.ign.cogit.cartagen.spatialanalysis.urban.BuildingClassifierSVM;
@@ -61,9 +79,11 @@ import fr.ign.cogit.cartagen.spatialanalysis.urban.UrbanAreaComputationJTS;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
@@ -110,12 +130,16 @@ public class SpatialAnalysisPlugin
     urbanMenu.add(new JMenuItem(new BoffetUrbanAreasAction()));
     urbanMenu.add(new JMenuItem(new CitinessUrbanAreasAction()));
     JMenu buildClassifMenu = new JMenu("Building Classification");
-    buildClassifMenu.add(new JMenuItem(new AddTrainingDataAction()));
-    buildClassifMenu.add(new JMenuItem(new BuildingClassifSVMAction()));
+    buildClassifMenu.add(new JMenuItem(new AddTrainingDataLandmarksAction()));
+    buildClassifMenu.add(new JMenuItem(new LandmarksFinderAction()));
     urbanMenu.add(buildClassifMenu);
+    JMenu landmarksMenu = new JMenu("Landmarks");
+    landmarksMenu.add(new JMenuItem(new AddTrainingDataLandmarksAction()));
+    landmarksMenu.add(new JMenuItem(new LandmarksFinderAction()));
     menu.add(roadMenu);
     menu.add(riverMenu);
     menu.add(railMenu);
+    menu.add(landmarksMenu);
     menu.add(urbanMenu);
     JMenu shapeMenu = new JMenu("Shape");
     shapeMenu.add(new JMenuItem(new DisplayTurningFuncAction()));
@@ -1138,7 +1162,8 @@ public class SpatialAnalysisPlugin
       txtFile.setPreferredSize(new Dimension(250, 20));
       txtFile.setMaximumSize(new Dimension(250, 20));
       txtFile.setMinimumSize(new Dimension(250, 20));
-      btnBrowse = new JButton();
+      btnBrowse = new JButton(new ImageIcon(
+          this.getClass().getResource("images/icons/folder_add.png")));
       btnBrowse.addActionListener(this);
       btnBrowse.setActionCommand("browse");
       DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
@@ -1237,6 +1262,299 @@ public class SpatialAnalysisPlugin
       this.putValue(Action.SHORT_DESCRIPTION,
           "Classifies the selected building using a SVM Building Classifier and the method from (Steiniger et al 2008)");
       this.putValue(Action.NAME, "SVM Building Classifier");
+    }
+  }
+
+  /**
+   * Add training data to a training data file that can be used to train a
+   * decision tree based landmarks classifier.
+   * 
+   * @author GTouya
+   * 
+   */
+  class AddTrainingDataLandmarksAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      AddTrainingDataLandmarksFrame frame = new AddTrainingDataLandmarksFrame(
+          application);
+      frame.setVisible(true);
+    }
+
+    public AddTrainingDataLandmarksAction() {
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Add training data to classify buildings landmarks or not, from (Elias 2003)");
+      this.putValue(Action.NAME, "Add Training Data");
+    }
+  }
+
+  class AddTrainingDataLandmarksFrame extends JFrame implements ActionListener {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+    private GeOxygeneApplication app;
+    private JRadioButton radioYes, radioNo;
+    private JComboBox<String> comboLayer, comboLayer2, comboLayer3;
+    private JTextField txtFile;
+    private JButton btnBrowse;
+    private Set<LearningDescriptor> descriptors;
+    private IFeatureCollection<IFeature> buildings, roads, crossroads;
+
+    public AddTrainingDataLandmarksFrame(GeOxygeneApplication application) {
+      super("Add training data to a file for the SVM building classifier");
+      this.app = application;
+      this.setPreferredSize(new Dimension(1200, 200));
+
+      // define a panel with the OK and Cancel buttons
+      JPanel btnPanel = new JPanel();
+      JButton okBtn = new JButton("OK");
+      okBtn.addActionListener(this);
+      okBtn.setActionCommand("OK");
+      JButton cancelBtn = new JButton("Cancel");
+      cancelBtn.addActionListener(this);
+      cancelBtn.setActionCommand("cancel");
+      btnPanel.add(okBtn);
+      btnPanel.add(cancelBtn);
+      btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.X_AXIS));
+
+      JPanel infoPanel = new JPanel();
+      DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+      DefaultComboBoxModel<String> model2 = new DefaultComboBoxModel<>();
+      DefaultComboBoxModel<String> model3 = new DefaultComboBoxModel<>();
+      for (Layer layer : application.getMainFrame().getSelectedProjectFrame()
+          .getLayers()) {
+        model.addElement(layer.getName());
+        model2.addElement(layer.getName());
+        model3.addElement(layer.getName());
+      }
+      comboLayer = new JComboBox<String>(model);
+      comboLayer.setPreferredSize(new Dimension(150, 20));
+      comboLayer.setMaximumSize(new Dimension(150, 20));
+      comboLayer.setMinimumSize(new Dimension(150, 20));
+      comboLayer2 = new JComboBox<String>(model2);
+      comboLayer2.setPreferredSize(new Dimension(150, 20));
+      comboLayer2.setMaximumSize(new Dimension(150, 20));
+      comboLayer2.setMinimumSize(new Dimension(150, 20));
+      comboLayer3 = new JComboBox<String>(model3);
+      comboLayer3.setPreferredSize(new Dimension(150, 20));
+      comboLayer3.setMaximumSize(new Dimension(150, 20));
+      comboLayer3.setMinimumSize(new Dimension(150, 20));
+      radioYes = new JRadioButton("Landmarks");
+      radioNo = new JRadioButton("Not landmarks");
+      ButtonGroup bg = new ButtonGroup();
+      bg.add(radioYes);
+      bg.add(radioNo);
+      radioYes.setSelected(true);
+      infoPanel.add(new JLabel("Building layer"));
+      infoPanel.add(comboLayer);
+      infoPanel.add(Box.createHorizontalGlue());
+      infoPanel.add(new JLabel("Road layer"));
+      infoPanel.add(comboLayer2);
+      infoPanel.add(Box.createHorizontalGlue());
+      infoPanel.add(new JLabel("Crossroads layer"));
+      infoPanel.add(comboLayer3);
+      infoPanel.add(Box.createHorizontalGlue());
+      infoPanel.add(radioYes);
+      infoPanel.add(radioNo);
+      infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS));
+
+      JPanel filePanel = new JPanel();
+      txtFile = new JTextField();
+      txtFile.setPreferredSize(new Dimension(250, 20));
+      txtFile.setMaximumSize(new Dimension(250, 20));
+      txtFile.setMinimumSize(new Dimension(250, 20));
+      btnBrowse = new JButton(new ImageIcon(
+          this.getClass().getResource("/images/icons/folder_add.png")));
+      btnBrowse.addActionListener(this);
+      btnBrowse.setActionCommand("browse");
+      filePanel.add(txtFile);
+      filePanel.add(btnBrowse);
+      filePanel.setLayout(new BoxLayout(filePanel, BoxLayout.X_AXIS));
+
+      this.getContentPane().add(infoPanel);
+      this.getContentPane().add(Box.createVerticalGlue());
+      this.getContentPane().add(filePanel);
+      this.getContentPane().add(Box.createVerticalGlue());
+      this.getContentPane().add(btnPanel);
+      this.getContentPane()
+          .setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+      this.setAlwaysOnTop(true);
+      this.pack();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      if (e.getActionCommand().equals("OK")) {
+        Set<IFeature> selected = SelectionUtil.getSelectedObjects(app);
+        buildings = new FT_FeatureCollection<>();
+        roads = new FT_FeatureCollection<>();
+        crossroads = new FT_FeatureCollection<>();
+        for (IFeature feat : application.getMainFrame()
+            .getSelectedProjectFrame()
+            .getLayer((String) comboLayer.getSelectedItem())
+            .getFeatureCollection()) {
+          if (feat.getGeom() instanceof IPolygon)
+            buildings.add(feat);
+        }
+        for (IFeature feat : application.getMainFrame()
+            .getSelectedProjectFrame()
+            .getLayer((String) comboLayer2.getSelectedItem())
+            .getFeatureCollection()) {
+          if (feat.getGeom() instanceof ILineString)
+            roads.add(feat);
+        }
+        for (IFeature feat : application.getMainFrame()
+            .getSelectedProjectFrame()
+            .getLayer((String) comboLayer3.getSelectedItem())
+            .getFeatureCollection()) {
+          if (feat.getGeom() instanceof IPoint)
+            crossroads.add(feat);
+        }
+        getDescriptors();
+        try {
+          addToTrainingSet(selected);
+        } catch (Exception e1) {
+          e1.printStackTrace();
+        }
+
+        this.dispose();
+      }
+      if (e.getActionCommand().equals("browse")) {
+        // On choisit le fichier
+        JFileChooser fc = new JFileChooser();
+        fc.setFileFilter(new XMLFileFilter());
+        int returnVal = fc.showDialog(null, "Choose the training set file");
+        if (returnVal != JFileChooser.APPROVE_OPTION) {
+          return;
+        }
+
+        // path est le chemin jusqu'au fichier
+        File path = fc.getSelectedFile();
+        this.txtFile.setText(path.getPath());
+
+      } else {
+        this.dispose();
+      }
+    }
+
+    private void getDescriptors() {
+      this.descriptors = new HashSet<>();
+      this.descriptors.add(new CategoryLearningDescr());
+      this.descriptors
+          .add(new CompactnessLearningDescr(CompactnessMethod.MILLER));
+      this.descriptors.add(new DensityLearningDescr(100.0, buildings));
+      this.descriptors.add(new DistToCrossroadLearningDescr(crossroads));
+      this.descriptors.add(new ElongationLearningDescr());
+      this.descriptors.add(new NbAdjacentLearningDescr(buildings));
+      this.descriptors.add(new NbNeighboursLearningDescr(100.0, buildings));
+      this.descriptors.add(new OrientationLearningDescr());
+      this.descriptors.add(new SizeLearningDescr());
+      this.descriptors.add(new SquarenessLearningDescr());
+      this.descriptors.add(new VerticesNbLearningDescr());
+    }
+
+    private void addToTrainingSet(Set<IFeature> buildings)
+        throws ParserConfigurationException, SAXException, IOException,
+        TransformerException {
+      File file = new File(this.txtFile.getText());
+      LandmarksFinderTrainer trainer = new LandmarksFinderTrainer(descriptors,
+          file);
+      Boolean response = new Boolean(true);
+      if (this.radioNo.isSelected())
+        response = new Boolean(false);
+
+      for (IFeature feat : buildings) {
+        Map<String, Double> descrValues = new HashMap<>();
+        for (LearningDescriptor descr : this.descriptors)
+          descrValues.put(descr.getName(), descr.getValue(feat));
+        trainer.addExample(descrValues, response);
+      }
+      trainer.writeToXml(file);
+    }
+
+  }
+
+  /**
+   * Given a training set, classifies the selected buildings into landmark or
+   * not, with a decision tree classifier.
+   * 
+   * @author GTouya
+   * 
+   */
+  class LandmarksFinderAction extends AbstractAction {
+
+    /**
+    * 
+    */
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      IFeatureCollection<IFeature> selected = new FT_FeatureCollection<>();
+      Layer layer = null;
+      for (IFeature feat : SelectionUtil.getSelectedObjects(application)) {
+        if (feat.getGeom() instanceof IPolygon)
+          selected.add(feat);
+        if (layer == null)
+          layer = application.getMainFrame().getSelectedProjectFrame()
+              .getLayerFromFeature(feat);
+      }
+      // On choisit le fichier
+      JFileChooser fc = new JFileChooser();
+      fc.setFileFilter(new XMLFileFilter());
+      int returnVal = fc.showDialog(null, "Choose the training set file");
+      if (returnVal != JFileChooser.APPROVE_OPTION) {
+        return;
+      }
+
+      // path est le chemin jusqu'au fichier
+      File path = fc.getSelectedFile();
+
+      Style style = layer.getStyles().get(layer.getStyles().size() - 1);
+
+      IFeatureCollection<IFeature> buildings = new FT_FeatureCollection<>();
+      IFeatureCollection<IFeature> crossroads = new FT_FeatureCollection<>();
+      for (IFeature feat : layer.getFeatureCollection())
+        buildings.add(feat);
+      for (IFeature feat : application.getMainFrame().getSelectedProjectFrame()
+          .getLayer("roadNodes").getFeatureCollection())
+        crossroads.add(feat);
+
+      LandmarksFinder finder = new LandmarksFinder(20);
+      finder.addDescriptor(new CategoryLearningDescr());
+      finder.addDescriptor(
+          new CompactnessLearningDescr(CompactnessMethod.MILLER));
+      finder.addDescriptor(new DensityLearningDescr(100.0, buildings));
+      finder.addDescriptor(new DistToCrossroadLearningDescr(crossroads));
+      finder.addDescriptor(new ElongationLearningDescr());
+      finder.addDescriptor(new NbAdjacentLearningDescr(buildings));
+      finder.addDescriptor(new NbNeighboursLearningDescr(100.0, buildings));
+      finder.addDescriptor(new OrientationLearningDescr());
+      finder.addDescriptor(new SizeLearningDescr());
+      finder.addDescriptor(new SquarenessLearningDescr());
+      finder.addDescriptor(new VerticesNbLearningDescr());
+
+      try {
+        LandmarksFinderTrainer trainer = new LandmarksFinderTrainer(
+            finder.getDescriptors(), path);
+        finder.train(trainer);
+        for (IFeature feat : selected) {
+          Boolean result = finder.predictLandmark(feat);
+          System.out.println("for building: " + feat.getId() + " = " + result);
+        }
+      } catch (ParserConfigurationException | SAXException | IOException e) {
+        e.printStackTrace();
+      }
+
+    }
+
+    public LandmarksFinderAction() {
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Classifies the selected building using a decision tree into landmark or not, method from (Elias 2003)");
+      this.putValue(Action.NAME, "Landmarks Classifier");
     }
   }
 

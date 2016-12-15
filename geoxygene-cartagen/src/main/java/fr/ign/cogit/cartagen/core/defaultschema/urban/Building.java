@@ -159,4 +159,13 @@ public class Building extends UrbanElement implements IBuilding {
     this.category = category;
   }
 
+  @Override
+  public Object getAttribute(String nomAttribut) {
+    if ("category_value".equals(nomAttribut))
+      return this.category.ordinal();
+    if ("category".equals(nomAttribut))
+      return this.category;
+    return super.getAttribute(nomAttribut);
+  }
+
 }
