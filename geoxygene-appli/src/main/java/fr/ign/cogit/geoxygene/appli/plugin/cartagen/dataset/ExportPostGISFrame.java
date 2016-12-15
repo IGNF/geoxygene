@@ -26,6 +26,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -48,8 +49,8 @@ import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultTransaction;
-import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
+import org.geotools.data.store.ContentFeatureStore;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.opengis.feature.simple.SimpleFeature;
@@ -215,13 +216,14 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
         bExport = new JButton("Export");
         bExport.addActionListener(this);
         bExport.setActionCommand("export");
-        bExportSelection = new JButton("Export Selected");
+        bExportSelection = new JButton("Export Selection");
         bExportSelection.addActionListener(this);
         bExportSelection.setActionCommand("exportSel");
         bExportTout = new JButton("Export All");
         bExportTout.addActionListener(this);
         bExportTout.setActionCommand("exportAll");
         btnPanel.add(this.bExport);
+        btnPanel.add(this.bExportSelection);
         btnPanel.add(this.bExportTout);
         btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.X_AXIS));
         btnPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -383,10 +385,10 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
             SimpleFeatureType type = DataUtilities.createType(featureTypeName,
                     specs);
             dataStore.createSchema(type);
-            FeatureStore featureStore = (FeatureStore) dataStore
+            ContentFeatureStore featureStore = (ContentFeatureStore) dataStore
                     .getFeatureSource(featureTypeName);
             Transaction t = new DefaultTransaction();
-            List<SimpleFeature> collection = new ArrayList<SimpleFeature>();
+            Collection features = new HashSet<>();
             int i = 1;
             for (IFeature feature : featurePop) {
                 List<Object> liste = new ArrayList<Object>(0);
@@ -455,10 +457,10 @@ public class ExportPostGISFrame extends JFrame implements ActionListener {
                 }
                 SimpleFeature simpleFeature = SimpleFeatureBuilder.build(type,
                         liste.toArray(), String.valueOf(i));
-                collection.add(simpleFeature);
+                features.add(simpleFeature);
                 i++;
             }
-            featureStore.addFeatures(DataUtilities.collection(collection));
+            featureStore.addFeatures(features);
             t.commit();
             t.close();
             dataStore.dispose();
