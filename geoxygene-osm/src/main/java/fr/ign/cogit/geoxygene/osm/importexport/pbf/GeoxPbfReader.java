@@ -20,7 +20,7 @@ public class GeoxPbfReader {
     public static void main(String[] args) {
         long tdeb = System.currentTimeMillis();
         PbfReader reader = new PbfReader(
-                new File("D:/Users/qttruong/workspace/paris_20150121.osm.pbf"),
+                new File("D:/Users/qttruong/data/nepal.osm.pbf"),
                 1);
         reader.setSink(mySink);
         System.out.println("on entre dans le run");
@@ -31,8 +31,15 @@ public class GeoxPbfReader {
                     .append("INSERT INTO relation (idrel, id, uid, vrel,changeset,username, datemodif, tags) VALUES ")
                     .append(mySink.relValues).append(";");
             // System.out.println("Requête\n" + mySink.myQueries.toString());
-            // mySink.executeQuery();
+             mySink.executeQuery();
             mySink.relValues.setLength(0);
+        }
+        if (mySink.relmbValues.length() > 0) {
+            mySink.relmbValues.deleteCharAt(mySink.relmbValues.length() - 1);
+            mySink.myQueries.append("INSERT INTO relationmember (idrel,idmb,idrelmb,typemb,rolemb) VALUES ").append(mySink.relmbValues).append(";");
+            // System.out.println("Requête\n" + mySink.myQueries.toString());
+             mySink.executeQuery();
+            mySink.relmbValues.setLength(0);
         }
         System.out.println("Durée traitement : "
                 + ((System.currentTimeMillis() - tdeb) / 1000 / 60) + " min");
