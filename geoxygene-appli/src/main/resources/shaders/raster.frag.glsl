@@ -27,7 +27,7 @@ uniform int animate = 0;
 // Tide information
 uniform float waterHeightMean = 0.0;
 uniform float tideRange = 0.0;
-uniform float timeAcceleration = 1.0;
+uniform float timeAcceleration = 20.0;
 uniform float tideCycleLength = 43200.0;
 uniform float tidePhase = 0.0;
 
