@@ -35,6 +35,7 @@ import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanAlignment;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanElement;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
+import fr.ign.cogit.cartagen.software.GeneralisationSpecifications;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.interfacecartagen.GeneralisationLeftPanelComplement;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
@@ -63,8 +64,8 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * 
  */
 public class UrbanEnrichment {
-  private static Logger logger = Logger.getLogger(UrbanEnrichment.class
-      .getName());
+  private static Logger logger = Logger
+      .getLogger(UrbanEnrichment.class.getName());
 
   // Parameters for towns construction
   private static final double DISTANCE_BUFFER = 50.0;
@@ -132,9 +133,9 @@ public class UrbanEnrichment {
    */
   public static void buildTowns(CartAGenDataSet jdd,
       boolean buildUrbanAlignments) {
-    UrbanEnrichment
-        .buildTowns(jdd, UrbanEnrichment.DEFAUT_NB_QUADRANT_SEGMENT_BUFFER,
-            buildUrbanAlignments);
+    UrbanEnrichment.buildTowns(jdd,
+        UrbanEnrichment.DEFAUT_NB_QUADRANT_SEGMENT_BUFFER,
+        buildUrbanAlignments);
   }
 
   /**
@@ -146,8 +147,8 @@ public class UrbanEnrichment {
   public static void buildTowns(CartAGenDataSet jdd,
       boolean buildUrbanAlignments, AbstractCreationFactory factory) {
     UrbanEnrichment.buildTowns(jdd,
-        UrbanEnrichment.DEFAUT_NB_QUADRANT_SEGMENT_BUFFER,
-        buildUrbanAlignments, factory);
+        UrbanEnrichment.DEFAUT_NB_QUADRANT_SEGMENT_BUFFER, buildUrbanAlignments,
+        factory);
   }
 
   /**
@@ -221,8 +222,8 @@ public class UrbanEnrichment {
       UrbanEnrichment.logger.debug("construction des objets ville");
     }
     if (union instanceof IPolygon) {
-      dataset.getTowns().add(
-          CartAGenDoc.getInstance().getCurrentDataset().getCartAGenDB()
+      dataset.getTowns()
+          .add(CartAGenDoc.getInstance().getCurrentDataset().getCartAGenDB()
               .getGeneObjImpl().getCreationFactory()
               .createTown((IPolygon) union));
     } else if (union instanceof IMultiSurface<?>) {
@@ -241,9 +242,8 @@ public class UrbanEnrichment {
         }
       }
     } else {
-      UrbanEnrichment.logger
-          .error("Impossible de creer ville. Type de geometrie non traite: "
-              + union);
+      UrbanEnrichment.logger.error(
+          "Impossible de creer ville. Type de geometrie non traite: " + union);
       return;
     }
 
@@ -303,8 +303,8 @@ public class UrbanEnrichment {
     carteTopo.creeTopologieFaces();
 
     if (UrbanEnrichment.logger.isDebugEnabled()) {
-      UrbanEnrichment.logger.debug(carteTopo.getListeFaces().size()
-          + " faces trouvées");
+      UrbanEnrichment.logger
+          .debug(carteTopo.getListeFaces().size() + " faces trouvées");
     }
 
     if (UrbanEnrichment.logger.isDebugEnabled()) {
@@ -475,16 +475,16 @@ public class UrbanEnrichment {
         if (UrbanEnrichment.logger.isInfoEnabled()) {
           UrbanEnrichment.logger.info("   construction ville: " + i + "/" + nb);
         }
+        if (mp.get(i).area() < GeneralisationSpecifications.TOWN_MIN_AREA)
+          continue;
         ITown town = factory.createTown((IPolygon) mp.get(i));
         dataset.getTowns().add(town);
-        if (town.getGeom().area() < 500000.0) {
-          town.eliminate();
-        }
       }
-    } else {
-      UrbanEnrichment.logger
-          .error("Impossible de creer ville. Type de geometrie non traite: "
-              + union);
+    } else
+
+    {
+      UrbanEnrichment.logger.error(
+          "Impossible de creer ville. Type de geometrie non traite: " + union);
       return;
     }
 
@@ -544,8 +544,8 @@ public class UrbanEnrichment {
     carteTopo.creeTopologieFaces();
 
     if (UrbanEnrichment.logger.isDebugEnabled()) {
-      UrbanEnrichment.logger.debug(carteTopo.getListeFaces().size()
-          + " faces trouvées");
+      UrbanEnrichment.logger
+          .debug(carteTopo.getListeFaces().size() + " faces trouvées");
     }
 
     if (UrbanEnrichment.logger.isDebugEnabled()) {
@@ -668,8 +668,8 @@ public class UrbanEnrichment {
       // recupere les batiments de l'ilot
 
       // recupere les batiments intersectant l'ilot
-      Collection<IBuilding> bats = CartAGenDoc.getInstance()
-          .getCurrentDataset().getBuildings().select(polygone);
+      Collection<IBuilding> bats = CartAGenDoc.getInstance().getCurrentDataset()
+          .getBuildings().select(polygone);
 
       IFeatureCollection<IUrbanElement> urbanElements = new FT_FeatureCollection<IUrbanElement>();
       for (IBuilding ab : bats) {
@@ -692,12 +692,8 @@ public class UrbanEnrichment {
         }
       }
 
-      IUrbanBlock block = CartAGenDoc
-          .getInstance()
-          .getCurrentDataset()
-          .getCartAGenDB()
-          .getGeneObjImpl()
-          .getCreationFactory()
+      IUrbanBlock block = CartAGenDoc.getInstance().getCurrentDataset()
+          .getCartAGenDB().getGeneObjImpl().getCreationFactory()
           .createUrbanBlock(polygone, town, urbanElements, troncons, null,
               town.getStreetNetwork());
       // TODO vérifier la paternité de ce code qui crée des ilots avec un
@@ -925,8 +921,8 @@ public class UrbanEnrichment {
               / (ab.getGeom().area());
         } catch (Exception e) { // si jts fait une exception topologique sur
                                 // l'intersection
-          System.out.println(e.getMessage()
-              + " -- exception catch, taux set to 0");
+          System.out
+              .println(e.getMessage() + " -- exception catch, taux set to 0");
         }
         // si ce taux est suffisament grand, le batiment est considere comme
         // appartenant a l'ilot
@@ -1030,10 +1026,11 @@ public class UrbanEnrichment {
         // 2 buildings in common => careful of cycles, otherwise merge the
         // alignments
         else if (commonBuilds.size() == 2) {
-          if ((commonBuilds.get(0).equals(structure.getInitialElement()) && commonBuilds
-              .get(1).equals(structure.getFinalElement()))
-              || (commonBuilds.get(0).equals(structure.getFinalElement()) && commonBuilds
-                  .get(1).equals(structure.getInitialElement()))) {
+          if ((commonBuilds.get(0).equals(structure.getInitialElement())
+              && commonBuilds.get(1).equals(structure.getFinalElement()))
+              || (commonBuilds.get(0).equals(structure.getFinalElement())
+                  && commonBuilds.get(1)
+                      .equals(structure.getInitialElement()))) {
             continue;
           }
           UrbanEnrichment.merge(structure, structureBis);
@@ -1054,15 +1051,15 @@ public class UrbanEnrichment {
           }
           if (commonBuilds.get(0).equals(structureBis.getInitialElement())) {
             pt3 = structureBis.getUrbanElements().get(1).getGeom().centroid();
-          } else if (commonBuilds.get(0).equals(structureBis.getFinalElement())) {
+          } else if (commonBuilds.get(0)
+              .equals(structureBis.getFinalElement())) {
             pt3 = structureBis.getUrbanElements()
                 .get(structureBis.getUrbanElements().size() - 2).getGeom()
                 .centroid();
           }
           // Angle test
-          if (pt1 != null
-              && pt3 != null
-              && Angle.angleTroisPoints(pt1, pt2, pt3).getValeur() < Math.PI / 6.0) {
+          if (pt1 != null && pt3 != null && Angle
+              .angleTroisPoints(pt1, pt2, pt3).getValeur() < Math.PI / 6.0) {
             UrbanEnrichment.merge(structure, structureBis);
             nonDeletedStructures.put(structureBis, Boolean.FALSE);
           }
@@ -1148,10 +1145,11 @@ public class UrbanEnrichment {
         // 2 buildings in common => careful of cycles, otherwise merge the
         // alignments
         else if (commonBuilds.size() == 2) {
-          if ((commonBuilds.get(0).equals(structure.getInitialElement()) && commonBuilds
-              .get(1).equals(structure.getFinalElement()))
-              || (commonBuilds.get(0).equals(structure.getFinalElement()) && commonBuilds
-                  .get(1).equals(structure.getInitialElement()))) {
+          if ((commonBuilds.get(0).equals(structure.getInitialElement())
+              && commonBuilds.get(1).equals(structure.getFinalElement()))
+              || (commonBuilds.get(0).equals(structure.getFinalElement())
+                  && commonBuilds.get(1)
+                      .equals(structure.getInitialElement()))) {
             continue;
           }
           UrbanEnrichment.merge(structure, structureBis);
@@ -1172,15 +1170,15 @@ public class UrbanEnrichment {
           }
           if (commonBuilds.get(0).equals(structureBis.getInitialElement())) {
             pt3 = structureBis.getUrbanElements().get(1).getGeom().centroid();
-          } else if (commonBuilds.get(0).equals(structureBis.getFinalElement())) {
+          } else if (commonBuilds.get(0)
+              .equals(structureBis.getFinalElement())) {
             pt3 = structureBis.getUrbanElements()
                 .get(structureBis.getUrbanElements().size() - 2).getGeom()
                 .centroid();
           }
           // Angle test
-          if (pt1 != null
-              && pt3 != null
-              && Angle.angleTroisPoints(pt1, pt2, pt3).getValeur() < Math.PI / 6.0) {
+          if (pt1 != null && pt3 != null && Angle
+              .angleTroisPoints(pt1, pt2, pt3).getValeur() < Math.PI / 6.0) {
             UrbanEnrichment.merge(structure, structureBis, dataset);
             nonDeletedStructures.put(structureBis, Boolean.FALSE);
           }
@@ -1267,7 +1265,8 @@ public class UrbanEnrichment {
     Arrays.sort(sizes);
     double medianSize;
     if ((sizes.length % 2) == 0) { // even
-      medianSize = (sizes[sizes.length / 2] * sizes[sizes.length / 2 - 1]) / 2.0;
+      medianSize = (sizes[sizes.length / 2] * sizes[sizes.length / 2 - 1])
+          / 2.0;
     } else {
       medianSize = sizes[sizes.length / 2];
     }
@@ -1287,9 +1286,8 @@ public class UrbanEnrichment {
       }
 
       // Distance between current buildings is too high
-      else if (i > 0
-          && align.getUrbanElements().get(i - 1).getGeom()
-              .distance(align.getUrbanElements().get(i).getGeom()) > distance) {
+      else if (i > 0 && align.getUrbanElements().get(i - 1).getGeom()
+          .distance(align.getUrbanElements().get(i).getGeom()) > distance) {
         if (currentPart.size() > 2) {
           aligns.add(CartAGenDoc.getInstance().getCurrentDataset()
               .getCartAGenDB().getGeneObjImpl().getCreationFactory()
@@ -1300,13 +1298,12 @@ public class UrbanEnrichment {
       }
 
       // Angle between current buildings is too high
-      else if (i > 1
-          && Math
-              .abs(Angle.angleTroisPoints(
-                  align.getUrbanElements().get(i - 2).getGeom().centroid(),
-                  align.getUrbanElements().get(i - 1).getGeom().centroid(),
-                  align.getUrbanElements().get(i).getGeom().centroid())
-                  .getValeur()) < Math.PI - Math.abs(angle)) {
+      else if (i > 1 && Math.abs(Angle
+          .angleTroisPoints(
+              align.getUrbanElements().get(i - 2).getGeom().centroid(),
+              align.getUrbanElements().get(i - 1).getGeom().centroid(),
+              align.getUrbanElements().get(i).getGeom().centroid())
+          .getValeur()) < Math.PI - Math.abs(angle)) {
         if (currentPart.size() > 2) {
           aligns.add(CartAGenDoc.getInstance().getCurrentDataset()
               .getCartAGenDB().getGeneObjImpl().getCreationFactory()
@@ -1359,7 +1356,8 @@ public class UrbanEnrichment {
     Arrays.sort(sizes);
     double medianSize;
     if ((sizes.length % 2) == 0) { // even
-      medianSize = (sizes[sizes.length / 2] * sizes[sizes.length / 2 - 1]) / 2.0;
+      medianSize = (sizes[sizes.length / 2] * sizes[sizes.length / 2 - 1])
+          / 2.0;
     } else {
       medianSize = sizes[sizes.length / 2];
     }
@@ -1377,9 +1375,8 @@ public class UrbanEnrichment {
       }
 
       // Distance between current buildings is too high
-      else if (i > 0
-          && align.getUrbanElements().get(i - 1).getGeom()
-              .distance(align.getUrbanElements().get(i).getGeom()) > distance) {
+      else if (i > 0 && align.getUrbanElements().get(i - 1).getGeom()
+          .distance(align.getUrbanElements().get(i).getGeom()) > distance) {
         if (currentPart.size() > 2) {
           aligns.add(factory.createUrbanAlignment(currentPart));
         }
@@ -1388,13 +1385,12 @@ public class UrbanEnrichment {
       }
 
       // Angle between current buildings is too high
-      else if (i > 1
-          && Math
-              .abs(Angle.angleTroisPoints(
-                  align.getUrbanElements().get(i - 2).getGeom().centroid(),
-                  align.getUrbanElements().get(i - 1).getGeom().centroid(),
-                  align.getUrbanElements().get(i).getGeom().centroid())
-                  .getValeur()) < Math.PI - Math.abs(angle)) {
+      else if (i > 1 && Math.abs(Angle
+          .angleTroisPoints(
+              align.getUrbanElements().get(i - 2).getGeom().centroid(),
+              align.getUrbanElements().get(i - 1).getGeom().centroid(),
+              align.getUrbanElements().get(i).getGeom().centroid())
+          .getValeur()) < Math.PI - Math.abs(angle)) {
         if (currentPart.size() > 2) {
           aligns.add(factory.createUrbanAlignment(currentPart));
         }

@@ -59,7 +59,7 @@ public final class GeneralisationSpecifications {
 
   // taille
   // aire minimale que doit avoir tout batiment (en mm²)
-  public static double AIRE_MINIMALE_BATIMENT = 0.32;
+  public static double AIRE_MINIMALE_BATIMENT = 0.2;
   // aire en deca de laquelle le batiment est supprime (en m²)
   public static double AIRE_SEUIL_SUPPRESSION_BATIMENT = 70.0;
 
@@ -115,6 +115,10 @@ public final class GeneralisationSpecifications {
   // conservation des grands batiments
   // aire (en m2) des grands batiments
   public static double GRANDS_BATIMENTS_AIRE = 600.0;
+
+  // towns
+  // minimum area to be kept as a town feature
+  public static double TOWN_MIN_AREA = 750000.0;
 
   // routier
 

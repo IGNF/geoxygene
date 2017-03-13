@@ -61,8 +61,8 @@ public class ObjectSelection {
     CartAGenDoc document = CartAGenDoc.getInstance();
     Element nomElem = (Element) root.getElementsByTagName("name").item(0);
     this.name = nomElem.getChildNodes().item(0).getNodeValue();
-    Element versionElem = (Element) root.getElementsByTagName(
-        "cartagen-dataset").item(0);
+    Element versionElem = (Element) root
+        .getElementsByTagName("cartagen-dataset").item(0);
     this.cartagenDataset = versionElem.getChildNodes().item(0).getNodeValue();
     this.objs = new HashSet<IFeature>();
     // si les versions ne correspondent pas, on ne charge pas les objets
@@ -77,12 +77,16 @@ public class ObjectSelection {
     }
     // on fait maintenant une boucle sur les objets de cette selection
     Element objsElem = (Element) root.getElementsByTagName("objects").item(0);
-    for (int j = 0; j < objsElem.getElementsByTagName("object").getLength(); j++) {
-      Element objElem = (Element) objsElem.getElementsByTagName("object").item(
-          j);
+    for (int j = 0; j < objsElem.getElementsByTagName("object")
+        .getLength(); j++) {
+      Element objElem = (Element) objsElem.getElementsByTagName("object")
+          .item(j);
       int id = Integer.valueOf(objElem.getChildNodes().item(0).getNodeValue());
       String popName = objElem.getAttribute("population-name");
       IFeature feat = null;
+      if (appli.getMainFrame().getSelectedProjectFrame()
+          .getLayer(popName) == null)
+        continue;
       for (IFeature f : appli.getMainFrame().getSelectedProjectFrame()
           .getLayer(popName).getFeatureCollection()) {
         if (f.getId() == id) {

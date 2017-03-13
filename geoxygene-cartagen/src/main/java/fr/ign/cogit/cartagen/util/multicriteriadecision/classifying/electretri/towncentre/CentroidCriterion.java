@@ -23,8 +23,8 @@ public class CentroidCriterion extends ELECTRECriterion {
   // //////////////////////////////////////////
 
   // All static fields //
-  private static Logger logger = Logger.getLogger(ELECTRECriterion.class
-      .getName());
+  private static Logger logger = Logger
+      .getLogger(ELECTRECriterion.class.getName());
 
   // Public fields //
 
@@ -45,10 +45,10 @@ public class CentroidCriterion extends ELECTRECriterion {
   // Public constructors //
   public CentroidCriterion(String nom) {
     super(nom);
-    this.setWeight(1.5);
+    this.setWeight(0.5);
     this.setIndifference(0.1);
     this.setPreference(0.2);
-    this.setVeto(0.4);
+    this.setVeto(0.95);
   }
 
   // Getters and setters //

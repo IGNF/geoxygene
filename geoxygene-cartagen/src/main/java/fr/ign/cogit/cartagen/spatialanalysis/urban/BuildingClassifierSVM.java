@@ -36,6 +36,7 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.spatial.geomengine.GeometryEngine;
 import fr.ign.cogit.geoxygene.util.XMLUtil;
@@ -436,8 +437,15 @@ public class BuildingClassifierSVM {
    * @return
    * @throws Exception
    */
+  @SuppressWarnings("unchecked")
   private double getBSq(IFeature building) throws Exception {
-    Squareness squareness = new Squareness(building.getGeom(), 15.0, 0.5);
+    IPolygon geom = null;
+    if (building.getGeom() instanceof IPolygon)
+      geom = (IPolygon) building.getGeom();
+    else if (building.getGeom() instanceof IMultiSurface<?>)
+      geom = (IPolygon) ((IMultiSurface<IOrientableSurface>) building.getGeom())
+          .get(0);
+    Squareness squareness = new Squareness(geom, 15.0, 0.5);
     List<Double> deviations = squareness.getDeviations();
     DescriptiveStatistics stats = new DescriptiveStatistics();
     for (Double dev : deviations)
@@ -451,8 +459,15 @@ public class BuildingClassifierSVM {
    * @param building
    * @return
    */
+  @SuppressWarnings("unchecked")
   private double getBSh(IFeature building) {
-    Compactness compactness = new Compactness((IPolygon) building.getGeom());
+    IPolygon geom = null;
+    if (building.getGeom() instanceof IPolygon)
+      geom = (IPolygon) building.getGeom();
+    else if (building.getGeom() instanceof IMultiSurface<?>)
+      geom = (IPolygon) ((IMultiSurface<IOrientableSurface>) building.getGeom())
+          .get(0);
+    Compactness compactness = new Compactness(geom);
     return compactness.getSchummIndex();
   }
 
@@ -471,8 +486,15 @@ public class BuildingClassifierSVM {
    * @param building
    * @return
    */
+  @SuppressWarnings("unchecked")
   private double getBCy(IFeature building) {
-    return ((IPolygon) building.getGeom()).getInterior().size();
+    IPolygon geom = null;
+    if (building.getGeom() instanceof IPolygon)
+      geom = (IPolygon) building.getGeom();
+    else if (building.getGeom() instanceof IMultiSurface<?>)
+      geom = (IPolygon) ((IMultiSurface<IOrientableSurface>) building.getGeom())
+          .get(0);
+    return geom.getInterior().size();
   }
 
   /**
@@ -493,13 +515,20 @@ public class BuildingClassifierSVM {
    * @param building
    * @return
    */
+  @SuppressWarnings("unchecked")
   private double getBAHull(IFeature building) {
     Collection<IFeature> inter = this.buildings
         .select(building.getGeom().buffer(bufferSize));
     IMultiSurface<IPolygon> multi = GeometryEngine.getFactory()
         .createMultiPolygon();
     for (IFeature interB : inter) {
-      multi.add((IPolygon) interB.getGeom());
+      IPolygon geom = null;
+      if (interB.getGeom() instanceof IPolygon)
+        geom = (IPolygon) interB.getGeom();
+      else if (interB.getGeom() instanceof IMultiSurface<?>)
+        geom = (IPolygon) ((IMultiSurface<IOrientableSurface>) interB.getGeom())
+            .get(0);
+      multi.add(geom);
     }
     return multi.area() / multi.convexHull().area();
   }
@@ -516,7 +545,9 @@ public class BuildingClassifierSVM {
     Collection<IFeature> inter = this.buildings.select(buffer);
     double totalArea = 0.0;
     for (IFeature interB : inter) {
-      totalArea += buffer.intersection(interB.getGeom()).area();
+      IGeometry interGeom = buffer.intersection(interB.getGeom());
+      if (interGeom != null)
+        totalArea += interGeom.area();
     }
     return totalArea / buffer.area();
   }
