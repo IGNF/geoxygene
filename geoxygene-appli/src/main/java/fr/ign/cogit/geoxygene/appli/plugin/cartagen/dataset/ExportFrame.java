@@ -89,7 +89,7 @@ public class ExportFrame extends JFrame implements ActionListener {
     this.layers = projectFrame.getLayers();
     this.enableEvents(AWTEvent.WINDOW_EVENT_MASK);
     this.setResizable(false);
-    this.setSize(new Dimension(400, 300));
+    this.setSize(new Dimension(400, 500));
     this.setLocation(100, 100);
     this.setTitle(CartAGenPlugin.getInstance().getApplication().getMainFrame()
         .getGui().getTitle() + " - export généralisation");
@@ -131,6 +131,7 @@ public class ExportFrame extends JFrame implements ActionListener {
     bExportTout.addActionListener(this);
     bExportTout.setActionCommand("exportAll");
     btnPanel.add(this.bExport);
+    btnPanel.add(this.bExportSelection);
     btnPanel.add(this.bExportTout);
     btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.X_AXIS));
     btnPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));

@@ -12,13 +12,10 @@ package fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.electretri.
 import java.util.Map;
 import java.util.logging.Logger;
 
-import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
-import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanElement;
 import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.electretri.ELECTRECriterion;
-import fr.ign.cogit.geoxygene.schemageo.api.bati.Ilot;
 
-public class ChurchCriterion extends ELECTRECriterion {
+public class NeighbourDensityCriterion extends ELECTRECriterion {
 
   // //////////////////////////////////////////
   // Fields //
@@ -35,7 +32,6 @@ public class ChurchCriterion extends ELECTRECriterion {
   // Package visible fields //
 
   // Private fields //
-  private String attributeValue = "Eglise";
 
   // //////////////////////////////////////////
   // Static methods //
@@ -46,21 +42,12 @@ public class ChurchCriterion extends ELECTRECriterion {
   // //////////////////////////////////////////
 
   // Public constructors //
-  public ChurchCriterion(String nom) {
+  public NeighbourDensityCriterion(String nom) {
     super(nom);
-    this.setWeight(0.7);
+    this.setWeight(1.2);
     this.setIndifference(0.05);
     this.setPreference(0.2);
-    this.setVeto(0.1);
-  }
-
-  public ChurchCriterion(String nom, String attributeValue) {
-    super(nom);
-    this.setWeight(0.7);
-    this.setIndifference(0.05);
-    this.setPreference(0.2);
-    this.setVeto(0.1);
-    this.attributeValue = attributeValue;
+    this.setVeto(0.4);
   }
 
   // Getters and setters //
@@ -69,28 +56,26 @@ public class ChurchCriterion extends ELECTRECriterion {
   @Override
   public double value(Map<String, Object> param) {
     IUrbanBlock block = (IUrbanBlock) param.get("block");
-    ChurchCriterion.logger.finest("block: " + block.getId());
-    boolean church = false;
-    Ilot ilot = (Ilot) block.getGeoxObj();
-
-    for (IUrbanElement e : block.getUrbanElements()) {
-      if (!(e instanceof IBuilding))
-        continue;
-      IBuilding b = (IBuilding) e;
-      if (b.getNature().equals(attributeValue)) {
-        church = true;
-        break;
-      }
-    }
-
-    if (!church) {
-      ChurchCriterion.logger.finest(this.getName() + " : " + 0.5);
+    logger.finer("block: " + block.getId());
+    if (block.getNeighbours().size() == 0)
       return 0.5;
+    double meanDensity = 0.0;
+    int crossroadBlock = 0;
+    for (IUrbanBlock neighbour : block.getNeighbours()) {
+      if (neighbour.getGeom().area() < 1500.0
+          && neighbour.getUrbanElements().size() == 0) {
+        crossroadBlock++;
+        continue;
+      }
+      // 1.3 factor to spread the density distribution for 0 to 1.
+      double density = neighbour.getDensity() * 1.3;
+      meanDensity += Math.min(1.0, density);
+      logger
+          .finer("density of neighbour " + neighbour.getId() + " : " + density);
     }
-    double value = Math.max(1.0 - 0.2 * (ilot.getComposants().size() - 1.0),
-        0.5);
-    ChurchCriterion.logger.finest(this.getName() + " : " + value);
-    return value;
+    meanDensity = meanDensity / (block.getNeighbours().size() - crossroadBlock);
+    logger.finer(this.getName() + " : " + meanDensity);
+    return meanDensity;
   }
 
   // //////////////////////////////////////////

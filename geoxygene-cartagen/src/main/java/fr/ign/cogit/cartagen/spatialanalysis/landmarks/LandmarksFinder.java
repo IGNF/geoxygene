@@ -54,6 +54,28 @@ public class LandmarksFinder {
       return true;
   }
 
+  /**
+   * Only retains the true prediction with a posteriori probability higher than
+   * percent.
+   * @param feature
+   * @param percent the probability over which the true prediction is accepted
+   *          (between 0 and 1).
+   * @return
+   */
+  public boolean predictLandmark(IFeature feature, double percent) {
+    double[] x = this.describeFeature(feature);
+    double[] posteriori = new double[2];
+    int result = tree.predict(x, posteriori);
+    for (double proba : posteriori)
+      System.out.println(proba);
+    if (result == 0)
+      return false;
+    else if (posteriori[1] < percent)
+      return false;
+    else
+      return true;
+  }
+
   public double[] describeFeature(IFeature feature) {
     double[] values = new double[descriptors.size()];
     int i = 0;

@@ -93,6 +93,8 @@ public class Town extends GeneObjSurfDefault implements ITown {
   private IDirectPosition centre;
   private ILineString outline;
 
+  private DescriptiveStatistics buildAreaStats;
+
   /**
    * Empty constructor used by EJB to load features from PostGIS
    */
@@ -207,10 +209,11 @@ public class Town extends GeneObjSurfDefault implements ITown {
 
   @Override
   /**
-   * This implementation of the method is based on the ELECTRE TRI multiple criteria
-   * decision method. 7 criteria are used : block size, the average building size,
-   * the average building height, the presence of a church, the distance to town
-   * centroid, the intersection with town limits and obviously the block density.
+   * This implementation of the method is based on the ELECTRE TRI multiple
+   * criteria decision method. 7 criteria are used : block size, the average
+   * building size, the average building height, the presence of a church, the
+   * distance to town centroid, the intersection with town limits and obviously
+   * the block density.
    */
   @Transient
   public boolean isTownCentre(IUrbanBlock block) {
@@ -261,6 +264,7 @@ public class Town extends GeneObjSurfDefault implements ITown {
   public void computeTownStats() {
     DescriptiveStatistics blockAreas = new DescriptiveStatistics();
     DescriptiveStatistics buildingAreas = new DescriptiveStatistics();
+    this.buildAreaStats = new DescriptiveStatistics();
     for (IUrbanBlock b : this.townBlocks) {
       // exclude the non standard and too small blocks from the computation of
       // stats on block and building size
@@ -281,6 +285,7 @@ public class Town extends GeneObjSurfDefault implements ITown {
       }
       if (b.getUrbanElements().size() != 0) {
         buildingAreas.addValue(blockStats.getPercentile(50));
+        buildAreaStats.addValue(blockStats.getMean());
       }
     }
     this.meanBlockArea = new Double(blockAreas.getPercentile(50));
@@ -304,6 +309,7 @@ public class Town extends GeneObjSurfDefault implements ITown {
       Criterion crit) {
     Map<String, Object> param = new HashMap<String, Object>();
     param.put("block", block);
+    param.put("buildingAreaStats", this.buildAreaStats);
     if (crit.getName().equals("BuildingArea")) {
       param.put("meanBuildingArea", this.meanBuildArea);
     } else if (crit.getName().equals("Centroid")) {
@@ -316,8 +322,8 @@ public class Town extends GeneObjSurfDefault implements ITown {
         pt = CommonAlgorithms.getPointLePlusLoin(
             (Point) JtsGeOxygene.makeJtsGeom(centrePos.toGM_Point()),
             (Polygon) JtsGeOxygene.makeJtsGeom(this.getGeom()));
-        IDirectPosition dp = JtsGeOxygene.makeDirectPosition(pt
-            .getCoordinateSequence());
+        IDirectPosition dp = JtsGeOxygene
+            .makeDirectPosition(pt.getCoordinateSequence());
         double maxDist = dp.distance2D(centrePos);
         param.put("max_dist", maxDist);
       } catch (Exception e) {

@@ -53,7 +53,7 @@ public abstract class ELECTRECriterion extends Criterion {
    */
   private double indifference;
 
-  // poids du crit�re
+  // poids du critère
   /**
    * The weight of {@code this} criterion compared to the others.
    * @uml.property name="weight"

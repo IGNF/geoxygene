@@ -12,6 +12,8 @@ public enum BuildingCategory {
       return PUBLIC;
     if (nature.equals("Bâtiment sportif"))
       return SPORTS;
+    if (nature.contains("chrétien"))
+      return RELIGIOUS;
     if (nature.contains("industriel") || nature.contains("Hangar")
         || nature.contains("commercial"))
       return INDUSTRIAL_COMMERCIAL;

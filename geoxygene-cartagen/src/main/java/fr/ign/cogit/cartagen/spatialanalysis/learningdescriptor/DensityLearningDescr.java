@@ -33,7 +33,13 @@ public class DensityLearningDescr implements LearningDescriptor {
     Collection<IFeature> inter = this.neighbours.select(buffer);
     double totalArea = 0.0;
     for (IFeature interB : inter) {
-      totalArea += buffer.intersection(interB.getGeom()).area();
+      if (interB == null)
+        continue;
+      if (interB.getGeom() == null)
+        continue;
+      IGeometry interGeom = buffer.intersection(interB.getGeom());
+      if (interGeom != null)
+        totalArea += interGeom.area();
     }
     return totalArea / buffer.area();
   }

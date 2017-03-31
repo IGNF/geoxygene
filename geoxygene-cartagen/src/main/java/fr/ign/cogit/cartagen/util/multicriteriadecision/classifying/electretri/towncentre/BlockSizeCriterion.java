@@ -23,8 +23,8 @@ public class BlockSizeCriterion extends ELECTRECriterion {
 
   // All static fields //
   private static double TOO_SMALL_THRESHOLD = 750.0;
-  private static Logger logger = Logger.getLogger(ELECTRECriterion.class
-      .getName());
+  private static Logger logger = Logger
+      .getLogger(ELECTRECriterion.class.getName());
 
   // Public fields //
 
@@ -47,8 +47,8 @@ public class BlockSizeCriterion extends ELECTRECriterion {
     super(nom);
     this.setWeight(1.0);
     this.setIndifference(0.05);
-    this.setPreference(0.1);
-    this.setVeto(0.4);
+    this.setPreference(0.2);
+    this.setVeto(0.7);
   }
 
   // Getters and setters //
@@ -58,15 +58,15 @@ public class BlockSizeCriterion extends ELECTRECriterion {
   public double value(Map<String, Object> param) {
     IUrbanBlock block = (IUrbanBlock) param.get("block");
     BlockSizeCriterion.logger.finer("block: " + block.getId());
-    double maxArea = 2.0 * ((Double) param.get("meanBlockArea")).doubleValue();
+    double maxArea = 3.0 * ((Double) param.get("meanBlockArea")).doubleValue();
     if (block.getGeom().area() < BlockSizeCriterion.TOO_SMALL_THRESHOLD) {
       BlockSizeCriterion.logger.finest(this.getName() + " : " + 0.0);
       return 0.0;
     }
     double value = Math.max(0.0, 1.0 - block.getGeom().area() / maxArea);
     BlockSizeCriterion.logger.finest(this.getName() + " maxArea : " + maxArea);
-    BlockSizeCriterion.logger.finest(this.getName() + " area : "
-        + block.getGeom().area());
+    BlockSizeCriterion.logger
+        .finest(this.getName() + " area : " + block.getGeom().area());
     BlockSizeCriterion.logger.finer(this.getName() + " : " + value);
     return value;
   }

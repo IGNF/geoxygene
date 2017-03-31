@@ -25,8 +25,8 @@ public class BuildingSizeCriterion extends ELECTRECriterion {
   // //////////////////////////////////////////
 
   // All static fields //
-  private static Logger logger = Logger.getLogger(ELECTRECriterion.class
-      .getName());
+  private static Logger logger = Logger
+      .getLogger(ELECTRECriterion.class.getName());
 
   // Public fields //
 
@@ -48,9 +48,9 @@ public class BuildingSizeCriterion extends ELECTRECriterion {
   public BuildingSizeCriterion(String nom) {
     super(nom);
     this.setWeight(1.5);
-    this.setIndifference(0.05);
-    this.setPreference(0.15);
-    this.setVeto(0.5);
+    this.setIndifference(0.1);
+    this.setPreference(0.25);
+    this.setVeto(0.6);
   }
 
   // Getters and setters //
@@ -61,34 +61,61 @@ public class BuildingSizeCriterion extends ELECTRECriterion {
     IUrbanBlock block = (IUrbanBlock) param.get("block");
     BuildingSizeCriterion.logger.finest("block: " + block.getId());
     double meanArea = ((Double) param.get("meanBuildingArea")).doubleValue();
+    DescriptiveStatistics townStats = (DescriptiveStatistics) param
+        .get("buildingAreaStats");
     DescriptiveStatistics buildingAreas = new DescriptiveStatistics();
     if (meanArea == 0.0 || meanArea == Double.NaN)
       return 0.0;
-    double maxArea = 3.0 * meanArea;
+    double maxArea = Math.min(townStats.getMax(),
+        3 * townStats.getPercentile(50));
     for (IUrbanElement e : block.getUrbanElements()) {
       buildingAreas.addValue(e.getGeom().area());
+    }
+
+    // simple case with one building
+    if (block.getUrbanElements().size() == 1) {
+      IUrbanElement e = block.getUrbanElements().get(0);
+      if (e.getGeom().area() < townStats.getPercentile(50))
+        return e.getGeom().area() / (2 * townStats.getPercentile(50));
+      else
+        return -e.getGeom().area()
+            / (2.0 * (townStats.getPercentile(50) - maxArea)) + 1
+            + maxArea / (2.0 * (townStats.getPercentile(50) - maxArea));
     }
 
     double area = 0.0;
     if (block.getUrbanElements().size() != 0)
       area = buildingAreas.getPercentile(50);
-    if (area < meanArea) {
-      BuildingSizeCriterion.logger.finest(this.getName() + " : " + area
-          / (2 * meanArea) + " - small area");
+    if (area < townStats.getPercentile(50)) {
+      BuildingSizeCriterion.logger.finest(
+          this.getName() + " : " + area / (2 * meanArea) + " - small area");
       return area / (2 * meanArea);
     }
+
     // progression linéaire entre 0.5 et 1 pour les ilots dont l'aire des
     // bâtiments varie entre la moyenne et le maximum
-    double areaValue = -area / (2.0 * (meanArea - maxArea)) + 1 + maxArea
-        / (2.0 * (meanArea - maxArea));
+    double areaValue = Math
+        .sqrt(-area / (2.0 * (townStats.getPercentile(50) - maxArea)) + 1
+            + maxArea / (2.0 * (townStats.getPercentile(50) - maxArea)));
     double value = Math.min(1.0, areaValue);
+    double percentileValue = 0.5;
+    if (buildingAreas.getPercentile(60) <= townStats.getPercentile(60))
+      percentileValue = 0.6;
+    if (buildingAreas.getPercentile(60) <= townStats.getPercentile(70))
+      percentileValue = 0.7;
+    if (buildingAreas.getPercentile(60) <= townStats.getPercentile(80))
+      percentileValue = 0.8;
     BuildingSizeCriterion.logger.finest("maxArea: " + maxArea);
-    BuildingSizeCriterion.logger.finest("meanArea: " + meanArea);
+    BuildingSizeCriterion.logger
+        .finest("meanArea: " + townStats.getPercentile(50));
     BuildingSizeCriterion.logger.finest("current area: " + area);
     BuildingSizeCriterion.logger.finest("computed value: " + areaValue);
-    BuildingSizeCriterion.logger.finest(this.getName() + " : " + value
-        + " - large area");
-    return value;
+    BuildingSizeCriterion.logger.finest("percentile value: " + percentileValue);
+    BuildingSizeCriterion.logger
+        .finest(this.getName() + " : " + value + " - large area");
+    BuildingSizeCriterion.logger
+        .finest("returned value: " + Math.max(value, percentileValue));
+    return Math.max(value, percentileValue);
   }
 
   // //////////////////////////////////////////
