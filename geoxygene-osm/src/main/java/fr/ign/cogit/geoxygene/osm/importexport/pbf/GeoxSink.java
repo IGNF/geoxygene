@@ -7,8 +7,10 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.log4j.Logger;
 import org.openstreetmap.osmosis.core.container.v0_6.EntityContainer;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 import org.openstreetmap.osmosis.core.domain.v0_6.Relation;
@@ -19,13 +21,17 @@ import org.openstreetmap.osmosis.core.domain.v0_6.WayNode;
 import org.openstreetmap.osmosis.core.task.v0_6.Sink;
 
 public class GeoxSink implements Sink {
+	
+	private static Logger LOGGER = Logger.getLogger(GeoxSink.class);
+	
     private long t1, t2;
     private int nbElem;
     public StringBuffer myQueries;
-    private StringBuffer nodeValues;
-    private StringBuffer wayValues;
+    StringBuffer nodeValues;
+    StringBuffer wayValues;
     public StringBuffer relValues;
     public StringBuffer relmbValues;
+    public String name;
 
     @Override
     public void initialize(Map<String, Object> arg0) {
@@ -49,6 +55,7 @@ public class GeoxSink implements Sink {
 
     }
 
+
     @Override
     public void process(EntityContainer arg0) {
         /* Creating an OSMResource object given an EntityContainer */
@@ -58,6 +65,7 @@ public class GeoxSink implements Sink {
                 .equals("Node")) {
             Node myNode = (Node) arg0.getEntity().getWriteableInstance();
             processNode(myNode);
+            
         }
         if (arg0.getEntity().getClass().getSimpleName().toString()
                 .equals("Way")) {
@@ -90,9 +98,9 @@ public class GeoxSink implements Sink {
     }
 
     public void executeQuery() {
-        String host = "localhost";
+    	String host = "localhost";
         String port = "5432";
-        String dbName = "nepal";
+        String dbName = "paris";
         String dbUser = "postgres";
         String dbPwd = "postgres";
         String url = "jdbc:postgresql://" + host + ":" + port + "/" + dbName;
@@ -106,12 +114,11 @@ public class GeoxSink implements Sink {
                 stat = connection.createStatement();
                 stat.executeQuery(myQueries.toString());
             } catch (SQLException e) {
-                // do nothing
+            	LOGGER.error(e.getMessage());
                 e.printStackTrace();
             }
             connection.close();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -124,43 +131,32 @@ public class GeoxSink implements Sink {
     }
 
     private void processNode(Node myNode) {
-        System.out.println("Ecriture d'un node...");
         StringBuffer hstore = new StringBuffer();
         String wkt = "POINT(" + myNode.getLongitude() + " "
                 + myNode.getLatitude() + ")";
         for (Tag tag : myNode.getTags()) {
             String[] decoup = tag.toString().split("'");
             hstore.append(
-                    "\"" + StringEscapeUtils.escapeSql(decoup[1]) + "\"=>\""
-                            + StringEscapeUtils.escapeSql(decoup[3]) + "\",");
+                    "\"" + escapeSQL(decoup[1]) + "\"=>\""
+                            + escapeSQL(decoup[3]) + "\",");
 
         }
         if (hstore.length() > 0)
             hstore.deleteCharAt(hstore.length() - 1);
 
-        nodeValues.append("(" + myNode.getId() + myNode.getVersion() + ","
-                + myNode.getId() + "," + myNode.getUser().getId() + ","
+        nodeValues.append("('" + myNode.getId() + myNode.getVersion() + "','"
+                + myNode.getId() + "','" + myNode.getUser().getId() + "',"
                 + myNode.getVersion() + "," + (int) myNode.getChangesetId()
                 + "," + "\'"
-                + StringEscapeUtils.escapeSql(
+                + escapeSQL(
                         myNode.getUser().getName().toString())
                 + "\'" + "," + "\'" + myNode.getTimestamp() + "\'," + "\'"
                 + hstore + "\'" + "," + myNode.getLatitude() + ","
                 + myNode.getLongitude() + "," + "ST_GeomFromText(\'" + wkt
                 + "\',4326)" + "),");
-        System.out.println("(" + myNode.getId() + myNode.getVersion() + ","
-                + myNode.getId() + "," + myNode.getUser().getId() + ","
-                + myNode.getVersion() + "," + (int) myNode.getChangesetId()
-                + "," + "\'"
-                + StringEscapeUtils.escapeSql(myNode.getUser().getName()) + "\'"
-                + "," + "\'" + myNode.getTimestamp() + "\'," + "\'" + hstore
-                + "\'" + "," + myNode.getLatitude() + ","
-                + myNode.getLongitude() + "," + "ST_GeomFromText(\'" + wkt
-                + "\',4326)" + "),");
-        System.out.println("                       Fait en "
-                + (System.nanoTime() - t1) + " ns");
+        	
         this.nbElem++;
-        if (nbElem > 20000) {
+        if (nbElem > 10000) {
             nodeValues.deleteCharAt(nodeValues.length() - 1);
             myQueries
                     .append("INSERT INTO node (idnode, id, uid, vnode, changeset, username, datemodif, tags, lat, lon, geom) VALUES ")
@@ -172,42 +168,39 @@ public class GeoxSink implements Sink {
 
     private void processWay(Way myWay) {
         StringBuffer hstore = new StringBuffer();
-        List<Long> vertices = new ArrayList<Long>();
         StringBuffer nodeArray = new StringBuffer();
+        StringBuffer nodeArray2 = new StringBuffer();
         for (WayNode nd : myWay.getWayNodes()) {
-            vertices.add(nd.getNodeId());
             nodeArray.append(nd.getNodeId() + ",");
         }
         if (nodeArray.length() > 0)
             nodeArray.deleteCharAt(nodeArray.length() - 1);
+        if (nodeArray.length() > 0){
+        	nodeArray2.append("ARRAY[").append(nodeArray.toString()).append("]");
+        	nodeArray = nodeArray2;
+        }
+        else
+        	nodeArray.append("NULL");
 
         for (Tag tag : myWay.getTags()) {
             String[] decoup = tag.toString().split("'");
-            hstore.append("\"").append(StringEscapeUtils.escapeJava(decoup[1]))
+            hstore.append("\"").append(escapeSQL(decoup[1]))
                     .append("\"=>\"")
-                    .append(StringEscapeUtils.escapeJava(decoup[3]))
+                    .append(escapeSQL(decoup[3]))
                     .append("\",");
         }
         if (hstore.length() > 0)
             hstore.deleteCharAt(hstore.length() - 1);
 
-        wayValues.append("(" + myWay.getId() + myWay.getVersion() + ","
-                + myWay.getId() + "," + myWay.getUser().getId() + ","
+        wayValues.append("('" + myWay.getId() + myWay.getVersion() + "','"
+                + myWay.getId() + "','" + myWay.getUser().getId() + "',"
                 + myWay.getVersion() + "," + (int) myWay.getChangesetId() + ","
-                + "\'" + StringEscapeUtils.escapeSql(myWay.getUser().getName())
+                + "\'" + escapeSQL(myWay.getUser().getName())
                 + "\'" + "," + "\'" + myWay.getTimestamp() + "\'," + "\'"
-                + hstore + "\'," + "ARRAY [" + nodeArray + "]" + "),");
-        System.out.println("(" + myWay.getId() + myWay.getVersion() + ","
-                + myWay.getId() + "," + myWay.getUser().getId() + ","
-                + myWay.getVersion() + "," + (int) myWay.getChangesetId() + ","
-                + "\'" + StringEscapeUtils.escapeSql(myWay.getUser().getName())
-                + "\'" + "," + "\'" + myWay.getTimestamp() + "\'," + "\'"
-                + hstore + "\'," + "ARRAY [" + nodeArray + "]" + "),");
+                + hstore + "\'," + nodeArray + "),");
 
-        System.out.println(
-                "Ecriture d'un way : " + (System.nanoTime() - t1) + " ns");
         this.nbElem++;
-        if (nbElem > 20000) {
+        if (nbElem > 10000) {
             wayValues.deleteCharAt(wayValues.length() - 1);
             myQueries
                     .append("INSERT INTO way (idway, id, uid, vway, changeset,username, datemodif, tags, composedof) VALUES ")
@@ -222,67 +215,49 @@ public class GeoxSink implements Sink {
 
         /* Process relation members */
         for (RelationMember mb : myRelation.getMembers()) {
-            // System.out.println("Ecriture d'un relation member...\n");
-            relmbValues.append("(" + myRelation.getId()
-                    + myRelation.getVersion() + "," + mb.getMemberId() + ","
+            relmbValues.append("('" + myRelation.getId()
+                    + myRelation.getVersion() + "','" + mb.getMemberId() + "','"
                     + myRelation.getId() + myRelation.getVersion()
-                    + mb.getMemberId() + "," + "\'"
-                    + StringEscapeUtils.escapeSql(mb.getMemberType().toString())
+                    + mb.getMemberId() + "'," + "\'"
+                    + escapeSQL(mb.getMemberType().toString())
                     + "\'" + "," + "\'"
-                    + StringEscapeUtils.escapeSql(mb.getMemberRole().toString())
+                    + escapeSQL(mb.getMemberRole().toString())
                     + "\'" + "),");
-            System.out.println(
-                    "INSERT INTO relationmember (idrel,idmb,idrelmb,typemb,rolemb) VALUES ("
-                            + myRelation.getId() + myRelation.getVersion() + ","
-                            + mb.getMemberId() + "," + myRelation.getId()
-                            + myRelation.getVersion() + mb.getMemberId() + ","
-                            + "\'"
-                            + StringEscapeUtils
-                                    .escapeSql(mb.getMemberType().toString())
-                            + "\'" + "," + "\'"
-                            + StringEscapeUtils
-                                    .escapeSql(mb.getMemberRole().toString())
-                            + "\'" + "),");
+            System.out.println("Relmb: "
+                            + escapeSQL(mb.getMemberType().toString())
+                            + ","
+                            + escapeSQL(mb.getMemberRole().toString())
+                            );
             this.nbElem++;
             System.out.println(" Fait en " + (System.nanoTime() - t1) + " ns");
         }
 
         /* Process relation */
         System.out.println("Ecriture d'une relation...");
-        // HashMap<String, String> myTags = new HashMap<String, String>();
         for (Tag tag : myRelation.getTags()) {
             String[] decoup = tag.toString().split("'");
-            // myTags.put(decoup[1].toString(), decoup[3].toString());
             hstore.append(
-                    "\"" + StringEscapeUtils.escapeSql(decoup[1]) + "\"=>\""
-                            + StringEscapeUtils.escapeSql(decoup[3]) + "\",");
+                    "\"" + escapeSQL(decoup[1]) + "\"=>\""
+                            + escapeSQL(decoup[3]) + "\",");
         }
         if (hstore.length() > 0)
             hstore.deleteCharAt(hstore.length() - 1);
 
         t2 = System.nanoTime();
 
-        relValues.append("(" + myRelation.getId() + myRelation.getVersion()
-                + "," + myRelation.getId() + "," + myRelation.getUser().getId()
+        relValues.append("('" + myRelation.getId() + myRelation.getVersion()
+                + "'," + myRelation.getId() + "," + myRelation.getUser().getId()
                 + "," + myRelation.getVersion() + ","
                 + (int) myRelation.getChangesetId() + "," + "\'"
-                + StringEscapeUtils.escapeSql(myRelation.getUser().getName())
+                + escapeSQL(myRelation.getUser().getName())
                 + "\'" + "," + "\'" + myRelation.getTimestamp() + "\'," + "\'"
                 + hstore + "\'" + "),");
-        System.out.println(
-                "INSERT INTO relation (idrel, id, uid, vrel,changeset,username, datemodif, tags) VALUES ("
-                        + myRelation.getId() + myRelation.getVersion() + ","
-                        + myRelation.getId() + ","
-                        + myRelation.getUser().getId() + ","
-                        + myRelation.getVersion() + ","
-                        + (int) myRelation.getChangesetId() + "," + "\'"
-                        + StringEscapeUtils
-                                .escapeSql(myRelation.getUser().getName())
-                        + "\'" + "," + "\'" + myRelation.getTimestamp() + "\',"
-                        + "\'" + hstore + "\'" + "),");
+        System.out.println("Relation"
+                        + escapeSQL(myRelation.getUser().getName())
+                        + hstore);
         System.out.println(" Faite en : " + (System.nanoTime() - t2) + " ns");
         this.nbElem++;
-        if (nbElem > 15000) {
+        if (nbElem > 10000) {
             relmbValues.deleteCharAt(relmbValues.length() - 1);
             myQueries
                     .append("INSERT INTO relationmember (idrel,idmb,idrelmb,typemb,rolemb) VALUES ")
@@ -292,10 +267,54 @@ public class GeoxSink implements Sink {
             myQueries
                     .append("INSERT INTO relation (idrel, id, uid, vrel,changeset,username, datemodif, tags) VALUES ")
                     .append(relValues).append(";");
-            // System.out.println("Requête\n" + myQueries.toString());
             executeQuery();
             relmbValues.setLength(0);
             relValues.setLength(0);
         }
     }
+    public static String escapeSQL(String s){
+        int length = s.length();
+        int newLength = length;
+        // first check for characters that might
+        // be dangerous and calculate a length
+        // of the string that has escapes.
+        for (int i=0; i<length; i++){
+          char c = s.charAt(i);
+          switch(c){
+            case '\\':
+            case '\"':
+            case '\'':
+            case '\0':{
+              newLength += 1;
+            } break;
+          }
+        }
+        if (length == newLength){
+          // nothing to escape in the string
+          return s;
+        }
+        StringBuffer sb = new StringBuffer(newLength);
+        for (int i=0; i<length; i++){
+          char c = s.charAt(i);
+          switch(c){
+            case '\\':{
+              sb.append("\\\\");
+            } break;
+            case '\"':{
+              sb.append("\\\"");
+            } break;
+            case '\'':{
+//              sb.append("\\\'");
+            	sb.append("\'\'");
+            } break;
+            case '\0':{
+              sb.append("\\0");
+            } break;
+            default: {
+              sb.append(c);
+            }
+          }
+        }
+        return sb.toString();
+      }
 }
