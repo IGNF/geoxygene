@@ -3,10 +3,10 @@ package fr.ign.cogit.geoxygene.sig3d.model.citygml.building;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.citygml4j.impl.citygml.building.BuildingFurnitureImpl;
-import org.citygml4j.jaxb.gml._3_1_1.GeometryPropertyType;
+
 import org.citygml4j.model.citygml.building.BuildingFurniture;
-import org.citygml4j.model.citygml.core.CityObject;
+import org.citygml4j.model.citygml.core.AbstractCityObject;
+import org.citygml4j.model.gml.basicTypes.Code;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_CityObject;
@@ -31,9 +31,9 @@ public class CG_BuildingFurniture extends CG_CityObject {
   }
   
   @Override
-  public CityObject export() {
+  public AbstractCityObject export() {
     
-    BuildingFurniture bF = new BuildingFurnitureImpl();
+    BuildingFurniture bF = new BuildingFurniture();
     bF.setClazz(this.getClazz());
     bF.setFunction(this.getFunction());
     bF.setUsage(this.getUsage());
@@ -48,9 +48,9 @@ public class CG_BuildingFurniture extends CG_CityObject {
   
   
 
-  protected String clazz;
-  protected List<String> function;
-  protected List<String> usage;
+  protected Code clazz;
+  protected List<Code> function;
+  protected List<Code> usage;
   protected IGeometry lod4Geometry;
 
   /**
@@ -59,7 +59,7 @@ public class CG_BuildingFurniture extends CG_CityObject {
    * @return possible object is {@link String }
    * 
    */
-  public String getClazz() {
+  public Code getClazz() {
     return this.clazz;
   }
 
@@ -69,7 +69,7 @@ public class CG_BuildingFurniture extends CG_CityObject {
    * @param value allowed object is {@link String }
    * 
    */
-  public void setClazz(String value) {
+  public void setClazz(Code value) {
     this.clazz = value;
   }
 
@@ -99,9 +99,9 @@ public class CG_BuildingFurniture extends CG_CityObject {
    * 
    * 
    */
-  public List<String> getFunction() {
+  public List<Code> getFunction() {
     if (this.function == null) {
-      this.function = new ArrayList<String>();
+      this.function = new ArrayList<Code>();
     }
     return this.function;
   }
@@ -136,9 +136,9 @@ public class CG_BuildingFurniture extends CG_CityObject {
    * 
    * 
    */
-  public List<String> getUsage() {
+  public List<Code> getUsage() {
     if (this.usage == null) {
-      this.usage = new ArrayList<String>();
+      this.usage = new ArrayList<Code>();
     }
     return this.usage;
   }

@@ -6,8 +6,8 @@ import javax.xml.bind.JAXBException;
 
 import org.citygml4j.CityGMLContext;
 import org.citygml4j.builder.jaxb.JAXBBuilder;
-import org.citygml4j.impl.citygml.core.CityModelImpl;
 import org.citygml4j.model.citygml.CityGML;
+import org.citygml4j.model.citygml.core.CityModel;
 import org.citygml4j.xml.io.CityGMLInputFactory;
 import org.citygml4j.xml.io.reader.CityGMLReadException;
 import org.citygml4j.xml.io.reader.CityGMLReader;
@@ -48,11 +48,11 @@ public class LoaderCityGML {
         .createCityGMLReader(f);
     
     
-    System.out.println(reader.hasNextFeature());
+    System.out.println(reader.hasNext());
 
     CityGML citygml = reader.nextFeature();
 
-    CG_CityModel cityModel = new CG_CityModel((CityModelImpl) citygml);
+    CG_CityModel cityModel = new CG_CityModel((CityModel) citygml);
 
     int nbElem = cityModel.size();
 

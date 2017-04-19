@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.citygml4j.model.citygml.cityfurniture.CityFurniture;
-import org.citygml4j.model.citygml.core.CityObject;
+import org.citygml4j.model.citygml.core.AbstractCityObject;
+import org.citygml4j.model.gml.basicTypes.Code;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
@@ -91,8 +92,8 @@ public class CG_CityFurniture extends CG_CityObject {
 
   }
 
-  protected String clazz;
-  protected List<String> function;
+  protected Code clazz;
+  protected List<Code> function;
   protected IGeometry lod1Geometry;
   protected IGeometry lod2Geometry;
   protected IGeometry lod3Geometry;
@@ -112,7 +113,7 @@ public class CG_CityFurniture extends CG_CityObject {
    * @return possible object is {@link String }
    * 
    */
-  public String getClazz() {
+  public Code getClazz() {
     return this.clazz;
   }
 
@@ -122,7 +123,7 @@ public class CG_CityFurniture extends CG_CityObject {
    * @param value allowed object is {@link String }
    * 
    */
-  public void setClazz(String value) {
+  public void setClazz(Code value) {
     this.clazz = value;
   }
 
@@ -130,9 +131,9 @@ public class CG_CityFurniture extends CG_CityObject {
     return (this.clazz != null);
   }
 
-  public List<String> getFunction() {
+  public List<Code> getFunction() {
     if (this.function == null) {
-      this.function = new ArrayList<String>();
+      this.function = new ArrayList<Code>();
     }
     return this.function;
   }
@@ -434,7 +435,7 @@ public class CG_CityFurniture extends CG_CityObject {
   }
 
   @Override
-  public CityObject export() {
+  public AbstractCityObject export() {
     // TODO Auto-generated method stub
     return null;
   }

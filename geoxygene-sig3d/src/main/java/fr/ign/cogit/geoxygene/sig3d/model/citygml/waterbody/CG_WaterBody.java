@@ -3,11 +3,9 @@ package fr.ign.cogit.geoxygene.sig3d.model.citygml.waterbody;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.citygml4j.jaxb.gml._3_1_1.MultiCurvePropertyType;
-import org.citygml4j.jaxb.gml._3_1_1.MultiSurfacePropertyType;
-import org.citygml4j.jaxb.gml._3_1_1.SolidPropertyType;
-import org.citygml4j.model.citygml.core.CityObject;
+import org.citygml4j.model.citygml.core.AbstractCityObject;
 import org.citygml4j.model.citygml.waterbody.WaterBody;
+import org.citygml4j.model.gml.basicTypes.Code;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
@@ -88,9 +86,9 @@ public class CG_WaterBody extends CG_AbstractWaterObject {
 
   }
 
-  protected String clazz;
-  protected List<String> function;
-  protected List<String> usage;
+  protected Code clazz;
+  protected List<Code> function;
+  protected List<Code> usage;
   protected IMultiCurve<IOrientableCurve> lod0MultiCurve;
   protected IMultiSurface<IOrientableSurface> lod0MultiSurface;
   protected IMultiCurve<IOrientableCurve> lod1MultiCurve;
@@ -107,7 +105,7 @@ public class CG_WaterBody extends CG_AbstractWaterObject {
    * @return possible object is {@link String }
    * 
    */
-  public String getClazz() {
+  public Code getClazz() {
     return this.clazz;
   }
 
@@ -117,7 +115,7 @@ public class CG_WaterBody extends CG_AbstractWaterObject {
    * @param value allowed object is {@link String }
    * 
    */
-  public void setClazz(String value) {
+  public void setClazz(Code value) {
     this.clazz = value;
   }
 
@@ -125,9 +123,9 @@ public class CG_WaterBody extends CG_AbstractWaterObject {
     return (this.clazz != null);
   }
 
-  public List<String> getFunction() {
+  public List<Code> getFunction() {
     if (this.function == null) {
-      this.function = new ArrayList<String>();
+      this.function = new ArrayList<Code>();
     }
     return this.function;
   }
@@ -140,9 +138,9 @@ public class CG_WaterBody extends CG_AbstractWaterObject {
     this.function = null;
   }
 
-  public List<String> getUsage() {
+  public List<Code> getUsage() {
     if (this.usage == null) {
-      this.usage = new ArrayList<String>();
+      this.usage = new ArrayList<Code>();
     }
     return this.usage;
   }
@@ -364,7 +362,7 @@ public class CG_WaterBody extends CG_AbstractWaterObject {
   }
 
   @Override
-  public CityObject export() {
+  public AbstractCityObject export() {
     // TODO Auto-generated method stub
     return null;
   }

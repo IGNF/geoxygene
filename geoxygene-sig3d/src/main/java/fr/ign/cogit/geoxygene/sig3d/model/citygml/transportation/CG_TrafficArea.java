@@ -3,8 +3,9 @@ package fr.ign.cogit.geoxygene.sig3d.model.citygml.transportation;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.citygml4j.model.citygml.core.CityObject;
+import org.citygml4j.model.citygml.core.AbstractCityObject;
 import org.citygml4j.model.citygml.transportation.TrafficArea;
+import org.citygml4j.model.gml.basicTypes.Code;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
@@ -17,9 +18,9 @@ import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeomet
  */
 public class CG_TrafficArea extends CG_AbstractTransportation {
 
-  protected List<String> usage;
-  protected List<String> function;
-  protected String surfaceMaterial;
+  protected List<Code> usage;
+  protected List<Code> function;
+  protected Code surfaceMaterial;
   protected IMultiSurface<IOrientableSurface> lod2MultiSurface;
   protected IMultiSurface<IOrientableSurface> lod3MultiSurface;
   protected IMultiSurface<IOrientableSurface> lod4MultiSurface;
@@ -56,9 +57,9 @@ public class CG_TrafficArea extends CG_AbstractTransportation {
 
   }
 
-  public List<String> getUsage() {
+  public List<Code> getUsage() {
     if (this.usage == null) {
-      this.usage = new ArrayList<String>();
+      this.usage = new ArrayList<Code>();
     }
     return this.usage;
   }
@@ -71,9 +72,9 @@ public class CG_TrafficArea extends CG_AbstractTransportation {
     this.usage = null;
   }
 
-  public List<String> getFunction() {
+  public List<Code> getFunction() {
     if (this.function == null) {
-      this.function = new ArrayList<String>();
+      this.function = new ArrayList<Code>();
     }
     return this.function;
   }
@@ -92,7 +93,7 @@ public class CG_TrafficArea extends CG_AbstractTransportation {
    * @return possible object is {@link String }
    * 
    */
-  public String getSurfaceMaterial() {
+  public Code getSurfaceMaterial() {
     return this.surfaceMaterial;
   }
 
@@ -102,7 +103,7 @@ public class CG_TrafficArea extends CG_AbstractTransportation {
    * @param value allowed object is {@link String }
    * 
    */
-  public void setSurfaceMaterial(String value) {
+  public void setSurfaceMaterial(Code value) {
     this.surfaceMaterial = value;
   }
 
@@ -183,9 +184,8 @@ public class CG_TrafficArea extends CG_AbstractTransportation {
   }
 
   @Override
-  public CityObject export() {
+  public AbstractCityObject export() {
     // TODO Auto-generated method stub
     return null;
   }
-
 }

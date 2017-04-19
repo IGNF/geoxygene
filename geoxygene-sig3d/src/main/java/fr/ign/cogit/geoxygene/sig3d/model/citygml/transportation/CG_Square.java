@@ -1,6 +1,6 @@
 package fr.ign.cogit.geoxygene.sig3d.model.citygml.transportation;
 
-import org.citygml4j.model.citygml.core.CityObject;
+import org.citygml4j.model.citygml.core.AbstractCityObject;
 import org.citygml4j.model.citygml.transportation.Square;
 
 /**
@@ -16,7 +16,7 @@ public class CG_Square extends CG_TransportationComplex {
   }
 
   @Override
-  public CityObject export() {
+  public AbstractCityObject export() {
     // TODO Auto-generated method stub
     return null;
   }

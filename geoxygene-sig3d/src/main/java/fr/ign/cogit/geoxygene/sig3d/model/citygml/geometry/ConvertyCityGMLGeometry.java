@@ -3,40 +3,40 @@ package fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.citygml4j.model.gml.AbstractCurve;
-import org.citygml4j.model.gml.AbstractGeometry;
-import org.citygml4j.model.gml.AbstractRingProperty;
-import org.citygml4j.model.gml.AbstractSolid;
-import org.citygml4j.model.gml.AbstractSurface;
-import org.citygml4j.model.gml.AbstractSurfacePatch;
-import org.citygml4j.model.gml.CompositeCurve;
-import org.citygml4j.model.gml.CompositeSolid;
-import org.citygml4j.model.gml.CompositeSurface;
-import org.citygml4j.model.gml.CurveProperty;
-import org.citygml4j.model.gml.GeometryProperty;
-import org.citygml4j.model.gml.LineString;
-import org.citygml4j.model.gml.LineStringSegment;
-import org.citygml4j.model.gml.LineStringSegmentArrayProperty;
-import org.citygml4j.model.gml.LinearRing;
-import org.citygml4j.model.gml.MultiCurve;
-import org.citygml4j.model.gml.MultiCurveProperty;
-import org.citygml4j.model.gml.MultiPoint;
-import org.citygml4j.model.gml.MultiPointProperty;
-import org.citygml4j.model.gml.MultiSolid;
-import org.citygml4j.model.gml.MultiSurface;
-import org.citygml4j.model.gml.MultiSurfaceProperty;
-import org.citygml4j.model.gml.OrientableSurface;
-import org.citygml4j.model.gml.Point;
-import org.citygml4j.model.gml.Polygon;
-import org.citygml4j.model.gml.PosOrPointPropertyOrPointRep;
-import org.citygml4j.model.gml.Rectangle;
-import org.citygml4j.model.gml.Solid;
-import org.citygml4j.model.gml.SolidProperty;
-import org.citygml4j.model.gml.Surface;
-import org.citygml4j.model.gml.SurfaceProperty;
-import org.citygml4j.model.gml.Tin;
-import org.citygml4j.model.gml.Triangle;
-import org.citygml4j.model.gml.TriangulatedSurface;
+import org.citygml4j.model.gml.geometry.AbstractGeometry;
+import org.citygml4j.model.gml.geometry.GeometryProperty;
+import org.citygml4j.model.gml.geometry.aggregates.MultiCurve;
+import org.citygml4j.model.gml.geometry.aggregates.MultiCurveProperty;
+import org.citygml4j.model.gml.geometry.aggregates.MultiPoint;
+import org.citygml4j.model.gml.geometry.aggregates.MultiPointProperty;
+import org.citygml4j.model.gml.geometry.aggregates.MultiSolid;
+import org.citygml4j.model.gml.geometry.aggregates.MultiSurface;
+import org.citygml4j.model.gml.geometry.aggregates.MultiSurfaceProperty;
+import org.citygml4j.model.gml.geometry.complexes.CompositeCurve;
+import org.citygml4j.model.gml.geometry.complexes.CompositeSolid;
+import org.citygml4j.model.gml.geometry.complexes.CompositeSurface;
+import org.citygml4j.model.gml.geometry.primitives.AbstractCurve;
+import org.citygml4j.model.gml.geometry.primitives.AbstractRingProperty;
+import org.citygml4j.model.gml.geometry.primitives.AbstractSolid;
+import org.citygml4j.model.gml.geometry.primitives.AbstractSurface;
+import org.citygml4j.model.gml.geometry.primitives.AbstractSurfacePatch;
+import org.citygml4j.model.gml.geometry.primitives.CurveProperty;
+import org.citygml4j.model.gml.geometry.primitives.LineString;
+import org.citygml4j.model.gml.geometry.primitives.LineStringSegment;
+import org.citygml4j.model.gml.geometry.primitives.LineStringSegmentArrayProperty;
+import org.citygml4j.model.gml.geometry.primitives.LinearRing;
+import org.citygml4j.model.gml.geometry.primitives.OrientableSurface;
+import org.citygml4j.model.gml.geometry.primitives.Point;
+import org.citygml4j.model.gml.geometry.primitives.Polygon;
+import org.citygml4j.model.gml.geometry.primitives.PosOrPointPropertyOrPointRep;
+import org.citygml4j.model.gml.geometry.primitives.Rectangle;
+import org.citygml4j.model.gml.geometry.primitives.Solid;
+import org.citygml4j.model.gml.geometry.primitives.SolidProperty;
+import org.citygml4j.model.gml.geometry.primitives.Surface;
+import org.citygml4j.model.gml.geometry.primitives.SurfaceProperty;
+import org.citygml4j.model.gml.geometry.primitives.Tin;
+import org.citygml4j.model.gml.geometry.primitives.Triangle;
+import org.citygml4j.model.gml.geometry.primitives.TriangulatedSurface;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
@@ -69,944 +69,910 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
  * @author MBrasebin
  */
 public class ConvertyCityGMLGeometry {
-  // La translation que l'on appliquera
-  public static double coordXIni = 0;
-  public static double coordYIni = 0;
-  public static double coordZIni = 0;
+	// La translation que l'on appliquera
+	public static double coordXIni = 0;
+	public static double coordYIni = 0;
+	public static double coordZIni = 0;
 
-  public static double xMin = Double.POSITIVE_INFINITY;
-  public static double yMin = Double.POSITIVE_INFINITY;
-  public static double zMin = Double.POSITIVE_INFINITY;
+	public static double xMin = Double.POSITIVE_INFINITY;
+	public static double yMin = Double.POSITIVE_INFINITY;
+	public static double zMin = Double.POSITIVE_INFINITY;
 
-  public static double xMax = Double.NEGATIVE_INFINITY;
-  public static double yMax = Double.NEGATIVE_INFINITY;
-  public static double zMax = Double.NEGATIVE_INFINITY;
+	public static double xMax = Double.NEGATIVE_INFINITY;
+	public static double yMax = Double.NEGATIVE_INFINITY;
+	public static double zMax = Double.NEGATIVE_INFINITY;
 
-  public static IGeometry convertGMLGeometry(GeometryProperty geom) {
-    if(geom == null){
-      return null;
-    }
-  
-    return ConvertyCityGMLGeometry.convertGMLGeometry(geom.getGeometry());
+	public static IGeometry convertGMLGeometry(GeometryProperty<?> geom) {
+		if (geom == null) {
+			return null;
+		}
 
-  }
+		return ConvertyCityGMLGeometry.convertGMLGeometry(geom.getGeometry());
 
-  /**
-   * Convertir n'importe quelle géométrie CityGML en géométrie géoxygene
-   * 
-   * @param geom une géométrie GML de la librairie CityGML4j
-   * @return une géométrie GeOxygene issue de la conversion de la géométrie
-   *         paramètre
-   */
-  public static IGeometry convertGMLGeometry(AbstractGeometry geom) {
+	}
 
-    if (geom instanceof Solid) {
+	/**
+	 * Convertir n'importe quelle géométrie CityGML en géométrie géoxygene
+	 * 
+	 * @param geom
+	 *            une géométrie GML de la librairie CityGML4j
+	 * @return une géométrie GeOxygene issue de la conversion de la géométrie
+	 *         paramètre
+	 */
+	public static IGeometry convertGMLGeometry(AbstractGeometry geom) {
 
-      return ConvertyCityGMLGeometry.convertGMLSolid((Solid) geom);
+		if (geom instanceof Solid) {
 
-    } else if (geom instanceof CompositeSolid) {
+			return ConvertyCityGMLGeometry.convertGMLSolid((Solid) geom);
 
-      return ConvertyCityGMLGeometry
-          .convertGMLCompositeSolid((CompositeSolid) geom);
+		} else if (geom instanceof CompositeSolid) {
 
-    } else if (geom instanceof MultiSolid) {
+			return ConvertyCityGMLGeometry.convertGMLCompositeSolid((CompositeSolid) geom);
 
-      return ConvertyCityGMLGeometry.convertGMLMultiSolid((MultiSolid) geom);
+		} else if (geom instanceof MultiSolid) {
 
-    } else if (geom instanceof Polygon) {
+			return ConvertyCityGMLGeometry.convertGMLMultiSolid((MultiSolid) geom);
 
-      return ConvertyCityGMLGeometry.convertGMLPolygon((Polygon) geom);
+		} else if (geom instanceof Polygon) {
 
-    } else if (geom instanceof Rectangle) {
+			return ConvertyCityGMLGeometry.convertGMLPolygon((Polygon) geom);
 
-      return ConvertyCityGMLGeometry.convertGMLRectangle((Rectangle) geom);
+			/*
+			 * } else if (geom instanceof Rectangle) {
+			 * 
+			 * return ConvertyCityGMLGeometry.convertGMLRectangle((Rectangle)
+			 * geom);
+			 * 
+			 * } else if (geom instanceof Triangle) {
+			 * 
+			 * return ConvertyCityGMLGeometry.convertGMLTriangle((Triangle)
+			 * geom);
+			 */
 
-    } else if (geom instanceof Triangle) {
+		} else if (geom instanceof MultiSurface) {
 
-      return ConvertyCityGMLGeometry.convertGMLTriangle((Triangle) geom);
+			return ConvertyCityGMLGeometry.convertGMLMultiSurface((MultiSurface) geom);
 
-    } else if (geom instanceof MultiSurface) {
+		} else if (geom instanceof Tin) {
 
-      return ConvertyCityGMLGeometry
-          .convertGMLMultiSurface((MultiSurface) geom);
+			return ConvertyCityGMLGeometry.convertGMLTin((Tin) geom);
 
-    } else if (geom instanceof Tin) {
+		} else if (geom instanceof TriangulatedSurface) {
 
-      return ConvertyCityGMLGeometry.convertGMLTin((Tin) geom);
-      
-      
-    } else if (geom instanceof TriangulatedSurface) {
-      
-      return ConvertyCityGMLGeometry.convertGMLTriangulatedSurface((TriangulatedSurface) geom);
+			return ConvertyCityGMLGeometry.convertGMLTriangulatedSurface((TriangulatedSurface) geom);
 
-    } else if (geom instanceof OrientableSurface) {
+		} else if (geom instanceof OrientableSurface) {
 
-      List<IOrientableSurface> lOS = ConvertyCityGMLGeometry
-          .convertGMLOrientableSurface((OrientableSurface) geom);
-      if (lOS.size() == 1) {
-        return lOS.get(0);
-      } else {
+			List<IOrientableSurface> lOS = ConvertyCityGMLGeometry
+					.convertGMLOrientableSurface((OrientableSurface) geom);
+			if (lOS.size() == 1) {
+				return lOS.get(0);
+			} else {
 
-        return new GM_MultiSurface<IOrientableSurface>(lOS);
-      }
+				return new GM_MultiSurface<IOrientableSurface>(lOS);
+			}
 
-    } else if (geom instanceof CompositeSurface) {
+		} else if (geom instanceof CompositeSurface) {
 
-      ConvertyCityGMLGeometry
-          .convertGMLCompositeSurface((CompositeSurface) geom);
+			ConvertyCityGMLGeometry.convertGMLCompositeSurface((CompositeSurface) geom);
 
-    } else if (geom instanceof Surface) {
-      List<IOrientableSurface> lOS = ConvertyCityGMLGeometry
-          .convertGMLSurface((Surface) geom);
-      if (lOS.size() == 1) {
-        return lOS.get(0);
-      } else {
+		} else if (geom instanceof Surface) {
+			List<IOrientableSurface> lOS = ConvertyCityGMLGeometry.convertGMLSurface((Surface) geom);
+			if (lOS.size() == 1) {
+				return lOS.get(0);
+			} else {
 
-        return new GM_MultiSurface<IOrientableSurface>(lOS);
-      }
+				return new GM_MultiSurface<IOrientableSurface>(lOS);
+			}
 
-    } else if (geom instanceof LineString) {
+		} else if (geom instanceof LineString) {
 
-      return ConvertyCityGMLGeometry.convertGMLLineString((LineString) geom);
+			return ConvertyCityGMLGeometry.convertGMLLineString((LineString) geom);
 
-    } else if (geom instanceof MultiCurve) {
-      return ConvertyCityGMLGeometry.convertGMLMultiCurve((MultiCurve) geom);
+		} else if (geom instanceof MultiCurve) {
+			return ConvertyCityGMLGeometry.convertGMLMultiCurve((MultiCurve) geom);
 
-    } else if (geom instanceof CompositeCurve) {
-      return ConvertyCityGMLGeometry
-          .convertGMLCompositeCurve((CompositeCurve) geom);
+		} else if (geom instanceof CompositeCurve) {
+			return ConvertyCityGMLGeometry.convertGMLCompositeCurve((CompositeCurve) geom);
 
-    } else if (geom instanceof MultiPoint) {
-      return ConvertyCityGMLGeometry.convertGMLMultiPoint((MultiPoint) geom);
+		} else if (geom instanceof MultiPoint) {
+			return ConvertyCityGMLGeometry.convertGMLMultiPoint((MultiPoint) geom);
 
-    } else if (geom instanceof Point) {
-      return ConvertyCityGMLGeometry.convertGMLPoint((Point) geom);
-    }
-    // Type de géométrie non reconnu
-    if( geom != null){
-      System.out.println(geom.getClass());
-    }
+		} else if (geom instanceof Point) {
+			return ConvertyCityGMLGeometry.convertGMLPoint((Point) geom);
+		}
+		// Type de géométrie non reconnu
+		if (geom != null) {
+			System.out.println(geom.getClass());
+		}
 
-    return null;
+		return null;
 
-  }
+	}
 
-  // /////////////////////////////Les
-  // primitives//////////////////////////////////////
+	// /////////////////////////////Les
+	// primitives//////////////////////////////////////
 
-  public static GM_TriangulatedSurface convertGMLTriangulatedSurface(
-      TriangulatedSurface geom) {
-    
-    List<ITriangle> lTri = new ArrayList<ITriangle>();
-    
-    if(geom.isSetTrianglePatches()){
-      
-      int nbPatchs = geom.getTrianglePatches().getTriangle().size();
-      
-      
-      for(int i=0;i<nbPatchs;i++){
-        
-        
-        lTri.add(convertGMLTriangle(geom.getTrianglePatches().getTriangle().get(i)));
-        
-        
-      }
-        
-      
-    }
-    
-    return new GM_TriangulatedSurface(lTri);
-  }
+	public static GM_TriangulatedSurface convertGMLTriangulatedSurface(TriangulatedSurface geom) {
 
-  public static GM_Tin convertGMLTin(Tin geom) {
+		List<ITriangle> lTri = new ArrayList<ITriangle>();
 
-    List<ILineString> lSBL = new ArrayList<ILineString>();
+		if (geom.isSetTrianglePatches()) {
 
-    // Break line
-    if (geom.isSetBreakLines()) {
+			int nbPatchs = geom.getTrianglePatches().getTriangle().size();
 
-      List<LineStringSegmentArrayProperty> lGMLBL = geom.getBreakLines();
-      int nbElem = lGMLBL.size();
+			for (int i = 0; i < nbPatchs; i++) {
 
-      for (int i = 0; i < nbElem; i++) {
+				lTri.add(convertGMLTriangle(geom.getTrianglePatches().getTriangle().get(i)));
 
-        List<LineStringSegment> lSS = lGMLBL.get(i).getLineStringSegment();
+			}
 
-        int nbLSS = lSS.size();
-        for (int j = 0; j < nbLSS; j++) {
+		}
 
-          LineStringSegment lS = lSS.get(j);
+		return new GM_TriangulatedSurface(lTri);
+	}
 
-          lSBL.add(new GM_LineString(convertGMLDirectPositionList(lS
-              .getPosList())));
+	public static GM_Tin convertGMLTin(Tin geom) {
 
-        }
+		List<ILineString> lSBL = new ArrayList<ILineString>();
 
-      }
+		// Break line
+		if (geom.isSetBreakLines()) {
 
-    }
-    // Stop Line
-    List<ILineString> lSSL = new ArrayList<ILineString>();
+			List<LineStringSegmentArrayProperty> lGMLBL = geom.getBreakLines();
+			int nbElem = lGMLBL.size();
 
-    if (geom.isSetStopLines()) {
+			for (int i = 0; i < nbElem; i++) {
 
-      List<LineStringSegmentArrayProperty> lGMLBL = geom.getStopLines();
-      int nbElem = lGMLBL.size();
+				List<LineStringSegment> lSS = lGMLBL.get(i).getLineStringSegment();
 
-      for (int i = 0; i < nbElem; i++) {
+				int nbLSS = lSS.size();
+				for (int j = 0; j < nbLSS; j++) {
 
-        List<LineStringSegment> lSS = lGMLBL.get(i).getLineStringSegment();
+					LineStringSegment lS = lSS.get(j);
 
-        int nbLSS = lSS.size();
-        for (int j = 0; j < nbLSS; j++) {
+					lSBL.add(new GM_LineString(convertGMLDirectPositionList(lS.getPosList())));
 
-          LineStringSegment lS = lSS.get(j);
+				}
 
-          lSSL.add(new GM_LineString(convertGMLDirectPositionList(lS
-              .getPosList())));
+			}
 
-        }
+		}
+		// Stop Line
+		List<ILineString> lSSL = new ArrayList<ILineString>();
 
-      }
+		if (geom.isSetStopLines()) {
 
-    }
-    // ControlPoint
+			List<LineStringSegmentArrayProperty> lGMLBL = geom.getStopLines();
+			int nbElem = lGMLBL.size();
 
-    IDirectPositionList iDPL = new DirectPositionList();
+			for (int i = 0; i < nbElem; i++) {
 
-    if (geom.isSetControlPoint()) {
-      iDPL.addAll(convertGMLDirectPositionList(geom.getControlPoint()
-          .getPosList()));
+				List<LineStringSegment> lSS = lGMLBL.get(i).getLineStringSegment();
 
-    }
+				int nbLSS = lSS.size();
+				for (int j = 0; j < nbLSS; j++) {
 
-    double maxL = Double.NaN;
+					LineStringSegment lS = lSS.get(j);
 
-    if (geom.isSetMaxLength()) {
-      maxL = geom.getMaxLength().getValue();
-    }
+					lSSL.add(new GM_LineString(convertGMLDirectPositionList(lS.getPosList())));
 
-    // TODO Auto-generated method stub
-    return new GM_Tin(iDPL, lSSL, lSBL, (float) maxL);
-  }
+				}
 
-  /**
-   * Convertit un DirectPosition GML en DirectPosition GeOxygene
-   * 
-   * @param dp le DirectPosition GML que l'on souhaite convertir
-   * @return un DirectPosition de GeOxygene
-   */
-  public static DirectPosition convertGMLDirectPosition(
-      org.citygml4j.model.gml.DirectPosition dp) {
+			}
 
-    List<Double> lD = dp.getValue();
+		}
+		// ControlPoint
 
-    ConvertyCityGMLGeometry.xMin = Math.min(ConvertyCityGMLGeometry.xMin,
-        lD.get(0));
-    ConvertyCityGMLGeometry.yMin = Math.min(ConvertyCityGMLGeometry.yMin,
-        lD.get(1));
-    ConvertyCityGMLGeometry.zMin = Math.min(ConvertyCityGMLGeometry.zMin,
-        lD.get(2));
+		IDirectPositionList iDPL = new DirectPositionList();
 
-    ConvertyCityGMLGeometry.xMax = Math.max(ConvertyCityGMLGeometry.xMax,
-        lD.get(0));
-    ConvertyCityGMLGeometry.yMax = Math.max(ConvertyCityGMLGeometry.yMax,
-        lD.get(1));
-    ConvertyCityGMLGeometry.zMax = Math.max(ConvertyCityGMLGeometry.zMax,
-        lD.get(2));
+		if (geom.isSetControlPoint()) {
+			iDPL.addAll(convertGMLDirectPositionList(geom.getControlPoint().getPosList()));
 
-    return new DirectPosition(lD.get(0) - ConvertyCityGMLGeometry.coordXIni,
-        lD.get(1) - ConvertyCityGMLGeometry.coordYIni, lD.get(2)
-            - ConvertyCityGMLGeometry.coordZIni);
-  }
+		}
 
-  /**
-   * Convertit un DirectPositionList de CityGML4j en DirectPositionList Geoxyene
-   * 
-   * @param dplGML un DirectPositionList GML à convertir
-   * @return un DirectPositionList GeOxygene
-   */
-  public static DirectPositionList convertGMLDirectPositionList(
-      org.citygml4j.model.gml.DirectPositionList dplGML) {
+		double maxL = Double.NaN;
 
-    DirectPositionList dplFinal = new DirectPositionList();
+		if (geom.isSetMaxLength()) {
+			maxL = geom.getMaxLength().getValue();
+		}
 
-    List<Double> lD = dplGML.getValue();
-    int nbElem = lD.size();
+		// TODO Auto-generated method stub
+		return new GM_Tin(iDPL, lSSL, lSBL, (float) maxL);
+	}
 
-    for (int i = 0; i < nbElem / 3; i++) {
+	/**
+	 * Convertit un DirectPosition GML en DirectPosition GeOxygene
+	 * 
+	 * @param dp
+	 *            le DirectPosition GML que l'on souhaite convertir
+	 * @return un DirectPosition de GeOxygene
+	 */
+	public static DirectPosition convertGMLDirectPosition(
+			org.citygml4j.model.gml.geometry.primitives.DirectPosition dp) {
 
-      dplFinal.add(new DirectPosition(lD.get(3 * i)
-          - ConvertyCityGMLGeometry.coordXIni, lD.get(3 * i + 1)
-          - ConvertyCityGMLGeometry.coordYIni, lD.get(3 * i + 2)
-          - ConvertyCityGMLGeometry.coordZIni));
+		List<Double> lD = dp.getValue();
 
-      ConvertyCityGMLGeometry.xMin = Math.min(ConvertyCityGMLGeometry.xMin,
-          lD.get(3 * i));
-      ConvertyCityGMLGeometry.yMin = Math.min(ConvertyCityGMLGeometry.yMin,
-          lD.get(3 * i + 1));
-      ConvertyCityGMLGeometry.zMin = Math.min(ConvertyCityGMLGeometry.zMin,
-          lD.get(3 * i + 2));
+		ConvertyCityGMLGeometry.xMin = Math.min(ConvertyCityGMLGeometry.xMin, lD.get(0));
+		ConvertyCityGMLGeometry.yMin = Math.min(ConvertyCityGMLGeometry.yMin, lD.get(1));
+		ConvertyCityGMLGeometry.zMin = Math.min(ConvertyCityGMLGeometry.zMin, lD.get(2));
 
-      ConvertyCityGMLGeometry.xMax = Math.max(ConvertyCityGMLGeometry.xMax,
-          lD.get(3 * i));
-      ConvertyCityGMLGeometry.yMax = Math.max(ConvertyCityGMLGeometry.yMax,
-          lD.get(3 * i + 1));
-      ConvertyCityGMLGeometry.zMax = Math.max(ConvertyCityGMLGeometry.zMax,
-          lD.get(3 * i + 2));
+		ConvertyCityGMLGeometry.xMax = Math.max(ConvertyCityGMLGeometry.xMax, lD.get(0));
+		ConvertyCityGMLGeometry.yMax = Math.max(ConvertyCityGMLGeometry.yMax, lD.get(1));
+		ConvertyCityGMLGeometry.zMax = Math.max(ConvertyCityGMLGeometry.zMax, lD.get(2));
 
-    }
+		return new DirectPosition(lD.get(0) - ConvertyCityGMLGeometry.coordXIni,
+				lD.get(1) - ConvertyCityGMLGeometry.coordYIni, lD.get(2) - ConvertyCityGMLGeometry.coordZIni);
+	}
 
-    return dplFinal;
-  }
+	/**
+	 * Convertit un DirectPositionList de CityGML4j en DirectPositionList
+	 * Geoxyene
+	 * 
+	 * @param dplGML
+	 *            un DirectPositionList GML à convertir
+	 * @return un DirectPositionList GeOxygene
+	 */
+	public static DirectPositionList convertGMLDirectPositionList(
+			org.citygml4j.model.gml.geometry.primitives.DirectPositionList dplGML) {
 
-  /**
-   * Convertit en DirectPositionList les points properties
-   * 
-   * @param lPOPPOPR une liste de PosOrPointPropertyOrPointRep de CityGML4j
-   * @return un objet DirectPositionList de GeOxygene correspondant à la
-   *         conversion de l'objet paramètre
-   */
-  public static DirectPositionList convertPosOrPointPropertyOrPointRep(
-      List<PosOrPointPropertyOrPointRep> lPOPPOPR) {
+		DirectPositionList dplFinal = new DirectPositionList();
 
-    int nbPOPPOPR = lPOPPOPR.size();
+		List<Double> lD = dplGML.getValue();
+		int nbElem = lD.size();
 
-    DirectPositionList dplFinal = new DirectPositionList();
+		for (int i = 0; i < nbElem / 3; i++) {
 
-    for (int i = 0; i < nbPOPPOPR; i++) {
-      DirectPosition dp = null;
+			dplFinal.add(new DirectPosition(lD.get(3 * i) - ConvertyCityGMLGeometry.coordXIni,
+					lD.get(3 * i + 1) - ConvertyCityGMLGeometry.coordYIni,
+					lD.get(3 * i + 2) - ConvertyCityGMLGeometry.coordZIni));
 
-      if (lPOPPOPR.get(i).getPointProperty() != null) {
-        Point p = lPOPPOPR.get(i).getPointProperty().getPoint();
-        dp = ConvertyCityGMLGeometry.convertGMLDirectPosition(p.getPos());
+			ConvertyCityGMLGeometry.xMin = Math.min(ConvertyCityGMLGeometry.xMin, lD.get(3 * i));
+			ConvertyCityGMLGeometry.yMin = Math.min(ConvertyCityGMLGeometry.yMin, lD.get(3 * i + 1));
+			ConvertyCityGMLGeometry.zMin = Math.min(ConvertyCityGMLGeometry.zMin, lD.get(3 * i + 2));
 
-      } else if (lPOPPOPR.get(i).getPointRep() != null) {
-        Point p = lPOPPOPR.get(i).getPointRep().getPoint();
-        dp = ConvertyCityGMLGeometry.convertGMLDirectPosition(p.getPos());
+			ConvertyCityGMLGeometry.xMax = Math.max(ConvertyCityGMLGeometry.xMax, lD.get(3 * i));
+			ConvertyCityGMLGeometry.yMax = Math.max(ConvertyCityGMLGeometry.yMax, lD.get(3 * i + 1));
+			ConvertyCityGMLGeometry.zMax = Math.max(ConvertyCityGMLGeometry.zMax, lD.get(3 * i + 2));
 
-      } else {
-        dp = ConvertyCityGMLGeometry.convertGMLDirectPosition(lPOPPOPR.get(i)
-            .getPos());
+		}
 
-      }
+		return dplFinal;
+	}
 
-      dplFinal.add(dp);
-    }
+	/**
+	 * Convertit en DirectPositionList les points properties
+	 * 
+	 * @param lPOPPOPR
+	 *            une liste de PosOrPointPropertyOrPointRep de CityGML4j
+	 * @return un objet DirectPositionList de GeOxygene correspondant à la
+	 *         conversion de l'objet paramètre
+	 */
+	public static DirectPositionList convertPosOrPointPropertyOrPointRep(List<PosOrPointPropertyOrPointRep> lPOPPOPR) {
 
-    return dplFinal;
+		int nbPOPPOPR = lPOPPOPR.size();
 
-  }
+		DirectPositionList dplFinal = new DirectPositionList();
 
-  /**
-   * Convertit un point de cityGML en point GeOxygene
-   * 
-   * @param p le point GML que l'on souhaite convertir
-   * @return un GM_Point de GeOxygene
-   */
-  public static GM_Point convertGMLPoint(Point p) {
+		for (int i = 0; i < nbPOPPOPR; i++) {
+			DirectPosition dp = null;
 
-    return new GM_Point(ConvertyCityGMLGeometry.convertGMLDirectPosition(p
-        .getPos()));
-  }
+			if (lPOPPOPR.get(i).getPointProperty() != null) {
+				Point p = lPOPPOPR.get(i).getPointProperty().getPoint();
+				dp = ConvertyCityGMLGeometry.convertGMLDirectPosition(p.getPos());
 
-  /**
-   * Convertit un LineString CityGML en LineString GeOxygene
-   * 
-   * @param ls un LineString que l'on souhaite convertir
-   * @return un GM_LineString de GeOxygene
-   */
-  public static GM_LineString convertGMLLineString(LineString ls) {
+			} else if (lPOPPOPR.get(i).getPointRep() != null) {
+				Point p = lPOPPOPR.get(i).getPointRep().getPoint();
+				dp = ConvertyCityGMLGeometry.convertGMLDirectPosition(p.getPos());
 
-    DirectPositionList dpl = ConvertyCityGMLGeometry
-        .convertGMLDirectPositionList(ls.getPosList());
+			} else {
+				dp = ConvertyCityGMLGeometry.convertGMLDirectPosition(lPOPPOPR.get(i).getPos());
 
-    return new GM_LineString(dpl);
+			}
 
-  }
+			dplFinal.add(dp);
+		}
 
-  /**
-   * Convertit un polygon de cityGML en polygon GeOxygene
-   * 
-   * @param pol un polygone GML que l'on souhaite convertir
-   * @return un GM_Polygon de GeOxygene
-   */
-  public static GML_Polygon convertGMLPolygon(Polygon pol) {
+		return dplFinal;
 
-    AbstractRingProperty ringExterior = pol.getExterior();
-    LinearRing linearRing = ((LinearRing) ringExterior.getRing());
+	}
 
-    DirectPositionList dplExt;
+	/**
+	 * Convertit un point de cityGML en point GeOxygene
+	 * 
+	 * @param p
+	 *            le point GML que l'on souhaite convertir
+	 * @return un GM_Point de GeOxygene
+	 */
+	public static GM_Point convertGMLPoint(Point p) {
 
-    if (linearRing.getPosList() != null) {
+		return new GM_Point(ConvertyCityGMLGeometry.convertGMLDirectPosition(p.getPos()));
+	}
 
-      dplExt = ConvertyCityGMLGeometry.convertGMLDirectPositionList(linearRing
-          .getPosList());
+	/**
+	 * Convertit un LineString CityGML en LineString GeOxygene
+	 * 
+	 * @param ls
+	 *            un LineString que l'on souhaite convertir
+	 * @return un GM_LineString de GeOxygene
+	 */
+	public static GM_LineString convertGMLLineString(LineString ls) {
 
-    } else {
+		DirectPositionList dpl = ConvertyCityGMLGeometry.convertGMLDirectPositionList(ls.getPosList());
 
-      dplExt = ConvertyCityGMLGeometry
-          .convertPosOrPointPropertyOrPointRep(linearRing
-              .getPosOrPointPropertyOrPointRep());
-    }
+		return new GM_LineString(dpl);
 
-    GML_Polygon poly = new GML_Polygon();
-    GML_Ring ring = new GML_Ring(new GM_LineString(dplExt));
+	}
 
-    if (linearRing.isSetId()) {
-      ring.setID(linearRing.getId());
-    }
+	/**
+	 * Convertit un polygon de cityGML en polygon GeOxygene
+	 * 
+	 * @param pol
+	 *            un polygone GML que l'on souhaite convertir
+	 * @return un GM_Polygon de GeOxygene
+	 */
+	public static GML_Polygon convertGMLPolygon(Polygon pol) {
 
-    poly.setExterior(ring);
+		AbstractRingProperty ringExterior = pol.getExterior();
+		LinearRing linearRing = ((LinearRing) ringExterior.getRing());
 
-    if (pol.isSetId()) {
-      poly.setID(pol.getId());
-    }
+		DirectPositionList dplExt;
 
-    List<AbstractRingProperty> lRing = pol.getInterior();
-    int nbInterior = lRing.size();
+		if (linearRing.getPosList() != null) {
 
-    if (poly.getID().equals("PolyID46_93_731494_37481")) {
-      System.out.println();
-    }
+			dplExt = ConvertyCityGMLGeometry.convertGMLDirectPositionList(linearRing.getPosList());
 
-    for (int i = 0; i < nbInterior; i++) {
+		} else {
 
-      linearRing = (LinearRing) lRing.get(i).getRing();
+			dplExt = ConvertyCityGMLGeometry
+					.convertPosOrPointPropertyOrPointRep(linearRing.getPosOrPointPropertyOrPointRep());
+		}
 
-      if (linearRing.getPosList() != null) {
+		GML_Polygon poly = new GML_Polygon();
+		GML_Ring ring = new GML_Ring(new GM_LineString(dplExt));
 
-        dplExt = ConvertyCityGMLGeometry
-            .convertGMLDirectPositionList(linearRing.getPosList());
+		if (linearRing.isSetId()) {
+			ring.setID(linearRing.getId());
+		}
 
-      } else {
+		poly.setExterior(ring);
 
-        dplExt = ConvertyCityGMLGeometry
-            .convertPosOrPointPropertyOrPointRep(linearRing
-                .getPosOrPointPropertyOrPointRep());
-      }
+		if (pol.isSetId()) {
+			poly.setID(pol.getId());
+		}
 
-      GML_Ring ringInt = new GML_Ring(new GM_LineString(dplExt));
-      if (lRing.get(i).getRing().isSetId()) {
-        ringInt.setID(lRing.get(i).getRing().getId());
-      }
+		List<AbstractRingProperty> lRing = pol.getInterior();
+		int nbInterior = lRing.size();
 
-      poly.addInterior(ringInt);
-    }
+		if (poly.getID().equals("PolyID46_93_731494_37481")) {
+			System.out.println();
+		}
 
-    return poly;
+		for (int i = 0; i < nbInterior; i++) {
 
-  }
+			linearRing = (LinearRing) lRing.get(i).getRing();
 
-  /**
-   * Convertit un OrientableSurface CityGML en List de Surfaces GeOxygene
-   * 
-   * @param os l'OrientableSurface GML à convertir
-   * @return une liste de GM_OrientableSurface issue de la surface initiale
-   */
-  public static List<IOrientableSurface> convertGMLOrientableSurface(
-      OrientableSurface os) {
-    AbstractSurface as = os.getBaseSurface().getSurface();
-    return ConvertyCityGMLGeometry.convertGMLOrientableSurface(as);
+			if (linearRing.getPosList() != null) {
 
-  }
+				dplExt = ConvertyCityGMLGeometry.convertGMLDirectPositionList(linearRing.getPosList());
 
-  public static List<IOrientableSurface> convertGMLOrientableSurface(
-      AbstractSurface as) {
+			} else {
 
-    List<IOrientableSurface> lOS = new ArrayList<IOrientableSurface>();
+				dplExt = ConvertyCityGMLGeometry
+						.convertPosOrPointPropertyOrPointRep(linearRing.getPosOrPointPropertyOrPointRep());
+			}
 
-    if (as instanceof OrientableSurface) {
+			GML_Ring ringInt = new GML_Ring(new GM_LineString(dplExt));
+			if (lRing.get(i).getRing().isSetId()) {
+				ringInt.setID(lRing.get(i).getRing().getId());
+			}
 
-      lOS.addAll(ConvertyCityGMLGeometry
-          .convertGMLOrientableSurface((OrientableSurface) as));
-    } else if (as instanceof Polygon) {
+			poly.addInterior(ringInt);
+		}
 
-      lOS.add(ConvertyCityGMLGeometry.convertGMLPolygon((Polygon) as));
+		return poly;
 
-    } else if (as instanceof MultiSurface) {
+	}
 
-      lOS.addAll(ConvertyCityGMLGeometry
-          .convertGMLMultiSurface((MultiSurface) as));
-    } else if (as instanceof Surface) {
+	/**
+	 * Convertit un OrientableSurface CityGML en List de Surfaces GeOxygene
+	 * 
+	 * @param os
+	 *            l'OrientableSurface GML à convertir
+	 * @return une liste de GM_OrientableSurface issue de la surface initiale
+	 */
+	public static List<IOrientableSurface> convertGMLOrientableSurface(OrientableSurface os) {
+		AbstractSurface as = os.getBaseSurface().getSurface();
+		return ConvertyCityGMLGeometry.convertGMLOrientableSurface(as);
 
-      lOS.addAll(ConvertyCityGMLGeometry.convertGMLSurface((Surface) as));
-    } else if (as instanceof CompositeSurface) {
+	}
 
-      lOS.addAll(ConvertyCityGMLGeometry.convertGMLCompositeSurface(
-          (CompositeSurface) as).getGenerator());
+	public static List<IOrientableSurface> convertGMLOrientableSurface(AbstractSurface as) {
 
-    } else {
+		List<IOrientableSurface> lOS = new ArrayList<IOrientableSurface>();
 
-      System.out.println("OS non reconnu" + as.getClass());
-    }
+		if (as instanceof OrientableSurface) {
 
-    if (lOS.size() == 0) {
-      return null;
-    }
+			lOS.addAll(ConvertyCityGMLGeometry.convertGMLOrientableSurface((OrientableSurface) as));
+		} else if (as instanceof Polygon) {
 
-    return lOS;
+			lOS.add(ConvertyCityGMLGeometry.convertGMLPolygon((Polygon) as));
 
-  }
+			/*
+			 * } else if (as instanceof MultiSurface) {
+			 * 
+			 * lOS.addAll(ConvertyCityGMLGeometry
+			 * .convertGMLMultiSurface((MultiSurface) as));
+			 */
+		} else if (as instanceof Surface) {
 
-  public static ISolid convertGMLSolid(SolidProperty sol) {
+			lOS.addAll(ConvertyCityGMLGeometry.convertGMLSurface((Surface) as));
+		} else if (as instanceof CompositeSurface) {
 
-    if(sol == null){
-      return null;
-    }
-   
-    return ConvertyCityGMLGeometry.convertGMLSolid((Solid) sol.getSolid());
+			lOS.addAll(ConvertyCityGMLGeometry.convertGMLCompositeSurface((CompositeSurface) as).getGenerator());
 
-  }
+		} else {
 
-  /**
-   * Convertit un solide GML en GM_Solid GeOxygene
-   * 
-   * @param sol le Solid GML que l'on souhaite convertir
-   * @return un GM_Solid Geoxygene
-   */
-  public static ISolid convertGMLSolid(Solid sol) {
+			System.out.println("OS non reconnu" + as.getClass());
+		}
 
-    AbstractSurface as = sol.getExterior().getSurface();
+		if (lOS.size() == 0) {
+			return null;
+		}
 
-    List<IOrientableSurface> lOS = new ArrayList<IOrientableSurface>();
+		return lOS;
 
-    if (as instanceof OrientableSurface) {
+	}
 
-      lOS.addAll(ConvertyCityGMLGeometry
-          .convertGMLOrientableSurface((OrientableSurface) as));
-    } else if (as instanceof Polygon) {
+	public static ISolid convertGMLSolid(SolidProperty sol) {
 
-      lOS.add(ConvertyCityGMLGeometry.convertGMLPolygon((Polygon) as));
+		if (sol == null) {
+			return null;
+		}
 
-    } else if (as instanceof MultiSurface) {
+		return ConvertyCityGMLGeometry.convertGMLSolid((Solid) sol.getSolid());
 
-      lOS.addAll(ConvertyCityGMLGeometry
-          .convertGMLMultiSurface((MultiSurface) as));
-    } else if (as instanceof Surface) {
+	}
 
-      lOS.addAll(ConvertyCityGMLGeometry.convertGMLSurface((Surface) as));
-    } else if (as instanceof CompositeSurface) {
+	/**
+	 * Convertit un solide GML en GM_Solid GeOxygene
+	 * 
+	 * @param sol
+	 *            le Solid GML que l'on souhaite convertir
+	 * @return un GM_Solid Geoxygene
+	 */
+	public static ISolid convertGMLSolid(Solid sol) {
 
-      lOS.addAll(ConvertyCityGMLGeometry.convertGMLCompositeSurface(
-          (CompositeSurface) as).getGenerator());
+		AbstractSurface as = sol.getExterior().getSurface();
 
-    } else {
+		List<IOrientableSurface> lOS = new ArrayList<IOrientableSurface>();
 
-      System.out.println("Solid non reconnu" + as.getClass());
-    }
+		if (as instanceof OrientableSurface) {
 
-    if (lOS.size() == 0) {
-      return null;
-    }
-    return new GM_Solid(lOS);
+			lOS.addAll(ConvertyCityGMLGeometry.convertGMLOrientableSurface((OrientableSurface) as));
+		} else if (as instanceof Polygon) {
 
-  }
+			lOS.add(ConvertyCityGMLGeometry.convertGMLPolygon((Polygon) as));
 
-  // /////////////////////////////Les Multis Géométries
-  // /////////////////////////////////////////
+			/*
+			 * } else if (as instanceof MultiSurface) {
+			 * 
+			 * lOS.addAll(ConvertyCityGMLGeometry
+			 * .convertGMLMultiSurface((MultiSurface) as));
+			 */
+		} else if (as instanceof Surface) {
 
-  public static GM_MultiPoint convertGMLMultiPoint(MultiPointProperty multiP) {
-    return ConvertyCityGMLGeometry.convertGMLMultiPoint(multiP.getMultiPoint());
+			lOS.addAll(ConvertyCityGMLGeometry.convertGMLSurface((Surface) as));
+		} else if (as instanceof CompositeSurface) {
 
-  }
+			lOS.addAll(ConvertyCityGMLGeometry.convertGMLCompositeSurface((CompositeSurface) as).getGenerator());
 
-  /**
-   * Conversion de multiPoints cityGML en multiPoints GeOxygene
-   * 
-   * @param multiP le multiPoints GML que l'on souhaite convertir
-   * @return un GM_MultiPointGeoxygene
-   */
-  public static GM_MultiPoint convertGMLMultiPoint(MultiPoint multiP) {
-    List<Point> lP = multiP.getPointMembers().getPoint();
-    DirectPositionList dpl = new DirectPositionList();
+		} else {
 
-    int nbPoints = lP.size();
+			System.out.println("Solid non reconnu" + as.getClass());
+		}
 
-    for (int i = 0; i < nbPoints; i++) {
+		if (lOS.size() == 0) {
+			return null;
+		}
+		return new GM_Solid(lOS);
 
-      dpl.add(ConvertyCityGMLGeometry.convertGMLDirectPosition(lP.get(i)
-          .getPos()));
-    }
+	}
 
-    return new GM_MultiPoint(dpl);
-  }
+	// /////////////////////////////Les Multis Géométries
+	// /////////////////////////////////////////
 
-  /**
-   * Convertit les multiCurves CityGML en multiCurve GeOxygene
-   * 
-   * @param multiC un MultiCurve GML à convertir
-   * @return un GM_MultiCurve GeOxygene
-   */
-  public static GM_MultiCurve<IOrientableCurve> convertGMLMultiCurve(
-      MultiCurve multiC) {
+	public static GM_MultiPoint convertGMLMultiPoint(MultiPointProperty multiP) {
+		return ConvertyCityGMLGeometry.convertGMLMultiPoint(multiP.getMultiPoint());
 
-    List<CurveProperty> multiCurves = multiC.getCurveMember();
-    int nbCurves = multiCurves.size();
+	}
 
-    List<IOrientableCurve> lCurves = new ArrayList<IOrientableCurve>(nbCurves);
+	/**
+	 * Conversion de multiPoints cityGML en multiPoints GeOxygene
+	 * 
+	 * @param multiP
+	 *            le multiPoints GML que l'on souhaite convertir
+	 * @return un GM_MultiPointGeoxygene
+	 */
+	public static GM_MultiPoint convertGMLMultiPoint(MultiPoint multiP) {
+		List<Point> lP = multiP.getPointMembers().getPoint();
+		DirectPositionList dpl = new DirectPositionList();
 
-    for (int i = 0; i < nbCurves; i++) {
+		int nbPoints = lP.size();
 
-      AbstractCurve c = multiCurves.get(i).getCurve();
+		for (int i = 0; i < nbPoints; i++) {
 
-      if (c instanceof LineString) {
+			dpl.add(ConvertyCityGMLGeometry.convertGMLDirectPosition(lP.get(i).getPos()));
+		}
 
-        lCurves.add(ConvertyCityGMLGeometry
-            .convertGMLLineString((LineString) c));
+		return new GM_MultiPoint(dpl);
+	}
 
-      } else if (c instanceof CompositeCurve) {
+	/**
+	 * Convertit les multiCurves CityGML en multiCurve GeOxygene
+	 * 
+	 * @param multiC
+	 *            un MultiCurve GML à convertir
+	 * @return un GM_MultiCurve GeOxygene
+	 */
+	public static GM_MultiCurve<IOrientableCurve> convertGMLMultiCurve(MultiCurve multiC) {
 
-        lCurves.addAll(ConvertyCityGMLGeometry.convertGMLCompositeCurve(
-            (CompositeCurve) c).getGenerator());
-      } else {
+		List<CurveProperty> multiCurves = multiC.getCurveMember();
+		int nbCurves = multiCurves.size();
 
-        System.out.println("MS non reconnu" + c.getClass());
-      }
+		List<IOrientableCurve> lCurves = new ArrayList<IOrientableCurve>(nbCurves);
 
-    }
+		for (int i = 0; i < nbCurves; i++) {
 
-    if (lCurves.size() == 0) {
-      return null;
-    }
+			AbstractCurve c = multiCurves.get(i).getCurve();
 
-    return new GM_MultiCurve<IOrientableCurve>(lCurves);
+			if (c instanceof LineString) {
 
-  }
+				lCurves.add(ConvertyCityGMLGeometry.convertGMLLineString((LineString) c));
 
-  public static GM_MultiCurve<IOrientableCurve> convertGMLMultiCurve(
-      MultiCurveProperty multiC) {
+			} else if (c instanceof CompositeCurve) {
 
-    return ConvertyCityGMLGeometry.convertGMLMultiCurve(multiC.getMultiCurve());
+				lCurves.addAll(ConvertyCityGMLGeometry.convertGMLCompositeCurve((CompositeCurve) c).getGenerator());
+			} else {
 
-  }
+				System.out.println("MS non reconnu" + c.getClass());
+			}
 
-  public static IMultiSurface<IOrientableSurface> convertGMLMultiSurface(
-      MultiSurfaceProperty multiS){ 
+		}
 
-      if(multiS == null){
-        return null;
-      }
+		if (lCurves.size() == 0) {
+			return null;
+		}
 
-    return ConvertyCityGMLGeometry.convertGMLMultiSurface(multiS
-        .getMultiSurface());
+		return new GM_MultiCurve<IOrientableCurve>(lCurves);
 
-  }
+	}
 
-  /**
-   * Convertit une multisurface GML en GM_MultiSurface de GeOxygene
-   * 
-   * @param multiS multiSurface GML
-   * @return GM_MultiSurface de GeOxygene
-   */
-  public static IMultiSurface<IOrientableSurface> convertGMLMultiSurface(
-      MultiSurface multiS) {
-    List<SurfaceProperty> multiSurfaces = multiS.getSurfaceMember();
-    int nbSurfaces = multiSurfaces.size();
+	public static GM_MultiCurve<IOrientableCurve> convertGMLMultiCurve(MultiCurveProperty multiC) {
 
-    List<IOrientableSurface> lOS = new ArrayList<IOrientableSurface>(nbSurfaces);
+		return ConvertyCityGMLGeometry.convertGMLMultiCurve(multiC.getMultiCurve());
 
-    for (int i = 0; i < nbSurfaces; i++) {
-      AbstractSurface as = multiSurfaces.get(i).getSurface();
+	}
 
-      if (as instanceof OrientableSurface) {
+	public static IMultiSurface<IOrientableSurface> convertGMLMultiSurface(MultiSurfaceProperty multiS) {
 
-        lOS.addAll(ConvertyCityGMLGeometry
-            .convertGMLOrientableSurface((OrientableSurface) as));
-      } else if (as instanceof Polygon) {
+		if (multiS == null) {
+			return null;
+		}
 
-        lOS.add(ConvertyCityGMLGeometry.convertGMLPolygon((Polygon) as));
+		return ConvertyCityGMLGeometry.convertGMLMultiSurface(multiS.getMultiSurface());
 
-      } else if (as instanceof MultiSurface) {
+	}
 
-        lOS.addAll(ConvertyCityGMLGeometry
-            .convertGMLMultiSurface((MultiSurface) as));
-      } else if (as instanceof Surface) {
+	/**
+	 * Convertit une multisurface GML en GM_MultiSurface de GeOxygene
+	 * 
+	 * @param multiS
+	 *            multiSurface GML
+	 * @return GM_MultiSurface de GeOxygene
+	 */
+	public static IMultiSurface<IOrientableSurface> convertGMLMultiSurface(MultiSurface multiS) {
+		List<SurfaceProperty> multiSurfaces = multiS.getSurfaceMember();
+		int nbSurfaces = multiSurfaces.size();
 
-        lOS.addAll(ConvertyCityGMLGeometry.convertGMLSurface((Surface) as));
-      } else if (as instanceof CompositeSurface) {
+		List<IOrientableSurface> lOS = new ArrayList<IOrientableSurface>(nbSurfaces);
 
-        lOS.addAll(ConvertyCityGMLGeometry.convertGMLCompositeSurface(
-            (CompositeSurface) as).getGenerator());
+		for (int i = 0; i < nbSurfaces; i++) {
+			AbstractSurface as = multiSurfaces.get(i).getSurface();
 
-      } else {
+			if (as instanceof OrientableSurface) {
 
-        System.out.println("Surface non reconnu" + as.getClass());
-      }
+				lOS.addAll(ConvertyCityGMLGeometry.convertGMLOrientableSurface((OrientableSurface) as));
+			} else if (as instanceof Polygon) {
 
-    }
+				lOS.add(ConvertyCityGMLGeometry.convertGMLPolygon((Polygon) as));
 
-    return new GM_MultiSurface<IOrientableSurface>(lOS);
-  }
+				/*
+				 * } else if (as instanceof MultiSurface) {
+				 * 
+				 * lOS.addAll(ConvertyCityGMLGeometry
+				 * .convertGMLMultiSurface((MultiSurface) as));
+				 */
+			} else if (as instanceof Surface) {
 
-  /**
-   * Convertit un MultiSolid GML
-   * 
-   * @param mS MultiSolid GML à convertir
-   * @return un MultiSolid GeOxygene
-   */
-  public static IMultiSolid<ISolid> convertGMLMultiSolid(MultiSolid mS) {
+				lOS.addAll(ConvertyCityGMLGeometry.convertGMLSurface((Surface) as));
+			} else if (as instanceof CompositeSurface) {
 
-    List<AbstractSolid> lAS = mS.getSolidMembers().getSolid();
-    int nbSolid = lAS.size();
+				lOS.addAll(ConvertyCityGMLGeometry.convertGMLCompositeSurface((CompositeSurface) as).getGenerator());
 
-    List<ISolid> lOS = new ArrayList<ISolid>();
+			} else {
 
-    for (int i = 0; i < nbSolid; i++) {
-      AbstractSolid as = lAS.get(i);
+				System.out.println("Surface non reconnu" + as.getClass());
+			}
 
-      if (as instanceof Solid) {
-        lOS.add(ConvertyCityGMLGeometry.convertGMLSolid((Solid) as));
+		}
 
-      } else if (as instanceof CompositeSolid) {
+		return new GM_MultiSurface<IOrientableSurface>(lOS);
+	}
 
-        lOS.addAll(ConvertyCityGMLGeometry.convertGMLCompositeSolid(
-            (CompositeSolid) as).getGenerator());
-      } else {
+	/**
+	 * Convertit un MultiSolid GML
+	 * 
+	 * @param mS
+	 *            MultiSolid GML à convertir
+	 * @return un MultiSolid GeOxygene
+	 */
+	public static IMultiSolid<ISolid> convertGMLMultiSolid(MultiSolid mS) {
 
-        if (as != null) {
-          System.out.println("as non reconnu" + as.getClass());
-        } else {
-          System.out.println("Convert CityGML abstract Solid null");
-        }
-      }
+		List<? extends AbstractSolid> lAS = mS.getSolidMembers().getSolid();
+		int nbSolid = lAS.size();
 
-    }
+		List<ISolid> lOS = new ArrayList<ISolid>();
 
-    if (lOS.size() == 0) {
-      return null;
-    }
+		for (int i = 0; i < nbSolid; i++) {
+			AbstractSolid as = lAS.get(i);
 
-    return new GM_MultiSolid<ISolid>(lOS);
-  }
+			if (as instanceof Solid) {
+				lOS.add(ConvertyCityGMLGeometry.convertGMLSolid((Solid) as));
 
-  // /////////////////////////////////Les objets
-  // composites//////////////////////////////////////
+			} else if (as instanceof CompositeSolid) {
 
-  /**
-   * Transforme les composites CurveCityGML en composites GeOxygene
-   * 
-   * @param compositeC le CompositeCurve GML à convertir
-   * @return un GM_CompositeCurve GeOxygene
-   */
-  public static ICompositeCurve convertGMLCompositeCurve(
-      CompositeCurve compositeC) {
+				lOS.addAll(ConvertyCityGMLGeometry.convertGMLCompositeSolid((CompositeSolid) as).getGenerator());
+			} else {
 
-    List<CurveProperty> lCP = compositeC.getCurveMember();
-    int nbCurves = lCP.size();
+				if (as != null) {
+					System.out.println("as non reconnu" + as.getClass());
+				} else {
+					System.out.println("Convert CityGML abstract Solid null");
+				}
+			}
 
-    List<IOrientableCurve> lCurves = new ArrayList<IOrientableCurve>(nbCurves);
+		}
 
-    for (int i = 0; i < nbCurves; i++) {
-      AbstractCurve c = lCP.get(i).getCurve();
+		if (lOS.size() == 0) {
+			return null;
+		}
 
-      if (c instanceof LineString) {
+		return new GM_MultiSolid<ISolid>(lOS);
+	}
 
-        lCurves.add(ConvertyCityGMLGeometry
-            .convertGMLLineString((LineString) c));
+	// /////////////////////////////////Les objets
+	// composites//////////////////////////////////////
 
-      } else if (c instanceof CompositeCurve) {
+	/**
+	 * Transforme les composites CurveCityGML en composites GeOxygene
+	 * 
+	 * @param compositeC
+	 *            le CompositeCurve GML à convertir
+	 * @return un GM_CompositeCurve GeOxygene
+	 */
+	public static ICompositeCurve convertGMLCompositeCurve(CompositeCurve compositeC) {
 
-        lCurves.addAll(ConvertyCityGMLGeometry.convertGMLCompositeCurve(
-            (CompositeCurve) c).getGenerator());
-      } else {
-        System.out.println("c non reconnu" + c.getClass());
-      }
+		List<CurveProperty> lCP = compositeC.getCurveMember();
+		int nbCurves = lCP.size();
 
-    }
+		List<IOrientableCurve> lCurves = new ArrayList<IOrientableCurve>(nbCurves);
 
-    GM_CompositeCurve cC = new GM_CompositeCurve();
-    cC.getGenerator().addAll(lCurves);
+		for (int i = 0; i < nbCurves; i++) {
+			AbstractCurve c = lCP.get(i).getCurve();
 
-    return cC;
+			if (c instanceof LineString) {
 
-  }
+				lCurves.add(ConvertyCityGMLGeometry.convertGMLLineString((LineString) c));
 
-  /**
-   * Convertit un CompositeSurface de GML en GM_CompositeSurface GeOxygene
-   * 
-   * @param compositeS CompositeSurface GML à convertir
-   * @return GM_CompositeSurface issu de la conversion
-   */
-  public static GM_CompositeSurface convertGMLCompositeSurface(
-      CompositeSurface compositeS) {
+			} else if (c instanceof CompositeCurve) {
 
-    List<SurfaceProperty> multiSurfaces = compositeS.getSurfaceMember();
-    int nbSurfaces = multiSurfaces.size();
+				lCurves.addAll(ConvertyCityGMLGeometry.convertGMLCompositeCurve((CompositeCurve) c).getGenerator());
+			} else {
+				System.out.println("c non reconnu" + c.getClass());
+			}
 
-    List<IOrientableSurface> lOS = new ArrayList<IOrientableSurface>(nbSurfaces);
+		}
 
-    for (int i = 0; i < nbSurfaces; i++) {
-      AbstractSurface as = multiSurfaces.get(i).getSurface();
+		GM_CompositeCurve cC = new GM_CompositeCurve();
+		cC.getGenerator().addAll(lCurves);
 
-      if (as instanceof OrientableSurface) {
+		return cC;
 
-        lOS.addAll(ConvertyCityGMLGeometry
-            .convertGMLOrientableSurface((OrientableSurface) as));
-      } else if (as instanceof Polygon) {
+	}
 
-        lOS.add(ConvertyCityGMLGeometry.convertGMLPolygon((Polygon) as));
+	/**
+	 * Convertit un CompositeSurface de GML en GM_CompositeSurface GeOxygene
+	 * 
+	 * @param compositeS
+	 *            CompositeSurface GML à convertir
+	 * @return GM_CompositeSurface issu de la conversion
+	 */
+	public static GM_CompositeSurface convertGMLCompositeSurface(CompositeSurface compositeS) {
 
-      } else if (as instanceof MultiSurface) {
+		List<SurfaceProperty> multiSurfaces = compositeS.getSurfaceMember();
+		int nbSurfaces = multiSurfaces.size();
 
-        lOS.addAll(ConvertyCityGMLGeometry
-            .convertGMLMultiSurface((MultiSurface) as));
-      } else if (as instanceof Surface) {
+		List<IOrientableSurface> lOS = new ArrayList<IOrientableSurface>(nbSurfaces);
 
-        lOS.addAll(ConvertyCityGMLGeometry.convertGMLSurface((Surface) as));
-      } else if (as instanceof CompositeSurface) {
+		for (int i = 0; i < nbSurfaces; i++) {
+			AbstractSurface as = multiSurfaces.get(i).getSurface();
 
-        lOS.addAll(ConvertyCityGMLGeometry.convertGMLCompositeSurface(
-            (CompositeSurface) as).getGenerator());
+			if (as instanceof OrientableSurface) {
 
-      } else {
-        if (as != null) {
-          System.out.println("as non reconnu" + as.getClass());
-        } else {
-          System.out.println("ConvertCityGML : abstract solid null");
-        }
+				lOS.addAll(ConvertyCityGMLGeometry.convertGMLOrientableSurface((OrientableSurface) as));
+			} else if (as instanceof Polygon) {
 
-      }
+				lOS.add(ConvertyCityGMLGeometry.convertGMLPolygon((Polygon) as));
 
-    }
+				/*
+				 * } else if (as instanceof MultiSurface) {
+				 * 
+				 * lOS.addAll(ConvertyCityGMLGeometry
+				 * .convertGMLMultiSurface((MultiSurface) as));
+				 */
+			} else if (as instanceof Surface) {
 
-    GM_CompositeSurface compS = new GM_CompositeSurface();
-    compS.getGenerator().addAll(lOS);
-    // compS.getElement().addAll(lOS);
+				lOS.addAll(ConvertyCityGMLGeometry.convertGMLSurface((Surface) as));
+			} else if (as instanceof CompositeSurface) {
 
-    return compS;
-  }
+				lOS.addAll(ConvertyCityGMLGeometry.convertGMLCompositeSurface((CompositeSurface) as).getGenerator());
 
-  /**
-   * Convertit un CompositeSolid GML en GM_CompositeSolid GeOxygene
-   * 
-   * @param cS le CompositeSolid GML à convertir
-   * @return un GM_CompositeSolid issu de la conversion
-   */
-  public static GM_CompositeSolid convertGMLCompositeSolid(CompositeSolid cS) {
-    List<SolidProperty> lSP = cS.getSolidMember();
+			} else {
+				if (as != null) {
+					System.out.println("as non reconnu" + as.getClass());
+				} else {
+					System.out.println("ConvertCityGML : abstract solid null");
+				}
 
-    int nbSolid = lSP.size();
+			}
 
-    List<ISolid> lOS = new ArrayList<ISolid>(nbSolid);
+		}
 
-    for (int i = 0; i < nbSolid; i++) {
+		GM_CompositeSurface compS = new GM_CompositeSurface();
+		compS.getGenerator().addAll(lOS);
+		// compS.getElement().addAll(lOS);
 
-      AbstractSolid as = lSP.get(i).getSolid();
-      if (as instanceof Solid) {
-        lOS.add(ConvertyCityGMLGeometry.convertGMLSolid((Solid) as));
+		return compS;
+	}
 
-      } else if (as instanceof CompositeSolid) {
+	/**
+	 * Convertit un CompositeSolid GML en GM_CompositeSolid GeOxygene
+	 * 
+	 * @param cS
+	 *            le CompositeSolid GML à convertir
+	 * @return un GM_CompositeSolid issu de la conversion
+	 */
+	public static GM_CompositeSolid convertGMLCompositeSolid(CompositeSolid cS) {
+		List<SolidProperty> lSP = cS.getSolidMember();
 
-        lOS.addAll(ConvertyCityGMLGeometry.convertGMLCompositeSolid(
-            (CompositeSolid) as).getGenerator());
-      } else {
+		int nbSolid = lSP.size();
 
-        System.out.println("Solid non reconnu" + as.getClass());
-      }
+		List<ISolid> lOS = new ArrayList<ISolid>(nbSolid);
 
-    }
+		for (int i = 0; i < nbSolid; i++) {
 
-    GM_CompositeSolid cs = new GM_CompositeSolid();
-    cs.getGenerator().addAll(lOS);
+			AbstractSolid as = lSP.get(i).getSolid();
+			if (as instanceof Solid) {
+				lOS.add(ConvertyCityGMLGeometry.convertGMLSolid((Solid) as));
 
-    return cs;
-  }
+			} else if (as instanceof CompositeSolid) {
 
-  // /////////////////////////////////////Les objets autres //
-  // //////////////////////////////////
+				lOS.addAll(ConvertyCityGMLGeometry.convertGMLCompositeSolid((CompositeSolid) as).getGenerator());
+			} else {
 
-  /**
-   * Convertit un objet Surface de GML en une liste de GM_OrientableSurface
-   * GeOxygene
-   * 
-   * @param sur la surface que l'on souhaite convertir
-   * @return une liste de GM_OrientableSurface issue de la conversion de l'objet
-   *         paramètre
-   */
-  public static List<IOrientableSurface> convertGMLSurface(Surface sur) {
-    List<? extends AbstractSurfacePatch> lASP = sur.getPatches()
-        .getSurfacePatch();
+				System.out.println("Solid non reconnu" + as.getClass());
+			}
 
-    int nbSurfaces = lASP.size();
+		}
 
-    List<IOrientableSurface> lOS = new ArrayList<IOrientableSurface>(nbSurfaces);
+		GM_CompositeSolid cs = new GM_CompositeSolid();
+		cs.getGenerator().addAll(lOS);
 
-    for (int i = 0; i < nbSurfaces; i++) {
-      AbstractSurfacePatch as = lASP.get(i);
+		return cs;
+	}
 
-      if (as instanceof Triangle) {
+	// /////////////////////////////////////Les objets autres //
+	// //////////////////////////////////
 
-        lOS.add(ConvertyCityGMLGeometry.convertGMLTriangle((Triangle) as));
+	/**
+	 * Convertit un objet Surface de GML en une liste de GM_OrientableSurface
+	 * GeOxygene
+	 * 
+	 * @param sur
+	 *            la surface que l'on souhaite convertir
+	 * @return une liste de GM_OrientableSurface issue de la conversion de
+	 *         l'objet paramètre
+	 */
+	public static List<IOrientableSurface> convertGMLSurface(Surface sur) {
+		List<? extends AbstractSurfacePatch> lASP = sur.getPatches().getSurfacePatch();
 
-      } else if (as instanceof Rectangle) {
-        lOS.add(ConvertyCityGMLGeometry.convertGMLRectangle((Rectangle) as));
-      } else {
+		int nbSurfaces = lASP.size();
 
-        System.out.println("Patch non reconnu" + as.getClass());
-      }
-    }
+		List<IOrientableSurface> lOS = new ArrayList<IOrientableSurface>(nbSurfaces);
 
-    return lOS;
-  }
+		for (int i = 0; i < nbSurfaces; i++) {
+			AbstractSurfacePatch as = lASP.get(i);
 
-  /**
-   * Convertit un rectangle GML en GM_Polygon GeOxygene (utilisé pour la
-   * conversion de MNT)
-   * 
-   * @param r le rectangle que l'on souhaite convertir
-   * @return un GM_Polygon issu de la conversion du rectangle
-   */
-  public static GML_Polygon convertGMLRectangle(Rectangle r) {
+			if (as instanceof Triangle) {
 
-    LinearRing linearRing = (LinearRing) r.getExterior().getRing();
+				lOS.add(ConvertyCityGMLGeometry.convertGMLTriangle((Triangle) as));
 
-    DirectPositionList dplExt = null;
+			} else if (as instanceof Rectangle) {
+				lOS.add(ConvertyCityGMLGeometry.convertGMLRectangle((Rectangle) as));
+			} else {
 
-    if (linearRing.getPosList() != null) {
+				System.out.println("Patch non reconnu" + as.getClass());
+			}
+		}
 
-      dplExt = ConvertyCityGMLGeometry.convertGMLDirectPositionList(linearRing
-          .getPosList());
+		return lOS;
+	}
 
-    } else {
+	/**
+	 * Convertit un rectangle GML en GM_Polygon GeOxygene (utilisé pour la
+	 * conversion de MNT)
+	 * 
+	 * @param r
+	 *            le rectangle que l'on souhaite convertir
+	 * @return un GM_Polygon issu de la conversion du rectangle
+	 */
+	public static GML_Polygon convertGMLRectangle(Rectangle r) {
 
-      dplExt = ConvertyCityGMLGeometry
-          .convertPosOrPointPropertyOrPointRep(linearRing
-              .getPosOrPointPropertyOrPointRep());
-    }
-    GML_Polygon pol = new GML_Polygon(new GML_Ring(new GM_LineString(dplExt)));
+		LinearRing linearRing = (LinearRing) r.getExterior().getRing();
 
-    return pol;
-  }
+		DirectPositionList dplExt = null;
 
-  /**
-   * Convertit un triangle GML en GM_Triangle (utilisé lors de la conversion de
-   * TIN)
-   * 
-   * @param t le triangle que l'on souhaite convertir
-   * @return un GM_Triangle issu de l'objet initial
-   */
-  public static GM_Triangle convertGMLTriangle(Triangle t) {
+		if (linearRing.getPosList() != null) {
 
-    LinearRing linearRing = (LinearRing) t.getExterior().getRing();
+			dplExt = ConvertyCityGMLGeometry.convertGMLDirectPositionList(linearRing.getPosList());
 
-    DirectPositionList dplExt = null;
+		} else {
 
-    if (linearRing.getPosList() != null) {
+			dplExt = ConvertyCityGMLGeometry
+					.convertPosOrPointPropertyOrPointRep(linearRing.getPosOrPointPropertyOrPointRep());
+		}
+		GML_Polygon pol = new GML_Polygon(new GML_Ring(new GM_LineString(dplExt)));
 
-      dplExt = ConvertyCityGMLGeometry.convertGMLDirectPositionList(linearRing
-          .getPosList());
+		return pol;
+	}
 
-    } else {
+	/**
+	 * Convertit un triangle GML en GM_Triangle (utilisé lors de la conversion
+	 * de TIN)
+	 * 
+	 * @param t
+	 *            le triangle que l'on souhaite convertir
+	 * @return un GM_Triangle issu de l'objet initial
+	 */
+	public static GM_Triangle convertGMLTriangle(Triangle t) {
 
-      dplExt = ConvertyCityGMLGeometry
-          .convertPosOrPointPropertyOrPointRep(linearRing
-              .getPosOrPointPropertyOrPointRep());
-    }
+		LinearRing linearRing = (LinearRing) t.getExterior().getRing();
 
-    GM_Triangle tri = new GM_Triangle(dplExt.get(0), dplExt.get(1),
-        dplExt.get(2));
+		DirectPositionList dplExt = null;
 
-    return tri;
-  }
+		if (linearRing.getPosList() != null) {
+
+			dplExt = ConvertyCityGMLGeometry.convertGMLDirectPositionList(linearRing.getPosList());
+
+		} else {
+
+			dplExt = ConvertyCityGMLGeometry
+					.convertPosOrPointPropertyOrPointRep(linearRing.getPosOrPointPropertyOrPointRep());
+		}
+
+		GM_Triangle tri = new GM_Triangle(dplExt.get(0), dplExt.get(1), dplExt.get(2));
+
+		return tri;
+	}
 }
