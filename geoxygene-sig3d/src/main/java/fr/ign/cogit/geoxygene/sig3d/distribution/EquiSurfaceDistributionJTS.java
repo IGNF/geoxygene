@@ -16,9 +16,7 @@ import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
 import fr.ign.cogit.geoxygene.convert.FromGeomToSurface;
 import fr.ign.cogit.geoxygene.sig3d.calculation.Util;
 import fr.ign.cogit.geoxygene.sig3d.convert.geom.FromPolygonToTriangle;
-import fr.ign.cogit.geoxygene.sig3d.tetraedrisation.Tetraedrisation;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 
 /**
@@ -68,8 +66,7 @@ public class EquiSurfaceDistributionJTS {
 
 	public EquiSurfaceDistributionJTS(IGeometry geom) throws Exception {
 
-		List<IOrientableSurface> lTriangles = FromGeomToSurface
-				.convertGeom(geom);
+		List<IOrientableSurface> lTriangles = FromGeomToSurface.convertGeom(geom);
 
 		lTriangles = initTri(lTriangles);
 		initSamp(lTriangles);
@@ -80,37 +77,21 @@ public class EquiSurfaceDistributionJTS {
 
 	}
 
+	public boolean isValid() {
+		return !lTriangles.isEmpty();
+	}
+
 	// Initialisation avant le calcul de la fonction de caractérisation
 	private List<IOrientableSurface> initTri(List<IOrientableSurface> lTriangles) {
 
 		boolean b = Util.containOnlyTriangleFaces(lTriangles);
 
-		if (b) {
+		if (!b) {
 
-		} else {
+			List<ITriangle> lTrianglesTemp = FromPolygonToTriangle.convertAndTriangle(lTriangles);
 
-			List<ITriangle> lTrianglesTemp = FromPolygonToTriangle
-					.convertAndTriangle(lTriangles);
-
-			if (lTrianglesTemp == null) {
-
-				try {
-					Tetraedrisation tet = new Tetraedrisation(new GM_Solid(
-							lTriangles));
-
-					tet.tetraedriseWithConstraint(true);
-
-					lTriangles = tet.getTriangles();
-				} catch (Exception e) {
-
-					e.printStackTrace();
-				}
-
-			} else {
-				lTriangles = new ArrayList<IOrientableSurface>();
-				lTriangles.addAll(lTrianglesTemp);
-			}
-
+			lTriangles = new ArrayList<IOrientableSurface>();
+			lTriangles.addAll(lTrianglesTemp);
 		}
 
 		return lTriangles;
@@ -172,8 +153,7 @@ public class EquiSurfaceDistributionJTS {
 
 		double valArInf = i == 0 ? 0 : accumulatedArea[i - 1];
 
-		corrected_rand = (alea - valArInf)
-				/ (this.accumulatedArea[i] - valArInf);
+		corrected_rand = (alea - valArInf) / (this.accumulatedArea[i] - valArInf);
 
 		// On retourne la valeur correspondante à cet indice
 		Geometry surf = this.lTriangles.get(i);
@@ -195,8 +175,7 @@ public class EquiSurfaceDistributionJTS {
 	 * @param triangle
 	 * @return un point tiré aléatoirement sur le triangle
 	 */
-	private DirectPosition randomPointOnTriangles(Geometry triangle,
-			double aleaX, double aleaY) {
+	private DirectPosition randomPointOnTriangles(Geometry triangle, double aleaX, double aleaY) {
 
 		Coordinate[] coord = triangle.getCoordinates();
 
@@ -207,12 +186,11 @@ public class EquiSurfaceDistributionJTS {
 		// Cette méthode est conseillée dans l'article dont est issue la mesure
 		double sqrtAleaX = Math.sqrt(aleaX);
 
-		DirectPosition pointFinal = new DirectPosition(p1.x * (1 - sqrtAleaX)
-				+ p2.x * sqrtAleaX * (1 - aleaY) + p3.x * aleaY * sqrtAleaX,
+		DirectPosition pointFinal = new DirectPosition(
+				p1.x * (1 - sqrtAleaX) + p2.x * sqrtAleaX * (1 - aleaY) + p3.x * aleaY * sqrtAleaX,
 
-		p1.y * (1 - sqrtAleaX) + p2.y * sqrtAleaX * (1 - aleaY) + p3.y * aleaY
-				* sqrtAleaX, p1.z * (1 - sqrtAleaX) + p2.z * sqrtAleaX
-				* (1 - aleaY) + p3.z * aleaY * sqrtAleaX);
+				p1.y * (1 - sqrtAleaX) + p2.y * sqrtAleaX * (1 - aleaY) + p3.y * aleaY * sqrtAleaX,
+				p1.z * (1 - sqrtAleaX) + p2.z * sqrtAleaX * (1 - aleaY) + p3.z * aleaY * sqrtAleaX);
 
 		return pointFinal;
 
@@ -229,15 +207,12 @@ public class EquiSurfaceDistributionJTS {
 
 	public IDirectPosition inversample(double x, double y) {
 
-		
-
 		for (Geometry t : lTriangles) {
 
 			Coordinate[] coord = t.getCoordinates();
 			IDirectPosition dp = getInverse(coord, x, y);
 
-			if (dp.getX() <= 1 && dp.getX() >= 0 && dp.getY() <= 1
-					&& dp.getY() >= 0) {
+			if (dp.getX() <= 1 && dp.getX() >= 0 && dp.getY() <= 1 && dp.getY() >= 0) {
 				return dp;
 			}
 

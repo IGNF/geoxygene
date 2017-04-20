@@ -3,7 +3,7 @@ package fr.ign.cogit.geoxygene.sig3d.model.citygml.relief;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.citygml4j.model.citygml.core.CityObject;
+import org.citygml4j.model.citygml.core.AbstractCityObject;
 import org.citygml4j.model.citygml.relief.ReliefFeature;
 
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_CityObject;
@@ -68,7 +68,7 @@ public class CG_ReliefFeature extends CG_CityObject {
   }
 
   @Override
-  public CityObject export() {
+  public AbstractCityObject export() {
     // TODO Auto-generated method stub
     return null;
   }

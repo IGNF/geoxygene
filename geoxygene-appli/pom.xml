@@ -125,7 +125,7 @@
 											todir="${dir.executable}/src/main/resources/xml/" />
 
 										<!-- traduction -->
-										<copy todir="${dir.executable}/language">
+										<copy todir="${dir.executable}/language" encoding="ISO-8859-1" outputencoding="ISO-8859-1" >
 											<fileset dir="${basedir}/src/main/resources/language" />
 										</copy>
 

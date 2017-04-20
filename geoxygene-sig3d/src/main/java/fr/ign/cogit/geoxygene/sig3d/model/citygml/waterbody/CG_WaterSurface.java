@@ -1,7 +1,9 @@
 package fr.ign.cogit.geoxygene.sig3d.model.citygml.waterbody;
 
-import org.citygml4j.model.citygml.core.CityObject;
+
+import org.citygml4j.model.citygml.core.AbstractCityObject;
 import org.citygml4j.model.citygml.waterbody.WaterSurface;
+import org.citygml4j.model.gml.basicTypes.Code;
 
 /**
  * 
@@ -10,7 +12,7 @@ import org.citygml4j.model.citygml.waterbody.WaterSurface;
  */
 public class CG_WaterSurface extends CG_WaterBoundarySurface {
 
-  protected String waterLevel;
+  protected Code waterLevel;
 
   public CG_WaterSurface(WaterSurface wS) {
     super(wS);
@@ -23,7 +25,7 @@ public class CG_WaterSurface extends CG_WaterBoundarySurface {
    * @return possible object is {@link String }
    * 
    */
-  public String getWaterLevel() {
+  public Code getWaterLevel() {
     return this.waterLevel;
   }
 
@@ -33,7 +35,7 @@ public class CG_WaterSurface extends CG_WaterBoundarySurface {
    * @param value allowed object is {@link String }
    * 
    */
-  public void setWaterLevel(String value) {
+  public void setWaterLevel(Code value) {
     this.waterLevel = value;
   }
 
@@ -42,7 +44,7 @@ public class CG_WaterSurface extends CG_WaterBoundarySurface {
   }
 
   @Override
-  public CityObject export() {
+  public AbstractCityObject export() {
     // TODO Auto-generated method stub
     return null;
   }

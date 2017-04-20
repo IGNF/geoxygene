@@ -1,7 +1,6 @@
 package fr.ign.cogit.geoxygene.sig3d.model.citygml.waterbody;
 
-import org.citygml4j.jaxb.gml._3_1_1.SurfacePropertyType;
-import org.citygml4j.model.citygml.waterbody.WaterBoundarySurface;
+import org.citygml4j.model.citygml.waterbody.AbstractWaterBoundarySurface;
 import org.citygml4j.model.citygml.waterbody.WaterClosureSurface;
 import org.citygml4j.model.citygml.waterbody.WaterGroundSurface;
 import org.citygml4j.model.citygml.waterbody.WaterSurface;
@@ -16,7 +15,7 @@ public abstract class CG_WaterBoundarySurface extends CG_CityObject {
   protected IOrientableSurface lod3Surface;
   protected IOrientableSurface lod4Surface;
 
-  public CG_WaterBoundarySurface(WaterBoundarySurface wBS) {
+  public CG_WaterBoundarySurface(AbstractWaterBoundarySurface wBS) {
     super(wBS);
 
     if (wBS.isSetLod2Surface()) {
@@ -36,7 +35,7 @@ public abstract class CG_WaterBoundarySurface extends CG_CityObject {
   }
 
   public static CG_WaterBoundarySurface generateAbstractWaterBoundarySurface(
-      WaterBoundarySurface wBS) {
+		  AbstractWaterBoundarySurface wBS) {
 
     if (wBS instanceof WaterGroundSurface) {
 

@@ -3,15 +3,16 @@ package fr.ign.cogit.geoxygene.sig3d.model.citygml.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.citygml4j.impl.citygml.core.CityModelImpl;
 import org.citygml4j.model.citygml.appearance.AbstractSurfaceData;
 import org.citygml4j.model.citygml.appearance.Appearance;
-import org.citygml4j.model.gml.Envelope;
+import org.citygml4j.model.citygml.core.CityModel;
+import org.citygml4j.model.gml.geometry.primitives.Envelope;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.appearance.CG_AbstractSurfaceData;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
+
 
 public class CG_CityModel extends FT_FeatureCollection<CG_CityObject> {
 
@@ -41,7 +42,7 @@ public class CG_CityModel extends FT_FeatureCollection<CG_CityObject> {
     super();
   }
 
-  public CG_CityModel(CityModelImpl impl) {
+  public CG_CityModel(CityModel impl) {
 
     super();
 
@@ -64,7 +65,7 @@ public class CG_CityModel extends FT_FeatureCollection<CG_CityObject> {
                 .getValue().get(2));
       } else {
 
-        List<org.citygml4j.model.gml.DirectPosition> lPos = bS.getPos();
+        List<org.citygml4j.model.gml.geometry.primitives.DirectPosition> lPos = bS.getPos();
 
         this.dpLL = new DirectPosition(lPos.get(0).getValue().get(0), lPos
             .get(0).getValue().get(1), lPos.get(0).getValue().get(2));
