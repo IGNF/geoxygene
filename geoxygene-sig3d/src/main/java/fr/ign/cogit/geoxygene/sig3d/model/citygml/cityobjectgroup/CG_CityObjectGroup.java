@@ -9,7 +9,7 @@ import org.citygml4j.model.gml.basicTypes.Code;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_CityObject;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
 
 /**
  * 
@@ -23,7 +23,7 @@ public class CG_CityObjectGroup extends CG_CityObject {
     this.clazz = cOG.getClazz();
     this.getFunction().addAll(cOG.getFunction());
     this.getUsage().addAll(cOG.getUsage());
-    this.geometry = ConvertyCityGMLGeometry.convertGMLGeometry(cOG
+    this.geometry = ConvertCityGMLtoGeometry.convertGMLGeometry(cOG
         .getGeometry());
 
     // int nbTyp = cOG.getGroupMember().size();

@@ -12,7 +12,10 @@ import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISolid;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
+import net.opengis.gml.MultiCurvePropertyType;
+import net.opengis.gml.MultiSurfacePropertyType;
+import net.opengis.gml.SolidPropertyType;
 
 public class CG_WaterBody extends CG_AbstractWaterObject {
 
@@ -32,42 +35,42 @@ public class CG_WaterBody extends CG_AbstractWaterObject {
     }
 
     if (wB.isSetLod0MultiCurve()) {
-      this.setLod0MultiCurve(ConvertyCityGMLGeometry.convertGMLMultiCurve(wB
+      this.setLod0MultiCurve(ConvertCityGMLtoGeometry.convertGMLMultiCurve(wB
           .getLod0MultiCurve()));
     }
 
     if (wB.isSetLod1MultiCurve()) {
-      this.setLod1MultiCurve(ConvertyCityGMLGeometry.convertGMLMultiCurve(wB
+      this.setLod1MultiCurve(ConvertCityGMLtoGeometry.convertGMLMultiCurve(wB
           .getLod1MultiCurve()));
     }
 
     if (wB.isSetLod0MultiSurface()) {
-      this.setLod0MultiSurface(ConvertyCityGMLGeometry
+      this.setLod0MultiSurface(ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(wB.getLod0MultiSurface()));
     }
 
     if (wB.isSetLod1MultiSurface()) {
-      this.setLod1MultiSurface(ConvertyCityGMLGeometry
+      this.setLod1MultiSurface(ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(wB.getLod1MultiSurface()));
     }
 
     if (wB.isSetLod1Solid()) {
-      this.setLod1Solid(ConvertyCityGMLGeometry.convertGMLSolid(wB
+      this.setLod1Solid(ConvertCityGMLtoGeometry.convertGMLSolid(wB
           .getLod1Solid()));
     }
 
     if (wB.isSetLod2Solid()) {
-      this.setLod2Solid(ConvertyCityGMLGeometry.convertGMLSolid(wB
+      this.setLod2Solid(ConvertCityGMLtoGeometry.convertGMLSolid(wB
           .getLod2Solid()));
     }
 
     if (wB.isSetLod3Solid()) {
-      this.setLod3Solid(ConvertyCityGMLGeometry.convertGMLSolid(wB
+      this.setLod3Solid(ConvertCityGMLtoGeometry.convertGMLSolid(wB
           .getLod3Solid()));
     }
 
     if (wB.isSetLod4Solid()) {
-      this.setLod4Solid(ConvertyCityGMLGeometry.convertGMLSolid(wB
+      this.setLod4Solid(ConvertCityGMLtoGeometry.convertGMLSolid(wB
           .getLod4Solid()));
     }
 

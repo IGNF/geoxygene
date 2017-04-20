@@ -12,7 +12,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_CityObject;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_RepresentationProperty;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
 
 /**
  * 
@@ -28,45 +28,45 @@ public class CG_CityFurniture extends CG_CityObject {
     this.getFunction().addAll(cF.getFunction());
 
     if (cF.isSetLod1Geometry()) {
-      this.lod1Geometry = ConvertyCityGMLGeometry.convertGMLGeometry(cF
+      this.lod1Geometry = ConvertCityGMLtoGeometry.convertGMLGeometry(cF
           .getLod1Geometry());
     }
 
     if (cF.isSetLod2Geometry()) {
-      this.lod2Geometry = ConvertyCityGMLGeometry.convertGMLGeometry(cF
+      this.lod2Geometry = ConvertCityGMLtoGeometry.convertGMLGeometry(cF
           .getLod2Geometry());
     }
 
     if (cF.isSetLod3Geometry()) {
-      this.lod3Geometry = ConvertyCityGMLGeometry.convertGMLGeometry(cF
+      this.lod3Geometry = ConvertCityGMLtoGeometry.convertGMLGeometry(cF
           .getLod3Geometry());
     }
 
     if (cF.isSetLod4Geometry()) {
-      this.lod4Geometry = ConvertyCityGMLGeometry.convertGMLGeometry(cF
+      this.lod4Geometry = ConvertCityGMLtoGeometry.convertGMLGeometry(cF
           .getLod4Geometry());
     }
 
     if (cF.isSetLod1TerrainIntersection()) {
 
-      this.lod1TerrainIntersection = ConvertyCityGMLGeometry
+      this.lod1TerrainIntersection = ConvertCityGMLtoGeometry
           .convertGMLMultiCurve(cF.getLod1TerrainIntersection());
     }
 
     if (cF.isSetLod2TerrainIntersection()) {
 
-      this.lod2TerrainIntersection = ConvertyCityGMLGeometry
+      this.lod2TerrainIntersection = ConvertCityGMLtoGeometry
           .convertGMLMultiCurve(cF.getLod2TerrainIntersection());
     }
 
     if (cF.isSetLod3TerrainIntersection()) {
 
-      this.lod3TerrainIntersection = ConvertyCityGMLGeometry
+      this.lod3TerrainIntersection = ConvertCityGMLtoGeometry
           .convertGMLMultiCurve(cF.getLod3TerrainIntersection());
     }
     if (cF.isSetLod4TerrainIntersection()) {
 
-      this.lod4TerrainIntersection = ConvertyCityGMLGeometry
+      this.lod4TerrainIntersection = ConvertCityGMLtoGeometry
           .convertGMLMultiCurve(cF.getLod4TerrainIntersection());
     }
 

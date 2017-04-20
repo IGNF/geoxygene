@@ -68,7 +68,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
  * 
  * @author MBrasebin
  */
-public class ConvertyCityGMLGeometry {
+public class ConvertCityGMLtoGeometry {
 	// La translation que l'on appliquera
 	public static double coordXIni = 0;
 	public static double coordYIni = 0;
@@ -87,7 +87,7 @@ public class ConvertyCityGMLGeometry {
 			return null;
 		}
 
-		return ConvertyCityGMLGeometry.convertGMLGeometry(geom.getGeometry());
+		return ConvertCityGMLtoGeometry.convertGMLGeometry(geom.getGeometry());
 
 	}
 
@@ -103,19 +103,19 @@ public class ConvertyCityGMLGeometry {
 
 		if (geom instanceof Solid) {
 
-			return ConvertyCityGMLGeometry.convertGMLSolid((Solid) geom);
+			return ConvertCityGMLtoGeometry.convertGMLSolid((Solid) geom);
 
 		} else if (geom instanceof CompositeSolid) {
 
-			return ConvertyCityGMLGeometry.convertGMLCompositeSolid((CompositeSolid) geom);
+			return ConvertCityGMLtoGeometry.convertGMLCompositeSolid((CompositeSolid) geom);
 
 		} else if (geom instanceof MultiSolid) {
 
-			return ConvertyCityGMLGeometry.convertGMLMultiSolid((MultiSolid) geom);
+			return ConvertCityGMLtoGeometry.convertGMLMultiSolid((MultiSolid) geom);
 
 		} else if (geom instanceof Polygon) {
 
-			return ConvertyCityGMLGeometry.convertGMLPolygon((Polygon) geom);
+			return ConvertCityGMLtoGeometry.convertGMLPolygon((Polygon) geom);
 
 			/*
 			 * } else if (geom instanceof Rectangle) {
@@ -131,19 +131,19 @@ public class ConvertyCityGMLGeometry {
 
 		} else if (geom instanceof MultiSurface) {
 
-			return ConvertyCityGMLGeometry.convertGMLMultiSurface((MultiSurface) geom);
+			return ConvertCityGMLtoGeometry.convertGMLMultiSurface((MultiSurface) geom);
 
 		} else if (geom instanceof Tin) {
 
-			return ConvertyCityGMLGeometry.convertGMLTin((Tin) geom);
+			return ConvertCityGMLtoGeometry.convertGMLTin((Tin) geom);
 
 		} else if (geom instanceof TriangulatedSurface) {
 
-			return ConvertyCityGMLGeometry.convertGMLTriangulatedSurface((TriangulatedSurface) geom);
+			return ConvertCityGMLtoGeometry.convertGMLTriangulatedSurface((TriangulatedSurface) geom);
 
 		} else if (geom instanceof OrientableSurface) {
 
-			List<IOrientableSurface> lOS = ConvertyCityGMLGeometry
+			List<IOrientableSurface> lOS = ConvertCityGMLtoGeometry
 					.convertGMLOrientableSurface((OrientableSurface) geom);
 			if (lOS.size() == 1) {
 				return lOS.get(0);
@@ -154,10 +154,10 @@ public class ConvertyCityGMLGeometry {
 
 		} else if (geom instanceof CompositeSurface) {
 
-			ConvertyCityGMLGeometry.convertGMLCompositeSurface((CompositeSurface) geom);
+			ConvertCityGMLtoGeometry.convertGMLCompositeSurface((CompositeSurface) geom);
 
 		} else if (geom instanceof Surface) {
-			List<IOrientableSurface> lOS = ConvertyCityGMLGeometry.convertGMLSurface((Surface) geom);
+			List<IOrientableSurface> lOS = ConvertCityGMLtoGeometry.convertGMLSurface((Surface) geom);
 			if (lOS.size() == 1) {
 				return lOS.get(0);
 			} else {
@@ -167,19 +167,19 @@ public class ConvertyCityGMLGeometry {
 
 		} else if (geom instanceof LineString) {
 
-			return ConvertyCityGMLGeometry.convertGMLLineString((LineString) geom);
+			return ConvertCityGMLtoGeometry.convertGMLLineString((LineString) geom);
 
 		} else if (geom instanceof MultiCurve) {
-			return ConvertyCityGMLGeometry.convertGMLMultiCurve((MultiCurve) geom);
+			return ConvertCityGMLtoGeometry.convertGMLMultiCurve((MultiCurve) geom);
 
 		} else if (geom instanceof CompositeCurve) {
-			return ConvertyCityGMLGeometry.convertGMLCompositeCurve((CompositeCurve) geom);
+			return ConvertCityGMLtoGeometry.convertGMLCompositeCurve((CompositeCurve) geom);
 
 		} else if (geom instanceof MultiPoint) {
-			return ConvertyCityGMLGeometry.convertGMLMultiPoint((MultiPoint) geom);
+			return ConvertCityGMLtoGeometry.convertGMLMultiPoint((MultiPoint) geom);
 
 		} else if (geom instanceof Point) {
-			return ConvertyCityGMLGeometry.convertGMLPoint((Point) geom);
+			return ConvertCityGMLtoGeometry.convertGMLPoint((Point) geom);
 		}
 		// Type de géométrie non reconnu
 		if (geom != null) {
@@ -293,16 +293,16 @@ public class ConvertyCityGMLGeometry {
 
 		List<Double> lD = dp.getValue();
 
-		ConvertyCityGMLGeometry.xMin = Math.min(ConvertyCityGMLGeometry.xMin, lD.get(0));
-		ConvertyCityGMLGeometry.yMin = Math.min(ConvertyCityGMLGeometry.yMin, lD.get(1));
-		ConvertyCityGMLGeometry.zMin = Math.min(ConvertyCityGMLGeometry.zMin, lD.get(2));
+		ConvertCityGMLtoGeometry.xMin = Math.min(ConvertCityGMLtoGeometry.xMin, lD.get(0));
+		ConvertCityGMLtoGeometry.yMin = Math.min(ConvertCityGMLtoGeometry.yMin, lD.get(1));
+		ConvertCityGMLtoGeometry.zMin = Math.min(ConvertCityGMLtoGeometry.zMin, lD.get(2));
 
-		ConvertyCityGMLGeometry.xMax = Math.max(ConvertyCityGMLGeometry.xMax, lD.get(0));
-		ConvertyCityGMLGeometry.yMax = Math.max(ConvertyCityGMLGeometry.yMax, lD.get(1));
-		ConvertyCityGMLGeometry.zMax = Math.max(ConvertyCityGMLGeometry.zMax, lD.get(2));
+		ConvertCityGMLtoGeometry.xMax = Math.max(ConvertCityGMLtoGeometry.xMax, lD.get(0));
+		ConvertCityGMLtoGeometry.yMax = Math.max(ConvertCityGMLtoGeometry.yMax, lD.get(1));
+		ConvertCityGMLtoGeometry.zMax = Math.max(ConvertCityGMLtoGeometry.zMax, lD.get(2));
 
-		return new DirectPosition(lD.get(0) - ConvertyCityGMLGeometry.coordXIni,
-				lD.get(1) - ConvertyCityGMLGeometry.coordYIni, lD.get(2) - ConvertyCityGMLGeometry.coordZIni);
+		return new DirectPosition(lD.get(0) - ConvertCityGMLtoGeometry.coordXIni,
+				lD.get(1) - ConvertCityGMLtoGeometry.coordYIni, lD.get(2) - ConvertCityGMLtoGeometry.coordZIni);
 	}
 
 	/**
@@ -323,17 +323,17 @@ public class ConvertyCityGMLGeometry {
 
 		for (int i = 0; i < nbElem / 3; i++) {
 
-			dplFinal.add(new DirectPosition(lD.get(3 * i) - ConvertyCityGMLGeometry.coordXIni,
-					lD.get(3 * i + 1) - ConvertyCityGMLGeometry.coordYIni,
-					lD.get(3 * i + 2) - ConvertyCityGMLGeometry.coordZIni));
+			dplFinal.add(new DirectPosition(lD.get(3 * i) - ConvertCityGMLtoGeometry.coordXIni,
+					lD.get(3 * i + 1) - ConvertCityGMLtoGeometry.coordYIni,
+					lD.get(3 * i + 2) - ConvertCityGMLtoGeometry.coordZIni));
 
-			ConvertyCityGMLGeometry.xMin = Math.min(ConvertyCityGMLGeometry.xMin, lD.get(3 * i));
-			ConvertyCityGMLGeometry.yMin = Math.min(ConvertyCityGMLGeometry.yMin, lD.get(3 * i + 1));
-			ConvertyCityGMLGeometry.zMin = Math.min(ConvertyCityGMLGeometry.zMin, lD.get(3 * i + 2));
+			ConvertCityGMLtoGeometry.xMin = Math.min(ConvertCityGMLtoGeometry.xMin, lD.get(3 * i));
+			ConvertCityGMLtoGeometry.yMin = Math.min(ConvertCityGMLtoGeometry.yMin, lD.get(3 * i + 1));
+			ConvertCityGMLtoGeometry.zMin = Math.min(ConvertCityGMLtoGeometry.zMin, lD.get(3 * i + 2));
 
-			ConvertyCityGMLGeometry.xMax = Math.max(ConvertyCityGMLGeometry.xMax, lD.get(3 * i));
-			ConvertyCityGMLGeometry.yMax = Math.max(ConvertyCityGMLGeometry.yMax, lD.get(3 * i + 1));
-			ConvertyCityGMLGeometry.zMax = Math.max(ConvertyCityGMLGeometry.zMax, lD.get(3 * i + 2));
+			ConvertCityGMLtoGeometry.xMax = Math.max(ConvertCityGMLtoGeometry.xMax, lD.get(3 * i));
+			ConvertCityGMLtoGeometry.yMax = Math.max(ConvertCityGMLtoGeometry.yMax, lD.get(3 * i + 1));
+			ConvertCityGMLtoGeometry.zMax = Math.max(ConvertCityGMLtoGeometry.zMax, lD.get(3 * i + 2));
 
 		}
 
@@ -359,14 +359,14 @@ public class ConvertyCityGMLGeometry {
 
 			if (lPOPPOPR.get(i).getPointProperty() != null) {
 				Point p = lPOPPOPR.get(i).getPointProperty().getPoint();
-				dp = ConvertyCityGMLGeometry.convertGMLDirectPosition(p.getPos());
+				dp = ConvertCityGMLtoGeometry.convertGMLDirectPosition(p.getPos());
 
 			} else if (lPOPPOPR.get(i).getPointRep() != null) {
 				Point p = lPOPPOPR.get(i).getPointRep().getPoint();
-				dp = ConvertyCityGMLGeometry.convertGMLDirectPosition(p.getPos());
+				dp = ConvertCityGMLtoGeometry.convertGMLDirectPosition(p.getPos());
 
 			} else {
-				dp = ConvertyCityGMLGeometry.convertGMLDirectPosition(lPOPPOPR.get(i).getPos());
+				dp = ConvertCityGMLtoGeometry.convertGMLDirectPosition(lPOPPOPR.get(i).getPos());
 
 			}
 
@@ -386,7 +386,7 @@ public class ConvertyCityGMLGeometry {
 	 */
 	public static GM_Point convertGMLPoint(Point p) {
 
-		return new GM_Point(ConvertyCityGMLGeometry.convertGMLDirectPosition(p.getPos()));
+		return new GM_Point(ConvertCityGMLtoGeometry.convertGMLDirectPosition(p.getPos()));
 	}
 
 	/**
@@ -398,7 +398,7 @@ public class ConvertyCityGMLGeometry {
 	 */
 	public static GM_LineString convertGMLLineString(LineString ls) {
 
-		DirectPositionList dpl = ConvertyCityGMLGeometry.convertGMLDirectPositionList(ls.getPosList());
+		DirectPositionList dpl = ConvertCityGMLtoGeometry.convertGMLDirectPositionList(ls.getPosList());
 
 		return new GM_LineString(dpl);
 
@@ -420,11 +420,11 @@ public class ConvertyCityGMLGeometry {
 
 		if (linearRing.getPosList() != null) {
 
-			dplExt = ConvertyCityGMLGeometry.convertGMLDirectPositionList(linearRing.getPosList());
+			dplExt = ConvertCityGMLtoGeometry.convertGMLDirectPositionList(linearRing.getPosList());
 
 		} else {
 
-			dplExt = ConvertyCityGMLGeometry
+			dplExt = ConvertCityGMLtoGeometry
 					.convertPosOrPointPropertyOrPointRep(linearRing.getPosOrPointPropertyOrPointRep());
 		}
 
@@ -435,6 +435,10 @@ public class ConvertyCityGMLGeometry {
 			ring.setID(linearRing.getId());
 		}
 
+		
+		if(ring.coord().size() < 4){
+			return null;
+		}
 		poly.setExterior(ring);
 
 		if (pol.isSetId()) {
@@ -454,11 +458,11 @@ public class ConvertyCityGMLGeometry {
 
 			if (linearRing.getPosList() != null) {
 
-				dplExt = ConvertyCityGMLGeometry.convertGMLDirectPositionList(linearRing.getPosList());
+				dplExt = ConvertCityGMLtoGeometry.convertGMLDirectPositionList(linearRing.getPosList());
 
 			} else {
 
-				dplExt = ConvertyCityGMLGeometry
+				dplExt = ConvertCityGMLtoGeometry
 						.convertPosOrPointPropertyOrPointRep(linearRing.getPosOrPointPropertyOrPointRep());
 			}
 
@@ -483,7 +487,7 @@ public class ConvertyCityGMLGeometry {
 	 */
 	public static List<IOrientableSurface> convertGMLOrientableSurface(OrientableSurface os) {
 		AbstractSurface as = os.getBaseSurface().getSurface();
-		return ConvertyCityGMLGeometry.convertGMLOrientableSurface(as);
+		return ConvertCityGMLtoGeometry.convertGMLOrientableSurface(as);
 
 	}
 
@@ -493,10 +497,15 @@ public class ConvertyCityGMLGeometry {
 
 		if (as instanceof OrientableSurface) {
 
-			lOS.addAll(ConvertyCityGMLGeometry.convertGMLOrientableSurface((OrientableSurface) as));
+			lOS.addAll(ConvertCityGMLtoGeometry.convertGMLOrientableSurface((OrientableSurface) as));
 		} else if (as instanceof Polygon) {
+			
+			GML_Polygon pol = ConvertCityGMLtoGeometry.convertGMLPolygon((Polygon) as);
+			if(pol != null){
+				lOS.add(pol);
+			}
 
-			lOS.add(ConvertyCityGMLGeometry.convertGMLPolygon((Polygon) as));
+			
 
 			/*
 			 * } else if (as instanceof MultiSurface) {
@@ -506,10 +515,10 @@ public class ConvertyCityGMLGeometry {
 			 */
 		} else if (as instanceof Surface) {
 
-			lOS.addAll(ConvertyCityGMLGeometry.convertGMLSurface((Surface) as));
+			lOS.addAll(ConvertCityGMLtoGeometry.convertGMLSurface((Surface) as));
 		} else if (as instanceof CompositeSurface) {
 
-			lOS.addAll(ConvertyCityGMLGeometry.convertGMLCompositeSurface((CompositeSurface) as).getGenerator());
+			lOS.addAll(ConvertCityGMLtoGeometry.convertGMLCompositeSurface((CompositeSurface) as).getGenerator());
 
 		} else {
 
@@ -530,7 +539,7 @@ public class ConvertyCityGMLGeometry {
 			return null;
 		}
 
-		return ConvertyCityGMLGeometry.convertGMLSolid((Solid) sol.getSolid());
+		return ConvertCityGMLtoGeometry.convertGMLSolid((Solid) sol.getSolid());
 
 	}
 
@@ -549,10 +558,13 @@ public class ConvertyCityGMLGeometry {
 
 		if (as instanceof OrientableSurface) {
 
-			lOS.addAll(ConvertyCityGMLGeometry.convertGMLOrientableSurface((OrientableSurface) as));
+			lOS.addAll(ConvertCityGMLtoGeometry.convertGMLOrientableSurface((OrientableSurface) as));
 		} else if (as instanceof Polygon) {
 
-			lOS.add(ConvertyCityGMLGeometry.convertGMLPolygon((Polygon) as));
+			GML_Polygon pol = ConvertCityGMLtoGeometry.convertGMLPolygon((Polygon) as);
+			if(pol != null){
+				lOS.add(pol);
+			}
 
 			/*
 			 * } else if (as instanceof MultiSurface) {
@@ -562,10 +574,10 @@ public class ConvertyCityGMLGeometry {
 			 */
 		} else if (as instanceof Surface) {
 
-			lOS.addAll(ConvertyCityGMLGeometry.convertGMLSurface((Surface) as));
+			lOS.addAll(ConvertCityGMLtoGeometry.convertGMLSurface((Surface) as));
 		} else if (as instanceof CompositeSurface) {
 
-			lOS.addAll(ConvertyCityGMLGeometry.convertGMLCompositeSurface((CompositeSurface) as).getGenerator());
+			lOS.addAll(ConvertCityGMLtoGeometry.convertGMLCompositeSurface((CompositeSurface) as).getGenerator());
 
 		} else {
 
@@ -583,7 +595,7 @@ public class ConvertyCityGMLGeometry {
 	// /////////////////////////////////////////
 
 	public static GM_MultiPoint convertGMLMultiPoint(MultiPointProperty multiP) {
-		return ConvertyCityGMLGeometry.convertGMLMultiPoint(multiP.getMultiPoint());
+		return ConvertCityGMLtoGeometry.convertGMLMultiPoint(multiP.getMultiPoint());
 
 	}
 
@@ -602,7 +614,7 @@ public class ConvertyCityGMLGeometry {
 
 		for (int i = 0; i < nbPoints; i++) {
 
-			dpl.add(ConvertyCityGMLGeometry.convertGMLDirectPosition(lP.get(i).getPos()));
+			dpl.add(ConvertCityGMLtoGeometry.convertGMLDirectPosition(lP.get(i).getPos()));
 		}
 
 		return new GM_MultiPoint(dpl);
@@ -628,11 +640,11 @@ public class ConvertyCityGMLGeometry {
 
 			if (c instanceof LineString) {
 
-				lCurves.add(ConvertyCityGMLGeometry.convertGMLLineString((LineString) c));
+				lCurves.add(ConvertCityGMLtoGeometry.convertGMLLineString((LineString) c));
 
 			} else if (c instanceof CompositeCurve) {
 
-				lCurves.addAll(ConvertyCityGMLGeometry.convertGMLCompositeCurve((CompositeCurve) c).getGenerator());
+				lCurves.addAll(ConvertCityGMLtoGeometry.convertGMLCompositeCurve((CompositeCurve) c).getGenerator());
 			} else {
 
 				System.out.println("MS non reconnu" + c.getClass());
@@ -650,7 +662,7 @@ public class ConvertyCityGMLGeometry {
 
 	public static GM_MultiCurve<IOrientableCurve> convertGMLMultiCurve(MultiCurveProperty multiC) {
 
-		return ConvertyCityGMLGeometry.convertGMLMultiCurve(multiC.getMultiCurve());
+		return ConvertCityGMLtoGeometry.convertGMLMultiCurve(multiC.getMultiCurve());
 
 	}
 
@@ -660,7 +672,7 @@ public class ConvertyCityGMLGeometry {
 			return null;
 		}
 
-		return ConvertyCityGMLGeometry.convertGMLMultiSurface(multiS.getMultiSurface());
+		return ConvertCityGMLtoGeometry.convertGMLMultiSurface(multiS.getMultiSurface());
 
 	}
 
@@ -682,10 +694,14 @@ public class ConvertyCityGMLGeometry {
 
 			if (as instanceof OrientableSurface) {
 
-				lOS.addAll(ConvertyCityGMLGeometry.convertGMLOrientableSurface((OrientableSurface) as));
+				lOS.addAll(ConvertCityGMLtoGeometry.convertGMLOrientableSurface((OrientableSurface) as));
 			} else if (as instanceof Polygon) {
 
-				lOS.add(ConvertyCityGMLGeometry.convertGMLPolygon((Polygon) as));
+				GML_Polygon pol = ConvertCityGMLtoGeometry.convertGMLPolygon((Polygon) as);
+				if(pol != null){
+					lOS.add(pol);
+				}
+				
 
 				/*
 				 * } else if (as instanceof MultiSurface) {
@@ -695,10 +711,10 @@ public class ConvertyCityGMLGeometry {
 				 */
 			} else if (as instanceof Surface) {
 
-				lOS.addAll(ConvertyCityGMLGeometry.convertGMLSurface((Surface) as));
+				lOS.addAll(ConvertCityGMLtoGeometry.convertGMLSurface((Surface) as));
 			} else if (as instanceof CompositeSurface) {
 
-				lOS.addAll(ConvertyCityGMLGeometry.convertGMLCompositeSurface((CompositeSurface) as).getGenerator());
+				lOS.addAll(ConvertCityGMLtoGeometry.convertGMLCompositeSurface((CompositeSurface) as).getGenerator());
 
 			} else {
 
@@ -728,11 +744,11 @@ public class ConvertyCityGMLGeometry {
 			AbstractSolid as = lAS.get(i);
 
 			if (as instanceof Solid) {
-				lOS.add(ConvertyCityGMLGeometry.convertGMLSolid((Solid) as));
+				lOS.add(ConvertCityGMLtoGeometry.convertGMLSolid((Solid) as));
 
 			} else if (as instanceof CompositeSolid) {
 
-				lOS.addAll(ConvertyCityGMLGeometry.convertGMLCompositeSolid((CompositeSolid) as).getGenerator());
+				lOS.addAll(ConvertCityGMLtoGeometry.convertGMLCompositeSolid((CompositeSolid) as).getGenerator());
 			} else {
 
 				if (as != null) {
@@ -773,11 +789,11 @@ public class ConvertyCityGMLGeometry {
 
 			if (c instanceof LineString) {
 
-				lCurves.add(ConvertyCityGMLGeometry.convertGMLLineString((LineString) c));
+				lCurves.add(ConvertCityGMLtoGeometry.convertGMLLineString((LineString) c));
 
 			} else if (c instanceof CompositeCurve) {
 
-				lCurves.addAll(ConvertyCityGMLGeometry.convertGMLCompositeCurve((CompositeCurve) c).getGenerator());
+				lCurves.addAll(ConvertCityGMLtoGeometry.convertGMLCompositeCurve((CompositeCurve) c).getGenerator());
 			} else {
 				System.out.println("c non reconnu" + c.getClass());
 			}
@@ -810,10 +826,15 @@ public class ConvertyCityGMLGeometry {
 
 			if (as instanceof OrientableSurface) {
 
-				lOS.addAll(ConvertyCityGMLGeometry.convertGMLOrientableSurface((OrientableSurface) as));
+				lOS.addAll(ConvertCityGMLtoGeometry.convertGMLOrientableSurface((OrientableSurface) as));
 			} else if (as instanceof Polygon) {
 
-				lOS.add(ConvertyCityGMLGeometry.convertGMLPolygon((Polygon) as));
+				GML_Polygon pol = ConvertCityGMLtoGeometry.convertGMLPolygon((Polygon) as);
+				if(pol != null)
+				{
+					lOS.add(pol);
+				}
+				
 
 				/*
 				 * } else if (as instanceof MultiSurface) {
@@ -823,10 +844,10 @@ public class ConvertyCityGMLGeometry {
 				 */
 			} else if (as instanceof Surface) {
 
-				lOS.addAll(ConvertyCityGMLGeometry.convertGMLSurface((Surface) as));
+				lOS.addAll(ConvertCityGMLtoGeometry.convertGMLSurface((Surface) as));
 			} else if (as instanceof CompositeSurface) {
 
-				lOS.addAll(ConvertyCityGMLGeometry.convertGMLCompositeSurface((CompositeSurface) as).getGenerator());
+				lOS.addAll(ConvertCityGMLtoGeometry.convertGMLCompositeSurface((CompositeSurface) as).getGenerator());
 
 			} else {
 				if (as != null) {
@@ -864,11 +885,11 @@ public class ConvertyCityGMLGeometry {
 
 			AbstractSolid as = lSP.get(i).getSolid();
 			if (as instanceof Solid) {
-				lOS.add(ConvertyCityGMLGeometry.convertGMLSolid((Solid) as));
+				lOS.add(ConvertCityGMLtoGeometry.convertGMLSolid((Solid) as));
 
 			} else if (as instanceof CompositeSolid) {
 
-				lOS.addAll(ConvertyCityGMLGeometry.convertGMLCompositeSolid((CompositeSolid) as).getGenerator());
+				lOS.addAll(ConvertCityGMLtoGeometry.convertGMLCompositeSolid((CompositeSolid) as).getGenerator());
 			} else {
 
 				System.out.println("Solid non reconnu" + as.getClass());
@@ -906,10 +927,10 @@ public class ConvertyCityGMLGeometry {
 
 			if (as instanceof Triangle) {
 
-				lOS.add(ConvertyCityGMLGeometry.convertGMLTriangle((Triangle) as));
+				lOS.add(ConvertCityGMLtoGeometry.convertGMLTriangle((Triangle) as));
 
 			} else if (as instanceof Rectangle) {
-				lOS.add(ConvertyCityGMLGeometry.convertGMLRectangle((Rectangle) as));
+				lOS.add(ConvertCityGMLtoGeometry.convertGMLRectangle((Rectangle) as));
 			} else {
 
 				System.out.println("Patch non reconnu" + as.getClass());
@@ -935,11 +956,11 @@ public class ConvertyCityGMLGeometry {
 
 		if (linearRing.getPosList() != null) {
 
-			dplExt = ConvertyCityGMLGeometry.convertGMLDirectPositionList(linearRing.getPosList());
+			dplExt = ConvertCityGMLtoGeometry.convertGMLDirectPositionList(linearRing.getPosList());
 
 		} else {
 
-			dplExt = ConvertyCityGMLGeometry
+			dplExt = ConvertCityGMLtoGeometry
 					.convertPosOrPointPropertyOrPointRep(linearRing.getPosOrPointPropertyOrPointRep());
 		}
 		GML_Polygon pol = new GML_Polygon(new GML_Ring(new GM_LineString(dplExt)));
@@ -963,11 +984,11 @@ public class ConvertyCityGMLGeometry {
 
 		if (linearRing.getPosList() != null) {
 
-			dplExt = ConvertyCityGMLGeometry.convertGMLDirectPositionList(linearRing.getPosList());
+			dplExt = ConvertCityGMLtoGeometry.convertGMLDirectPositionList(linearRing.getPosList());
 
 		} else {
 
-			dplExt = ConvertyCityGMLGeometry
+			dplExt = ConvertCityGMLtoGeometry
 					.convertPosOrPointPropertyOrPointRep(linearRing.getPosOrPointPropertyOrPointRep());
 		}
 

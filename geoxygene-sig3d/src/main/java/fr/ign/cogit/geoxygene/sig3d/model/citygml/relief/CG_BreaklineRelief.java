@@ -5,7 +5,7 @@ import org.citygml4j.model.citygml.relief.BreaklineRelief;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
 
 /**
  * 
@@ -24,14 +24,14 @@ public class CG_BreaklineRelief extends CG_AbstractReliefComponent {
     if (bR.isSetRidgeOrValleyLines()) {
 
       this.getRidgeOrValleyLines().addAll(
-          ConvertyCityGMLGeometry.convertGMLMultiCurve(bR
+          ConvertCityGMLtoGeometry.convertGMLMultiCurve(bR
               .getRidgeOrValleyLines()));
 
     }
 
     if (bR.isSetBreaklines()) {
       this.getBreaklines().addAll(
-          ConvertyCityGMLGeometry.convertGMLMultiCurve(bR.getBreaklines()));
+          ConvertCityGMLtoGeometry.convertGMLMultiCurve(bR.getBreaklines()));
 
     }
 

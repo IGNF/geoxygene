@@ -13,9 +13,9 @@ import org.citygml4j.xml.io.reader.CityGMLReadException;
 import org.citygml4j.xml.io.reader.CityGMLReader;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.CG_VectorLayer;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_CityModel;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_CityObject;
+import fr.ign.cogit.geoxygene.sig3d.representation.citygml.CG_VectorLayer;
 import fr.ign.cogit.geoxygene.sig3d.representation.citygml.core.RP_CityObject;
 
 
@@ -57,14 +57,16 @@ public class LoaderCityGML {
     int nbElem = cityModel.size();
 
     for (CG_CityObject cGO : cityModel.getElements()) {
-      for (int i = 0; i < nbElem; i++) {
+
 
         if (cGO != null) {
           RP_CityObject.generateCityObjectRepresentation(cGO,
               cityModel.getlCGA());
         }
 
-      }
+
+      
+      System.out.println("Représentation generated");
     }
 
     for (int i = 0; i < nbElem; i++) {
@@ -80,6 +82,8 @@ public class LoaderCityGML {
       }
 
     }
+    
+    
 
     return new CG_VectorLayer(cityModel, layerName);
 

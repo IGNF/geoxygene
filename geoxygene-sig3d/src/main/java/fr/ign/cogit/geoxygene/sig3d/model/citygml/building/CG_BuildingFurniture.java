@@ -3,15 +3,14 @@ package fr.ign.cogit.geoxygene.sig3d.model.citygml.building;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.citygml4j.model.citygml.building.BuildingFurniture;
 import org.citygml4j.model.citygml.core.AbstractCityObject;
 import org.citygml4j.model.gml.basicTypes.Code;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_CityObject;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertToCityGMLGeometry;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
 
 /**
  * 
@@ -25,7 +24,7 @@ public class CG_BuildingFurniture extends CG_CityObject {
     this.setClazz(bF.getClazz());
     this.getFunction().addAll(bF.getFunction());
     this.getUsage().addAll(bF.getUsage());
-    this.setLod4Geometry(ConvertyCityGMLGeometry.convertGMLGeometry(bF
+    this.setLod4Geometry(ConvertCityGMLtoGeometry.convertGMLGeometry(bF
         .getLod4Geometry()));
 
   }

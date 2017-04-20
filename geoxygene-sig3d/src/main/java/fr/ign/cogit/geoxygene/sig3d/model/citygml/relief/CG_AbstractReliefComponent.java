@@ -8,7 +8,7 @@ import org.citygml4j.model.citygml.relief.TINRelief;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_CityObject;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 
@@ -27,8 +27,11 @@ public abstract class CG_AbstractReliefComponent extends CG_CityObject {
 		this.setLod(rC.getLod());
 
 		if (rC.isSetExtent()) {
-			GM_Polygon pol = ConvertyCityGMLGeometry.convertGMLPolygon(rC.getExtent().getPolygon());
-			this.setExtent(pol.envelope());
+			GM_Polygon pol = ConvertCityGMLtoGeometry.convertGMLPolygon(rC.getExtent().getPolygon());
+			if(pol != null){
+				this.setExtent(pol.envelope());
+			}
+		
 		}
 
 	}

@@ -16,7 +16,7 @@ import fr.ign.cogit.geoxygene.sig3d.gui.InterfaceMap3D;
 import fr.ign.cogit.geoxygene.sig3d.gui.MainWindow;
 import fr.ign.cogit.geoxygene.sig3d.io.xml.citygmlv2.Context;
 import fr.ign.cogit.geoxygene.sig3d.io.xml.citygmlv2.LoaderCityGML;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.CG_VectorLayer;
+import fr.ign.cogit.geoxygene.sig3d.representation.citygml.CG_VectorLayer;
 import fr.ign.cogit.geoxygene.sig3d.semantic.Map3D;
 import fr.ign.cogit.geoxygene.sig3d.semantic.VectorLayer;
 

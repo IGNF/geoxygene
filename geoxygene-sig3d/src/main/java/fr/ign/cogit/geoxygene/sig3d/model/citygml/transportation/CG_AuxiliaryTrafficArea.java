@@ -9,7 +9,7 @@ import org.citygml4j.model.gml.basicTypes.Code;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
 
 /**
  * 
@@ -36,15 +36,15 @@ public class CG_AuxiliaryTrafficArea extends CG_AbstractTransportation {
 		}
 
 		if (tO.isSetLod2MultiSurface()) {
-			this.setLod2MultiSurface(ConvertyCityGMLGeometry.convertGMLMultiSurface(tO.getLod2MultiSurface()));
+			this.setLod2MultiSurface(ConvertCityGMLtoGeometry.convertGMLMultiSurface(tO.getLod2MultiSurface()));
 		}
 
 		if (tO.isSetLod3MultiSurface()) {
-			this.setLod3MultiSurface(ConvertyCityGMLGeometry.convertGMLMultiSurface(tO.getLod3MultiSurface()));
+			this.setLod3MultiSurface(ConvertCityGMLtoGeometry.convertGMLMultiSurface(tO.getLod3MultiSurface()));
 		}
 
 		if (tO.isSetLod4MultiSurface()) {
-			this.setLod4MultiSurface(ConvertyCityGMLGeometry.convertGMLMultiSurface(tO.getLod4MultiSurface()));
+			this.setLod4MultiSurface(ConvertCityGMLtoGeometry.convertGMLMultiSurface(tO.getLod4MultiSurface()));
 		}
 
 	}

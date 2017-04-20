@@ -6,7 +6,7 @@ import org.citygml4j.model.citygml.building.AbstractOpening;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_CityObject;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
 
 /**
  * 
@@ -21,12 +21,12 @@ public abstract class CG_AbstractOpening extends CG_CityObject {
 	public CG_AbstractOpening(AbstractOpening op) {
 		super(op);
 		if (op.isSetLod3MultiSurface()) {
-			this.lod3MultiSurface = ConvertyCityGMLGeometry.convertGMLMultiSurface(op.getLod3MultiSurface());
+			this.lod3MultiSurface = ConvertCityGMLtoGeometry.convertGMLMultiSurface(op.getLod3MultiSurface());
 
 		}
 
 		if (op.isSetLod4MultiSurface()) {
-			this.lod4MultiSurface = ConvertyCityGMLGeometry.convertGMLMultiSurface(op.getLod4MultiSurface());
+			this.lod4MultiSurface = ConvertCityGMLtoGeometry.convertGMLMultiSurface(op.getLod4MultiSurface());
 		}
 	}
 

@@ -1,8 +1,7 @@
 package fr.ign.cogit.geoxygene.sig3d.model.citygml.waterbody;
 
-import org.citygml4j.model.citygml.waterbody.WaterBody;
-import org.citygml4j.model.citygml.waterbody.AbstractWaterBoundarySurface;
 import org.citygml4j.model.citygml.waterbody.AbstractWaterObject;
+import org.citygml4j.model.citygml.waterbody.WaterBody;
 
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_CityObject;
 

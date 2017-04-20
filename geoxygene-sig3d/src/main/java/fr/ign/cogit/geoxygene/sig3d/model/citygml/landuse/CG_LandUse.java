@@ -10,7 +10,7 @@ import org.citygml4j.model.gml.basicTypes.Code;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_CityObject;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
 
 /**
  * 
@@ -43,31 +43,31 @@ public class CG_LandUse extends CG_CityObject {
 
     if (build.isSetLod0MultiSurface()) {
 
-      this.lod0MultiSurface = ConvertyCityGMLGeometry
+      this.lod0MultiSurface = ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(build.getLod0MultiSurface());
 
     }
 
     if (build.isSetLod1MultiSurface()) {
 
-      this.lod1MultiSurface = ConvertyCityGMLGeometry
+      this.lod1MultiSurface = ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(build.getLod1MultiSurface());
 
     }
 
     if (build.isSetLod2MultiSurface()) {
-      this.lod2MultiSurface = ConvertyCityGMLGeometry
+      this.lod2MultiSurface = ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(build.getLod2MultiSurface());
     }
 
     if (build.isSetLod3MultiSurface()) {
-      this.lod3MultiSurface = ConvertyCityGMLGeometry
+      this.lod3MultiSurface = ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(build.getLod3MultiSurface());
 
     }
 
     if (build.isSetLod4MultiSurface()) {
-      this.lod4MultiSurface = ConvertyCityGMLGeometry
+      this.lod4MultiSurface = ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(build.getLod4MultiSurface());
     }
 

@@ -9,8 +9,8 @@ import org.citygml4j.model.gml.basicTypes.Code;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_CityObject;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertToCityGMLGeometry;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
 
 /**
  * 
@@ -31,14 +31,14 @@ public class CG_BuildingInstallation extends CG_CityObject {
 		super(bI);
 
 		if (bI.isSetLod2Geometry()) {
-			this.setLod2Geometry(ConvertyCityGMLGeometry.convertGMLGeometry(bI.getLod2Geometry()));
+			this.setLod2Geometry(ConvertCityGMLtoGeometry.convertGMLGeometry(bI.getLod2Geometry()));
 		}
 		if (bI.isSetLod3Geometry()) {
-			this.setLod3Geometry(ConvertyCityGMLGeometry.convertGMLGeometry(bI.getLod3Geometry()));
+			this.setLod3Geometry(ConvertCityGMLtoGeometry.convertGMLGeometry(bI.getLod3Geometry()));
 		}
 
 		if (bI.isSetLod4Geometry()) {
-			this.setLod4Geometry(ConvertyCityGMLGeometry.convertGMLGeometry(bI.getLod4Geometry()));
+			this.setLod4Geometry(ConvertCityGMLtoGeometry.convertGMLGeometry(bI.getLod4Geometry()));
 		}
 
 		if (bI.isSetClazz()) {

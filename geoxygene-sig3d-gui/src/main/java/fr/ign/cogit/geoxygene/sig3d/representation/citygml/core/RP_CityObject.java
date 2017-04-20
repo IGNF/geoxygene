@@ -2,8 +2,6 @@ package fr.ign.cogit.geoxygene.sig3d.representation.citygml.core;
 
 import java.util.List;
 
-import org.citygml4j.model.citygml.building.Room;
-
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.appearance.CG_AbstractSurfaceData;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.building.CG_AbstractBoundarySurface;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.building.CG_Building;

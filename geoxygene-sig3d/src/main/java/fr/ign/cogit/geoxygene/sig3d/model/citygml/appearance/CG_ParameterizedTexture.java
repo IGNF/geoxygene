@@ -1,7 +1,9 @@
 package fr.ign.cogit.geoxygene.sig3d.model.citygml.appearance;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.citygml4j.model.citygml.appearance.ParameterizedTexture;
 
@@ -24,40 +26,71 @@ public class CG_ParameterizedTexture extends CG_AbstractTexture {
       int nbTarget = pT.getTarget().size();
 
       for (int i = 0; i < nbTarget; i++) {
+    	  
+    	  String key = pT.getTarget().get(i).getUri();
+    	  CG_AbstractTextureParameterization value =  CG_AbstractTextureParameterization
+                  .generateAbstractTextureParameterization(pT.getTarget().get(i)
+                          .getTextureParameterization());
+    	  
+    	  mapTarget.put(key, value);
+    	  
 
-        this.getTextureAssociation().add(pT.getTarget().get(i).getUri());
+   
 
-        this.getTarget().add(
-            CG_AbstractTextureParameterization
-                .generateAbstractTextureParameterization(pT.getTarget().get(i)
-                    .getTextureParameterization()));
       }
 
     }
 
   }
 
-  private List<String> textureAssociation = new ArrayList<String>();
 
-  public List<String> getTextureAssociation() {
-    return this.textureAssociation;
+
+
+  
+  public Map<String, CG_AbstractTextureParameterization> mapTarget= new HashMap<>();
+  
+  
+  public CG_AbstractTextureParameterization findTexture(String id){
+	
+	  return mapTarget.get(id);
   }
 
-  protected List<CG_AbstractTextureParameterization> target;
+  
+  
+  
+  
+  public Map<String, CG_AbstractTextureParameterization> getMapTarget() {
+	return mapTarget;
+}
+
+
+
+
+
+public List<String> getTextureAssociation(){
+	  
+	  List<String> outList = new ArrayList<>(this.mapTarget.keySet());
+
+    return outList;
+  }
+
+
 
   public List<CG_AbstractTextureParameterization> getTarget() {
-    if (this.target == null) {
-      this.target = new ArrayList<CG_AbstractTextureParameterization>();
-    }
-    return this.target;
+	  
+	  List<CG_AbstractTextureParameterization> outList = new ArrayList<>(this.mapTarget.values());
+
+    return outList;
   }
+  
+
 
   public boolean isSetTarget() {
-    return ((this.target != null) && (!this.target.isEmpty()));
+    return ((this.mapTarget != null) && (!this.mapTarget.isEmpty()));
   }
 
   public void unsetTarget() {
-    this.target = null;
+    this.mapTarget = null;
   }
 
 }

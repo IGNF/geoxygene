@@ -29,8 +29,10 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISolid;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_AbstractSite;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_Address;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertToCityGMLGeometry;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
+import net.opengis.gml.LengthType;
+import net.opengis.gml.MeasureOrNullListType;
 
 /**
  * 
@@ -324,78 +326,78 @@ public abstract class CG_AbstractBuilding extends CG_AbstractSite {
     }
 
     if (build.isSetLod1Solid()) {
-      this.lod1Solid = ConvertyCityGMLGeometry.convertGMLSolid(build
+      this.lod1Solid = ConvertCityGMLtoGeometry.convertGMLSolid(build
           .getLod1Solid());
     }
 
     if (build.isSetLod2Solid()) {
-      this.lod2Solid = ConvertyCityGMLGeometry.convertGMLSolid(build
+      this.lod2Solid = ConvertCityGMLtoGeometry.convertGMLSolid(build
           .getLod2Solid());
     }
 
     if (build.isSetLod3Solid()) {
-      this.lod3Solid = ConvertyCityGMLGeometry.convertGMLSolid(build
+      this.lod3Solid = ConvertCityGMLtoGeometry.convertGMLSolid(build
           .getLod3Solid());
     }
 
     if (build.isSetLod4Solid()) {
-      this.lod4Solid = ConvertyCityGMLGeometry.convertGMLSolid(build
+      this.lod4Solid = ConvertCityGMLtoGeometry.convertGMLSolid(build
           .getLod4Solid());
     }
 
     if (build.isSetLod1MultiSurface()) {
-      this.lod1MultiSurface = ConvertyCityGMLGeometry
+      this.lod1MultiSurface = ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(build.getLod1MultiSurface());
     }
 
     if (build.isSetLod2MultiSurface()) {
-      this.lod2MultiSurface = ConvertyCityGMLGeometry
+      this.lod2MultiSurface = ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(build.getLod2MultiSurface());
     }
 
     if (build.isSetLod3MultiSurface()) {
-      this.lod3MultiSurface = ConvertyCityGMLGeometry
+      this.lod3MultiSurface = ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(build.getLod3MultiSurface());
     }
 
     if (build.isSetLod4MultiSurface()) {
-      this.lod4MultiSurface = ConvertyCityGMLGeometry
+      this.lod4MultiSurface = ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(build.getLod4MultiSurface());
     }
 
     if (build.isSetLod1TerrainIntersection()) {
 
-      this.lod1TerrainIntersection = ConvertyCityGMLGeometry
+      this.lod1TerrainIntersection = ConvertCityGMLtoGeometry
           .convertGMLMultiCurve(build.getLod1TerrainIntersection());
     }
 
     if (build.isSetLod2TerrainIntersection()) {
-      this.lod2TerrainIntersection = ConvertyCityGMLGeometry
+      this.lod2TerrainIntersection = ConvertCityGMLtoGeometry
           .convertGMLMultiCurve(build.getLod2TerrainIntersection());
     }
 
     if (build.isSetLod3TerrainIntersection()) {
-      this.lod3TerrainIntersection = ConvertyCityGMLGeometry
+      this.lod3TerrainIntersection = ConvertCityGMLtoGeometry
           .convertGMLMultiCurve(build.getLod3TerrainIntersection());
     }
 
     if (build.isSetLod4TerrainIntersection()) {
-      this.lod4TerrainIntersection = ConvertyCityGMLGeometry
+      this.lod4TerrainIntersection = ConvertCityGMLtoGeometry
           .convertGMLMultiCurve(build.getLod4TerrainIntersection());
     }
 
     if (build.isSetLod2MultiCurve()) {
-      this.lod2MultiCurve = ConvertyCityGMLGeometry.convertGMLMultiCurve(build
+      this.lod2MultiCurve = ConvertCityGMLtoGeometry.convertGMLMultiCurve(build
           .getLod2MultiCurve());
     }
 
     if (build.isSetLod3MultiCurve()) {
-      this.lod3MultiCurve = ConvertyCityGMLGeometry.convertGMLMultiCurve(build
+      this.lod3MultiCurve = ConvertCityGMLtoGeometry.convertGMLMultiCurve(build
           .getLod3MultiCurve());
     }
 
     if (build.isSetLod4MultiCurve()) {
-      this.lod4MultiCurve = ConvertyCityGMLGeometry.convertGMLMultiCurve(build
+      this.lod4MultiCurve = ConvertCityGMLtoGeometry.convertGMLMultiCurve(build
           .getLod4MultiCurve());
     }
 

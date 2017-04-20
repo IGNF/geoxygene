@@ -9,8 +9,8 @@ import org.citygml4j.model.gml.basicTypes.Code;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_CityObject;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertToCityGMLGeometry;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
 
 /**
  * 
@@ -31,7 +31,7 @@ public class CG_IntBuildingInstallation extends CG_CityObject {
     this.clazz = iBI.getClazz();
     this.getFunction().addAll(iBI.getFunction());
     this.getUsage().addAll(iBI.getUsage());
-    this.setLod4Geometry(ConvertyCityGMLGeometry.convertGMLGeometry(iBI
+    this.setLod4Geometry(ConvertCityGMLtoGeometry.convertGMLGeometry(iBI
         .getLod4Geometry()));
 
   }

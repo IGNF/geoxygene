@@ -3,7 +3,7 @@ package fr.ign.cogit.geoxygene.sig3d.model.citygml.relief;
 import org.citygml4j.model.citygml.core.AbstractCityObject;
 import org.citygml4j.model.citygml.relief.MassPointRelief;
 
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 
 /**
@@ -20,7 +20,7 @@ public class CG_MassPointRelief extends CG_AbstractReliefComponent {
 
     if (mass.isSetReliefPoints()) {
       this.getReliefPoints().addAll(
-          ConvertyCityGMLGeometry.convertGMLMultiPoint(mass.getReliefPoints()));
+          ConvertCityGMLtoGeometry.convertGMLMultiPoint(mass.getReliefPoints()));
     }
 
   }

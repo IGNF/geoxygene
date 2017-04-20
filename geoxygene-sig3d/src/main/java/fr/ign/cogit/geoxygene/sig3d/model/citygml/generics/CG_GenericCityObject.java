@@ -12,7 +12,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_CityObject;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_RepresentationProperty;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
 
 /**
  * 
@@ -30,48 +30,48 @@ public class CG_GenericCityObject extends CG_CityObject {
 		this.usage = gCO.getUsage();
 
 		if (gCO.isSetLod1TerrainIntersection()) {
-			this.lod1TerrainIntersection = ConvertyCityGMLGeometry
+			this.lod1TerrainIntersection = ConvertCityGMLtoGeometry
 					.convertGMLMultiCurve(gCO.getLod1TerrainIntersection());
 		}
 
 		if (gCO.isSetLod2TerrainIntersection()) {
-			this.lod2TerrainIntersection = ConvertyCityGMLGeometry
+			this.lod2TerrainIntersection = ConvertCityGMLtoGeometry
 					.convertGMLMultiCurve(gCO.getLod2TerrainIntersection());
 		}
 
 		if (gCO.isSetLod3TerrainIntersection()) {
-			this.lod3TerrainIntersection = ConvertyCityGMLGeometry
+			this.lod3TerrainIntersection = ConvertCityGMLtoGeometry
 					.convertGMLMultiCurve(gCO.getLod3TerrainIntersection());
 		}
 
 		if (gCO.isSetLod4TerrainIntersection()) {
-			this.lod4TerrainIntersection = ConvertyCityGMLGeometry
+			this.lod4TerrainIntersection = ConvertCityGMLtoGeometry
 					.convertGMLMultiCurve(gCO.getLod4TerrainIntersection());
 		}
 
 		if (gCO.isSetLod0Geometry()) {
 
-			this.lod0Geometry = ConvertyCityGMLGeometry.convertGMLGeometry(gCO.getLod0Geometry());
+			this.lod0Geometry = ConvertCityGMLtoGeometry.convertGMLGeometry(gCO.getLod0Geometry());
 		}
 
 		if (gCO.isSetLod1Geometry()) {
 
-			this.lod1Geometry = ConvertyCityGMLGeometry.convertGMLGeometry(gCO.getLod1Geometry());
+			this.lod1Geometry = ConvertCityGMLtoGeometry.convertGMLGeometry(gCO.getLod1Geometry());
 		}
 
 		if (gCO.isSetLod2Geometry()) {
 
-			this.lod2Geometry = ConvertyCityGMLGeometry.convertGMLGeometry(gCO.getLod2Geometry());
+			this.lod2Geometry = ConvertCityGMLtoGeometry.convertGMLGeometry(gCO.getLod2Geometry());
 		}
 
 		if (gCO.isSetLod3Geometry()) {
 
-			this.lod3Geometry = ConvertyCityGMLGeometry.convertGMLGeometry(gCO.getLod3Geometry());
+			this.lod3Geometry = ConvertCityGMLtoGeometry.convertGMLGeometry(gCO.getLod3Geometry());
 		}
 
 		if (gCO.isSetLod4Geometry()) {
 
-			this.lod4Geometry = ConvertyCityGMLGeometry.convertGMLGeometry(gCO.getLod4Geometry());
+			this.lod4Geometry = ConvertCityGMLtoGeometry.convertGMLGeometry(gCO.getLod4Geometry());
 		}
 
 		if (gCO.isSetLod0ImplicitRepresentation()) {

@@ -11,7 +11,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSolid;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISolid;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
 import net.opengis.gml.LengthType;
 
 public class CG_PlantCover extends CG_AbstractVegetationObject {
@@ -36,34 +36,34 @@ public class CG_PlantCover extends CG_AbstractVegetationObject {
 		}
 
 		if (pC.isSetLod1MultiSurface()) {
-			this.setLod1MultiSurface(ConvertyCityGMLGeometry.convertGMLMultiSurface(pC.getLod1MultiSurface()));
+			this.setLod1MultiSurface(ConvertCityGMLtoGeometry.convertGMLMultiSurface(pC.getLod1MultiSurface()));
 		}
 
 		if (pC.isSetLod2MultiSurface()) {
-			this.setLod2MultiSurface(ConvertyCityGMLGeometry.convertGMLMultiSurface(pC.getLod2MultiSurface()));
+			this.setLod2MultiSurface(ConvertCityGMLtoGeometry.convertGMLMultiSurface(pC.getLod2MultiSurface()));
 		}
 
 		if (pC.isSetLod3MultiSurface()) {
-			this.setLod3MultiSurface(ConvertyCityGMLGeometry.convertGMLMultiSurface(pC.getLod3MultiSurface()));
+			this.setLod3MultiSurface(ConvertCityGMLtoGeometry.convertGMLMultiSurface(pC.getLod3MultiSurface()));
 		}
 
 		if (pC.isSetLod4MultiSurface()) {
-			this.setLod4MultiSurface(ConvertyCityGMLGeometry.convertGMLMultiSurface(pC.getLod4MultiSurface()));
+			this.setLod4MultiSurface(ConvertCityGMLtoGeometry.convertGMLMultiSurface(pC.getLod4MultiSurface()));
 		}
 
 		if (pC.isSetLod1MultiSolid()) {
 			this.setLod1MultiSolid(
-					ConvertyCityGMLGeometry.convertGMLMultiSolid(pC.getLod1MultiSolid().getMultiSolid()));
+					ConvertCityGMLtoGeometry.convertGMLMultiSolid(pC.getLod1MultiSolid().getMultiSolid()));
 		}
 
 		if (pC.isSetLod2MultiSolid()) {
 			this.setLod2MultiSolid(
-					ConvertyCityGMLGeometry.convertGMLMultiSolid(pC.getLod2MultiSolid().getMultiSolid()));
+					ConvertCityGMLtoGeometry.convertGMLMultiSolid(pC.getLod2MultiSolid().getMultiSolid()));
 		}
 
 		if (pC.isSetLod3MultiSolid()) {
 			this.setLod3MultiSolid(
-					ConvertyCityGMLGeometry.convertGMLMultiSolid(pC.getLod3MultiSolid().getMultiSolid()));
+					ConvertCityGMLtoGeometry.convertGMLMultiSolid(pC.getLod3MultiSolid().getMultiSolid()));
 		}
 
 	}

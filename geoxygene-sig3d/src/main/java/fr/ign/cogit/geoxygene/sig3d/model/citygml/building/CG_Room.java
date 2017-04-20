@@ -24,8 +24,8 @@ import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISolid;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_CityObject;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertToCityGMLGeometry;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
 
 /**
  * 
@@ -51,8 +51,8 @@ public class CG_Room extends CG_CityObject {
     this.clazz = r.getClazz();
     this.getFunction().addAll(r.getFunction());
     this.getUsage().addAll(r.getUsage());
-    this.setLod4Solid(ConvertyCityGMLGeometry.convertGMLSolid(r.getLod4Solid()));
-    this.setLod4MultiSurface(ConvertyCityGMLGeometry.convertGMLMultiSurface(r
+    this.setLod4Solid(ConvertCityGMLtoGeometry.convertGMLSolid(r.getLod4Solid()));
+    this.setLod4MultiSurface(ConvertCityGMLtoGeometry.convertGMLMultiSurface(r
         .getLod4MultiSurface()));
 
     if (r.getInteriorFurniture() != null) {

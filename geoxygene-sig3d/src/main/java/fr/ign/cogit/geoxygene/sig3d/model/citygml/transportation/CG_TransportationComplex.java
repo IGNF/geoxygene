@@ -15,7 +15,7 @@ import org.citygml4j.model.gml.basicTypes.Code;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
 
 @XmlSeeAlso({ CG_Square.class, CG_Track.class, CG_Railway.class, CG_Road.class })
 public abstract class CG_TransportationComplex extends
@@ -59,22 +59,22 @@ public abstract class CG_TransportationComplex extends
     }
 
     if (tO.isSetLod1MultiSurface()) {
-      this.setLod1MultiSurface(ConvertyCityGMLGeometry
+      this.setLod1MultiSurface(ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(tO.getLod1MultiSurface()));
     }
 
     if (tO.isSetLod2MultiSurface()) {
-      this.setLod2MultiSurface(ConvertyCityGMLGeometry
+      this.setLod2MultiSurface(ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(tO.getLod2MultiSurface()));
     }
 
     if (tO.isSetLod3MultiSurface()) {
-      this.setLod3MultiSurface(ConvertyCityGMLGeometry
+      this.setLod3MultiSurface(ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(tO.getLod3MultiSurface()));
     }
 
     if (tO.isSetLod4MultiSurface()) {
-      this.setLod4MultiSurface(ConvertyCityGMLGeometry
+      this.setLod4MultiSurface(ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(tO.getLod4MultiSurface()));
     }
 
@@ -84,7 +84,7 @@ public abstract class CG_TransportationComplex extends
       for (int i = 0; i < nbGeom; i++) {
 
         this.getLod0Network().add(
-            ConvertyCityGMLGeometry.convertGMLGeometry(tO.getLod0Network()
+            ConvertCityGMLtoGeometry.convertGMLGeometry(tO.getLod0Network()
                 .get(i).getGeometricComplex()));
 
       }
