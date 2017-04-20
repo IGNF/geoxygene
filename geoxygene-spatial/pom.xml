@@ -69,6 +69,16 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-constants</artifactId>
+			<version>1.9</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-i18n</artifactId>
+			<version>1.9</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
 			<artifactId>batik-svggen</artifactId>
 			<version>1.9</version>
 		</dependency>
@@ -89,7 +99,7 @@
 			<artifactId>junit</artifactId>
 		</dependency>
 	</dependencies>
-	
+
 	<repositories>
 		<repository>
 			<id>IGetDB</id>
@@ -99,6 +109,6 @@
 			</snapshots>
 		</repository>
 	</repositories>
-	
+
 
 </project>
