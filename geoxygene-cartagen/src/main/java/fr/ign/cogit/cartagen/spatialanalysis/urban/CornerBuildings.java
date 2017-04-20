@@ -11,6 +11,8 @@ package fr.ign.cogit.cartagen.spatialanalysis.urban;
 
 import java.util.HashSet;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -43,12 +45,7 @@ public class CornerBuildings {
   // //////////////////////////////////////////
 
   // All static fields //
-
-  // Public fields //
-
-  // Protected fields //
-
-  // Package visible fields //
+  private static Logger LOGGER = Logger.getLogger(CornerBuildings.class);
 
   // Private fields //
   private Ilot block;
@@ -129,8 +126,8 @@ public class CornerBuildings {
           if (!liste1.get(0).equals2D(a)) {
             liste1.inverseOrdre();
           }
-          IDirectPosition b = Operateurs.pointEnAbscisseCurviligne(
-              new GM_LineString(liste1), distAB);
+          IDirectPosition b = Operateurs
+              .pointEnAbscisseCurviligne(new GM_LineString(liste1), distAB);
           // if distance is bigger than line length, get line last vertex
           if (b == null) {
             b = liste1.get(liste1.size() - 1);
@@ -142,8 +139,8 @@ public class CornerBuildings {
           if (!liste2.get(0).equals2D(a)) {
             liste2.inverseOrdre();
           }
-          IDirectPosition c = Operateurs.pointEnAbscisseCurviligne(
-              new GM_LineString(liste2), distAC);
+          IDirectPosition c = Operateurs
+              .pointEnAbscisseCurviligne(new GM_LineString(liste2), distAC);
           // if distance is bigger than line length, get line last vertex
           if (c == null) {
             c = liste2.get(liste2.size() - 1);
@@ -200,8 +197,8 @@ public class CornerBuildings {
           if (!liste1.get(0).equals2D(a)) {
             liste1.inverseOrdre();
           }
-          IDirectPosition b = Operateurs.pointEnAbscisseCurviligne(
-              new GM_LineString(liste1), distAB);
+          IDirectPosition b = Operateurs
+              .pointEnAbscisseCurviligne(new GM_LineString(liste1), distAB);
           // if distance is bigger than line length, get line last vertex
           if (b == null) {
             b = liste1.get(liste1.size() - 1);
@@ -213,8 +210,8 @@ public class CornerBuildings {
           if (!liste2.get(0).equals2D(a)) {
             liste2.inverseOrdre();
           }
-          IDirectPosition c = Operateurs.pointEnAbscisseCurviligne(
-              new GM_LineString(liste2), distAC);
+          IDirectPosition c = Operateurs
+              .pointEnAbscisseCurviligne(new GM_LineString(liste2), distAC);
           // if distance is bigger than line length, get line last vertex
           if (c == null) {
             c = liste2.get(liste2.size() - 1);
@@ -244,11 +241,11 @@ public class CornerBuildings {
     HashSet<ILineString> roadParts = new HashSet<ILineString>();
     int nbPtsIter = 0;
     double cumulatedAngle = 0.0;
-    IDirectPosition prevPt = null, prevPrevPt = null, initialPt = road.coord()
-        .get(0);
+    IDirectPosition prevPt = null, prevPrevPt = null,
+        initialPt = road.coord().get(0);
     // simplify the line to get sharp angles
-    ILineString lineSimp = (ILineString) CommonAlgorithms.filtreDouglasPeucker(
-        road, 1.0);
+    ILineString lineSimp = (ILineString) CommonAlgorithms
+        .filtreDouglasPeucker(road, 1.0);
     ILineString line = Operateurs.echantillone(lineSimp, 10.0);
     for (IDirectPosition pt : line.coord()) {
       if (nbPtsIter > 3) {
@@ -259,8 +256,8 @@ public class CornerBuildings {
           angle = Math.abs(angle - Math.PI);
         }
         cumulatedAngle += angle;
-        if (cumulatedAngle > Math.PI / 2.0 - this.angleTolerance * Math.PI
-            / 180.0) {
+        if (cumulatedAngle > Math.PI / 2.0
+            - this.angleTolerance * Math.PI / 180.0) {
           // cut the road at prevPt
           roadParts.add(GeometryFactory.buildSubLine(line, initialPt, prevPt));
           initialPt = prevPt;
@@ -284,6 +281,9 @@ public class CornerBuildings {
 
   public HashSet<ILineString> cutRoads() {
     HashSet<ILineString> roadParts = new HashSet<ILineString>();
+    if (LOGGER.isTraceEnabled())
+      LOGGER.trace(this.block.getArcsReseaux().size()
+          + " roads to cut around the block");
     for (ArcReseau road : this.block.getArcsReseaux()) {
       roadParts.addAll(this.cutRoad((ILineString) road.getGeom()));
     }

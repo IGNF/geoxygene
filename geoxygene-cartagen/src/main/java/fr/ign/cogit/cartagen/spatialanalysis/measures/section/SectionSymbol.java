@@ -13,9 +13,11 @@ import org.apache.log4j.Logger;
 
 import com.vividsolutions.jts.operation.buffer.BufferParameters;
 
+import fr.ign.cogit.cartagen.core.carto.SLDUtilCartagen;
 import fr.ign.cogit.cartagen.core.genericschema.carringrelation.ICarrierNetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
@@ -36,8 +38,8 @@ public class SectionSymbol {
    * @return
    */
   public static double getUsedSymbolWidth(INetworkSection section) {
-    return (section.getInternWidth() + (section.getWidth() - section
-        .getInternWidth()) / 2);
+    return (section.getInternWidth()
+        + (section.getWidth() - section.getInternWidth()) / 2);
   }
 
   /**
@@ -51,8 +53,32 @@ public class SectionSymbol {
         BufferParameters.CAP_FLAT, BufferParameters.JOIN_ROUND);
     if (!(g instanceof IPolygon)) {
       SectionSymbol.logger.warn(String.valueOf(section.getWidth()));
-      SectionSymbol.logger.warn(String.valueOf(section.getWidth() / 2
-          * Legend.getSYMBOLISATI0N_SCALE() / 1000));
+      SectionSymbol.logger.warn(String.valueOf(
+          section.getWidth() / 2 * Legend.getSYMBOLISATI0N_SCALE() / 1000));
+      SectionSymbol.logger.warn(String.valueOf(section.getGeom().length()));
+      SectionSymbol.logger
+          .warn("Warning lors du calcul de l'emprise du troncon " + section
+              + ". geometrie resultat non polygone: " + g + ". geom initiale: "
+              + section.getGeom());
+      return CommonAlgorithmsFromCartAGen
+          .getBiggerFromMultiSurface((IMultiSurface<IOrientableSurface>) g);
+    }
+    return g;
+  }
+
+  /**
+   * The geometry of the symbol on the field
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  public static IGeometry getSymbolExtent(IFeature section) {
+    double width = SLDUtilCartagen.getSymbolMaxWidth(section);
+    IGeometry g = section.getGeom().buffer(width / 2, 10,
+        BufferParameters.CAP_FLAT, BufferParameters.JOIN_ROUND);
+    if (!(g instanceof IPolygon)) {
+      SectionSymbol.logger.warn(String.valueOf(width));
+      SectionSymbol.logger.warn(
+          String.valueOf(width / 2 * Legend.getSYMBOLISATI0N_SCALE() / 1000));
       SectionSymbol.logger.warn(String.valueOf(section.getGeom().length()));
       SectionSymbol.logger
           .warn("Warning lors du calcul de l'emprise du troncon " + section
@@ -75,8 +101,8 @@ public class SectionSymbol {
         BufferParameters.JOIN_ROUND);
     if (!(g instanceof IPolygon)) {
       SectionSymbol.logger.warn(String.valueOf(section.getWidth()));
-      SectionSymbol.logger.warn(String.valueOf(section.getWidth() / 2 * scale
-          / 1000));
+      SectionSymbol.logger
+          .warn(String.valueOf(section.getWidth() / 2 * scale / 1000));
       SectionSymbol.logger.warn(String.valueOf(section.getGeom().length()));
       SectionSymbol.logger
           .warn("Warning lors du calcul de l'emprise du troncon " + section
@@ -91,18 +117,18 @@ public class SectionSymbol {
     // Compute the size of the buffer
     double distanceLeft = section.distance(true);
 
-    ILineString l = JtsAlgorithms.offsetCurve(
-        section.getGeom(),
-        (section.getWidth() / 2 + distanceLeft)
-            * Legend.getSYMBOLISATI0N_SCALE() / 1000).get(0);
+    ILineString l = JtsAlgorithms
+        .offsetCurve(section.getGeom(), (section.getWidth() / 2 + distanceLeft)
+            * Legend.getSYMBOLISATI0N_SCALE() / 1000)
+        .get(0);
 
     // Compute the size of the buffer
     double distanceRight = section.distance(false);
 
-    ILineString r = JtsAlgorithms.offsetCurve(
-        section.getGeom(),
+    ILineString r = JtsAlgorithms.offsetCurve(section.getGeom(),
         -(section.getWidth() / 2 + distanceRight)
-            * Legend.getSYMBOLISATI0N_SCALE() / 1000).get(0);
+            * Legend.getSYMBOLISATI0N_SCALE() / 1000)
+        .get(0);
 
     if (l.coord().get(0).distance(r.coord().get(0)) < l.coord().get(0)
         .distance(r.coord().get(r.coord().size() - 1))) {
@@ -124,16 +150,14 @@ public class SectionSymbol {
     distance *= left ? 1 : -1;
     offsetAdjust *= left ? 1 : -1;
     // System.out.println("distance : " + distance);
-    ILineString g = JtsAlgorithms.offsetCurve(
-        section.getGeom(),
+    ILineString g = JtsAlgorithms.offsetCurve(section.getGeom(),
         offsetAdjust + ((left ? 1 : -1) * section.getWidth() / 2 + distance)
-            * Legend.getSYMBOLISATI0N_SCALE() / 1000).get(0);
+            * Legend.getSYMBOLISATI0N_SCALE() / 1000)
+        .get(0);
 
-    if (g.coord().get(0).distance(section.getGeom().coord().get(0)) > g
-        .coord()
-        .get(0)
-        .distance(
-            section.getGeom().coord().get(section.getGeom().coord().size() - 1))) {
+    if (g.coord().get(0).distance(section.getGeom().coord().get(0)) > g.coord()
+        .get(0).distance(section.getGeom().coord()
+            .get(section.getGeom().coord().size() - 1))) {
       g.coord().inverseOrdre();
     }
     return g;
@@ -166,15 +190,13 @@ public class SectionSymbol {
     // Compute the size of the buffer
     double distance = section.maxWidth() + marge;
 
-    ILineString g = JtsAlgorithms.offsetCurve(
-        section.getGeom(),
-        (section.getWidth() / 2 + distance) / 2
-            * Legend.getSYMBOLISATI0N_SCALE() / 1000).get(0);
+    ILineString g = JtsAlgorithms
+        .offsetCurve(section.getGeom(), (section.getWidth() / 2 + distance) / 2
+            * Legend.getSYMBOLISATI0N_SCALE() / 1000)
+        .get(0);
 
-    if (g.coord().get(0).distance(section.getGeom().coord().get(0)) < g
-        .coord()
-        .get(0)
-        .distance(
+    if (g.coord().get(0).distance(section.getGeom().coord().get(0)) < g.coord()
+        .get(0).distance(
             section.getGeom().coord().get(section.getGeom().coord().size()))) {
       g.coord().inverseOrdre();
     }
@@ -194,8 +216,8 @@ public class SectionSymbol {
   public static IGeometry getUsedSymbolExtent(INetworkSection section) {
     IGeometry g = section.getGeom().buffer(
         SectionSymbol.getUsedSymbolWidth(section) / 2
-            * Legend.getSYMBOLISATI0N_SCALE() / 1000, 10,
-        BufferParameters.CAP_FLAT, BufferParameters.JOIN_ROUND);
+            * Legend.getSYMBOLISATI0N_SCALE() / 1000,
+        10, BufferParameters.CAP_FLAT, BufferParameters.JOIN_ROUND);
     if (!(g instanceof IPolygon)) {
       SectionSymbol.logger
           .warn("Warning lors du calcul de l'emprise du troncon " + section

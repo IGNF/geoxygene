@@ -59,6 +59,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IAggregate;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.schemageo.api.bati.Ilot;
+import fr.ign.cogit.geoxygene.schemageo.api.support.elementsIndependants.ElementIndependant;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseau;
 import fr.ign.cogit.geoxygene.schemageo.impl.bati.IlotImpl;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.CommonAlgorithmsFromCartAGen;
@@ -766,6 +767,8 @@ public class UrbanBlock extends GeneObjSurfDefault implements IUrbanBlock {
   public void addUrbanElement(IUrbanElement urbanElement) {
     this.urbanElements.add(urbanElement);
     this.urbanElementsIds.add(urbanElement.getId());
+    this.getGeoxObj().getComposants()
+        .add((ElementIndependant) urbanElement.getGeoxObj());
   }
 
 }
