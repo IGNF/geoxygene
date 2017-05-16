@@ -29,7 +29,7 @@ import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
  * @author GTouya
  * 
  */
-public class OsmGeneObj extends GeneObjDefault {
+public class OsmGeneObj extends GeneObjDefault implements OSMFeature{
 
   /**
    * The name of the last contributor for {@code this} feature.

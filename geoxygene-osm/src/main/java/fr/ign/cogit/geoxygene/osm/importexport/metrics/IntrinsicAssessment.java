@@ -55,6 +55,15 @@ public class IntrinsicAssessment {
 		writeWayContributionDetails(new File("paris_juillet_2014_details_contributions_way.csv"), "OSMWay");
 	}
 
+	public static void sortJavaObjects(List<OSMResource> myJavaObjects) {
+		Collections.sort(myJavaObjects, new Comparator<OSMResource>() {
+			@Override
+			public int compare(OSMResource r1, OSMResource r2) {
+				return r1.getDate().compareTo(r2.getDate());
+			}
+		});
+	}
+
 	public static List<OSMResource> getNodesComposingWay(List<OSMResource> myJavaObjects, OSMWay myWay) {
 		List<OSMResource> myNodeList = new ArrayList<OSMResource>();
 		OSMResource node = null;

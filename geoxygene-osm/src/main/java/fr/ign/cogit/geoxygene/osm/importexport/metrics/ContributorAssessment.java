@@ -61,10 +61,12 @@ public class ContributorAssessment {
 			igeom = convertor.convertOsmPoint((OSMNode) resource.getGeom());
 		}
 		if (resource.getGeom().getClass().getSimpleName().equals("OSMWay")) {
-			System.out.println("Vertice :" + ((OSMWay) resource.getGeom()).getVertices().get(0));
+			// System.out.println("Vertice :" + ((OSMWay)
+			// resource.getGeom()).getVertices().get(0));
 			List<OSMResource> myNodes = IntrinsicAssessment.getNodesComposingWay(myJavaObjects,
 					(OSMWay) resource.getGeom());
-			System.out.println("Resource index :" + myJavaObjects.indexOf(resource));
+			// System.out.println("Resource index :" +
+			// myJavaObjects.indexOf(resource));
 			igeom = convertor.convertOSMLine((OSMWay) resource.getGeom(), myNodes);
 		}
 		if (resource.getGeom().getClass().getSimpleName().equals("OSMRelation")) {

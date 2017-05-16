@@ -5,7 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,13 +27,13 @@ public class SocialGraph<V, E> {
 	public static void main(String[] args) throws Exception {
 		LoadFromPostGIS loader = new LoadFromPostGIS("localhost", "5432", "paris", "postgres", "postgres");
 		List<Double> bbox = new ArrayList<Double>();
-		bbox.add(2.3322);
-		bbox.add(48.8489);
-		bbox.add(2.3634);
-		bbox.add(48.8627);
+		bbox.add(2.3312);
+		bbox.add(48.8479);
+		bbox.add(2.3644);
+		bbox.add(48.8637);
 		List<String> timespan = new ArrayList<String>();
 		timespan.add("2011-01-01");
-		timespan.add("2011-12-01");
+		timespan.add("2014-01-01");
 
 		loader.selectNodes(bbox, timespan);
 		loader.selectWays(bbox, timespan);
@@ -81,18 +80,19 @@ public class SocialGraph<V, E> {
 		// createCoEditionGraph(myOSMObjects, myContributors);
 		// writeGraph2CSV(coEditionGraph, new File("coEditionGraph.csv"));
 
-		LoadFromPostGIS loaderNepal = new LoadFromPostGIS("localhost", "5432", "nepal", "postgres", "postgres");
-		List<Double> bboxNepal = new ArrayList<Double>();
-		bboxNepal.add(85.33630);
-		bboxNepal.add(27.69640);
-		bboxNepal.add(85.34890);
-		bboxNepal.add(27.70650);
-		List<String> timespanNepal = new ArrayList<String>();
-		timespanNepal.add("2013-01-01");
-		timespanNepal.add("2014-01-01");
-		loaderNepal.selectNodes(bboxNepal, timespanNepal);
-		loaderNepal.selectWaysInit(bboxNepal, timespanNepal.get(0));
+		// LoadFromPostGIS loaderNepal = new LoadFromPostGIS("localhost",
+		// "5432", "nepal", "postgres", "postgres");
+		// List<Double> bboxNepal = new ArrayList<Double>();
+		// bboxNepal.add(85.33630);
+		// bboxNepal.add(27.69640);
+		// bboxNepal.add(85.34890);
+		// bboxNepal.add(27.70650);
+		// List<String> timespanNepal = new ArrayList<String>();
+		// timespanNepal.add("2013-01-01");
+		// timespanNepal.add("2014-01-01");
+
 		HashMap<Long, OSMContributor> myContributors = ContributorAssessment.contributorSummary(loader.myJavaObjects);
+		IntrinsicAssessment.sortJavaObjects(loader.myJavaObjects);
 		DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge> usegraph = createUseGraph(
 				loader.myJavaObjects, myContributors);
 		writeGraph2CSV(usegraph, new File("paris_usegraph.csv"));
@@ -308,15 +308,32 @@ public class SocialGraph<V, E> {
 					for (OSMResource node : myNodes) {
 						if (node.getUid() != uidway) {
 							// créer un lien entre les deux utilisateurs
-							OSMContributor nodeIni = myContributors.get(node.getUid());
-							OSMContributor nodeFin = myContributors.get(uidway);
+							OSMContributor nodeIni = myContributors.get(uidway);
+							OSMContributor nodeFin = myContributors.get(node.getUid());
 							g.addEdge(nodeIni, nodeFin);
 						}
 					}
 				} else {
+					System.out.println("Version ressource > 1");
+					if (isGeomAddition(myJavaObjects, resource)) {
+						if (getPreviousVersion(myJavaObjects, resource) != null) {
+							System.out.println("isGeomAddition");
+							List<OSMResource> addedNodesList = getAddedNodes(myJavaObjects, resource);
+							System.out.println("Nombre de noeuds ajoutés = " + addedNodesList.size());
+							for (OSMResource addedNode : addedNodesList) {
+								System.out.println(
+										"Uid précédent = " + addedNode.getUid() + " - Uid courant = " + uidway);
+								if (addedNode.getUid() != resource.getUid()) {
+									// créer un lien entre les deux utilisateurs
+									OSMContributor nodeIni = myContributors.get(uidway);
+									OSMContributor nodeFin = myContributors.get(addedNode.getUid());
+									g.addEdge(nodeIni, nodeFin);
+								}
+							}
+						}
 
+					}
 				}
-
 			}
 		}
 		return g;
@@ -328,24 +345,23 @@ public class SocialGraph<V, E> {
 	 * @return isGeomAddition: if version v contains more node than version v-1
 	 *         then isGeomAddition values TRUE, FALSE otherwise
 	 **/
-	public boolean isGeomAddition(List<OSMResource> myJavaObjects, OSMResource resource) {
+	public static boolean isGeomAddition(List<OSMResource> myJavaObjects, OSMResource resource) {
 		boolean isGeomAddition = false;
 		OSMResource previousResource = getPreviousVersion(myJavaObjects, resource);
-		// Recherche la v-1 de l'objet
-		for (OSMResource contribution : myJavaObjects) {
-			if (contribution.getId() == resource.getId() && contribution.getVersion() == resource.getVersion() - 1) {
-				previousResource = contribution;
-			}
-		}
 		// Détermination du type d'édition entre la v et la v-1
-		List<Long> previousComposition = ((OSMWay) previousResource.getGeom()).getVertices();
-		List<Long> currentComposition = ((OSMWay) resource.getGeom()).getVertices();
-		if (!previousComposition.containsAll(currentComposition))
-			isGeomAddition = true;
+		if (previousResource != null) {
+			System.out.println("Objet : " + previousResource.getId() + " - version: " + previousResource.getVersion());
+			List<Long> previousComposition = ((OSMWay) previousResource.getGeom()).getVertices();
+			System.out.println("Nombre de nodes : " + previousComposition.size());
+			List<Long> currentComposition = ((OSMWay) resource.getGeom()).getVertices();
+			if (!previousComposition.containsAll(currentComposition))
+				isGeomAddition = true;
+		}
+		System.out.println("IsGeomAddition : " + isGeomAddition);
 		return isGeomAddition;
 	}
 
-	public OSMResource getPreviousVersion(List<OSMResource> myJavaObjects, OSMResource resource) {
+	public static OSMResource getPreviousVersion(List<OSMResource> myJavaObjects, OSMResource resource) {
 		OSMResource previousResource = null;
 		// Recherche la v-1 de l'objet
 		for (OSMResource contribution : myJavaObjects) {
@@ -356,29 +372,24 @@ public class SocialGraph<V, E> {
 		return previousResource;
 	}
 
-	public List<OSMResource> getAddedNodes(List<OSMResource> myJavaObjects, OSMResource resource) {
+	public static List<OSMResource> getAddedNodes(List<OSMResource> myJavaObjects, OSMResource resource) {
 		List<OSMResource> listAddedNodes = new ArrayList<OSMResource>();
 		if (isGeomAddition(myJavaObjects, resource)) {
 			OSMResource previousResource = getPreviousVersion(myJavaObjects, resource);
-			List<Long> previousComposition = ((OSMWay) previousResource.getGeom()).getVertices();
-			List<Long> currentComposition = ((OSMWay) resource.getGeom()).getVertices();
-			for (Long nodeID : currentComposition) {
-				if (!previousComposition.contains(nodeID)) {
-
+			List<OSMResource> currentComposition = IntrinsicAssessment.getNodesComposingWay(myJavaObjects,
+					(OSMWay) resource.getGeom());
+			System.out.println("currentComposition size =" + currentComposition.size());
+			List<OSMResource> previousComposition = IntrinsicAssessment.getNodesComposingWay(myJavaObjects,
+					(OSMWay) previousResource.getGeom());
+			System.out.println("previousComposition size =" + previousComposition.size());
+			for (OSMResource node : currentComposition) {
+				System.out.println("node is contained is previous composition" + previousComposition.contains(node));
+				if (!previousComposition.contains(node)) {
+					listAddedNodes.add(node);
 				}
 			}
 		}
-
 		return listAddedNodes;
-	}
-
-	public OSMResource getNodeByIDandDate(List<OSMResource> myJavaObjects, int nodeId, Date date) {
-		for (OSMResource resource : myJavaObjects) {
-			if (resource.getGeom().getClass().getSimpleName().equals("OSMNode")) {
-			}
-
-		}
-		return null;
 	}
 
 	public static void getMaxEdge(DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge> g,
