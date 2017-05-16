@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.citygml4j.model.citygml.cityfurniture.CityFurniture;
-import org.citygml4j.model.citygml.core.CityObject;
+import org.citygml4j.model.citygml.core.AbstractCityObject;
+import org.citygml4j.model.gml.basicTypes.Code;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_CityObject;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_RepresentationProperty;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
 
 /**
  * 
@@ -27,45 +28,45 @@ public class CG_CityFurniture extends CG_CityObject {
     this.getFunction().addAll(cF.getFunction());
 
     if (cF.isSetLod1Geometry()) {
-      this.lod1Geometry = ConvertyCityGMLGeometry.convertGMLGeometry(cF
+      this.lod1Geometry = ConvertCityGMLtoGeometry.convertGMLGeometry(cF
           .getLod1Geometry());
     }
 
     if (cF.isSetLod2Geometry()) {
-      this.lod2Geometry = ConvertyCityGMLGeometry.convertGMLGeometry(cF
+      this.lod2Geometry = ConvertCityGMLtoGeometry.convertGMLGeometry(cF
           .getLod2Geometry());
     }
 
     if (cF.isSetLod3Geometry()) {
-      this.lod3Geometry = ConvertyCityGMLGeometry.convertGMLGeometry(cF
+      this.lod3Geometry = ConvertCityGMLtoGeometry.convertGMLGeometry(cF
           .getLod3Geometry());
     }
 
     if (cF.isSetLod4Geometry()) {
-      this.lod4Geometry = ConvertyCityGMLGeometry.convertGMLGeometry(cF
+      this.lod4Geometry = ConvertCityGMLtoGeometry.convertGMLGeometry(cF
           .getLod4Geometry());
     }
 
     if (cF.isSetLod1TerrainIntersection()) {
 
-      this.lod1TerrainIntersection = ConvertyCityGMLGeometry
+      this.lod1TerrainIntersection = ConvertCityGMLtoGeometry
           .convertGMLMultiCurve(cF.getLod1TerrainIntersection());
     }
 
     if (cF.isSetLod2TerrainIntersection()) {
 
-      this.lod2TerrainIntersection = ConvertyCityGMLGeometry
+      this.lod2TerrainIntersection = ConvertCityGMLtoGeometry
           .convertGMLMultiCurve(cF.getLod2TerrainIntersection());
     }
 
     if (cF.isSetLod3TerrainIntersection()) {
 
-      this.lod3TerrainIntersection = ConvertyCityGMLGeometry
+      this.lod3TerrainIntersection = ConvertCityGMLtoGeometry
           .convertGMLMultiCurve(cF.getLod3TerrainIntersection());
     }
     if (cF.isSetLod4TerrainIntersection()) {
 
-      this.lod4TerrainIntersection = ConvertyCityGMLGeometry
+      this.lod4TerrainIntersection = ConvertCityGMLtoGeometry
           .convertGMLMultiCurve(cF.getLod4TerrainIntersection());
     }
 
@@ -91,8 +92,8 @@ public class CG_CityFurniture extends CG_CityObject {
 
   }
 
-  protected String clazz;
-  protected List<String> function;
+  protected Code clazz;
+  protected List<Code> function;
   protected IGeometry lod1Geometry;
   protected IGeometry lod2Geometry;
   protected IGeometry lod3Geometry;
@@ -112,7 +113,7 @@ public class CG_CityFurniture extends CG_CityObject {
    * @return possible object is {@link String }
    * 
    */
-  public String getClazz() {
+  public Code getClazz() {
     return this.clazz;
   }
 
@@ -122,7 +123,7 @@ public class CG_CityFurniture extends CG_CityObject {
    * @param value allowed object is {@link String }
    * 
    */
-  public void setClazz(String value) {
+  public void setClazz(Code value) {
     this.clazz = value;
   }
 
@@ -130,9 +131,9 @@ public class CG_CityFurniture extends CG_CityObject {
     return (this.clazz != null);
   }
 
-  public List<String> getFunction() {
+  public List<Code> getFunction() {
     if (this.function == null) {
-      this.function = new ArrayList<String>();
+      this.function = new ArrayList<Code>();
     }
     return this.function;
   }
@@ -434,7 +435,7 @@ public class CG_CityFurniture extends CG_CityObject {
   }
 
   @Override
-  public CityObject export() {
+  public AbstractCityObject export() {
     // TODO Auto-generated method stub
     return null;
   }

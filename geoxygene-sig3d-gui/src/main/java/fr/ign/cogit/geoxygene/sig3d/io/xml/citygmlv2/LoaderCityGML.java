@@ -6,16 +6,16 @@ import javax.xml.bind.JAXBException;
 
 import org.citygml4j.CityGMLContext;
 import org.citygml4j.builder.jaxb.JAXBBuilder;
-import org.citygml4j.impl.citygml.core.CityModelImpl;
 import org.citygml4j.model.citygml.CityGML;
+import org.citygml4j.model.citygml.core.CityModel;
 import org.citygml4j.xml.io.CityGMLInputFactory;
 import org.citygml4j.xml.io.reader.CityGMLReadException;
 import org.citygml4j.xml.io.reader.CityGMLReader;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.CG_VectorLayer;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_CityModel;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_CityObject;
+import fr.ign.cogit.geoxygene.sig3d.representation.citygml.CG_VectorLayer;
 import fr.ign.cogit.geoxygene.sig3d.representation.citygml.core.RP_CityObject;
 
 
@@ -48,23 +48,25 @@ public class LoaderCityGML {
         .createCityGMLReader(f);
     
     
-    System.out.println(reader.hasNextFeature());
+    System.out.println(reader.hasNext());
 
     CityGML citygml = reader.nextFeature();
 
-    CG_CityModel cityModel = new CG_CityModel((CityModelImpl) citygml);
+    CG_CityModel cityModel = new CG_CityModel((CityModel) citygml);
 
     int nbElem = cityModel.size();
 
     for (CG_CityObject cGO : cityModel.getElements()) {
-      for (int i = 0; i < nbElem; i++) {
+
 
         if (cGO != null) {
           RP_CityObject.generateCityObjectRepresentation(cGO,
               cityModel.getlCGA());
         }
 
-      }
+
+      
+      System.out.println("Représentation generated");
     }
 
     for (int i = 0; i < nbElem; i++) {
@@ -80,6 +82,8 @@ public class LoaderCityGML {
       }
 
     }
+    
+    
 
     return new CG_VectorLayer(cityModel, layerName);
 

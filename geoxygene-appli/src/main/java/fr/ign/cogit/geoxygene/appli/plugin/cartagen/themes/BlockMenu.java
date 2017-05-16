@@ -45,6 +45,8 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
+import fr.ign.cogit.geoxygene.schemageo.api.bati.Ilot;
+import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseau;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.NamedLayerFactory;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.JTSAlgorithms;
@@ -284,9 +286,13 @@ public class BlockMenu extends JMenu {
           // c'est un troncon
           if (obj.getGeom().contains(section.getGeom())) {
             ((IUrbanBlock) obj).getSurroundingNetwork().add(section);
+            ((Ilot) ((IUrbanBlock) obj).getGeoxObj()).getArcsReseaux()
+                .add((ArcReseau) section.getGeoxObj());
           }
           if (JTSAlgorithms.coversPredicate(obj.getGeom(), section.getGeom())) {
             ((IUrbanBlock) obj).getSurroundingNetwork().add(section);
+            ((Ilot) ((IUrbanBlock) obj).getGeoxObj()).getArcsReseaux()
+                .add((ArcReseau) section.getGeoxObj());
           }
         }
       }

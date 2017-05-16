@@ -297,11 +297,11 @@
 			<version>1.0.2</version>
 		</dependency>
 		<dependency>
-			<groupId>org</groupId>
-			<artifactId>citygml4j</artifactId>
-			<version>1.0</version>
+		  <groupId>org.citygml4j</groupId>
+		  <artifactId>citygml4j</artifactId>
+		  <version>2.4.2</version>
 		</dependency>
-
+<!-- 
 		<dependency>
 			<groupId>com.sun.xml.bind</groupId>
 			<artifactId>jaxb-xjc</artifactId>
@@ -332,7 +332,7 @@
 			<groupId>xml-apis</groupId>
 			<artifactId>xml-apis-xerces</artifactId>
 			<version>2.7.1</version>
-		</dependency>
+		</dependency> -->
 	</dependencies>
 
 

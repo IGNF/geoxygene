@@ -1,14 +1,14 @@
 package fr.ign.cogit.geoxygene.sig3d.model.citygml.waterbody;
 
-import org.citygml4j.jaxb.gml._3_1_1.SurfacePropertyType;
-import org.citygml4j.model.citygml.waterbody.WaterBoundarySurface;
+import org.citygml4j.model.citygml.waterbody.AbstractWaterBoundarySurface;
 import org.citygml4j.model.citygml.waterbody.WaterClosureSurface;
 import org.citygml4j.model.citygml.waterbody.WaterGroundSurface;
 import org.citygml4j.model.citygml.waterbody.WaterSurface;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_CityObject;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
+import net.opengis.gml.SurfacePropertyType;
 
 public abstract class CG_WaterBoundarySurface extends CG_CityObject {
 
@@ -16,27 +16,27 @@ public abstract class CG_WaterBoundarySurface extends CG_CityObject {
   protected IOrientableSurface lod3Surface;
   protected IOrientableSurface lod4Surface;
 
-  public CG_WaterBoundarySurface(WaterBoundarySurface wBS) {
+  public CG_WaterBoundarySurface(AbstractWaterBoundarySurface wBS) {
     super(wBS);
 
     if (wBS.isSetLod2Surface()) {
-      this.setLod2Surface(ConvertyCityGMLGeometry.convertGMLOrientableSurface(
+      this.setLod2Surface(ConvertCityGMLtoGeometry.convertGMLOrientableSurface(
           wBS.getLod2Surface().getSurface()).get(0));
     }
 
     if (wBS.isSetLod3Surface()) {
-      this.setLod3Surface(ConvertyCityGMLGeometry.convertGMLOrientableSurface(
+      this.setLod3Surface(ConvertCityGMLtoGeometry.convertGMLOrientableSurface(
           wBS.getLod3Surface().getSurface()).get(0));
     }
 
     if (wBS.isSetLod4Surface()) {
-      this.setLod4Surface(ConvertyCityGMLGeometry.convertGMLOrientableSurface(
+      this.setLod4Surface(ConvertCityGMLtoGeometry.convertGMLOrientableSurface(
           wBS.getLod4Surface().getSurface()).get(0));
     }
   }
 
   public static CG_WaterBoundarySurface generateAbstractWaterBoundarySurface(
-      WaterBoundarySurface wBS) {
+		  AbstractWaterBoundarySurface wBS) {
 
     if (wBS instanceof WaterGroundSurface) {
 

@@ -3,32 +3,25 @@ package fr.ign.cogit.geoxygene.sig3d.model.citygml.building;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.citygml4j.impl.citygml.building.CeilingSurfaceImpl;
-import org.citygml4j.impl.citygml.building.ClosureSurfaceImpl;
-import org.citygml4j.impl.citygml.building.FloorSurfaceImpl;
-import org.citygml4j.impl.citygml.building.GroundSurfaceImpl;
-import org.citygml4j.impl.citygml.building.OpeningPropertyImpl;
-import org.citygml4j.impl.citygml.building.RoofSurfaceImpl;
-import org.citygml4j.impl.citygml.building.WallSurfaceImpl;
-import org.citygml4j.model.citygml.building.BoundarySurface;
+import org.citygml4j.model.citygml.building.AbstractBoundarySurface;
+import org.citygml4j.model.citygml.building.AbstractOpening;
 import org.citygml4j.model.citygml.building.CeilingSurface;
 import org.citygml4j.model.citygml.building.ClosureSurface;
 import org.citygml4j.model.citygml.building.Door;
 import org.citygml4j.model.citygml.building.FloorSurface;
 import org.citygml4j.model.citygml.building.GroundSurface;
 import org.citygml4j.model.citygml.building.InteriorWallSurface;
-import org.citygml4j.model.citygml.building.Opening;
 import org.citygml4j.model.citygml.building.OpeningProperty;
 import org.citygml4j.model.citygml.building.RoofSurface;
 import org.citygml4j.model.citygml.building.WallSurface;
 import org.citygml4j.model.citygml.building.Window;
-import org.citygml4j.model.citygml.core.CityObject;
+import org.citygml4j.model.citygml.core.AbstractCityObject;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_CityObject;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertToCityGMLGeometry;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 
 /**
@@ -38,274 +31,258 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
  */
 public abstract class CG_AbstractBoundarySurface extends CG_CityObject {
 
-  protected IMultiSurface<IOrientableSurface> lod2MultiSurface;
-  protected IMultiSurface<IOrientableSurface> lod3MultiSurface;
-  protected IMultiSurface<IOrientableSurface> lod4MultiSurface;
-  protected List<CG_AbstractOpening> opening;
-  
-  
-  public CG_AbstractBoundarySurface(){
-    super();
-  }
-  
-  public CityObject export(){
-    
-    
-    BoundarySurface bsOut = null;  
-    
-    
-    if(this instanceof CG_RoofSurface){
-      
-      bsOut = new RoofSurfaceImpl();
-      
-      
-    }else if (this instanceof CG_WallSurface){
-      
-      bsOut = new WallSurfaceImpl();
-      
-      
-    }else if(this instanceof CG_GroundSurface){
-      
-      bsOut = new GroundSurfaceImpl();
-      
-      
-    }else if(this instanceof CG_ClosureSurface){
-      
-      bsOut = new ClosureSurfaceImpl();
-      
-      
-    }else if(this instanceof CG_CeilingSurface){
-      
-      bsOut = new CeilingSurfaceImpl();
-      
-      
-    }else if(this instanceof CG_InteriorWallSurface){
-      
-      bsOut = new WallSurfaceImpl();
-      
-      
-    }else if(this instanceof CG_FloorSurface){
-      
-      bsOut = new FloorSurfaceImpl();
-      
-      
-    }
-  
-    if (this.isSetLod2MultiSurface()) {
-      bsOut.setLod2MultiSurface(ConvertToCityGMLGeometry.convertMultiSurfaceProperty(this.getLod2MultiSurface()));
-    }
+	protected IMultiSurface<IOrientableSurface> lod2MultiSurface;
+	protected IMultiSurface<IOrientableSurface> lod3MultiSurface;
+	protected IMultiSurface<IOrientableSurface> lod4MultiSurface;
+	protected List<CG_AbstractOpening> opening;
 
-    if (this.isSetLod3MultiSurface()) {
-      bsOut.setLod3MultiSurface(ConvertToCityGMLGeometry.convertMultiSurfaceProperty(this.getLod3MultiSurface()));
-    }
+	public CG_AbstractBoundarySurface() {
+		super();
+	}
 
+	public AbstractCityObject export() {
 
-    
-    if (this.isSetLod4MultiSurface()) {
-      bsOut.setLod4MultiSurface(ConvertToCityGMLGeometry.convertMultiSurfaceProperty(this.getLod4MultiSurface()));
-    }
+		AbstractBoundarySurface bsOut = null;
 
+		if (this instanceof CG_RoofSurface) {
 
+			bsOut = new RoofSurface();
 
-    if (this.isSetOpening()) {
-      
-      bsOut.setOpening(new ArrayList<OpeningProperty>());
-      
-      int nbOp = this.getOpening().size();
-      
-      for (int i = 0; i < nbOp; i++) {
+		} else if (this instanceof CG_WallSurface) {
 
-        CG_AbstractOpening oPP = this.getOpening().get(i);
+			bsOut = new WallSurface();
 
-        if (oPP instanceof CG_Door) {
+		} else if (this instanceof CG_GroundSurface) {
 
-          OpeningProperty op = new OpeningPropertyImpl();
-          
-          op.setOpening((Door)oPP.export());
-          
-          bsOut.addOpening(op);
-          
+			bsOut = new GroundSurface();
 
-        } else if (oPP instanceof CG_Window) {
+		} else if (this instanceof CG_ClosureSurface) {
 
-          OpeningProperty op = new OpeningPropertyImpl();
-          
-          op.setOpening((Window)oPP.export());
-          
-          bsOut.addOpening(op);
-        }
+			bsOut = new ClosureSurface();
 
-      }
-      
-    }
-    return bsOut;
-    
-  }
+		} else if (this instanceof CG_CeilingSurface) {
 
-  public static CG_AbstractBoundarySurface generateBoundarySurface(
-      BoundarySurface bs) {
+			bsOut = new CeilingSurface();
 
-    if (bs instanceof RoofSurface) {
+		} else if (this instanceof CG_InteriorWallSurface) {
 
-      return new CG_RoofSurface((RoofSurface) bs);
+			bsOut = new WallSurface();
 
-    } else if (bs instanceof WallSurface) {
+		} else if (this instanceof CG_FloorSurface) {
 
-      return new CG_WallSurface((WallSurface) bs);
+			bsOut = new FloorSurface();
 
-    } else if (bs instanceof GroundSurface) {
+		}
 
-      return new CG_GroundSurface((GroundSurface) bs);
+		if (this.isSetLod2MultiSurface()) {
+			bsOut.setLod2MultiSurface(ConvertToCityGMLGeometry.convertMultiSurfaceProperty(this.getLod2MultiSurface()));
+		}
 
-    } else if (bs instanceof ClosureSurface) {
+		if (this.isSetLod3MultiSurface()) {
+			bsOut.setLod3MultiSurface(ConvertToCityGMLGeometry.convertMultiSurfaceProperty(this.getLod3MultiSurface()));
+		}
 
-      return new CG_ClosureSurface((ClosureSurface) bs);
+		if (this.isSetLod4MultiSurface()) {
+			bsOut.setLod4MultiSurface(ConvertToCityGMLGeometry.convertMultiSurfaceProperty(this.getLod4MultiSurface()));
+		}
 
-    } else if (bs instanceof CeilingSurface) {
+		if (this.isSetOpening()) {
 
-      return new CG_CeilingSurface((CeilingSurface) bs);
+			bsOut.setOpening(new ArrayList<OpeningProperty>());
 
-    } else if (bs instanceof InteriorWallSurface) {
+			int nbOp = this.getOpening().size();
 
-      return new CG_InteriorWallSurface((InteriorWallSurface) bs);
+			for (int i = 0; i < nbOp; i++) {
 
-    } else if (bs instanceof FloorSurface) {
+				CG_AbstractOpening oPP = this.getOpening().get(i);
 
-      return new CG_FloorSurface((FloorSurface) bs);
+				if (oPP instanceof CG_Door) {
 
-    }
+					OpeningProperty op = new OpeningProperty();
 
-    System.out.println("Classe inconnue " + bs.getClass().toString());
+					op.setOpening((Door) oPP.export());
 
-    return null;
-  }
+					bsOut.addOpening(op);
 
-  public CG_AbstractBoundarySurface(BoundarySurface bS) {
-    super(bS);
-    if (bS.isSetLod2MultiSurface()) {
-      this.setLod2MultiSurface(ConvertyCityGMLGeometry
-          .convertGMLMultiSurface(bS.getLod2MultiSurface()));
-    }
+				} else if (oPP instanceof CG_Window) {
 
-    if (bS.isSetLod3MultiSurface()) {
-      this.setLod3MultiSurface(ConvertyCityGMLGeometry
-          .convertGMLMultiSurface(bS.getLod3MultiSurface()));
-    }
+					OpeningProperty op = new OpeningProperty();
 
-    if (bS.isSetLod4MultiSurface()) {
-      this.setLod4MultiSurface(ConvertyCityGMLGeometry
-          .convertGMLMultiSurface(bS.getLod4MultiSurface()));
-    }
+					op.setOpening((Window) oPP.export());
 
-    if (bS.isSetOpening()) {
-      List<OpeningProperty> oP = bS.getOpening();
-      int nbOp = oP.size();
-      for (int i = 0; i < nbOp; i++) {
+					bsOut.addOpening(op);
+				}
 
-        Opening oPP = oP.get(i).getOpening();
+			}
 
-        if (oPP instanceof Door) {
+		}
+		return bsOut;
 
-          this.getOpening().add(new CG_Door((Door) oPP));
+	}
 
-        } else if (oPP instanceof Window) {
+	public static CG_AbstractBoundarySurface generateBoundarySurface(AbstractBoundarySurface bs) {
 
-          this.getOpening().add(new CG_Window((Window) oPP));
-        }
+		if (bs instanceof RoofSurface) {
 
-      }
+			return new CG_RoofSurface((RoofSurface) bs);
 
-    }
+		} else if (bs instanceof WallSurface) {
 
-  }
+			return new CG_WallSurface((WallSurface) bs);
 
-  /**
-   * Gets the value of the lod2MultiSurface property.
-   * 
-   * @return possible object is {@link IMultiSurface<IOrientableSurface> }
-   * 
-   */
-  public IMultiSurface<IOrientableSurface> getLod2MultiSurface() {
-    return this.lod2MultiSurface;
-  }
+		} else if (bs instanceof GroundSurface) {
 
-  /**
-   * Sets the value of the lod2MultiSurface property.
-   * 
-   * @param value allowed object is {@link IMultiSurface<IOrientableSurface> * }
-   * 
-   */
-  public void setLod2MultiSurface(IMultiSurface<? extends IOrientableSurface> value) {
-    this.lod2MultiSurface = new GM_MultiSurface<IOrientableSurface>();
-    
-    this.lod2MultiSurface.addAll(value);
-  }
+			return new CG_GroundSurface((GroundSurface) bs);
 
-  public boolean isSetLod2MultiSurface() {
-    return (this.lod2MultiSurface != null);
-  }
+		} else if (bs instanceof ClosureSurface) {
 
-  /**
-   * Gets the value of the lod3MultiSurface property.
-   * 
-   * @return possible object is {@link IMultiSurface<IOrientableSurface> }
-   * 
-   */
-  public IMultiSurface<IOrientableSurface> getLod3MultiSurface() {
-    return this.lod3MultiSurface;
-  }
+			return new CG_ClosureSurface((ClosureSurface) bs);
 
-  /**
-   * Sets the value of the lod3MultiSurface property.
-   * 
-   * @param value allowed object is {@link IMultiSurface<IOrientableSurface> * }
-   * 
-   */
-  public void setLod3MultiSurface(IMultiSurface<IOrientableSurface> value) {
-    this.lod3MultiSurface = value;
-  }
+		} else if (bs instanceof CeilingSurface) {
 
-  public boolean isSetLod3MultiSurface() {
-    return (this.lod3MultiSurface != null);
-  }
+			return new CG_CeilingSurface((CeilingSurface) bs);
 
-  /**
-   * Gets the value of the lod4MultiSurface property.
-   * 
-   * @return possible object is {@link IMultiSurface<IOrientableSurface> }
-   * 
-   */
-  public IMultiSurface<IOrientableSurface> getLod4MultiSurface() {
-    return this.lod4MultiSurface;
-  }
+		} else if (bs instanceof InteriorWallSurface) {
 
-  /**
-   * Sets the value of the lod4MultiSurface property.
-   * 
-   * @param value allowed object is {@link IMultiSurface<IOrientableSurface> * }
-   * 
-   */
-  public void setLod4MultiSurface(IMultiSurface<IOrientableSurface> value) {
-    this.lod4MultiSurface = value;
-  }
+			return new CG_InteriorWallSurface((InteriorWallSurface) bs);
 
-  public boolean isSetLod4MultiSurface() {
-    return (this.lod4MultiSurface != null);
-  }
+		} else if (bs instanceof FloorSurface) {
 
-  public List<CG_AbstractOpening> getOpening() {
-    if (this.opening == null) {
-      this.opening = new ArrayList<CG_AbstractOpening>();
-    }
-    return this.opening;
-  }
+			return new CG_FloorSurface((FloorSurface) bs);
 
-  public boolean isSetOpening() {
-    return ((this.opening != null) && (!this.opening.isEmpty()));
-  }
+		}
 
-  public void unsetOpening() {
-    this.opening = null;
-  }
+		System.out.println("Classe inconnue " + bs.getClass().toString());
+
+		return null;
+	}
+
+	public CG_AbstractBoundarySurface(AbstractBoundarySurface bS) {
+		super(bS);
+		if (bS.isSetLod2MultiSurface()) {
+			this.setLod2MultiSurface(ConvertCityGMLtoGeometry.convertGMLMultiSurface(bS.getLod2MultiSurface()));
+		}
+
+		if (bS.isSetLod3MultiSurface()) {
+			this.setLod3MultiSurface(ConvertCityGMLtoGeometry.convertGMLMultiSurface(bS.getLod3MultiSurface()));
+		}
+
+		if (bS.isSetLod4MultiSurface()) {
+			this.setLod4MultiSurface(ConvertCityGMLtoGeometry.convertGMLMultiSurface(bS.getLod4MultiSurface()));
+		}
+
+		if (bS.isSetOpening()) {
+			List<OpeningProperty> oP = bS.getOpening();
+			int nbOp = oP.size();
+			for (int i = 0; i < nbOp; i++) {
+
+				AbstractOpening oPP = oP.get(i).getOpening();
+
+				if (oPP instanceof Door) {
+
+					this.getOpening().add(new CG_Door((Door) oPP));
+
+				} else if (oPP instanceof Window) {
+
+					this.getOpening().add(new CG_Window((Window) oPP));
+				}
+
+			}
+
+		}
+
+	}
+
+	/**
+	 * Gets the value of the lod2MultiSurface property.
+	 * 
+	 * @return possible object is {@link IMultiSurface<IOrientableSurface> }
+	 * 
+	 */
+	public IMultiSurface<IOrientableSurface> getLod2MultiSurface() {
+		return this.lod2MultiSurface;
+	}
+
+	/**
+	 * Sets the value of the lod2MultiSurface property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link IMultiSurface<IOrientableSurface> * }
+	 * 
+	 */
+	public void setLod2MultiSurface(IMultiSurface<? extends IOrientableSurface> value) {
+		this.lod2MultiSurface = new GM_MultiSurface<IOrientableSurface>();
+
+		this.lod2MultiSurface.addAll(value);
+	}
+
+	public boolean isSetLod2MultiSurface() {
+		return (this.lod2MultiSurface != null);
+	}
+
+	/**
+	 * Gets the value of the lod3MultiSurface property.
+	 * 
+	 * @return possible object is {@link IMultiSurface<IOrientableSurface> }
+	 * 
+	 */
+	public IMultiSurface<IOrientableSurface> getLod3MultiSurface() {
+		return this.lod3MultiSurface;
+	}
+
+	/**
+	 * Sets the value of the lod3MultiSurface property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link IMultiSurface<IOrientableSurface> * }
+	 * 
+	 */
+	public void setLod3MultiSurface(IMultiSurface<IOrientableSurface> value) {
+		this.lod3MultiSurface = value;
+	}
+
+	public boolean isSetLod3MultiSurface() {
+		return (this.lod3MultiSurface != null);
+	}
+
+	/**
+	 * Gets the value of the lod4MultiSurface property.
+	 * 
+	 * @return possible object is {@link IMultiSurface<IOrientableSurface> }
+	 * 
+	 */
+	public IMultiSurface<IOrientableSurface> getLod4MultiSurface() {
+		return this.lod4MultiSurface;
+	}
+
+	/**
+	 * Sets the value of the lod4MultiSurface property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link IMultiSurface<IOrientableSurface> * }
+	 * 
+	 */
+	public void setLod4MultiSurface(IMultiSurface<IOrientableSurface> value) {
+		this.lod4MultiSurface = value;
+	}
+
+	public boolean isSetLod4MultiSurface() {
+		return (this.lod4MultiSurface != null);
+	}
+
+	public List<CG_AbstractOpening> getOpening() {
+		if (this.opening == null) {
+			this.opening = new ArrayList<CG_AbstractOpening>();
+		}
+		return this.opening;
+	}
+
+	public boolean isSetOpening() {
+		return ((this.opening != null) && (!this.opening.isEmpty()));
+	}
+
+	public void unsetOpening() {
+		this.opening = null;
+	}
 
 }

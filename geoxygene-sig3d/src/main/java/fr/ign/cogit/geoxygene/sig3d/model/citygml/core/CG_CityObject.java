@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.citygml4j.model.citygml.building.BoundarySurface;
+import org.citygml4j.model.citygml.building.AbstractBoundarySurface;
 import org.citygml4j.model.citygml.building.Building;
 import org.citygml4j.model.citygml.building.BuildingFurniture;
 import org.citygml4j.model.citygml.building.BuildingInstallation;
@@ -15,15 +15,15 @@ import org.citygml4j.model.citygml.building.Room;
 import org.citygml4j.model.citygml.building.Window;
 import org.citygml4j.model.citygml.cityfurniture.CityFurniture;
 import org.citygml4j.model.citygml.cityobjectgroup.CityObjectGroup;
-import org.citygml4j.model.citygml.core.CityObject;
+import org.citygml4j.model.citygml.core.AbstractCityObject;
 import org.citygml4j.model.citygml.generics.GenericCityObject;
 import org.citygml4j.model.citygml.landuse.LandUse;
-import org.citygml4j.model.citygml.relief.ReliefComponent;
+import org.citygml4j.model.citygml.relief.AbstractReliefComponent;
 import org.citygml4j.model.citygml.relief.ReliefFeature;
-import org.citygml4j.model.citygml.transportation.TransportationObject;
-import org.citygml4j.model.citygml.vegetation.VegetationObject;
-import org.citygml4j.model.citygml.waterbody.WaterBoundarySurface;
-import org.citygml4j.model.citygml.waterbody.WaterObject;
+import org.citygml4j.model.citygml.transportation.AbstractTransportationObject;
+import org.citygml4j.model.citygml.vegetation.AbstractVegetationObject;
+import org.citygml4j.model.citygml.waterbody.AbstractWaterBoundarySurface;
+import org.citygml4j.model.citygml.waterbody.AbstractWaterObject;
 
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.appearance.CG_AppearanceProperty;
@@ -54,211 +54,199 @@ import fr.ign.cogit.geoxygene.sig3d.model.citygml.waterbody.CG_WaterBoundarySurf
  */
 public abstract class CG_CityObject extends DefaultFeature {
 
-  private List<CG_AppearanceProperty> appearanceProperty = null;
-  
-  public static int ID_COUNT = 0;
-  protected  int id = 0;
-  
+	private List<CG_AppearanceProperty> appearanceProperty = null;
 
-  
-  public int getId() {
-    return id;
-  }
+	public static int ID_COUNT = 0;
+	protected int id = 0;
 
-  public void setId(int id) {
-    this.id = id;
-  }
+	public int getId() {
+		return id;
+	}
 
-  public CG_CityObject(){
-    super();
-    id = ID_COUNT++;
-  }
+	public void setId(int id) {
+		this.id = id;
+	}
 
-  public List<CG_AppearanceProperty> getAppearanceProperty() {
-    if (this.appearanceProperty == null) {
-      this.appearanceProperty = new ArrayList<CG_AppearanceProperty>();
-    }
-    return this.appearanceProperty;
-  }
+	public CG_CityObject() {
+		super();
+		id = ID_COUNT++;
+	}
 
-  public abstract CityObject export();
-  
-  public CG_CityObject(CityObject cO) {
-    super();
-    this.creationDate = cO.getCreationDate();
-    this.terminationDate = cO.getTerminationDate();
-    
-    if (cO.isSetAppearance()) {
-      int nbAp = cO.getAppearance().size();
+	public List<CG_AppearanceProperty> getAppearanceProperty() {
+		if (this.appearanceProperty == null) {
+			this.appearanceProperty = new ArrayList<CG_AppearanceProperty>();
+		}
+		return this.appearanceProperty;
+	}
 
-      for (int i = 0; i < nbAp; i++) {
-        this.getAppearanceProperty().add(
-            new CG_AppearanceProperty(cO.getAppearance().get(i)));
+	public abstract AbstractCityObject export();
 
-      }
+	public CG_CityObject(AbstractCityObject cO) {
+		super();
+		this.creationDate = cO.getCreationDate();
+		this.terminationDate = cO.getTerminationDate();
 
-    }
+		if (cO.isSetAppearance()) {
+			int nbAp = cO.getAppearance().size();
 
-    int nbExtRef = cO.getExternalReference().size();
+			for (int i = 0; i < nbAp; i++) {
+				this.getAppearanceProperty().add(new CG_AppearanceProperty(cO.getAppearance().get(i)));
 
-    for (int i = 0; i < nbExtRef; i++) {
+			}
 
-      this.getExternalReference().add(
-          new CG_ExternalReference(cO.getExternalReference().get(i)));
-    }
+		}
 
-    int nbGRT = cO.getGeneralizesTo().size();
-    for (int i = 0; i < nbGRT; i++) {
+		int nbExtRef = cO.getExternalReference().size();
 
-      this.getGeneralizesTo().add(
-          new CG_GeneralizationRelation(cO.getGeneralizesTo().get(i)));
-    }
+		for (int i = 0; i < nbExtRef; i++) {
 
-  }
+			this.getExternalReference().add(new CG_ExternalReference(cO.getExternalReference().get(i)));
+		}
 
-  public static CG_CityObject generateCityObject(CityObject cO) {
+		int nbGRT = cO.getGeneralizesTo().size();
+		for (int i = 0; i < nbGRT; i++) {
 
-    CG_CityObject cgCO = null;
+			this.getGeneralizesTo().add(new CG_GeneralizationRelation(cO.getGeneralizesTo().get(i)));
+		}
 
-    if (cO instanceof Room) {
-      cgCO = new CG_Room((Room) cO);
-    } else if (cO instanceof IntBuildingInstallation) {
+	}
 
-      cgCO = new CG_IntBuildingInstallation((IntBuildingInstallation) cO);
+	public static CG_CityObject generateCityObject(AbstractCityObject cO) {
 
-    } else if (cO instanceof Window) {
-      cgCO = new CG_Window((Window) cO);
+		CG_CityObject cgCO = null;
 
-    } else if (cO instanceof Door) {
-      cgCO = new CG_Door((Door) cO);
+		if (cO instanceof Room) {
+			cgCO = new CG_Room((Room) cO);
+		} else if (cO instanceof IntBuildingInstallation) {
 
-    } else if (cO instanceof BuildingFurniture) {
-      cgCO = new CG_BuildingFurniture((BuildingFurniture) cO);
+			cgCO = new CG_IntBuildingInstallation((IntBuildingInstallation) cO);
 
-    } else if (cO instanceof CityFurniture) {
-      cgCO = new CG_CityFurniture((CityFurniture) cO);
+		} else if (cO instanceof Window) {
+			cgCO = new CG_Window((Window) cO);
 
-    } else if (cO instanceof BuildingInstallation) {
-      cgCO = new CG_BuildingInstallation((BuildingInstallation) cO);
+		} else if (cO instanceof Door) {
+			cgCO = new CG_Door((Door) cO);
 
-    } else if (cO instanceof BoundarySurface) {
-      cgCO = CG_AbstractBoundarySurface
-          .generateBoundarySurface((BoundarySurface) cO);
+		} else if (cO instanceof BuildingFurniture) {
+			cgCO = new CG_BuildingFurniture((BuildingFurniture) cO);
 
-    } else if (cO instanceof CityObjectGroup) {
-      cgCO = new CG_CityObjectGroup((CityObjectGroup) cO);
+		} else if (cO instanceof CityFurniture) {
+			cgCO = new CG_CityFurniture((CityFurniture) cO);
 
-    } else if (cO instanceof Building) {
-      cgCO = new CG_Building((Building) cO);
+		} else if (cO instanceof BuildingInstallation) {
+			cgCO = new CG_BuildingInstallation((BuildingInstallation) cO);
 
-    } else if (cO instanceof BuildingPart) {
-      cgCO = new CG_BuildingPart((BuildingPart) cO);
+		} else if (cO instanceof AbstractBoundarySurface) {
+			cgCO = CG_AbstractBoundarySurface.generateBoundarySurface((AbstractBoundarySurface) cO);
 
-    } else if (cO instanceof IntBuildingInstallation) {
-      cgCO = new CG_IntBuildingInstallation((IntBuildingInstallation) cO);
+		} else if (cO instanceof CityObjectGroup) {
+			cgCO = new CG_CityObjectGroup((CityObjectGroup) cO);
 
-    } else if (cO instanceof GenericCityObject) {
-      cgCO = new CG_GenericCityObject((GenericCityObject) cO);
+		} else if (cO instanceof Building) {
+			cgCO = new CG_Building((Building) cO);
 
-    } else if (cO instanceof LandUse) {
-      cgCO = new CG_LandUse((LandUse) cO);
+		} else if (cO instanceof BuildingPart) {
+			cgCO = new CG_BuildingPart((BuildingPart) cO);
 
-    } else if (cO instanceof ReliefFeature) {
+		} else if (cO instanceof IntBuildingInstallation) {
+			cgCO = new CG_IntBuildingInstallation((IntBuildingInstallation) cO);
 
-      cgCO = new CG_ReliefFeature((ReliefFeature) cO);
+		} else if (cO instanceof GenericCityObject) {
+			cgCO = new CG_GenericCityObject((GenericCityObject) cO);
 
-    } else if (cO instanceof ReliefComponent) {
+		} else if (cO instanceof LandUse) {
+			cgCO = new CG_LandUse((LandUse) cO);
 
-      cgCO = CG_AbstractReliefComponent
-          .generateReliefComponentType((ReliefComponent) cO);
+		} else if (cO instanceof ReliefFeature) {
 
-    } else if (cO instanceof TransportationObject) {
+			cgCO = new CG_ReliefFeature((ReliefFeature) cO);
 
-      cgCO = CG_AbstractTransportation
-          .generateAbstractTransportationObject((TransportationObject) cO);
+		} else if (cO instanceof AbstractReliefComponent) {
 
-    } else if (cO instanceof VegetationObject) {
+			cgCO = CG_AbstractReliefComponent.generateReliefComponentType((AbstractReliefComponent) cO);
 
-      cgCO = CG_AbstractVegetationObject
-          .generateAbstractVegetationObject((VegetationObject) cO);
+		} else if (cO instanceof AbstractTransportationObject) {
 
-    } else if (cO instanceof WaterObject) {
+			cgCO = CG_AbstractTransportation.generateAbstractTransportationObject((AbstractTransportationObject) cO);
 
-      cgCO = CG_AbstractWaterObject
-          .generateAbstractWaterObject((WaterObject) cO);
+		} else if (cO instanceof AbstractVegetationObject) {
 
-    } else if (cO instanceof WaterBoundarySurface) {
+			cgCO = CG_AbstractVegetationObject.generateAbstractVegetationObject((AbstractVegetationObject) cO);
 
-      cgCO = CG_WaterBoundarySurface
-          .generateAbstractWaterBoundarySurface((WaterBoundarySurface) cO);
+		} else if (cO instanceof AbstractWaterObject) {
 
-    } else {
+			cgCO = CG_AbstractWaterObject.generateAbstractWaterObject((AbstractWaterObject) cO);
 
-      System.out.println("Non géré" + cO.getClass().toString());
-    }
+		} else if (cO instanceof AbstractWaterBoundarySurface) {
 
-    return cgCO;
+			cgCO = CG_WaterBoundarySurface.generateAbstractWaterBoundarySurface((AbstractWaterBoundarySurface) cO);
 
-  }
+		} else {
 
-  protected GregorianCalendar creationDate;
-  protected GregorianCalendar terminationDate;
-  protected List<CG_ExternalReference> externalReference;
-  protected List<CG_GeneralizationRelation> generalizesTo;
+			System.out.println("Non géré" + cO.getClass().toString());
+		}
 
-  public GregorianCalendar getCreationDate() {
-    return this.creationDate;
-  }
+		return cgCO;
 
-  public void setCreationDate(GregorianCalendar value) {
-    this.creationDate = value;
-  }
+	}
 
-  public boolean isSetCreationDate() {
-    return (this.creationDate != null);
-  }
+	protected GregorianCalendar creationDate;
+	protected GregorianCalendar terminationDate;
+	protected List<CG_ExternalReference> externalReference;
+	protected List<CG_GeneralizationRelation> generalizesTo;
 
-  public GregorianCalendar getTerminationDate() {
-    return this.terminationDate;
-  }
+	public GregorianCalendar getCreationDate() {
+		return this.creationDate;
+	}
 
-  public void setTerminationDate(GregorianCalendar value) {
-    this.terminationDate = value;
-  }
+	public void setCreationDate(GregorianCalendar value) {
+		this.creationDate = value;
+	}
 
-  public boolean isSetTerminationDate() {
-    return (this.terminationDate != null);
-  }
+	public boolean isSetCreationDate() {
+		return (this.creationDate != null);
+	}
 
-  public List<CG_ExternalReference> getExternalReference() {
-    if (this.externalReference == null) {
-      this.externalReference = new ArrayList<CG_ExternalReference>();
-    }
-    return this.externalReference;
-  }
+	public GregorianCalendar getTerminationDate() {
+		return this.terminationDate;
+	}
 
-  public boolean isSetExternalReference() {
-    return ((this.externalReference != null) && (!this.externalReference
-        .isEmpty()));
-  }
+	public void setTerminationDate(GregorianCalendar value) {
+		this.terminationDate = value;
+	}
 
-  public void unsetExternalReference() {
-    this.externalReference = null;
-  }
+	public boolean isSetTerminationDate() {
+		return (this.terminationDate != null);
+	}
 
-  public List<CG_GeneralizationRelation> getGeneralizesTo() {
-    if (this.generalizesTo == null) {
-      this.generalizesTo = new ArrayList<CG_GeneralizationRelation>();
-    }
-    return this.generalizesTo;
-  }
+	public List<CG_ExternalReference> getExternalReference() {
+		if (this.externalReference == null) {
+			this.externalReference = new ArrayList<CG_ExternalReference>();
+		}
+		return this.externalReference;
+	}
 
-  public boolean isSetGeneralizesTo() {
-    return ((this.generalizesTo != null) && (!this.generalizesTo.isEmpty()));
-  }
+	public boolean isSetExternalReference() {
+		return ((this.externalReference != null) && (!this.externalReference.isEmpty()));
+	}
 
-  public void unsetGeneralizesTo() {
-    this.generalizesTo = null;
-  }
+	public void unsetExternalReference() {
+		this.externalReference = null;
+	}
+
+	public List<CG_GeneralizationRelation> getGeneralizesTo() {
+		if (this.generalizesTo == null) {
+			this.generalizesTo = new ArrayList<CG_GeneralizationRelation>();
+		}
+		return this.generalizesTo;
+	}
+
+	public boolean isSetGeneralizesTo() {
+		return ((this.generalizesTo != null) && (!this.generalizesTo.isEmpty()));
+	}
+
+	public void unsetGeneralizesTo() {
+		this.generalizesTo = null;
+	}
 
 }

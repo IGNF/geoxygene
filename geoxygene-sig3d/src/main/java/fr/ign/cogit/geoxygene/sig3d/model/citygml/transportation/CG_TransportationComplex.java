@@ -10,27 +10,28 @@ import org.citygml4j.model.citygml.transportation.Road;
 import org.citygml4j.model.citygml.transportation.Square;
 import org.citygml4j.model.citygml.transportation.Track;
 import org.citygml4j.model.citygml.transportation.TransportationComplex;
+import org.citygml4j.model.gml.basicTypes.Code;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
 
 @XmlSeeAlso({ CG_Square.class, CG_Track.class, CG_Railway.class, CG_Road.class })
 public abstract class CG_TransportationComplex extends
     CG_AbstractTransportation {
 
-  public void setFunction(List<String> function) {
+  public void setFunction(List<Code> function) {
     this.function = function;
   }
 
 
-  public void setUsage(List<String> usage) {
+  public void setUsage(List<Code> usage) {
     this.usage = usage;
   }
 
-  protected List<String> function;
-  protected List<String> usage;
+  protected List<Code> function;
+  protected List<Code> usage;
   protected IMultiSurface<IOrientableSurface> lod1MultiSurface;
   protected IMultiSurface<IOrientableSurface> lod2MultiSurface;
   protected IMultiSurface<IOrientableSurface> lod3MultiSurface;
@@ -58,22 +59,22 @@ public abstract class CG_TransportationComplex extends
     }
 
     if (tO.isSetLod1MultiSurface()) {
-      this.setLod1MultiSurface(ConvertyCityGMLGeometry
+      this.setLod1MultiSurface(ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(tO.getLod1MultiSurface()));
     }
 
     if (tO.isSetLod2MultiSurface()) {
-      this.setLod2MultiSurface(ConvertyCityGMLGeometry
+      this.setLod2MultiSurface(ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(tO.getLod2MultiSurface()));
     }
 
     if (tO.isSetLod3MultiSurface()) {
-      this.setLod3MultiSurface(ConvertyCityGMLGeometry
+      this.setLod3MultiSurface(ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(tO.getLod3MultiSurface()));
     }
 
     if (tO.isSetLod4MultiSurface()) {
-      this.setLod4MultiSurface(ConvertyCityGMLGeometry
+      this.setLod4MultiSurface(ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(tO.getLod4MultiSurface()));
     }
 
@@ -83,7 +84,7 @@ public abstract class CG_TransportationComplex extends
       for (int i = 0; i < nbGeom; i++) {
 
         this.getLod0Network().add(
-            ConvertyCityGMLGeometry.convertGMLGeometry(tO.getLod0Network()
+            ConvertCityGMLtoGeometry.convertGMLGeometry(tO.getLod0Network()
                 .get(i).getGeometricComplex()));
 
       }
@@ -141,9 +142,9 @@ public abstract class CG_TransportationComplex extends
 
   }
 
-  public List<String> getFunction() {
+  public List<Code> getFunction() {
     if (this.function == null) {
-      this.function = new ArrayList<String>();
+      this.function = new ArrayList<Code>();
     }
     return this.function;
   }
@@ -156,9 +157,9 @@ public abstract class CG_TransportationComplex extends
     this.function = null;
   }
 
-  public List<String> getUsage() {
+  public List<Code> getUsage() {
     if (this.usage == null) {
-      this.usage = new ArrayList<String>();
+      this.usage = new ArrayList<Code>();
     }
     return this.usage;
   }

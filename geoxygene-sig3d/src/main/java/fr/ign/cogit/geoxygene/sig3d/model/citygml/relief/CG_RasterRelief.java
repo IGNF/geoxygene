@@ -1,6 +1,6 @@
 package fr.ign.cogit.geoxygene.sig3d.model.citygml.relief;
 
-import org.citygml4j.model.citygml.core.CityObject;
+import org.citygml4j.model.citygml.core.AbstractCityObject;
 import org.citygml4j.model.citygml.relief.RasterRelief;
 
 /**
@@ -46,7 +46,7 @@ public class CG_RasterRelief extends CG_AbstractReliefComponent {
   }
 
   @Override
-  public CityObject export() {
+  public AbstractCityObject export() {
     // TODO Auto-generated method stub
     return null;
   }

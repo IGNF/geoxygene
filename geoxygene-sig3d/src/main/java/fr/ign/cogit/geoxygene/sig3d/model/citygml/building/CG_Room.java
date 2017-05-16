@@ -3,14 +3,7 @@ package fr.ign.cogit.geoxygene.sig3d.model.citygml.building;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.citygml4j.impl.citygml.building.BoundarySurfacePropertyImpl;
-import org.citygml4j.impl.citygml.building.IntBuildingInstallationPropertyImpl;
-import org.citygml4j.impl.citygml.building.InteriorFurniturePropertyImpl;
-import org.citygml4j.impl.citygml.building.RoomImpl;
-import org.citygml4j.jaxb.citygml._0_4.BoundarySurfacePropertyType;
-import org.citygml4j.jaxb.citygml._0_4.IntBuildingInstallationPropertyType;
-import org.citygml4j.jaxb.citygml._0_4.InteriorFurniturePropertyType;
-import org.citygml4j.model.citygml.building.BoundarySurface;
+import org.citygml4j.model.citygml.building.AbstractBoundarySurface;
 import org.citygml4j.model.citygml.building.BoundarySurfaceProperty;
 import org.citygml4j.model.citygml.building.BuildingFurniture;
 import org.citygml4j.model.citygml.building.CeilingSurface;
@@ -24,14 +17,15 @@ import org.citygml4j.model.citygml.building.InteriorWallSurface;
 import org.citygml4j.model.citygml.building.RoofSurface;
 import org.citygml4j.model.citygml.building.Room;
 import org.citygml4j.model.citygml.building.WallSurface;
-import org.citygml4j.model.citygml.core.CityObject;
+import org.citygml4j.model.citygml.core.AbstractCityObject;
+import org.citygml4j.model.gml.basicTypes.Code;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISolid;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_CityObject;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertToCityGMLGeometry;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
 
 /**
  * 
@@ -40,9 +34,9 @@ import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeomet
  */
 public class CG_Room extends CG_CityObject {
 
-  protected String clazz;
-  protected List<String> function;
-  protected List<String> usage;
+  protected Code clazz;
+  protected List<Code> function;
+  protected List<Code> usage;
   protected ISolid lod4Solid;
   protected IMultiSurface<IOrientableSurface> lod4MultiSurface;
 
@@ -57,8 +51,8 @@ public class CG_Room extends CG_CityObject {
     this.clazz = r.getClazz();
     this.getFunction().addAll(r.getFunction());
     this.getUsage().addAll(r.getUsage());
-    this.setLod4Solid(ConvertyCityGMLGeometry.convertGMLSolid(r.getLod4Solid()));
-    this.setLod4MultiSurface(ConvertyCityGMLGeometry.convertGMLMultiSurface(r
+    this.setLod4Solid(ConvertCityGMLtoGeometry.convertGMLSolid(r.getLod4Solid()));
+    this.setLod4MultiSurface(ConvertCityGMLtoGeometry.convertGMLMultiSurface(r
         .getLod4MultiSurface()));
 
     if (r.getInteriorFurniture() != null) {
@@ -104,7 +98,7 @@ public class CG_Room extends CG_CityObject {
         int nbBoundingSurface = r.getBoundedBySurface().size();
 
         for (int i = 0; i < nbBoundingSurface; i++) {
-          BoundarySurface bs = r.getBoundedBySurface().get(i)
+          AbstractBoundarySurface bs = r.getBoundedBySurface().get(i)
               .getBoundarySurface();
 
           if (bs instanceof RoofSurface) {
@@ -152,8 +146,8 @@ public class CG_Room extends CG_CityObject {
   }
 
   @Override
-  public CityObject export() {
-    Room rOut = new RoomImpl();
+  public AbstractCityObject export() {
+    Room rOut = new Room();
     rOut.setClazz(this.getClazz());
     rOut.setFunction(this.getFunction());
 
@@ -176,7 +170,7 @@ public class CG_Room extends CG_CityObject {
 
         for (int i = 0; i < nbOuterBuildingInstallation; i++) {
 
-          InteriorFurnitureProperty iFP = new InteriorFurniturePropertyImpl();
+          InteriorFurnitureProperty iFP = new InteriorFurnitureProperty();
 
           iFP.setBuildingFurniture((BuildingFurniture) this
               .getInteriorFurniture().get(i).export());
@@ -197,7 +191,7 @@ public class CG_Room extends CG_CityObject {
 
         for (int i = 0; i < nbIntBuildingInstallation; i++) {
 
-          IntBuildingInstallationProperty iBIP = new IntBuildingInstallationPropertyImpl();
+          IntBuildingInstallationProperty iBIP = new IntBuildingInstallationProperty();
           
           
           iBIP.setIntBuildingInstallation((IntBuildingInstallation) this.getRoomInstallation().get(i).export());
@@ -222,9 +216,9 @@ public class CG_Room extends CG_CityObject {
 
         for (int i = 0; i < nbBoundingSurface; i++) {
           CG_AbstractBoundarySurface bs = this.getBoundedBySurfaces().get(i);
-         BoundarySurface boundSurfOut =  (BoundarySurface) bs.export();
+         AbstractBoundarySurface boundSurfOut =  (AbstractBoundarySurface) bs.export();
        
-         BoundarySurfaceProperty eSP = new BoundarySurfacePropertyImpl();
+         BoundarySurfaceProperty eSP = new BoundarySurfaceProperty();
          eSP.setBoundarySurface(boundSurfOut);
          rOut.getBoundedBySurface().add(eSP);
          
@@ -244,7 +238,7 @@ public class CG_Room extends CG_CityObject {
    * @return possible object is {@link String }
    * 
    */
-  public String getClazz() {
+  public Code getClazz() {
     return this.clazz;
   }
 
@@ -254,7 +248,7 @@ public class CG_Room extends CG_CityObject {
    * @param value allowed object is {@link String }
    * 
    */
-  public void setClazz(String value) {
+  public void setClazz(Code value) {
     this.clazz = value;
   }
 
@@ -284,9 +278,9 @@ public class CG_Room extends CG_CityObject {
    * 
    * 
    */
-  public List<String> getFunction() {
+  public List<Code> getFunction() {
     if (this.function == null) {
-      this.function = new ArrayList<String>();
+      this.function = new ArrayList<Code>();
     }
     return this.function;
   }
@@ -321,9 +315,9 @@ public class CG_Room extends CG_CityObject {
    * 
    * 
    */
-  public List<String> getUsage() {
+  public List<Code> getUsage() {
     if (this.usage == null) {
-      this.usage = new ArrayList<String>();
+      this.usage = new ArrayList<Code>();
     }
     return this.usage;
   }
