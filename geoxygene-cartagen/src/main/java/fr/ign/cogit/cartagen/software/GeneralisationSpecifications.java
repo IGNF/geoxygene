@@ -90,7 +90,7 @@ public final class GeneralisationSpecifications {
   // distance minimale inter-batiments (en mm carte)
   public static double DISTANCE_SEPARATION_INTER_BATIMENT = 0.1;
   // distance maximale de déplacement d'un batiment (en mm carte)
-  public static double DISTANCE_MAX_DEPLACEMENT_BATIMENT = 1.0;
+  public static double DISTANCE_MAX_DEPLACEMENT_BATIMENT = 1.5;
   // distance minimale batiments-routes (en mm carte)
   public static double DISTANCE_SEPARATION_BATIMENT_ROUTE = 0.1;
   // distance minimale étendues eau-routes (en mm carte)

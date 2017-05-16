@@ -20,6 +20,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
+import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
+import fr.ign.cogit.cartagen.genealgorithms.block.BuildingDeletionOverlap;
 import fr.ign.cogit.cartagen.genealgorithms.block.BuildingDisplacementRandom;
 import fr.ign.cogit.cartagen.genealgorithms.polygon.RaposoSimplification;
 import fr.ign.cogit.cartagen.genealgorithms.polygon.VisvalingamWhyatt;
@@ -30,6 +32,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.SelectionUtil;
 import fr.ign.cogit.geoxygene.generalisation.Filtering;
+import fr.ign.cogit.geoxygene.style.Layer;
 
 /**
  * A menu for generic algorithms, i.e. algorithms that apply to standard
@@ -137,7 +140,41 @@ public class AlgorithmsMenu extends JMenu {
     });
     mDisplacement.add(mRandom);
 
+    // elimination menu
+    JMenu mElimination = new JMenu("Contextual Deletion");
+    JMenuItem mOverlaps = new JMenuItem(
+        "Contextual deletion based on overlapping polygon features");
+    mOverlaps.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent arg0) {
+        GeOxygeneApplication appli = CartAGenPlugin.getInstance()
+            .getApplication();
+        List<IFeature> polygons = new ArrayList<>();
+        Set<IFeature> lines = new HashSet<>();
+        for (IFeature feat : SelectionUtil.getSelectedObjects(appli)) {
+          IGeometry geom = feat.getGeom();
+          if (geom instanceof IPolygon)
+            polygons.add(feat);
+          else if (geom instanceof ILineString)
+            lines.add(feat);
+        }
+        BuildingDeletionOverlap algo = new BuildingDeletionOverlap(0.3);
+        List<IFeature> toDelete = algo.compute(polygons);
+        for (IFeature feat : toDelete) {
+          feat.setDeleted(true);
+          if (feat instanceof IGeneObj)
+            ((IGeneObj) feat).eliminate();
+          Layer layer = CartAGenPlugin.getInstance().getApplication()
+              .getMainFrame().getSelectedProjectFrame()
+              .getLayerFromFeature(feat);
+          layer.getFeatureCollection().remove(feat);
+        }
+      }
+    });
+    mElimination.add(mOverlaps);
+
     this.add(mLineSimplif);
+    this.add(mElimination);
     this.add(mDisplacement);
   }
 
