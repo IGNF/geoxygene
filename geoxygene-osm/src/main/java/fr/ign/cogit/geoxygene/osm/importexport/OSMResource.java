@@ -6,6 +6,8 @@ import java.sql.Statement;
 import java.util.Date;
 import java.util.HashMap;
 
+import java.util.Comparator;
+
 import fr.ign.cogit.geoxygene.osm.schema.OsmCaptureTool;
 
 public class OSMResource {
@@ -19,6 +21,7 @@ public class OSMResource {
     private int uid;
     private HashMap<String, String> tags;
     private Date date;
+    private int nbTags;
 
     public static final String TAG_SOURCE = "source";
     public static final String TAG_OUTIL = "created_by";
@@ -104,6 +107,7 @@ public class OSMResource {
 
     public void setTags(HashMap<String, String> tags) {
         this.tags = tags;
+        nbTags = tags.size();
     }
 
     public Date getDate() {
@@ -113,6 +117,13 @@ public class OSMResource {
     public void setDate(Date date) {
         this.date = date;
     }
+    
+    public int getNbTags() {
+       return nbTags;
+    }
+    public void setNbTags(int nbtags) {
+        this.nbTags = nbtags;
+     }
 
     @Override
     public boolean equals(Object obj) {
@@ -144,10 +155,12 @@ public class OSMResource {
         this.version = version;
         this.date = date;
         tags = new HashMap<String, String>();
+        nbTags = tags.size();
     }
 
     public void addTag(String cle, String valeur) {
         tags.put(cle, valeur);
+        nbTags += 1;
     }
 
     /**
@@ -174,6 +187,5 @@ public class OSMResource {
             // do nothing
             // e.printStackTrace();
         }
-
-    }
+    }   
 }

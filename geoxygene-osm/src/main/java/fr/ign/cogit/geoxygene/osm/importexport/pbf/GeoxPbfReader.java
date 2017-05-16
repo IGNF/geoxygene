@@ -20,7 +20,7 @@ public class GeoxPbfReader {
     public static void main(String[] args) {
         long tdeb = System.currentTimeMillis();
         PbfReader reader = new PbfReader(
-                new File("D:/Users/qttruong/data/paris_20150121.osm.pbf"),
+                new File("D:/Users/qttruong/data/nepal.osm.pbf"),
                 1);
         reader.setSink(mySink);
         System.out.println("on entre dans le run");

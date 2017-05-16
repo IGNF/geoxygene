@@ -61,25 +61,25 @@ public class GeoxSink implements Sink {
         /* Creating an OSMResource object given an EntityContainer */
         t1 = System.nanoTime();
         /* storing the features */
-        if (arg0.getEntity().getClass().getSimpleName().toString()
-                .equals("Node")) {
-            Node myNode = (Node) arg0.getEntity().getWriteableInstance();
-            processNode(myNode);
-            
-        }
-        if (arg0.getEntity().getClass().getSimpleName().toString()
-                .equals("Way")) {
-            if (nodeValues.length() > 0) {
-                nodeValues.deleteCharAt(nodeValues.length() - 1);
-                myQueries
-                        .append("INSERT INTO node (idnode,id,uid,vnode,changeset,username,datemodif, tags, lat, lon, geom) VALUES ")
-                        .append(nodeValues).append(";");
-                executeQuery();
-                nodeValues.setLength(0);
-            }
-            Way myWay = (Way) arg0.getEntity().getWriteableInstance();
-            processWay(myWay);
-        }
+//        if (arg0.getEntity().getClass().getSimpleName().toString()
+//                .equals("Node")) {
+//            Node myNode = (Node) arg0.getEntity().getWriteableInstance();
+//            processNode(myNode);
+//            
+//        }
+//        if (arg0.getEntity().getClass().getSimpleName().toString()
+//                .equals("Way")) {
+//            if (nodeValues.length() > 0) {
+//                nodeValues.deleteCharAt(nodeValues.length() - 1);
+//                myQueries
+//                        .append("INSERT INTO node (idnode,id,uid,vnode,changeset,username,datemodif, tags, lat, lon, geom) VALUES ")
+//                        .append(nodeValues).append(";");
+//                executeQuery();
+//                nodeValues.setLength(0);
+//            }
+//            Way myWay = (Way) arg0.getEntity().getWriteableInstance();
+//            processWay(myWay);
+//        }
         if (arg0.getEntity().getClass().getSimpleName().toString()
                 .equals("Relation")) {
             if (wayValues.length() > 0) {
@@ -100,7 +100,7 @@ public class GeoxSink implements Sink {
     public void executeQuery() {
     	String host = "localhost";
         String port = "5432";
-        String dbName = "paris";
+        String dbName = "nepal2";
         String dbUser = "postgres";
         String dbPwd = "postgres";
         String url = "jdbc:postgresql://" + host + ":" + port + "/" + dbName;
@@ -144,8 +144,8 @@ public class GeoxSink implements Sink {
         if (hstore.length() > 0)
             hstore.deleteCharAt(hstore.length() - 1);
 
-        nodeValues.append("('" + myNode.getId() + myNode.getVersion() + "','"
-                + myNode.getId() + "','" + myNode.getUser().getId() + "',"
+        nodeValues.append("(" + myNode.getId() + myNode.getVersion() + ","
+                + myNode.getId() + "," + myNode.getUser().getId() + ","
                 + myNode.getVersion() + "," + (int) myNode.getChangesetId()
                 + "," + "\'"
                 + escapeSQL(
@@ -192,8 +192,8 @@ public class GeoxSink implements Sink {
         if (hstore.length() > 0)
             hstore.deleteCharAt(hstore.length() - 1);
 
-        wayValues.append("('" + myWay.getId() + myWay.getVersion() + "','"
-                + myWay.getId() + "','" + myWay.getUser().getId() + "',"
+        wayValues.append("(" + myWay.getId() + myWay.getVersion() + ","
+                + myWay.getId() + "," + myWay.getUser().getId() + ","
                 + myWay.getVersion() + "," + (int) myWay.getChangesetId() + ","
                 + "\'" + escapeSQL(myWay.getUser().getName())
                 + "\'" + "," + "\'" + myWay.getTimestamp() + "\'," + "\'"
@@ -215,8 +215,8 @@ public class GeoxSink implements Sink {
 
         /* Process relation members */
         for (RelationMember mb : myRelation.getMembers()) {
-            relmbValues.append("('" + myRelation.getId()
-                    + myRelation.getVersion() + "','" + mb.getMemberId() + "','"
+            relmbValues.append("(" + myRelation.getId()
+                    + myRelation.getVersion() + "," + mb.getMemberId() + ",'"
                     + myRelation.getId() + myRelation.getVersion()
                     + mb.getMemberId() + "'," + "\'"
                     + escapeSQL(mb.getMemberType().toString())
@@ -245,8 +245,8 @@ public class GeoxSink implements Sink {
 
         t2 = System.nanoTime();
 
-        relValues.append("('" + myRelation.getId() + myRelation.getVersion()
-                + "'," + myRelation.getId() + "," + myRelation.getUser().getId()
+        relValues.append("(" + myRelation.getId() + myRelation.getVersion()
+                + "," + myRelation.getId() + "," + myRelation.getUser().getId()
                 + "," + myRelation.getVersion() + ","
                 + (int) myRelation.getChangesetId() + "," + "\'"
                 + escapeSQL(myRelation.getUser().getName())
