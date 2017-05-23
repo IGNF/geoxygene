@@ -36,23 +36,37 @@ public class IntrinsicAssessment {
 		// myJavaObjects = loaderNepal.myJavaObjects;
 
 		List<Double> bbox = new ArrayList<Double>();
-		bbox.add(2.3322);
-		bbox.add(48.8489);
-		bbox.add(2.3634);
-		bbox.add(48.8627);
-
+		bbox.add(2.3312);
+		bbox.add(48.8479);
+		bbox.add(2.3644);
+		bbox.add(48.8637);
 		List<String> timespan = new ArrayList<String>();
-		timespan.add("2014-01-01");
-		timespan.add("2015-02-01");
+		timespan.add("2011-01-01");
+		timespan.add("2011-03-01");
+
 		LoadFromPostGIS loader = new LoadFromPostGIS("localhost", "5432", "paris", "postgres", "postgres");
+		loader.selectNodes(bbox, timespan);
 		loader.selectWays(bbox, timespan);
 		myJavaObjects = loader.myJavaObjects;
 
 		// HashMap<Long, OSMObject> myOSMNodeObjects =
 		// nodeContributionSummary();
-		HashMap<Long, OSMObject> myOSMWayObjects = wayContributionSummary();
-		writeContributionSummary(myOSMWayObjects, new File("paris_juillet_2014_way.csv"));
-		writeWayContributionDetails(new File("paris_juillet_2014_details_contributions_way.csv"), "OSMWay");
+		// HashMap<Long, OSMObject> myOSMWayObjects = wayContributionSummary();
+		// writeContributionSummary(myOSMWayObjects, new
+		// File("paris_juillet_2014_way.csv"));
+		// writeContributionSummary(myOSMNodeObjects, new
+		// File("paris_juillet_2014_node.csv"));
+		// writeWayContributionDetails(new
+		// File("paris_juillet_2014_details_contributions_way.csv"), "OSMWay");
+		writeContributionDetails(new File("contributions_paris_janvier-mars_2013.csv"), myJavaObjects);
+		OSMResource way = null;
+		for (OSMResource resource : myJavaObjects) {
+			if (resource.getId() == 55350376)
+				if (resource.getVersion() == 2)
+					way = resource;
+		}
+		List<OSMResource> nodeComposingWay = getNodesComposingWay(myJavaObjects, way);
+		System.out.println("Nombre de nodes composant way = " + nodeComposingWay.size());
 	}
 
 	public static void sortJavaObjects(List<OSMResource> myJavaObjects) {
@@ -64,19 +78,21 @@ public class IntrinsicAssessment {
 		});
 	}
 
-	public static List<OSMResource> getNodesComposingWay(List<OSMResource> myJavaObjects, OSMWay myWay) {
+	public static List<OSMResource> getNodesComposingWay(List<OSMResource> myJavaObjects, OSMResource myWay) {
+		sortJavaObjects(myJavaObjects);
 		List<OSMResource> myNodeList = new ArrayList<OSMResource>();
 		OSMResource node = null;
-		List<Long> vertices = myWay.getVertices();
+		List<Long> vertices = ((OSMWay) myWay.getGeom()).getVertices();
 		int wayIndex = myJavaObjects.indexOf(myWay);
-		// Parcourt les ID des nodes qui composent le way
 		for (Long vertice : vertices) {
-			// Parcourt les objets qui sont antérieurs au way étudié
-			for (int i = wayIndex; i > 0; i--) {
+			for (int i = wayIndex; i > -1; i--) {
 				if (myJavaObjects.get(i).getGeom().getClass().getSimpleName().equals("OSMNode")) {
-					if (myJavaObjects.get(i).getId() == vertice)
+					if (myJavaObjects.get(i).getId() == vertice) {
+						System.out.println("NodeId & vertex match : " + myJavaObjects.get(i).getId());
 						node = myJavaObjects.get(i);
-					myNodeList.add(node);
+						myNodeList.add(node);
+						break;
+					}
 				}
 			}
 		}
@@ -384,6 +400,43 @@ public class IntrinsicAssessment {
 				line[9] = Double.toString(node.getLatitude());
 				writer.writeNext(line);
 			}
+		}
+		writer.close();
+	}
+
+	public static void writeContributionDetails(File file, List<OSMResource> myJavaObjects) throws IOException {
+		// Create a CSV writer
+		CSVWriter writer = new CSVWriter(new FileWriter(file), ';');
+		// write header
+		String[] line = new String[9];
+		line[0] = "id";
+		line[1] = "version";
+		line[2] = "changeset";
+		line[3] = "uid";
+		line[4] = "contributeur";
+		line[5] = "date";
+		line[6] = "source";
+		line[7] = "nbTags";
+		line[8] = "OSMResource.getGeom()";
+
+		writer.writeNext(line);
+
+		for (OSMResource resource : myJavaObjects) {
+
+			// OSMNode node = (OSMNode) resource.getGeom();
+			// OSMWay way = (OSMWay) resource.getGeom();
+			line = new String[9];
+			line[0] = Long.toString(resource.getId());
+			line[1] = Integer.toString(resource.getVersion());
+			line[2] = Integer.toString(resource.getChangeSet());
+			line[3] = Integer.toString(resource.getUid());
+			line[4] = resource.getContributeur();
+			line[5] = resource.getDate().toString();
+			line[6] = resource.getSource();
+			line[7] = Integer.toString(resource.getNbTags());
+			line[8] = resource.getGeom().getClass().getSimpleName();
+			writer.writeNext(line);
+
 		}
 		writer.close();
 	}
