@@ -185,9 +185,12 @@ public class BuildingClassifierSVM {
       trainingDataset.add(trainingData.getDescriptorsArray(building),
           trainingData.getResponse().get(building).ordinal());
     }
-    svm.learn(trainingDataset.toArray(new double[trainingDataset.size()][]),
-        trainingDataset.toArray(new int[trainingDataset.size()]));
+    double[][] x = trainingDataset
+        .toArray(new double[trainingDataset.size()][]);
+    int[] y = trainingDataset.toArray(new int[trainingDataset.size()]);
+    svm.learn(x, y);
     svm.finish();
+    svm.trainPlattScaling(x, y);
   }
 
   public class TrainingData {
