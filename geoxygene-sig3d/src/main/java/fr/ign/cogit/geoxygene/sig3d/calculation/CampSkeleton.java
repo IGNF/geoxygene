@@ -45,6 +45,30 @@ import utils.LoopL;
 public class CampSkeleton {
 
   private IPolygon p;
+  
+  /**
+   * Calcul du squelette droit, le résultat est obtenu par le getCarteTopo() Le
+   * même poids est appliqué à tous les arcs
+   * @param p
+   */
+  public CampSkeleton(IPolygon p) {
+
+    this(p, null,0);
+  }
+  
+  
+  /**
+   * Straight skelton calculation with cap parameters that defines a perpendicular distance from the block contours
+   * @param p
+   * @param cap
+   */
+  public CampSkeleton(IPolygon p, double cap) {
+	  this(p,null,cap);
+  }
+  
+  public CampSkeleton(IPolygon p, double[] angles) {
+	  this(p, angles, 0);
+  }
 
   /**
    * Calcul du squelette droit, le résultat est obtenu par le getCarteTopo() Une
@@ -54,7 +78,7 @@ public class CampSkeleton {
    *          Le nombre d'élément du tableaux doit être au moins égal au nombre
    *          de côté (intérieurs inclus du polygone)
    */
-  public CampSkeleton(IPolygon p, double[] angles) {
+  public CampSkeleton(IPolygon p, double[] angles, double cap) {
 
     this.p = p;
 
@@ -120,7 +144,7 @@ public class CampSkeleton {
       }
     }
 
-    Skeleton s = new Skeleton(input, true);
+    Skeleton s = new Skeleton(input, cap);
 
     s.skeleton();
     Output out = s.output;
@@ -128,15 +152,7 @@ public class CampSkeleton {
 
   }
 
-  /**
-   * Calcul du squelette droit, le résultat est obtenu par le getCarteTopo() Le
-   * même poids est appliqué à tous les arcs
-   * @param p
-   */
-  public CampSkeleton(IPolygon p) {
-
-    this(p, null);
-  }
+ 
 
   /**
    * Convertit la sortie de l'algorithme de squelette droit
