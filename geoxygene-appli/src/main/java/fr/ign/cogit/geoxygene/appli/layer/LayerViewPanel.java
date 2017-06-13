@@ -262,6 +262,16 @@ public abstract class LayerViewPanel extends JComponent implements Printable, Sl
         return this.viewBackground;
     }
 
+    @Override
+    public java.awt.Color getBackground() {
+    	if (this.viewBackground != null) {
+    		return this.viewBackground.getColor();
+    	}
+    	else {
+    		return super.getBackground();
+    	}
+    }
+    
     /**
      * Save the map into an image file. The file format is determined by the
      * given file extension. If there is none or if the given extension is
