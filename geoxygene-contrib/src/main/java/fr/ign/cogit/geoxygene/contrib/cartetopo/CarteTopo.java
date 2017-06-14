@@ -254,8 +254,8 @@ public class CarteTopo extends DataSet {
         fr.ign.cogit.geoxygene.contrib.cartetopo.Face.class, true));
     this.addPopulation(new Population<Groupe>(false, "Group",
         fr.ign.cogit.geoxygene.contrib.cartetopo.Groupe.class, false));
+    /*
 
-    /** créer un featuretype pour les arcs */
     FeatureType arcFeatureType = new FeatureType();
     arcFeatureType.setTypeName("Edge");
     AttributeType orientationType = new AttributeType("orient", "orientation",
@@ -271,24 +271,24 @@ public class CarteTopo extends DataSet {
     AttributeType idFinType = new AttributeType("idNoeudFin", "idNoeudFin",
         "Integer");
     arcFeatureType.addFeatureAttribute(idFinType);
-    /** création d'un schéma associé au featureType */
+ 
     arcFeatureType.setGeometryType(GM_LineString.class);
     this.getPopArcs().setFeatureType(arcFeatureType);
 
-    /** créer un featuretype pour les noeuds */
+
     FeatureType noeudFeatureType = new FeatureType();
     noeudFeatureType.setTypeName("Node");
     AttributeType distanceType = new AttributeType("distance", "distance",
         "Double");
     noeudFeatureType.addFeatureAttribute(distanceType);
     noeudFeatureType.addFeatureAttribute(idType);
-    /** création d'un schéma associé au featureType */
+  
     noeudFeatureType.setGeometryType(GM_Point.class);
     this.getPopNoeuds().setFeatureType(noeudFeatureType);
 
-    /** créer un featuretype pour les faces */
+
     FeatureType faceFeatureType = new FeatureType();
-    /** création d'un schéma associé au featureType */
+   
     faceFeatureType.setTypeName("Face");
     AttributeType infiniteType = new AttributeType("infinite", "infinite",
         "Boolean");
@@ -302,6 +302,8 @@ public class CarteTopo extends DataSet {
     faceFeatureType.addFeatureAttribute(idType);
     faceFeatureType.setGeometryType(GM_Polygon.class);
     this.getPopFaces().setFeatureType(faceFeatureType);
+    
+    */
   }
 
   // ///////////////////////////////////////////////////////////////////////////////////////////
