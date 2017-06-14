@@ -254,6 +254,8 @@ public class CarteTopo extends DataSet {
         fr.ign.cogit.geoxygene.contrib.cartetopo.Face.class, true));
     this.addPopulation(new Population<Groupe>(false, "Group",
         fr.ign.cogit.geoxygene.contrib.cartetopo.Groupe.class, false));
+    
+ 
     /*
 
     FeatureType arcFeatureType = new FeatureType();
