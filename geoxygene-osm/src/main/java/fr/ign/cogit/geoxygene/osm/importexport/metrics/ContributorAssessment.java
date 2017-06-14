@@ -21,6 +21,7 @@ import fr.ign.cogit.geoxygene.osm.schema.OsmGeometryConversion;
 
 public class ContributorAssessment {
 	public static HashMap<Long, OSMContributor> contributorSummary(List<OSMResource> myJavaObjects) throws Exception {
+		// Fills only the keys of myContributors hashmap
 		HashMap<Long, OSMContributor> myContributors = osmContributorsInit(myJavaObjects);
 		// Fills only the keys of myContributors hashmap
 		// for (OSMResource resource : myJavaObjects) {

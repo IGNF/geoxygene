@@ -22,35 +22,36 @@ import fr.ign.cogit.geoxygene.osm.importexport.postgis.LoadFromPostGIS;
 public class IntrinsicAssessment {
 	public static List<OSMResource> myJavaObjects;
 
-	public static void main(String[] args) throws IOException {
-		LoadFromPostGIS loaderNepal = new LoadFromPostGIS("localhost", "5432", "nepal", "postgres", "postgres");
-		List<Double> bboxNepal = new ArrayList<Double>();
-		bboxNepal.add(85.33630);
-		bboxNepal.add(27.69640);
-		bboxNepal.add(85.34890);
-		bboxNepal.add(27.70650);
-		List<String> timespanNepal = new ArrayList<String>();
-		timespanNepal.add("2013-01-01");
-		timespanNepal.add("2014-01-01");
-		// loaderNepal.selectWays(bboxNepal, timespanNepal);
-		// myJavaObjects = loaderNepal.myJavaObjects;
-
+	public static void main(String[] args) throws Exception {
 		List<Double> bbox = new ArrayList<Double>();
-		bbox.add(2.3312);
-		bbox.add(48.8479);
-		bbox.add(2.3644);
-		bbox.add(48.8637);
-		List<String> timespan = new ArrayList<String>();
-		timespan.add("2011-01-01");
-		timespan.add("2011-03-01");
+		// bbox.add(2.3312);
+		// bbox.add(48.8479);
+		// bbox.add(2.3644);
+		// bbox.add(48.8637);
+		// List<String> timespan = new ArrayList<String>();
+		// timespan.add("2011-01-01");
+		// timespan.add("2011-03-01");
 
 		LoadFromPostGIS loader = new LoadFromPostGIS("localhost", "5432", "paris", "postgres", "postgres");
+		bbox.add(2.3322);
+		bbox.add(48.8489);
+		bbox.add(2.3634);
+		bbox.add(48.8627);
+		// bbox.add(2.3322);
+		// bbox.add(48.8509);
+		// bbox.add(2.3614);
+		// bbox.add(48.8607);
+		List<String> timespan = new ArrayList<String>();
+		// timespan.add("2010-01-01");
+		// timespan.add("2010-01-15");
+		timespan.add("2010-01-01");
+		timespan.add("2010-02-01");
 		loader.selectNodes(bbox, timespan);
-		loader.selectWays(bbox, timespan);
+		// loader.selectWays(bbox, timespan);
 		myJavaObjects = loader.myJavaObjects;
 
-		// HashMap<Long, OSMObject> myOSMNodeObjects =
-		// nodeContributionSummary();
+		HashMap<Long, OSMObject> myOSMNodeObjects = nodeContributionSummary(myJavaObjects);
+		writeContributionSummary(myOSMNodeObjects, new File("contributionSummary_paris_20100101_20100201.csv"));
 		// HashMap<Long, OSMObject> myOSMWayObjects = wayContributionSummary();
 		// writeContributionSummary(myOSMWayObjects, new
 		// File("paris_juillet_2014_way.csv"));
@@ -58,15 +59,13 @@ public class IntrinsicAssessment {
 		// File("paris_juillet_2014_node.csv"));
 		// writeWayContributionDetails(new
 		// File("paris_juillet_2014_details_contributions_way.csv"), "OSMWay");
-		writeContributionDetails(new File("contributions_paris_janvier-mars_2013.csv"), myJavaObjects);
-		OSMResource way = null;
-		for (OSMResource resource : myJavaObjects) {
-			if (resource.getId() == 55350376)
-				if (resource.getVersion() == 2)
-					way = resource;
-		}
-		List<OSMResource> nodeComposingWay = getNodesComposingWay(myJavaObjects, way);
-		System.out.println("Nombre de nodes composant way = " + nodeComposingWay.size());
+		// writeNodeContributionDetails(new
+		// File("writeNodeContributionDetails_nodes_paris_janvier_2010.csv"));
+		// HashMap<Long, OSMContributor> myContributors =
+		// ContributorAssessment.contributorSummary(myJavaObjects);
+		// ContributorAssessment.writeContributorSummary(myContributors,
+		// new File("contributeurs_nodes_ways_paris_janvier2010_2.csv"));
+
 	}
 
 	public static void sortJavaObjects(List<OSMResource> myJavaObjects) {
@@ -99,33 +98,38 @@ public class IntrinsicAssessment {
 		return myNodeList;
 	}
 
-	public static HashMap<Long, OSMObject> wayContributionSummary() {
-		HashMap<Long, OSMObject> myOSMWayObjects = osmObjectsInit("OSMWay");
+	public static HashMap<Long, OSMObject> wayContributionSummary(List<OSMResource> myJavaObjects) {
+		System.out.println("wayContributionSummary en cours");
+		HashMap<Long, OSMObject> myOSMWayObjects = osmObjectsInit(myJavaObjects, "OSMWay");
 		Iterator<Long> objectIDs = myOSMWayObjects.keySet().iterator();
 		while (objectIDs.hasNext()) {
 			long currentID = objectIDs.next();
-			List<OSMResource> contributionList = fillcontributionList("OSMWay", currentID, myOSMWayObjects);
+			List<OSMResource> contributionList = fillcontributionList("OSMWay", currentID, myJavaObjects);
 			intrinsicIndicators(currentID, contributionList, myOSMWayObjects);
-			List<String> contributorList = contributorList("OSMWay", currentID);
+			List<String> contributorList = contributorList("OSMWay", currentID, myJavaObjects);
 			myOSMWayObjects.get(currentID).setNbContributors(contributorList.size());
 		}
+		System.out.println("Taille de myOSMNodeObjects : " + myOSMWayObjects.size());
 		return myOSMWayObjects;
 	}
 
-	public static HashMap<Long, OSMObject> nodeContributionSummary() {
-		HashMap<Long, OSMObject> myOSMNodeObjects = osmObjectsInit("OSMNode");
+	public static HashMap<Long, OSMObject> nodeContributionSummary(List<OSMResource> myJavaObjects) {
+		System.out.println("nodeContributionSummary en cours");
+		HashMap<Long, OSMObject> myOSMNodeObjects = osmObjectsInit(myJavaObjects, "OSMNode");
 		Iterator<Long> objectIDs = myOSMNodeObjects.keySet().iterator();
 		while (objectIDs.hasNext()) {
 			long currentID = objectIDs.next();
-			List<OSMResource> contributionList = fillcontributionList("OSMNode", currentID, myOSMNodeObjects);
+			List<OSMResource> contributionList = fillcontributionList("OSMNode", currentID, myJavaObjects);
 			intrinsicIndicators(currentID, contributionList, myOSMNodeObjects);
-			List<String> contributorList = contributorList("OSMNode", currentID);
+			List<String> contributorList = contributorList("OSMNode", currentID, myJavaObjects);
 			myOSMNodeObjects.get(currentID).setNbContributors(contributorList.size());
 		}
+		System.out.println("Taille de myOSMNodeObjects : " + myOSMNodeObjects.size());
 		return myOSMNodeObjects;
 	}
 
-	public static List<String> contributorList(String OSMResourceType, long currentID) {
+	public static List<String> contributorList(String OSMResourceType, long currentID,
+			List<OSMResource> myJavaObjects) {
 		List<String> contributorList = new ArrayList<String>();
 		Iterator<OSMResource> it = myJavaObjects.iterator();
 		while (it.hasNext()) {
@@ -280,15 +284,17 @@ public class IntrinsicAssessment {
 	}
 
 	public static List<OSMResource> fillcontributionList(String OSMResourceType, Long currentID,
-			HashMap<Long, OSMObject> myOSMNodeObjects) {
+			List<OSMResource> myJavaObjects) {
 		// Select all the java objects that contain currentID
 		List<OSMResource> contributionList = new ArrayList<OSMResource>();
 		Iterator<OSMResource> it = myJavaObjects.iterator();
 		while (it.hasNext()) {
 			OSMResource contribution = it.next();
 			if (contribution.getGeom().getClass().getSimpleName().equals(OSMResourceType)) {
-				if (currentID == contribution.getId()) {
+				boolean egalite = currentID.equals(contribution.getId());
+				if (egalite) {
 					contributionList.add(contribution);
+
 				}
 			}
 		}
@@ -303,14 +309,15 @@ public class IntrinsicAssessment {
 	 * @param OsmResourceType
 	 * @return myOSMObjects
 	 **/
-	public static HashMap<Long, OSMObject> osmObjectsInit(String OsmResourceType) {
+	public static HashMap<Long, OSMObject> osmObjectsInit(List<OSMResource> myJavaObjects, String OsmResourceType) {
 		// Sorting OSMResource list in the chronological order
-		Collections.sort(myJavaObjects, new Comparator<OSMResource>() {
-			@Override
-			public int compare(OSMResource r1, OSMResource r2) {
-				return r1.getDate().compareTo(r2.getDate());
-			}
-		});
+		// Collections.sort(myJavaObjects, new Comparator<OSMResource>() {
+		// @Override
+		// public int compare(OSMResource r1, OSMResource r2) {
+		// return r1.getDate().compareTo(r2.getDate());
+		// }
+		// });
+		sortJavaObjects(myJavaObjects);
 		HashMap<Long, OSMObject> myOSMObjects = new HashMap<Long, OSMObject>();
 		/** Parsing myJavaObjects to create indicators inside of OSMObjects **/
 		Iterator<OSMResource> it = myJavaObjects.iterator();
@@ -360,7 +367,7 @@ public class IntrinsicAssessment {
 		writer.close();
 	}
 
-	public static void writeNodeContributionDetails(File file, String OSMResourceType) throws IOException {
+	public static void writeNodeContributionDetails(File file) throws IOException {
 		Collections.sort(myJavaObjects, new Comparator<OSMResource>() {
 			@Override
 			public int compare(OSMResource r1, OSMResource r2) {
@@ -385,7 +392,7 @@ public class IntrinsicAssessment {
 		writer.writeNext(line);
 
 		for (OSMResource resource : myJavaObjects) {
-			if (resource.getGeom().getClass().getSimpleName().equals(OSMResourceType)) {
+			if (resource.getGeom().getClass().getSimpleName().equals("OSMNode")) {
 				OSMNode node = (OSMNode) resource.getGeom();
 				line = new String[10];
 				line[0] = Long.toString(resource.getId());
@@ -441,7 +448,7 @@ public class IntrinsicAssessment {
 		writer.close();
 	}
 
-	public static void writeWayContributionDetails(File file, String OSMResourceType) throws IOException {
+	public static void writeWayContributionDetails(File file) throws IOException {
 		Collections.sort(myJavaObjects, new Comparator<OSMResource>() {
 			@Override
 			public int compare(OSMResource r1, OSMResource r2) {
@@ -465,7 +472,7 @@ public class IntrinsicAssessment {
 		writer.writeNext(line);
 
 		for (OSMResource resource : myJavaObjects) {
-			if (resource.getGeom().getClass().getSimpleName().equals(OSMResourceType)) {
+			if (resource.getGeom().getClass().getSimpleName().equals("OSMWay")) {
 				// OSMNode node = (OSMNode) resource.getGeom();
 				OSMWay way = (OSMWay) resource.getGeom();
 				line = new String[9];
