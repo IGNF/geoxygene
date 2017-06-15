@@ -7,6 +7,8 @@ import java.util.Map;
 
 import javax.vecmath.Point3d;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
@@ -43,452 +45,467 @@ import utils.LoopL;
  * 
  */
 public class CampSkeleton {
+	
+	
+	private static Logger logger = Logger.getLogger(CampSkeleton.class);
 
-  private IPolygon p;
-  
-  /**
-   * Calcul du squelette droit, le résultat est obtenu par le getCarteTopo() Le
-   * même poids est appliqué à tous les arcs
-   * @param p
-   */
-  public CampSkeleton(IPolygon p) {
+	private IPolygon p;
 
-    this(p, null,0);
-  }
-  
-  
-  /**
-   * Straight skelton calculation with cap parameters that defines a perpendicular distance from the block contours
-   * @param p
-   * @param cap
-   */
-  public CampSkeleton(IPolygon p, double cap) {
-	  this(p,null,cap);
-  }
-  
-  public CampSkeleton(IPolygon p, double[] angles) {
-	  this(p, angles, 0);
-  }
+	/**
+	 * Calcul du squelette droit, le résultat est obtenu par le getCarteTopo()
+	 * Le même poids est appliqué à tous les arcs
+	 * 
+	 * @param p
+	 */
+	public CampSkeleton(IPolygon p) {
 
-  /**
-   * Calcul du squelette droit, le résultat est obtenu par le getCarteTopo() Une
-   * pondération est appliquée
-   * @param p
-   * @param angles : la pondération appliquée pour le calcul de squelette droit.
-   *          Le nombre d'élément du tableaux doit être au moins égal au nombre
-   *          de côté (intérieurs inclus du polygone)
-   */
-  public CampSkeleton(IPolygon p, double[] angles, double cap) {
+		this(p, null, 0);
+	}
 
-    this.p = p;
+	/**
+	 * Straight skelton calculation with cap parameters that defines a
+	 * perpendicular distance from the block contours
+	 * 
+	 * @param p
+	 * @param cap
+	 */
+	public CampSkeleton(IPolygon p, double cap) {
+		this(p, null, cap);
+	}
 
-    int countAngle = 0;
+	public CampSkeleton(IPolygon p, double[] angles) {
+		this(p, angles, 0);
+	}
 
-    IDirectPositionList dpl = p.coord();
+	/**
+	 * Calcul du squelette droit, le résultat est obtenu par le getCarteTopo()
+	 * Une pondération est appliquée
+	 * 
+	 * @param p
+	 * @param angles
+	 *            : la pondération appliquée pour le calcul de squelette droit.
+	 *            Le nombre d'élément du tableaux doit être au moins égal au
+	 *            nombre de côté (intérieurs inclus du polygone)
+	 */
+	public CampSkeleton(IPolygon p, double[] angles, double cap) {
+
+		this.p = p;
+
+		int countAngle = 0;
 
-    for (IDirectPosition dp : dpl) {
-      dp.setZ(0);
-    }
+		IDirectPositionList dpl = p.coord();
 
-    PlanEquation pe = new ApproximatedPlanEquation(p);
+		for (IDirectPosition dp : dpl) {
+			dp.setZ(0);
+		}
 
-    if (pe.getNormale().getZ() < 0) {
+		PlanEquation pe = new ApproximatedPlanEquation(p);
 
-      p = (IPolygon) p.reverse();
+		if (pe.getNormale().getZ() < 0) {
 
-    }
+			p = (IPolygon) p.reverse();
 
-    Machine directionMachine = new Machine();
+		}
 
-    LoopL<Edge> input = new LoopL<Edge>();
+		Machine directionMachine = new Machine();
 
-    IRing rExt = p.getExterior();
+		LoopL<Edge> input = new LoopL<Edge>();
 
-    Loop<Edge> loop = new Loop<Edge>();
+		IRing rExt = p.getExterior();
 
-    List<Edge> lEExt = fromDPLToEdges(rExt.coord());
+		Loop<Edge> loop = new Loop<Edge>();
 
-    for (Edge e : lEExt) {
+		List<Edge> lEExt = fromDPLToEdges(rExt.coord());
 
-      loop.append(e);
-    }
+		for (Edge e : lEExt) {
 
-    for (Edge e : lEExt) {
-      if (angles == null) {
-        e.machine = directionMachine;
-      } else {
-        e.machine = new Machine(angles[countAngle++]);
-      }
+			loop.append(e);
+		}
 
-    }
+		for (Edge e : lEExt) {
+			if (angles == null) {
+				e.machine = directionMachine;
+			} else {
+				e.machine = new Machine(angles[countAngle++]);
+			}
 
-    input.add(loop);
+		}
 
-    for (IRing rInt : p.getInterior()) {
+		input.add(loop);
 
-      Loop<Edge> loopIn = new Loop<Edge>();
-      input.add(loopIn);
+		for (IRing rInt : p.getInterior()) {
 
-      List<Edge> lInt = fromDPLToEdges(rInt.coord());
+			Loop<Edge> loopIn = new Loop<Edge>();
+			input.add(loopIn);
 
-      for (Edge e : lInt) {
-        loop.append(e);
-      }
+			List<Edge> lInt = fromDPLToEdges(rInt.coord());
 
-      for (Edge e : lInt) {
-        if (angles == null) {
-          e.machine = directionMachine;
-        } else {
-          e.machine = new Machine(angles[countAngle++]);
-        }
-      }
-    }
+			for (Edge e : lInt) {
+				loop.append(e);
+			}
 
-    Skeleton s = new Skeleton(input, cap);
+			for (Edge e : lInt) {
+				if (angles == null) {
+					e.machine = directionMachine;
+				} else {
+					e.machine = new Machine(angles[countAngle++]);
+				}
+			}
+		}
 
-    s.skeleton();
-    Output out = s.output;
-    this.ct = convertOutPut(out);
+		Skeleton s = new Skeleton(input, cap);
 
-  }
+		s.skeleton();
+		Output out = s.output;
+		this.ct = convertOutPut(out);
 
- 
+	}
 
-  /**
-   * Convertit la sortie de l'algorithme de squelette droit
-   * @TODO : il subsite un problème, parfois, 2 arrêtes de 2 faces sont
-   *       équivalentes à 1 arrête d'une autre face.
-   * @param out
-   * @return
-   */
-  private static CarteTopo convertOutPut(Output out) {
-    // On créer la carte Toppo
-    CarteTopo cT = new CarteTopo("squelette");
+	/**
+	 * Convertit la sortie de l'algorithme de squelette droit
+	 * 
+	 * @TODO : il subsite un problème, parfois, 2 arrêtes de 2 faces sont
+	 *       équivalentes à 1 arrête d'une autre face.
+	 * @param out
+	 * @return
+	 */
+	private static CarteTopo convertOutPut(Output out) {
+		// On créer la carte Toppo
+		CarteTopo cT = new CarteTopo("squelette");
 
-    // On récupère les faces
-    Map<Corner, Face> faces = out.faces;
-    Collection<Face> collFaces = faces.values();
+		// On récupère les faces
+		Map<Corner, Face> faces = out.faces;
 
-    // Liste des arrêtes rencontrées
-    List<SharedEdge> lSharedEdges = new ArrayList<SharedEdge>();
-    List<Arc> lArcs = new ArrayList<Arc>();
+		List<Face> collFaces = new ArrayList<>();
+		collFaces.addAll(faces.values());
+		
+		bouclei: for(int i=0;i < collFaces.size(); i++){
+			for(int j=i+1;j < collFaces.size(); j++){
+				if(collFaces.get(i).equals(collFaces.get(j))){
+					collFaces.remove(i);
+					i--;
+					logger.warn("Duplicate faces found : auto-remove applied : " + CampSkeleton.class);
+					continue bouclei;
+				}
+				
+			}
+		}
 
-    // Liste des noeuds rencontres
 
-    List<Noeud> lNoeuds = new ArrayList<Noeud>();
-    List<Point3d> lPoints = new ArrayList<Point3d>();
 
-    // Pour chaque face du squelette
-    for (Face f : collFaces) {
+		// Liste des arrêtes rencontrées
+		List<SharedEdge> lSharedEdges = new ArrayList<SharedEdge>();
+		List<Arc> lArcs = new ArrayList<Arc>();
 
-      // On créer une face de la carte topo
-      fr.ign.cogit.geoxygene.contrib.cartetopo.Face fTopo = new fr.ign.cogit.geoxygene.contrib.cartetopo.Face();
+		// Liste des noeuds rencontres
 
-      // On génère la géométrie de la face
-      LoopL<Point3d> loopLPoint = f.points;
+		List<Noeud> lNoeuds = new ArrayList<Noeud>();
+		List<Point3d> lPoints = new ArrayList<Point3d>();
 
-      // On récupère la géométrie du polygone
-      IPolygon poly = new GM_Polygon();
+		// Pour chaque face du squelette
+		for (Face f : collFaces) {
 
-      for (Loop<Point3d> lP : loopLPoint) {
+			// On créer une face de la carte topo
+			fr.ign.cogit.geoxygene.contrib.cartetopo.Face fTopo = new fr.ign.cogit.geoxygene.contrib.cartetopo.Face();
 
-        IDirectPositionList dpl = convertLoopCorner(lP);
+			// On génère la géométrie de la face
+			LoopL<Point3d> loopLPoint = f.points;
+
+			// On récupère la géométrie du polygone
+			IPolygon poly = new GM_Polygon();
 
-        // Il ne ferme pas ses faces
-        dpl.add(dpl.get(0));
+			for (Loop<Point3d> lP : loopLPoint) {
 
-        if (poly.getExterior() == null) {
+				IDirectPositionList dpl = convertLoopCorner(lP);
 
-          poly.setExterior(new GM_Ring(new GM_LineString(dpl)));
+				// Il ne ferme pas ses faces
+				dpl.add(dpl.get(0));
 
-        } else {
-          poly.addInterior(new GM_Ring(new GM_LineString(dpl)));
-        }
+				if (poly.getExterior() == null) {
 
-      }
+					poly.setExterior(new GM_Ring(new GM_LineString(dpl)));
 
-      // On affecte la géomégtrie
-      fTopo.setGeometrie(poly);
+				} else {
+					poly.addInterior(new GM_Ring(new GM_LineString(dpl)));
+				}
 
-      // On récupère les arrête de la face
+			}
 
-      LoopL<SharedEdge> lSE = f.edges;
-      // On parcourt les arrêtes
-      int nbSE = lSE.size();
-      for (int i = 0; i < nbSE; i++) {
+			// On affecte la géomégtrie
+			fTopo.setGeometrie(poly);
 
-        for (Loop<SharedEdge> loopSE : lSE) {
+			// On récupère les arrête de la face
 
-          for (SharedEdge se : loopSE) {
+			LoopL<SharedEdge> lSE = f.edges;
+			// On parcourt les arrêtes
+			int nbSE = lSE.size();
+			for (int i = 0; i < nbSE; i++) {
 
-            // Est ce une arrête déjà rencontrée ?
-            int indexArc = lSharedEdges.indexOf(se);
+				for (Loop<SharedEdge> loopSE : lSE) {
 
-            if (indexArc == -1) {
-              // Non : on doit générer les informations add hoc
+					for (SharedEdge se : loopSE) {
 
-              // On la rajoute à la liste des arrêtes existants
-              lSharedEdges.add(se);
+						// Est ce une arrête déjà rencontrée ?
+						int indexArc = lSharedEdges.indexOf(se);
 
-              // On récupère les sommets initiaux et finaux
-              Point3d p = getStart(se, f);
-              Point3d p2 = getEnd(se, f);
-              
-              if(p == null || p2 == null){
-            	  continue;
-              }
+						if (indexArc == -1) {
+							// Non : on doit générer les informations add hoc
 
-              // S'agit il de sommets déjà rencontrés ?
-              int indexP1 = lPoints.indexOf(p);
-              int indexP2 = lPoints.indexOf(p2);
+							// On récupère les sommets initiaux et finaux
+							Point3d p = getStart(se, f);
+							Point3d p2 = getEnd(se, f);
 
-              // Non ! on génère la sommet
-              if (indexP1 == -1) {
-                // On l'ajoute à la liste des sommets rencontrés
-                lPoints.add(p);
-                // On met à jour le sommet considéré
-                indexP1 = lPoints.size() - 1;
-                // On génère un noeud
-                Noeud n = new Noeud(fromCornerToPosition(p));
-                // On l'ajoute à la liste des noeuds et à la carte topo
-                lNoeuds.add(n);
-                cT.addNoeud(n);
+							if (p == null || p2 == null) {
+								continue;
+							}
+							// On la rajoute à la liste des arrêtes existants
+							lSharedEdges.add(se);
 
-              }
+							// S'agit il de sommets déjà rencontrés ?
+							int indexP1 = lPoints.indexOf(p);
+							int indexP2 = lPoints.indexOf(p2);
 
-              // idem avec le second sommet
-              if (indexP2 == -1) {
+							// Non ! on génère la sommet
+							if (indexP1 == -1) {
+								// On l'ajoute à la liste des sommets rencontrés
+								lPoints.add(p);
+								// On met à jour le sommet considéré
+								indexP1 = lPoints.size() - 1;
+								// On génère un noeud
+								Noeud n = new Noeud(fromCornerToPosition(p));
+								// On l'ajoute à la liste des noeuds et à la
+								// carte topo
+								lNoeuds.add(n);
+								cT.addNoeud(n);
 
-                lPoints.add(p2);
-                indexP2 = lPoints.size() - 1;
-                Noeud n = new Noeud(fromCornerToPosition(p2));
-                lNoeuds.add(n);
-                cT.addNoeud(n);
+							}
 
-              }
+							// idem avec le second sommet
+							if (indexP2 == -1) {
 
-              // On génère l'arc
-              Arc a = new Arc();
-              a.setNoeudIni(lNoeuds.get(indexP1));
-              a.setNoeudFin(lNoeuds.get(indexP2));
+								lPoints.add(p2);
+								indexP2 = lPoints.size() - 1;
+								Noeud n = new Noeud(fromCornerToPosition(p2));
+								lNoeuds.add(n);
+								cT.addNoeud(n);
 
-              // On génère sa géométrie
-              IDirectPositionList dpl = new DirectPositionList();
-              dpl.add(lNoeuds.get(indexP1).getCoord());
-              dpl.add(lNoeuds.get(indexP2).getCoord());
+							}
 
-              a.setGeometrie(new GM_LineString(dpl));
+							// On génère l'arc
+							Arc a = new Arc();
+							a.setNoeudIni(lNoeuds.get(indexP1));
+							a.setNoeudFin(lNoeuds.get(indexP2));
 
-              // On ajoute l'arc
-              lArcs.add(a);
-              cT.addArc(a);
-              indexArc = lSharedEdges.size() - 1;
-            }
+							// On génère sa géométrie
+							IDirectPositionList dpl = new DirectPositionList();
+							dpl.add(lNoeuds.get(indexP1).getCoord());
+							dpl.add(lNoeuds.get(indexP2).getCoord());
 
-            // On affecte le côté d'où se trouve la face
-            // Normalement la carte topo met ça à jour du côté de la face
-            Arc a = lArcs.get(indexArc);
+							a.setGeometrie(new GM_LineString(dpl));
 
-            boolean isOnRight = (f.equals(se.right));
+							// On ajoute l'arc
+							lArcs.add(a);
+							cT.addArc(a);
+							indexArc = lSharedEdges.size() - 1;
+						}
+						// On affecte le côté d'où se trouve la face
+						// Normalement la carte topo met ça à jour du côté de la
+						// face
+						Arc a = lArcs.get(indexArc);
 
-            if (isOnRight) {
-              a.setFaceDroite(fTopo);
-            } else {
+						boolean isOnRight = (f.equals(se.right));
 
-              a.setFaceGauche(fTopo);
-            }
+						if (isOnRight) {
+							a.setFaceDroite(fTopo);
+						} else {
 
-          }
-        }
+							a.setFaceGauche(fTopo);
+						}
 
-      }
-      // On ajoute la faces à la carte topo
-      cT.addFace(fTopo);
+					}
+				}
 
-    }
+			}
+			// On ajoute la faces à la carte topo
+			cT.addFace(fTopo);
 
-    cT.rendPlanaire(0.2);
+		}
 
-    return cT;
+		cT.rendPlanaire(0.2);
 
-  }
+		return cT;
 
-  
-  public static Point3d getStart(SharedEdge se, Face ref )
-  {
-      if (ref == se.left)
-          return se.getStart(ref);
-      else if (ref == se.right)
-          return se.getStart(ref);
-    
-      return null;
-  }
+	}
 
-  public static Point3d getEnd (SharedEdge se, Face ref)
-  {
-      if (ref == se.left)
-          return se.getEnd(ref);
-      else if (ref == se.right)
-          return se.getEnd(ref);
-      
-      return null;
-  }
-  /*
-   * Conversion Geoxygene => format de la lib
-   */
+	public static Point3d getStart(SharedEdge se, Face ref) {
+		if (ref == se.left)
+			return se.getStart(ref);
+		else if (ref == se.right)
+			return se.getStart(ref);
 
-  /**
-   * Convertit une liste de sommets formant un cycle en arrêtes
-   * @param dpl
-   * @return
-   */
-  public static List<Edge> fromDPLToEdges(IDirectPositionList dpl) {
+		return null;
+	}
 
-    int nbPoints = dpl.size();
-    List<Edge> lEOut = new ArrayList<Edge>();
-    List<Corner> lC = new ArrayList<Corner>();
+	public static Point3d getEnd(SharedEdge se, Face ref) {
+		if (ref == se.left)
+			return se.getEnd(ref);
+		else if (ref == se.right)
+			return se.getEnd(ref);
 
-    for (int i = 0; i < nbPoints - 1; i++) {
+		return null;
+	}
+	/*
+	 * Conversion Geoxygene => format de la lib
+	 */
 
-      lC.add(fromPositionToCorner(dpl.get(i)));
+	/**
+	 * Convertit une liste de sommets formant un cycle en arrêtes
+	 * 
+	 * @param dpl
+	 * @return
+	 */
+	public static List<Edge> fromDPLToEdges(IDirectPositionList dpl) {
 
-    }
+		int nbPoints = dpl.size();
+		List<Edge> lEOut = new ArrayList<Edge>();
+		List<Corner> lC = new ArrayList<Corner>();
 
-    lC.add(lC.get(0));
+		for (int i = 0; i < nbPoints - 1; i++) {
 
-    for (int i = 0; i < nbPoints - 1; i++) {
-      lEOut.add(new Edge(lC.get(i), lC.get(i + 1)));
+			lC.add(fromPositionToCorner(dpl.get(i)));
 
-    }
+		}
 
-    return lEOut;
-  }
+		lC.add(lC.get(0));
 
-  /**
-   * Convertit un positon en corner
-   * @param dp
-   * @return
-   */
-  private static Corner fromPositionToCorner(IDirectPosition dp) {
+		for (int i = 0; i < nbPoints - 1; i++) {
+			lEOut.add(new Edge(lC.get(i), lC.get(i + 1)));
 
-    if (dp.getDimension() == 2) {
-      return new Corner(dp.getX(), dp.getY(), 0);
-    }
+		}
 
-    return new Corner(dp.getX(), dp.getY(), dp.getZ());
-  }
+		return lEOut;
+	}
 
-  /*
-   * Conversion format de la lib => Geoxygene
-   */
+	/**
+	 * Convertit un positon en corner
+	 * 
+	 * @param dp
+	 * @return
+	 */
+	private static Corner fromPositionToCorner(IDirectPosition dp) {
 
-  /**
-   * 
-   */
-  private static IDirectPositionList convertLoopCorner(Loop<Point3d> lC) {
+		if (dp.getDimension() == 2) {
+			return new Corner(dp.getX(), dp.getY(), 0);
+		}
 
-    IDirectPositionList dpl = new DirectPositionList();
+		return new Corner(dp.getX(), dp.getY(), dp.getZ());
+	}
 
-    for (Point3d c : lC) {
-      dpl.add(fromCornerToPosition(c));
-    }
+	/*
+	 * Conversion format de la lib => Geoxygene
+	 */
 
-    return dpl;
-  }
+	/**
+	 * 
+	 */
+	private static IDirectPositionList convertLoopCorner(Loop<Point3d> lC) {
 
-  private static IDirectPosition fromCornerToPosition(Point3d c) {
+		IDirectPositionList dpl = new DirectPositionList();
 
-    return new DirectPosition(c.x, c.y, c.z);
+		for (Point3d c : lC) {
+			dpl.add(fromCornerToPosition(c));
+		}
 
-  }
+		return dpl;
+	}
 
-  private CarteTopo ct = null;
+	private static IDirectPosition fromCornerToPosition(Point3d c) {
 
-  /**
-   * 
-   * @return perment d'obtenir la carte topo générée
-   */
-  public CarteTopo getCarteTopo() {
-    return ct;
-  }
+		return new DirectPosition(c.x, c.y, c.z);
 
-  /**
-   * 
-   * @return extrait les arcs extérieurs du polygone
-   */
-  public List<Arc> getExteriorArcs() {
+	}
 
-    List<Arc> lArcsOut = new ArrayList<Arc>();
+	private CarteTopo ct = null;
 
-    for (Arc a : ct.getPopArcs()) {
-      if (a.getFaceDroite() == null && a.getFaceGauche() != null) {
+	/**
+	 * 
+	 * @return perment d'obtenir la carte topo générée
+	 */
+	public CarteTopo getCarteTopo() {
+		return ct;
+	}
 
-        lArcsOut.add(a);
-        continue;
-      }
+	/**
+	 * 
+	 * @return extrait les arcs extérieurs du polygone
+	 */
+	public List<Arc> getExteriorArcs() {
 
-      if (a.getFaceDroite() != null && a.getFaceGauche() == null) {
+		List<Arc> lArcsOut = new ArrayList<Arc>();
 
-        lArcsOut.add(a);
-        continue;
-      }
+		for (Arc a : ct.getPopArcs()) {
+			if (a.getFaceDroite() == null && a.getFaceGauche() != null) {
 
-    }
+				lArcsOut.add(a);
+				continue;
+			}
 
-    return lArcsOut;
+			if (a.getFaceDroite() != null && a.getFaceGauche() == null) {
 
-  }
+				lArcsOut.add(a);
+				continue;
+			}
 
-  /**
-   * 
-   * @return extrait les arcs générés lors du calcul du squelette droit
-   */
-  public List<Arc> getInteriorArcs() {
+		}
 
-    List<Arc> lArcsOut = new ArrayList<Arc>();
+		return lArcsOut;
 
-    for (Arc a : ct.getPopArcs()) {
+	}
 
-      if (a.getFaceDroite() != null && a.getFaceGauche() != null) {
+	/**
+	 * 
+	 * @return extrait les arcs générés lors du calcul du squelette droit
+	 */
+	public List<Arc> getInteriorArcs() {
 
-        lArcsOut.add(a);
-      }
+		List<Arc> lArcsOut = new ArrayList<Arc>();
 
-    }
+		for (Arc a : ct.getPopArcs()) {
 
-    return lArcsOut;
+			if (a.getFaceDroite() != null && a.getFaceGauche() != null) {
 
-  }
+				lArcsOut.add(a);
+			}
 
-  /**
-   * 
-   * @return extrait les arcs générés ne touchant pas la frontière du polygone
-   */
-  public List<Arc> getIncludedArcs() {
+		}
 
-    List<Arc> lArcsOut = new ArrayList<Arc>();
+		return lArcsOut;
 
-    IGeometry geom = p.buffer(-0.5);
-    for (Arc a : ct.getPopArcs()) {
+	}
 
-      
+	/**
+	 * 
+	 * @return extrait les arcs générés ne touchant pas la frontière du polygone
+	 */
+	public List<Arc> getIncludedArcs() {
 
-        if(geom.contains(a.getGeometrie())  ){
-          
-            lArcsOut.add(a);
-          
-          
-        }
-      
-      
-      
+		List<Arc> lArcsOut = new ArrayList<Arc>();
 
-    }
+		IGeometry geom = p.buffer(-0.5);
+		for (Arc a : ct.getPopArcs()) {
 
-    //
+			if (geom.contains(a.getGeometrie())) {
 
-    return lArcsOut;
+				lArcsOut.add(a);
 
-  }
+			}
+
+		}
+
+		//
+
+		return lArcsOut;
+
+	}
 
 }
