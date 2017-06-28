@@ -17,13 +17,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import straightskeleton.Corner;
-import straightskeleton.Edge;
-import straightskeleton.Machine;
-import straightskeleton.Output.SharedEdge;
-import straightskeleton.Skeleton;
-import utils.Loop;
-import utils.LoopL;
+import org.twak.camp.Corner;
+import org.twak.camp.Edge;
+import org.twak.camp.Machine;
+import org.twak.camp.Output.SharedEdge;
+import org.twak.camp.Skeleton;
+import org.twak.utils.collections.Loop;
+import org.twak.utils.collections.LoopL;
+
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineSegment;
