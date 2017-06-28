@@ -1,13 +1,21 @@
 package fr.ign.cogit.geoxygene.sig3d.calculation;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import javax.vecmath.Point3d;
 
 import org.apache.log4j.Logger;
+import org.twak.camp.Corner;
+import org.twak.camp.Edge;
+import org.twak.camp.Machine;
+import org.twak.camp.Output;
+import org.twak.camp.Output.Face;
+import org.twak.camp.Output.SharedEdge;
+import org.twak.camp.Skeleton;
+import org.twak.utils.collections.Loop;
+import org.twak.utils.collections.LoopL;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
@@ -24,15 +32,6 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
-import straightskeleton.Corner;
-import straightskeleton.Edge;
-import straightskeleton.Machine;
-import straightskeleton.Output;
-import straightskeleton.Output.Face;
-import straightskeleton.Output.SharedEdge;
-import straightskeleton.Skeleton;
-import utils.Loop;
-import utils.LoopL;
 
 /**
  * Squelette droit pondéré calculé d'après la librairie campskeleton.
@@ -45,8 +44,7 @@ import utils.LoopL;
  * 
  */
 public class CampSkeleton {
-	
-	
+
 	private static Logger logger = Logger.getLogger(CampSkeleton.class);
 
 	private IPolygon p;
@@ -178,20 +176,16 @@ public class CampSkeleton {
 
 		List<Face> collFaces = new ArrayList<>();
 		collFaces.addAll(faces.values());
-		
-		bouclei: for(int i=0;i < collFaces.size(); i++){
-			for(int j=i+1;j < collFaces.size(); j++){
-				if(collFaces.get(i).equals(collFaces.get(j))){
-					collFaces.remove(i);
-					i--;
-					logger.warn("Duplicate faces found : auto-remove applied : " + CampSkeleton.class);
-					continue bouclei;
-				}
-				
-			}
-		}
 
-
+		/*
+		 * bouclei: for(int i=0;i < collFaces.size(); i++){ for(int j=i+1;j <
+		 * collFaces.size(); j++){
+		 * if(collFaces.get(i).equals(collFaces.get(j))){ collFaces.remove(i);
+		 * i--; logger.warn("Duplicate faces found : auto-remove applied : " +
+		 * CampSkeleton.class); continue bouclei; }
+		 * 
+		 * } }
+		 */
 
 		// Liste des arrêtes rencontrées
 		List<SharedEdge> lSharedEdges = new ArrayList<SharedEdge>();
@@ -237,8 +231,10 @@ public class CampSkeleton {
 			// On récupère les arrête de la face
 
 			LoopL<SharedEdge> lSE = f.edges;
+
 			// On parcourt les arrêtes
 			int nbSE = lSE.size();
+
 			for (int i = 0; i < nbSE; i++) {
 
 				for (Loop<SharedEdge> loopSE : lSE) {
@@ -292,6 +288,7 @@ public class CampSkeleton {
 							}
 
 							// On génère l'arc
+
 							Arc a = new Arc();
 							a.setNoeudIni(lNoeuds.get(indexP1));
 							a.setNoeudFin(lNoeuds.get(indexP2));
@@ -314,12 +311,24 @@ public class CampSkeleton {
 						Arc a = lArcs.get(indexArc);
 
 						boolean isOnRight = (f.equals(se.right));
+						boolean isOnLeft = (f.equals(se.left));
 
 						if (isOnRight) {
 							a.setFaceDroite(fTopo);
-						} else {
+						} else if (isOnLeft) {
 
 							a.setFaceGauche(fTopo);
+						} else {
+							logger.warn("QUICK FIX APLIED : face is neither at the right or the left of a polygon");
+
+							if (se.right == null) {
+								a.setFaceDroite(fTopo);
+							} else if (se.left == null) {
+								a.setFaceGauche(fTopo);
+							} else {
+								logger.error("Null both side");
+							}
+
 						}
 
 					}
@@ -331,28 +340,22 @@ public class CampSkeleton {
 
 		}
 
-		cT.rendPlanaire(0.2);
+		cT.fusionNoeuds(0.2);
+
+		cT.rendPlanaire(0.5);
 
 		return cT;
 
 	}
 
 	public static Point3d getStart(SharedEdge se, Face ref) {
-		if (ref == se.left)
-			return se.getStart(ref);
-		else if (ref == se.right)
-			return se.getStart(ref);
 
-		return null;
+		return se.start;
 	}
 
 	public static Point3d getEnd(SharedEdge se, Face ref) {
-		if (ref == se.left)
-			return se.getEnd(ref);
-		else if (ref == se.right)
-			return se.getEnd(ref);
 
-		return null;
+		return se.end;
 	}
 	/*
 	 * Conversion Geoxygene => format de la lib
@@ -376,12 +379,15 @@ public class CampSkeleton {
 
 		}
 
-		lC.add(lC.get(0));
+		// lC.add(lC.get(0));
 
-		for (int i = 0; i < nbPoints - 1; i++) {
+		for (int i = 0; i < nbPoints - 2; i++) {
+
 			lEOut.add(new Edge(lC.get(i), lC.get(i + 1)));
 
 		}
+
+		lEOut.add(new Edge(lC.get(nbPoints - 2), lC.get(0)));
 
 		return lEOut;
 	}
