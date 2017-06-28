@@ -808,6 +808,8 @@ public class StraightSkeletonParcelDecomposition {
 		// 3 group of edges : interior/exterior/side
 		List<Strip> listOfLists = fixingDiagonal(stripFace, cs.getExteriorArcs());
 
+		featCollOut.add(new DefaultFeature());
+		/*
 		if (DEBUG) {
 			logger.info("------Saving for debug ...-----");
 			IFeatureCollection<IFeature> featDebug = new FT_FeatureCollection<>();
@@ -819,7 +821,7 @@ public class StraightSkeletonParcelDecomposition {
 			debugExport(featDebug, "stepanotation5");
 		}
 
-		featCollOut = generateParcel(listOfLists, minWidth, maxWidth, noiseParameter, rng);
+		featCollOut = generateParcel(listOfLists, minWidth, maxWidth, noiseParameter, rng);*/
 
 		return featCollOut;
 	}
@@ -1012,7 +1014,7 @@ public class StraightSkeletonParcelDecomposition {
 	/**
 	 * Make a fast clean by removing small strips and affect them according to
 	 * most important adjacent road
-	 * 
+	 * @TODO
 	 * @param initStripping
 	 * @param minimalArea
 	 * @return
@@ -1096,6 +1098,9 @@ public class StraightSkeletonParcelDecomposition {
 		List<ILineString> lInteriorLineString = new ArrayList<>();
 
 		List<ILineString> lSideIni = new ArrayList<>();
+		
+		List<Strip> lStrip = new  ArrayList<>();
+		lStrip.add(null);
 
 
 		// Determining interior and exterior linestring for each limit
@@ -1242,7 +1247,7 @@ public class StraightSkeletonParcelDecomposition {
 		outArcs.add(lSideIni);
 
 		
-		return outArcs;
+		return lStrip;
 
 	}
 
