@@ -53,10 +53,11 @@ public class LoadFromPostGIS {
 		bbox.add(48.8627);
 
 		List<String> timespan = new ArrayList<String>();
-		timespan.add("2011-01-01");
+		timespan.add("2014-01-01");
 		timespan.add("2015-01-01");
-		loader.selectNodes(bbox, timespan);
-		;
+		// loader.selectNodes(bbox, timespan);
+		loader.selectWaysInit(bbox, "2014-01-01");
+
 	}
 
 	public LoadFromPostGIS(String host, String port, String dbName, String dbUser, String dbPwd) {
@@ -80,9 +81,10 @@ public class LoadFromPostGIS {
 	 */
 	public void selectNodesInit(List<Double> bbox, String beginDate) {
 		String query = "SELECT idnode, id, uid, vnode, changeset, username, datemodif, hstore_to_json(tags), lat, lon FROM ("
-				+ "SELECT * FROM node WHERE datemodif <= \'" + beginDate + "\' AND node.geom && ST_MakeEnvelope("
-				+ bbox.get(0).toString() + "," + bbox.get(1).toString() + "," + bbox.get(2).toString() + ","
-				+ bbox.get(3).toString() + ") ORDER BY datemodif DESC) AS node_and_tags LIMIT 1;";
+				+ "SELECT DISTINCT ON (id) * FROM node WHERE datemodif <= \'" + beginDate
+				+ "\' AND node.geom && ST_MakeEnvelope(" + bbox.get(0).toString() + "," + bbox.get(1).toString() + ","
+				+ bbox.get(2).toString() + "," + bbox.get(3).toString()
+				+ ") ORDER BY id, datemodif DESC) AS node_and_tags;";
 		try {
 			selectFromDB(query, "node");
 		} catch (Exception e) {
@@ -123,9 +125,10 @@ public class LoadFromPostGIS {
 
 	public void selectWaysInit(List<Double> bbox, String beginDate) {
 		String query = "SELECT idway, id, uid, vway, changeset, username, datemodif, hstore_to_json(tags), composedof FROM ("
-				+ "SELECT * FROM way WHERE datemodif <= \'" + beginDate + "\' AND lon_min >=" + bbox.get(0).toString()
-				+ " AND lat_min >=" + bbox.get(1).toString() + " AND lon_max <=" + bbox.get(2).toString()
-				+ "AND lat_max <=" + bbox.get(3).toString() + ") AS way_selected ORDER BY datemodif DESC LIMIT 1;";
+				+ "SELECT DISTINCT ON (id) * FROM way WHERE datemodif <= \'" + beginDate + "\' AND lon_min >="
+				+ bbox.get(0).toString() + " AND lat_min >=" + bbox.get(1).toString() + " AND lon_max <="
+				+ bbox.get(2).toString() + "AND lat_max <=" + bbox.get(3).toString()
+				+ " ORDER BY id, datemodif DESC) AS way_selected;";
 		System.out.println(query);
 		try {
 			selectFromDB(query, "way");

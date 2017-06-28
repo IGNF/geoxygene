@@ -3,12 +3,14 @@ package fr.ign.cogit.geoxygene.osm.contributor;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
@@ -16,117 +18,111 @@ import au.com.bytecode.opencsv.CSVWriter;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMObject;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMResource;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMWay;
-import fr.ign.cogit.geoxygene.osm.importexport.metrics.ContributorAssessment;
 import fr.ign.cogit.geoxygene.osm.importexport.metrics.IntrinsicAssessment;
 import fr.ign.cogit.geoxygene.osm.importexport.postgis.LoadFromPostGIS;
 
 public class SocialGraph<V, E> {
-	private static double factor;
+	// private static Logger LOGGER = Logger.getLogger(SocialGraph.class);
+	public static String host = "localhost";
+	public static String port = "5432";
+	public static String dbName = "paris";
+	public static String dbUser = "postgres";
+	public static String dbPwd = "postgres";
+	private static double factor = 4;
 	int edgeCount = 0;
 
 	public static void main(String[] args) throws Exception {
 		LoadFromPostGIS loader = new LoadFromPostGIS("localhost", "5432", "paris", "postgres", "postgres");
 		List<Double> bbox = new ArrayList<Double>();
-		bbox.add(2.3312);
-		bbox.add(48.8479);
-		bbox.add(2.3644);
-		bbox.add(48.8637);
+		bbox.add(2.3322);
+		bbox.add(48.8489);
+		bbox.add(2.3634);
+		bbox.add(48.8627);
+		// bbox.add(2.3322);
+		// bbox.add(48.8509);
+		// bbox.add(2.3614);
+		// bbox.add(48.8607);
 		List<String> timespan = new ArrayList<String>();
-		timespan.add("2011-01-01");
-		timespan.add("2014-01-01");
-
+		timespan.add("2010-01-01");
+		timespan.add("2015-01-01");
 		loader.selectNodes(bbox, timespan);
 		loader.selectWays(bbox, timespan);
+		DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> usegraph = createUseGraph(loader.myJavaObjects);
+		writeGraph2CSV(usegraph, new File("paris_usegraph_20100101_20150101.csv"));
+		// HashMap<Long, OSMObject> nodeOSMObjects =
+		// IntrinsicAssessment.nodeContributionSummary(loader.myJavaObjects);
+		// HashMap<Long, OSMObject> wayOSMObjects =
+		// IntrinsicAssessment.wayContributionSummary(loader.myJavaObjects);
+		// HashMap<Long, OSMContributor> myOSMContributors =
+		// ContributorAssessment
+		// .contributorSummary(loader.myJavaObjects);
 
-		// loader.contributionSummary();
-		// loader.contributorSummary();
+		// DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge>
+		// coeditionGraph = createCoEditionGraph(nodeOSMObjects,
+		// myOSMContributors);
+		// System.out.println("nombre de noeuds :" +
+		// coeditionGraph.vertexSet().size() + "\n" + "nombre d'arcs : "
+		// + coeditionGraph.edgeSet().size());
+		// writeGraph2CSV(coeditionGraph, new
+		// File("paris_coEditionGraph_20140101_20140201.csv"));
+
+		// DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge>
+		// wayspatialCollabgraph = createCollaborationGraph(
+		// nodeOSMObjects, myOSMContributors, "width");
+		// writeGraph2CSV(wayspatialCollabgraph, new
+		// File("paris_waywidthcollabgraph_01janvier2011.csv"));
+		// mergeGraph(nodespatialCollabgraph, wayspatialCollabgraph);
+		// writeGraph2CSV(wayspatialCollabgraph, new
+		// File("paris_mergewidthcollabgraph_01janvier2011.csv"));
+
+		/**** Warning: graphs were built from OSM nodes only ***/
+
+		// DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> wcollabg =
+		// createCollaborationGraph(nodeOSMObjects,
+		// myOSMContributors, "width");
+		// writeGraph2CSV(wcollabg, new
+		// File("paris_widthCollabGraph_20100101_20100201.csv"));
 		//
-		// List<OSMResource> myJavaObjects = loader.myJavaObjects;
-		// HashMap<Long, OSMObject> myOSMObjects = loader.myOSMObjects;
-		// HashMap<Long, OSMContributor> myContributors = loader.myContributors;
+		// DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> dcollabg =
+		// createCollaborationGraph(nodeOSMObjects,
+		// myOSMContributors, "depth");
+		// writeGraph2CSV(dcollabg, new
+		// File("paris_depthCollabGraph_20100101_20100201.csv"));
 		//
-		// loader.writeContributorSummary(new
-		// File("contributeurs_paris_20110101-20110201.csv"));
+		// DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> gcollabg =
+		// createCollaborationGraph(nodeOSMObjects,
+		// myOSMContributors, "global");
+		// writeGraph2CSV(gcollabg, new
+		// File("paris_globalCollabGraph_20100101_20100201.csv"));
 		//
-		// Graph<OSMContributor, DefaultWeightedEdge> globalCollaborationGraph =
-		// createCollaborationGraph(myOSMObjects,
-		// myContributors, "global");
-		// writeGraph2CSV(globalCollaborationGraph, new
-		// File("globalCollaborationGraph.csv"));
-		// Graph<OSMContributor, DefaultWeightedEdge> widthCollaborationGraph =
-		// createCollaborationGraph(myOSMObjects,
-		// myContributors, "width");
-		// writeGraph2CSV(widthCollaborationGraph, new
-		// File("widthCollaborationGraph.csv"));
-		// Graph<OSMContributor, DefaultWeightedEdge> depthCollaborationGraph =
-		// createCollaborationGraph(myOSMObjects,
-		// myContributors, "depth");
-		// writeGraph2CSV(depthCollaborationGraph, new
-		// File("depthCollaborationGraph.csv"));
-		// factor = 2;
-		// Graph<OSMContributor, DefaultWeightedEdge> combinedCollaborationGraph
-		// = createCollaborationGraph(myOSMObjects,
-		// myContributors, "combined");
-		// writeGraph2CSV(combinedCollaborationGraph, new
-		// File("combinedCollaborationGraph_pw2.csv"));
-		//
-		// Graph<OSMContributor, DefaultWeightedEdge> coContributionGraph =
-		// createCoContributionGraph(myOSMObjects,
-		// myContributors);
-		// writeGraph2CSV(coContributionGraph, new
-		// File("coContributionGraph.csv"));
-		//
-		// Graph<OSMContributor, DefaultWeightedEdge> coEditionGraph =
-		// createCoEditionGraph(myOSMObjects, myContributors);
-		// writeGraph2CSV(coEditionGraph, new File("coEditionGraph.csv"));
-
-		// LoadFromPostGIS loaderNepal = new LoadFromPostGIS("localhost",
-		// "5432", "nepal", "postgres", "postgres");
-		// List<Double> bboxNepal = new ArrayList<Double>();
-		// bboxNepal.add(85.33630);
-		// bboxNepal.add(27.69640);
-		// bboxNepal.add(85.34890);
-		// bboxNepal.add(27.70650);
-		// List<String> timespanNepal = new ArrayList<String>();
-		// timespanNepal.add("2013-01-01");
-		// timespanNepal.add("2014-01-01");
-
-		HashMap<Long, OSMContributor> myContributors = ContributorAssessment.contributorSummary(loader.myJavaObjects);
-		IntrinsicAssessment.sortJavaObjects(loader.myJavaObjects);
-		DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge> usegraph = createUseGraph(
-				loader.myJavaObjects, myContributors);
-		writeGraph2CSV(usegraph, new File("paris_usegraph.csv"));
-
-		// System.out.println(loaderNepal.myJavaObjects.get(0).getGeom().getClass().getSimpleName());
-
-		// loaderNepal.contributionSummary();
-		// loaderNepal.contributorSummary();
-
-		// loaderNepal.writeContributionSummary(new
-		// File("nepal_contributions_katmandou2013.csv"));
-		// loaderNepal.writeContributorSummary(new
-		// File("nepal_contributeurs_katmandou2013.csv"));
+		// DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> comcollabg =
+		// createCollaborationGraph(nodeOSMObjects,
+		// myOSMContributors, "global");
+		// writeGraph2CSV(comcollabg, new
+		// File("paris_combinedCollabGraph_factor4_20100101_20100201.csv"));
 
 	}
 
-	public static Graph<OSMContributor, DefaultWeightedEdge> createCoContributionGraph(
+	public static DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> createCoContributionGraph(
 			HashMap<Long, OSMObject> myOSMObjects, HashMap<Long, OSMContributor> myContributors) throws IOException {
-		DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge> g = new DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge>(
+		DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> g = new DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge>(
 				DefaultWeightedEdge.class);
 		// Add vertices
 		for (OSMContributor contributor : myContributors.values()) {
-			g.addVertex(contributor);
+			g.addVertex((long) contributor.getId());
 		}
 		// Add edges
 		for (OSMObject osmObject : myOSMObjects.values()) {
 			int lastContributionRange = osmObject.getContributions().size() - 1;
 			for (int i = lastContributionRange; i > 0; i--) {
-				OSMContributor nodeIni = myContributors.get((long) osmObject.getContributions().get(i).getUid());
-				// int w = 1;
+				// Long nodeIni = myContributors.get((long)
+				// osmObject.getContributions().get(i).getUid();
+				Long nodeIni = (long) osmObject.getContributions().get(i).getUid();
 				for (int j = i - 1; j >= 0; j--) {
-					OSMContributor nodeFin = myContributors.get((long) osmObject.getContributions().get(j).getUid());
+					// OSMContributor nodeFin = myContributors.get((long)
+					// osmObject.getContributions().get(j).getUid());
+					Long nodeFin = (long) osmObject.getContributions().get(j).getUid();
 					System.out.println(g.containsEdge(nodeIni, nodeFin));
-					// double weight = (double) 1 / w;
 					if (nodeIni.equals(nodeFin))
 						continue;
 					if (!g.containsEdge(nodeIni, nodeFin) || !g.containsEdge(nodeFin, nodeIni)) {
@@ -136,7 +132,7 @@ public class SocialGraph<V, E> {
 						// DefaultWeightedEdge e = g.getEdge(nodeIni, nodeFin);
 						// g.setEdgeWeight(e, g.getEdgeWeight(e) + weight);
 					}
-					System.out.println("Ajout d'un arc entre " + nodeIni.getName() + " et " + nodeFin.getName());
+					System.out.println("Ajout d'un arc entre " + nodeIni + " et " + nodeFin);
 					// w++;
 				}
 			}
@@ -144,23 +140,25 @@ public class SocialGraph<V, E> {
 		return g;
 	}
 
-	public static Graph<OSMContributor, DefaultWeightedEdge> createCoEditionGraph(HashMap<Long, OSMObject> myOSMObjects,
-			HashMap<Long, OSMContributor> myContributors) {
-		DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge> g = new DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge>(
+	public static DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> createCoEditionGraph(
+			HashMap<Long, OSMObject> myOSMObjects, HashMap<Long, OSMContributor> myContributors) {
+		DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> g = new DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge>(
 				DefaultWeightedEdge.class);
 		// Add vertices
 		for (OSMContributor contributor : myContributors.values()) {
-			g.addVertex(contributor);
+			g.addVertex((long) contributor.getId());
 		}
 		// Add edges
 		for (OSMObject osmObject : myOSMObjects.values()) {
 			int lastContributionRange = osmObject.getContributions().size() - 1;
 			for (int i = lastContributionRange; i > 0; i--) {
-				OSMContributor nodeIni = myContributors.get((long) osmObject.getContributions().get(i).getUid());
-				OSMContributor nodeFin = myContributors.get((long) osmObject.getContributions().get(i - 1).getUid());
-				if (nodeIni.equals(nodeFin))
-					continue;
-				else {
+				Long nodeIni = (long) osmObject.getContributions().get(i).getUid();
+				Long nodeFin = (long) osmObject.getContributions().get(i - 1).getUid();
+				boolean egalite = nodeIni.equals(nodeFin);
+				// if (egalite)
+				// continue;
+				// else {
+				if (!egalite) {
 					if (!g.containsEdge(nodeIni, nodeFin)) {
 						// g.addEdge(nodeIni, nodeFin);
 						DefaultWeightedEdge e = g.addEdge(nodeIni, nodeFin);
@@ -180,31 +178,35 @@ public class SocialGraph<V, E> {
 	 * 
 	 ***/
 
-	public static Graph<OSMContributor, DefaultWeightedEdge> createCollaborationGraph(
+	public static DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> createCollaborationGraph(
 			HashMap<Long, OSMObject> myOSMObjects, HashMap<Long, OSMContributor> myContributors,
 			String collaborationType) {
-		DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge> g = new DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge>(
+		DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> g = new DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge>(
 				DefaultWeightedEdge.class);
 
-		DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge> subGraph;
-		DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge> osmObjectGraph;
-		DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge> sumEdgeGraph;
+		DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> subGraph;
+		DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> osmObjectGraph;
+		DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> sumEdgeGraph;
 		// Add vertices
 		for (OSMContributor contributor : myContributors.values()) {
-			g.addVertex(contributor);
+			g.addVertex((long) contributor.getId());
 		}
+		int nbVertice = myContributors.size();
+		System.out.println("Nombre de sommets dans le graphe :" + nbVertice);
 
 		// Add edges
 		for (OSMObject osmObject : myOSMObjects.values()) {
-			subGraph = new DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge>(DefaultWeightedEdge.class);
-			osmObjectGraph = new DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge>(
-					DefaultWeightedEdge.class);
-			sumEdgeGraph = new DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge>(
-					DefaultWeightedEdge.class);
+			subGraph = new DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge>(DefaultWeightedEdge.class);
+			osmObjectGraph = new DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge>(DefaultWeightedEdge.class);
+			sumEdgeGraph = new DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge>(DefaultWeightedEdge.class);
 
+			System.out.println("OSMObject en cours :" + osmObject.getOsmId());
+			// Récupère le nombre de versions de l'objet étudié
 			int lastContributionRange = osmObject.getContributions().size() - 1;
+			System.out.println("lastContributionRange :" + lastContributionRange);
 			for (int i = lastContributionRange; i > 0; i--) {
-				OSMContributor nodeIni = myContributors.get((long) osmObject.getContributions().get(i).getUid());
+				Long nodeIni = (long) osmObject.getContributions().get(i).getUid();
+				// Ajout du noeud dans le graphe
 				if (!subGraph.containsVertex(nodeIni))
 					subGraph.addVertex(nodeIni);
 				if (collaborationType.equalsIgnoreCase("depth") && !osmObjectGraph.containsVertex(nodeIni))
@@ -215,70 +217,106 @@ public class SocialGraph<V, E> {
 				// Cherche l'indice de l'avant dernière contribution du
 				// contributeur courant
 				int currentContributorPreviousContribution = 0;
-				OSMContributor nodeFin = null;
-				for (int j = i - 1; j >= 0; j--) {
-					nodeFin = myContributors.get((long) osmObject.getContributions().get(j).getUid());
+				Long nodeFin = null;
+				boolean egalite = false;
+				int j = i - 1;
+				while (!egalite && j > 0) {
+					System.out.println("j = " + j);
+					nodeFin = (long) osmObject.getContributions().get(j).getUid();
 					if (nodeIni.equals(nodeFin)) {
 						currentContributorPreviousContribution = j;
-						break;
+						egalite = true;
 					}
+					j--;
 				}
-				// Parcours des éditions faites entre la contribution du
-				// contributeur courant et la précédente
-				for (int k = i - 1; k > currentContributorPreviousContribution; k--) {
-					nodeFin = myContributors.get((long) osmObject.getContributions().get(k).getUid());
-					if (!subGraph.containsVertex(nodeFin))
-						subGraph.addVertex(nodeFin);
-					if (collaborationType.equalsIgnoreCase("combined") && !osmObjectGraph.containsVertex(nodeFin))
-						sumEdgeGraph.addVertex(nodeFin);
+				for (int k = i - 1; k >= currentContributorPreviousContribution; k--) {
+					nodeFin = (long) osmObject.getContributions().get(k).getUid();
+					if (!nodeFin.equals(nodeIni)) {
+						if (!subGraph.containsVertex(nodeFin))
+							subGraph.addVertex(nodeFin);
+						if (collaborationType.equalsIgnoreCase("combined") && !osmObjectGraph.containsVertex(nodeFin))
+							sumEdgeGraph.addVertex(nodeFin);
 
-					if (!subGraph.containsEdge(nodeIni, nodeFin)) {
-						DefaultWeightedEdge e = (DefaultWeightedEdge) subGraph.addEdge(nodeIni, nodeFin);
-						subGraph.setEdgeWeight(e, 1);
-						if (collaborationType.equalsIgnoreCase("depth"))
-							if (!osmObjectGraph.containsVertex(nodeFin))
-								osmObjectGraph.addVertex(nodeFin);
+						if (!subGraph.containsEdge(nodeIni, nodeFin)) {
+							DefaultWeightedEdge e = (DefaultWeightedEdge) subGraph.addEdge(nodeIni, nodeFin);
+							subGraph.setEdgeWeight(e, 1);
+							if (collaborationType.equalsIgnoreCase("depth"))
+								if (!osmObjectGraph.containsVertex(nodeFin))
+									osmObjectGraph.addVertex(nodeFin);
 
-					} else {
-						if (collaborationType.equalsIgnoreCase("depth")) {
-							DefaultWeightedEdge e = subGraph.getEdge(nodeIni, nodeFin);
-							subGraph.setEdgeWeight(e, subGraph.getEdgeWeight(e) + 1);
+						} else {
+							if (collaborationType.equalsIgnoreCase("depth")) {
+								DefaultWeightedEdge e = subGraph.getEdge(nodeIni, nodeFin);
+								subGraph.setEdgeWeight(e, subGraph.getEdgeWeight(e) + 1);
+							}
 						}
 					}
 				}
+
+				// for (int j = i - 1; j >= 0; j--) {
+				// nodeFin = (long)
+				// osmObject.getContributions().get(j).getUid();
+				// if (nodeIni.equals(nodeFin)) {
+				// currentContributorPreviousContribution = j;
+				// break;
+				// }
+				// }
+				// Parcours les éditions faites entre la dernière et l'avant
+				// dernière précédente contribution du
+				// contributeur courant
+				// for (int k = i - 1; k >
+				// currentContributorPreviousContribution; k--) {
+				// nodeFin = (long)
+				// osmObject.getContributions().get(k).getUid();
+				// if (!subGraph.containsVertex(nodeFin))
+				// subGraph.addVertex(nodeFin);
+				// if (collaborationType.equalsIgnoreCase("combined") &&
+				// !osmObjectGraph.containsVertex(nodeFin))
+				// sumEdgeGraph.addVertex(nodeFin);
+				//
+				// if (!subGraph.containsEdge(nodeIni, nodeFin)) {
+				// DefaultWeightedEdge e = (DefaultWeightedEdge)
+				// subGraph.addEdge(nodeIni, nodeFin);
+				// subGraph.setEdgeWeight(e, 1);
+				// if (collaborationType.equalsIgnoreCase("depth"))
+				// if (!osmObjectGraph.containsVertex(nodeFin))
+				// osmObjectGraph.addVertex(nodeFin);
+				//
+				// } else {
+				// if (collaborationType.equalsIgnoreCase("depth")) {
+				// DefaultWeightedEdge e = subGraph.getEdge(nodeIni, nodeFin);
+				// subGraph.setEdgeWeight(e, subGraph.getEdgeWeight(e) + 1);
+				// }
+				// }
+				// }
 				if (collaborationType.equalsIgnoreCase("global")) {
 					mergeSubGraph(g, subGraph);
-					subGraph = new DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge>(
-							DefaultWeightedEdge.class);
+					subGraph = new DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge>(DefaultWeightedEdge.class);
 				}
 				if (collaborationType.equalsIgnoreCase("depth")) {
 					mergeSubGraph(osmObjectGraph, subGraph);
-					subGraph = new DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge>(
-							DefaultWeightedEdge.class);
+					subGraph = new DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge>(DefaultWeightedEdge.class);
 					getMaxEdge(g, osmObjectGraph);
-					osmObjectGraph = new DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge>(
+					osmObjectGraph = new DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge>(
 							DefaultWeightedEdge.class);
 				}
 				if (collaborationType.equalsIgnoreCase("combined")) {
 					// On met à la puissance le total des interactions
 					// comptabilisées dans le graphe g sur un même objet
 					mergeSubGraph(sumEdgeGraph, subGraph);
-					subGraph = new DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge>(
-							DefaultWeightedEdge.class);
+					subGraph = new DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge>(DefaultWeightedEdge.class);
 				}
 			} // Fin de l'objet courant, on passe au suivant
 			if (collaborationType.equalsIgnoreCase("width")) {
 				mergeSubGraph(g, subGraph);
-				subGraph = new DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge>(
-						DefaultWeightedEdge.class);
+				subGraph = new DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge>(DefaultWeightedEdge.class);
 			}
 			if (collaborationType.equalsIgnoreCase("combined")) {
 				for (DefaultWeightedEdge edge : sumEdgeGraph.edgeSet()) {
 					g.setEdgeWeight(edge, Math.pow(sumEdgeGraph.getEdgeWeight(edge), factor));
 				}
 				mergeSubGraph(g, sumEdgeGraph);
-				sumEdgeGraph = new DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge>(
-						DefaultWeightedEdge.class);
+				sumEdgeGraph = new DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge>(DefaultWeightedEdge.class);
 			}
 		} // fin de l'objet courant, on passe au suivant
 		if (collaborationType.equalsIgnoreCase("combined")) {
@@ -290,74 +328,225 @@ public class SocialGraph<V, E> {
 		return g;
 	}
 
-	public static DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge> createUseGraph(
-			List<OSMResource> myJavaObjects, HashMap<Long, OSMContributor> myContributors) {
-		DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge> g = new DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge>(
+	public static DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> createUseGraph(
+			List<OSMResource> myJavaObjects) throws Exception {
+		DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> g = new DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge>(
 				DefaultWeightedEdge.class);
-		// Add vertices
-		for (OSMContributor contributor : myContributors.values()) {
-			g.addVertex(contributor);
-		}
-		// Add edges
-		for (OSMResource resource : myJavaObjects) {
-			if (resource.getGeom().getClass().getSimpleName().equals("OSMWay")) {
-				OSMWay myWay = (OSMWay) resource.getGeom();
-				int uidway = resource.getUid();
-				List<OSMResource> myNodes = IntrinsicAssessment.getNodesComposingWay(myJavaObjects, myWay);
-				if (resource.getVersion() == 1) {
-					for (OSMResource node : myNodes) {
-						if (node.getUid() != uidway) {
-							// créer un lien entre les deux utilisateurs
-							OSMContributor nodeIni = myContributors.get(uidway);
-							OSMContributor nodeFin = myContributors.get(node.getUid());
-							g.addEdge(nodeIni, nodeFin);
-						}
-					}
-				} else {
-					System.out.println("Version ressource > 1");
-					if (isGeomAddition(myJavaObjects, resource)) {
-						if (getPreviousVersion(myJavaObjects, resource) != null) {
-							System.out.println("isGeomAddition");
-							List<OSMResource> addedNodesList = getAddedNodes(myJavaObjects, resource);
-							System.out.println("Nombre de noeuds ajoutés = " + addedNodesList.size());
-							for (OSMResource addedNode : addedNodesList) {
-								System.out.println(
-										"Uid précédent = " + addedNode.getUid() + " - Uid courant = " + uidway);
-								if (addedNode.getUid() != resource.getUid()) {
-									// créer un lien entre les deux utilisateurs
-									OSMContributor nodeIni = myContributors.get(uidway);
-									OSMContributor nodeFin = myContributors.get(addedNode.getUid());
-									g.addEdge(nodeIni, nodeFin);
-								}
-							}
-						}
-
-					}
+		List<Long> listTarget = new ArrayList<Long>();
+		for (int i = 0; i < myJavaObjects.size(); i++) {
+			Long uidway = (long) myJavaObjects.get(i).getUid();
+			// Cherche si l'objet (node ou way) n'est pas réutilisé par
+			// quelqu'un d'autre dans une relation
+			List<Long> listOfidrel = getRelationMembersIdrel(myJavaObjects.get(i));
+			if (!listOfidrel.isEmpty()) {
+				List<Long> listOfRelUid = getRelationUid(myJavaObjects.get(i), listOfidrel);
+				if (!listOfRelUid.isEmpty())
+					for (Long relUid : listOfRelUid)
+						if (relUid != uidway)
+							addEdgeUseGraph(g, relUid, uidway);
+			}
+			// Dans le cas d'un way, cherche si les points sont des nodes
+			// réutilisés
+			if (myJavaObjects.get(i).getGeom().getClass().getSimpleName().equals("OSMWay")) {
+				listTarget = selectAuthorsOfUsedNodes(myJavaObjects.get(i));
+				for (Long targetID : listTarget) {
+					if (targetID != uidway)
+						addEdgeUseGraph(g, uidway, targetID);
 				}
 			}
 		}
 		return g;
 	}
 
-	/**
-	 * @param resource
-	 *            : OSMResource (way type) whose version > 1
-	 * @return isGeomAddition: if version v contains more node than version v-1
-	 *         then isGeomAddition values TRUE, FALSE otherwise
-	 **/
+	public static void addEdgeUseGraph(DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> g, Long idIni,
+			Long idFin) {
+		System.out.println("idIni = " + idIni + " - idFin = " + idFin + "- égalité = " + (idIni.equals(idFin)));
+		if (!g.vertexSet().contains(idIni))
+			g.addVertex(idIni);
+		if (!g.vertexSet().contains(idFin))
+			g.addVertex(idFin);
+		if (!idIni.equals(idFin))
+			if (!g.containsEdge(idIni, idFin)) {
+				DefaultWeightedEdge e = g.addEdge(idIni, idFin);
+				g.setEdgeWeight(e, 1);
+			} else {
+				DefaultWeightedEdge e = g.getEdge(idIni, idFin);
+				g.setEdgeWeight(e, g.getEdgeWeight(e) + 1);
+			}
+	}
+
+	public static List<Long> selectAuthorsOfUsedNodes(OSMResource way) throws Exception {
+		List<Long> listOfTarget = new ArrayList<Long>();
+		if (way.getVersion() == 1) {
+			List<Long> nodesID = ((OSMWay) way.getGeom()).getVertices();
+			listOfTarget = selectNodesFromWay(way, nodesID);
+		} else {
+			List<Long> nodesID = compareWayVersions(way);
+			if (nodesID.size() != 0)
+				listOfTarget = selectNodesFromWay(way, nodesID);
+		}
+		return listOfTarget;
+	}
+
+	public static List<Long> selectNodesFromWay(OSMResource way, List<Long> nodesID) throws Exception {
+		List<Long> listOfTarget = new ArrayList<Long>();
+		// Nodes created/edited within timespan
+		String queryNodes = "SELECT DISTINCT ON (id) * FROM node WHERE id =" + nodesID.get(0);
+		for (int i = 1; i < nodesID.size(); i++) {
+			queryNodes += " OR id=" + nodesID.get(i);
+		}
+		queryNodes += " ORDER BY id, datemodif DESC";
+		String query = "SELECT DISTINCT (uid) uid FROM (" + queryNodes + ") AS nodes_composing_way;";
+		java.sql.Connection conn;
+		try {
+			String url = "jdbc:postgresql://" + host + ":" + port + "/" + dbName;
+			conn = DriverManager.getConnection(url, dbUser, dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			ResultSet r = s.executeQuery(query);
+			// System.out.println("------- Query Executed -------");
+			while (r.next()) {
+				if (r.getInt("uid") != way.getUid())
+					listOfTarget.add(r.getLong("uid"));
+			}
+			s.close();
+			conn.close();
+		} catch (Exception e) {
+			throw e;
+		}
+		return listOfTarget;
+	}
+
+	public static List<Long> compareWayVersions(OSMResource way) throws Exception {
+		// Write a query that fetches way version v and way version v-1
+		// Nodes created/edited within timespan
+		String query1 = "SELECT to_json(composedof) AS composedof FROM way WHERE id= " + way.getId() + " AND vway = "
+				+ way.getVersion() + ";";
+		String query2 = "SELECT to_json(composedof) AS composedof FROM way WHERE id= " + way.getId() + " AND vway = "
+				+ (way.getVersion() - 1) + ";";
+		java.sql.Connection conn;
+		ArrayList<Long> composedOf1 = new ArrayList<Long>();
+		ArrayList<Long> composedOf2 = new ArrayList<Long>();
+		try {
+			String url = "jdbc:postgresql://" + host + ":" + port + "/" + dbName;
+			conn = DriverManager.getConnection(url, dbUser, dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			ResultSet r = s.executeQuery(query1);
+			// System.out.println("------- Query Executed -------");
+			while (r.next()) {
+				String[] splitter = r.getString("composedof").split(",");
+				StringBuffer nodeID = null;
+				for (int i = 0; i < splitter.length; i++) {
+					nodeID = new StringBuffer();
+					nodeID.append(splitter[i]);
+					if (i == 0) {
+						nodeID.deleteCharAt(0);
+					}
+					if (i == splitter.length - 1) {
+						nodeID.deleteCharAt(nodeID.length() - 1);
+					}
+					composedOf1.add(Long.valueOf(nodeID.toString()));
+				}
+			}
+			r = s.executeQuery(query2);
+			// System.out.println("------- Query Executed -------");
+			while (r.next()) {
+				String[] splitter = r.getString("composedof").split(",");
+				StringBuffer nodeID = null;
+				for (int i = 0; i < splitter.length; i++) {
+					nodeID = new StringBuffer();
+					nodeID.append(splitter[i]);
+					if (i == 0) {
+						nodeID.deleteCharAt(0);
+					}
+					if (i == splitter.length - 1) {
+						nodeID.deleteCharAt(nodeID.length() - 1);
+					}
+					composedOf2.add(Long.valueOf(nodeID.toString()));
+				}
+			}
+			s.close();
+			conn.close();
+		} catch (Exception e) {
+			throw e;
+		}
+		List<Long> nodesID = new ArrayList<Long>();
+		for (int i = 0; i < composedOf2.size(); i++) {
+			if (!composedOf1.contains(composedOf2.get(i)))
+				nodesID.add(composedOf2.get(i));
+		}
+		return nodesID;
+	}
+
+	public static List<Long> getRelationUid(OSMResource resource, List<Long> listOfidrel) throws Exception {
+		List<Long> listOfuid = new ArrayList<Long>();
+		String query = "SELECT * FROM relation WHERE (idrel = " + listOfidrel.get(0);
+		// if (!listOfidrel.isEmpty()) {
+		// query = "SELECT * FROM relation WHERE idrel = " + listOfidrel.get(0);
+		if (listOfidrel.size() > 1) {
+			for (int i = 1; i < listOfidrel.size(); i++) {
+				query += " OR idrel = " + listOfidrel.get(i);
+			}
+		}
+		query += ") AND datemodif >=\'" + resource.getDate() + "\';";
+		System.out.println(query);
+		java.sql.Connection conn;
+		try {
+			String url = "jdbc:postgresql://" + host + ":" + port + "/" + dbName;
+			conn = DriverManager.getConnection(url, dbUser, dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			ResultSet r = s.executeQuery(query);
+			System.out.println("------- Query Executed -------");
+			while (r.next()) {
+				listOfuid.add(r.getLong("uid"));
+			}
+			s.close();
+			conn.close();
+		} catch (Exception e) {
+			throw e;
+		}
+		return listOfuid;
+	}
+
+	public static List<Long> getRelationMembersIdrel(OSMResource resource) throws Exception {
+		List<Long> listOfidrel = new ArrayList<Long>();
+		String idrelQuery = null;
+		idrelQuery = "SELECT idrel FROM relationmember WHERE idmb = " + resource.getId();
+		// System.out.println("resource ID : " + resource.getId() + " - date :"
+		// + resource.getDate());
+
+		java.sql.Connection conn;
+		try {
+			String url = "jdbc:postgresql://" + host + ":" + port + "/" + dbName;
+			conn = DriverManager.getConnection(url, dbUser, dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			ResultSet r = s.executeQuery(idrelQuery);
+			System.out.println("------- Query Executed -------");
+			while (r.next()) {
+				listOfidrel.add(r.getLong("idrel"));
+			}
+			s.close();
+			conn.close();
+		} catch (Exception e) {
+			throw e;
+		}
+		return listOfidrel;
+	}
+
 	public static boolean isGeomAddition(List<OSMResource> myJavaObjects, OSMResource resource) {
 		boolean isGeomAddition = false;
 		OSMResource previousResource = getPreviousVersion(myJavaObjects, resource);
 		// Détermination du type d'édition entre la v et la v-1
 		if (previousResource != null) {
-			System.out.println("Objet : " + previousResource.getId() + " - version: " + previousResource.getVersion());
+			// System.out.println("Objet : " + previousResource.getId() + " -
+			// version: " + previousResource.getVersion());
 			List<Long> previousComposition = ((OSMWay) previousResource.getGeom()).getVertices();
-			System.out.println("Nombre de nodes : " + previousComposition.size());
+			// System.out.println("Nombre de nodes : " +
+			// previousComposition.size());
 			List<Long> currentComposition = ((OSMWay) resource.getGeom()).getVertices();
 			if (!previousComposition.containsAll(currentComposition))
 				isGeomAddition = true;
 		}
-		System.out.println("IsGeomAddition : " + isGeomAddition);
+		// System.out.println("IsGeomAddition : " + isGeomAddition);
 		return isGeomAddition;
 	}
 
@@ -376,14 +565,10 @@ public class SocialGraph<V, E> {
 		List<OSMResource> listAddedNodes = new ArrayList<OSMResource>();
 		if (isGeomAddition(myJavaObjects, resource)) {
 			OSMResource previousResource = getPreviousVersion(myJavaObjects, resource);
-			List<OSMResource> currentComposition = IntrinsicAssessment.getNodesComposingWay(myJavaObjects,
-					(OSMWay) resource.getGeom());
-			System.out.println("currentComposition size =" + currentComposition.size());
+			List<OSMResource> currentComposition = IntrinsicAssessment.getNodesComposingWay(myJavaObjects, resource);
 			List<OSMResource> previousComposition = IntrinsicAssessment.getNodesComposingWay(myJavaObjects,
-					(OSMWay) previousResource.getGeom());
-			System.out.println("previousComposition size =" + previousComposition.size());
+					previousResource);
 			for (OSMResource node : currentComposition) {
-				System.out.println("node is contained is previous composition" + previousComposition.contains(node));
 				if (!previousComposition.contains(node)) {
 					listAddedNodes.add(node);
 				}
@@ -392,8 +577,8 @@ public class SocialGraph<V, E> {
 		return listAddedNodes;
 	}
 
-	public static void getMaxEdge(DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge> g,
-			DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge> subg) {
+	public static void getMaxEdge(DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> g,
+			DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> subg) {
 		Collection<DefaultWeightedEdge> edges = subg.edgeSet();
 		for (DefaultWeightedEdge edge : edges) {
 			if (!g.containsEdge(subg.getEdgeSource(edge), subg.getEdgeTarget(edge))) {
@@ -409,8 +594,8 @@ public class SocialGraph<V, E> {
 		}
 	}
 
-	public static void mergeSubGraph(DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge> g,
-			DefaultDirectedWeightedGraph<OSMContributor, DefaultWeightedEdge> subg) {
+	public static void mergeSubGraph(DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> g,
+			DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> subg) {
 		Collection<DefaultWeightedEdge> edges = subg.edgeSet();
 		for (DefaultWeightedEdge edge : edges) {
 			if (!g.containsEdge(subg.getEdgeSource(edge), subg.getEdgeTarget(edge))) {
@@ -424,7 +609,27 @@ public class SocialGraph<V, E> {
 		}
 	}
 
-	public static void writeGraph2CSV(Graph<OSMContributor, DefaultWeightedEdge> g, File file) throws IOException {
+	public static void mergeGraph(DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> g1,
+			DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> g2) {
+		Collection<DefaultWeightedEdge> edges = g2.edgeSet();
+		for (DefaultWeightedEdge edge : edges) {
+			if (!g1.containsVertex(g2.getEdgeTarget(edge)))
+				g1.addVertex(g2.getEdgeTarget(edge));
+			if (!g1.containsVertex(g2.getEdgeSource(edge)))
+				g1.addVertex(g2.getEdgeSource(edge));
+			if (!g1.containsEdge(g2.getEdgeSource(edge), g2.getEdgeTarget(edge))) {
+				g1.addEdge(g2.getEdgeSource(edge), g2.getEdgeTarget(edge));
+				DefaultWeightedEdge newEdge = g1.getEdge(g2.getEdgeSource(edge), g2.getEdgeTarget(edge));
+				g1.setEdgeWeight(newEdge, g2.getEdgeWeight(edge));
+			} else {
+				DefaultWeightedEdge existingEdge = g1.getEdge(g2.getEdgeSource(edge), g2.getEdgeTarget(edge));
+				g1.setEdgeWeight(existingEdge, g1.getEdgeWeight(existingEdge) + g2.getEdgeWeight(edge));
+			}
+		}
+	}
+
+	public static void writeGraph2CSV(DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> usegraph, File file)
+			throws IOException {
 		CSVWriter writer = new CSVWriter(new FileWriter(file), ';');
 		// write header
 		String[] line = new String[3];
@@ -432,12 +637,11 @@ public class SocialGraph<V, E> {
 		line[1] = "target";
 		line[2] = "weight";
 		writer.writeNext(line);
-		System.out.println(g.edgeSet().size());
-		for (DefaultWeightedEdge e : g.edgeSet()) {
+		for (DefaultWeightedEdge e : usegraph.edgeSet()) {
 			line = new String[3];
-			line[0] = String.valueOf(g.getEdgeSource(e).getId());
-			line[1] = String.valueOf(g.getEdgeTarget(e).getId());
-			line[2] = String.valueOf(g.getEdgeWeight(e));
+			line[0] = String.valueOf(usegraph.getEdgeSource(e).longValue());
+			line[1] = String.valueOf(usegraph.getEdgeTarget(e).longValue());
+			line[2] = String.valueOf(usegraph.getEdgeWeight(e));
 			writer.writeNext(line);
 		}
 		writer.close();

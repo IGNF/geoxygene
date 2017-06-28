@@ -31,6 +31,7 @@ public class OSMContributor implements INode {
 	private int nbOfDayTimeContributions;
 	private int nbOfNightTimeContributions;
 	private int nbOfCreatedObjects;
+	private int nbOfDayRecord;
 
 	public OSMContributor(IFeatureCollection<OSMFeature> contributions, String name, int id) {
 		super();
@@ -65,6 +66,37 @@ public class OSMContributor implements INode {
 
 	public void addContribution(OSMFeature contribution) {
 		this.getContributions().add(contribution);
+	}
+
+	public int nbGPScontribution() {
+		int nbGPScontrib = 0;
+		for (OSMFeature obj : contributions) {
+			if (obj.getTags().containsKey("source"))
+				if (obj.getAttribute("source").toString().equalsIgnoreCase("gps"))
+					nbGPScontrib++;
+		}
+		return nbGPScontrib;
+	}
+
+	public int getNbOfDayRecord() {
+		return nbOfDayRecord;
+	}
+
+	public void setNbOfDayRecord(int nbOfDayRecord) {
+		this.nbOfDayRecord = nbOfDayRecord;
+	}
+
+	public int getNbOfCreatedObjects() {
+		int nbOfCreatedObjects = 0;
+		for (OSMFeature obj : contributions) {
+			if (obj.getVersion() == 1)
+				nbOfCreatedObjects++;
+		}
+		return nbOfCreatedObjects;
+	}
+
+	public void setNbOfCreatedObjects(int nbOfCreatedObjects) {
+		this.nbOfCreatedObjects = nbOfCreatedObjects;
 	}
 
 	public Collection<OSMFeature> getWeekEndContributions() {
@@ -264,14 +296,6 @@ public class OSMContributor implements INode {
 
 	public void setNbOfNightTimeContributions(int nbOfNightTimeContributions) {
 		this.nbOfNightTimeContributions = nbOfNightTimeContributions;
-	}
-
-	public int getNbOfCreatedObjects() {
-		return nbOfCreatedObjects;
-	}
-
-	public void setNbOfCreatedObjects(int nbOfCreatedObjects) {
-		this.nbOfCreatedObjects = nbOfCreatedObjects;
 	}
 
 	@Override
