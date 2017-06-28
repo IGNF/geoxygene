@@ -75,12 +75,10 @@ import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
-import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.DataSetZone;
 import fr.ign.cogit.cartagen.software.dataset.DigitalCartographicModel;
 import fr.ign.cogit.cartagen.software.dataset.GeographicClass;
-import fr.ign.cogit.cartagen.software.dataset.GeometryPool;
 import fr.ign.cogit.cartagen.software.dataset.PostgisDB;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
@@ -92,6 +90,7 @@ import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.Classificati
 import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.ConclusionIntervals;
 import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.electretri.RobustELECTRETRIMethod;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_FeatureType;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
@@ -110,6 +109,7 @@ import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenProjectPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.SelectionUtil;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
+import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.feature.SchemaDefaultFeature;
 import fr.ign.cogit.geoxygene.osm.contributor.OSMContributor;
@@ -127,7 +127,16 @@ import fr.ign.cogit.geoxygene.osm.lodanalysis.individual.LoDMultiCriteria;
 import fr.ign.cogit.geoxygene.osm.lodanalysis.individual.SizeCriterion;
 import fr.ign.cogit.geoxygene.osm.lodanalysis.individual.SourceCriterion;
 import fr.ign.cogit.geoxygene.osm.lodanalysis.individual.VertexDensityCriterion;
-import fr.ign.cogit.geoxygene.osm.lodharmonisation.gui.HarmonisationFrame;
+import fr.ign.cogit.geoxygene.osm.quality.history.BusStopHistRelAssessment;
+import fr.ign.cogit.geoxygene.osm.quality.spatialrelations.ATMQualityAssessment;
+import fr.ign.cogit.geoxygene.osm.quality.spatialrelations.ATMQualityAssessment.BankBuilding;
+import fr.ign.cogit.geoxygene.osm.quality.spatialrelations.BuildingConsistencyQualityAssessment;
+import fr.ign.cogit.geoxygene.osm.quality.spatialrelations.BuildingConsistencyQualityAssessment.POIBuilding;
+import fr.ign.cogit.geoxygene.osm.quality.spatialrelations.BusStopQualityAssessment;
+import fr.ign.cogit.geoxygene.osm.quality.spatialrelations.MotorJuncQualityAssessment;
+import fr.ign.cogit.geoxygene.osm.quality.spatialrelations.SchoolQualityAssessment;
+import fr.ign.cogit.geoxygene.osm.quality.spatialrelations.StationQualityAssessment;
+import fr.ign.cogit.geoxygene.osm.quality.spatialrelations.StoreQualityAssessment;
 import fr.ign.cogit.geoxygene.osm.schema.OSMFeature;
 import fr.ign.cogit.geoxygene.osm.schema.OsmGeneObj;
 import fr.ign.cogit.geoxygene.osm.schema.landuse.OsmLandUseTypology;
@@ -152,6 +161,11 @@ import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
 import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
 import fr.ign.cogit.geoxygene.util.math.Combination;
 import fr.ign.cogit.geoxygene.util.math.CombinationSet;
+import jxl.Workbook;
+import jxl.write.Label;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
+import jxl.write.WriteException;
 
 public class OSMPlugin
     implements ProjectFramePlugin, GeOxygeneApplicationPlugin {
@@ -190,16 +204,25 @@ public class OSMPlugin
     JMenu analysisMenu = new JMenu("LoD Analysis");
     analysisMenu.add(new JMenuItem(new InferLoDAction()));
     analysisMenu.add(new JMenuItem(new LodSensitivityAction()));
-    JMenu harmoniseMenu = new JMenu("LoD Harmonisation");
-    harmoniseMenu.add(new JMenuItem(new HarmonisationFrameAction()));
     JMenu userMenu = new JMenu("Contributor Analysis");
     userMenu.add(new JMenuItem(new ShowUsersAction()));
     userMenu.add(new JMenuItem(new ShowUserContribsAction()));
     userMenu.add(new JMenuItem(new ShowUserContribsDayAction()));
     JMenu utilMenu = new JMenu("Tools");
     utilMenu.add(new JMenuItem(new CreateFeatureTypeAction()));
+    JMenu qualMenu = new JMenu("Quality");
+    qualMenu.add(new JMenuItem(new ATMQualityAction()));
+    qualMenu.add(new JMenuItem(new StoresQualityAction()));
+    qualMenu.add(new JMenuItem(new SchoolQualityAction()));
+    qualMenu.add(new JMenuItem(new BusStopQualityAction()));
+    qualMenu.add(new JMenuItem(new MultiPointQualityAction()));
+    JMenu histMenu = new JMenu("history & relations");
+    qualMenu.add(histMenu);
+    histMenu.add(new JMenuItem(new StationsHistRelAction()));
+    histMenu.add(new JMenuItem(new MotorJuncHistRelAction()));
+    histMenu.add(new JMenuItem(new BusStopHistRelAction()));
     menu.add(analysisMenu);
-    menu.add(harmoniseMenu);
+    menu.add(qualMenu);
     menu.add(userMenu);
     menu.addSeparator();
     menu.add(utilMenu);
@@ -336,7 +359,7 @@ public class OSMPlugin
       private JTextField txtPath, txtEpsg;
       private Map<String, String> currentProjections = new HashMap<String, String>();
       private JButton browseBtn, usedBtn, cancelBtn, okBtn;
-      private JComboBox usedCombo;
+      private JComboBox<String> usedCombo;
       private JCheckBox postGisCheck;
       private JTextField txtTagFilter;
       private JCheckBox chkTagFilter;
@@ -448,7 +471,8 @@ public class OSMPlugin
         usedBtn.addActionListener(this);
         usedBtn.setActionCommand("used");
         add(usedBtn, cc.xy(6, 3));
-        usedCombo = new JComboBox(currentProjections.keySet().toArray());
+        usedCombo = new JComboBox<String>(
+            (String[]) currentProjections.keySet().toArray());
         usedCombo.setPreferredSize(new Dimension(130, 20));
         usedCombo.setMaximumSize(new Dimension(130, 20));
         usedCombo.setMinimumSize(new Dimension(130, 20));
@@ -513,10 +537,12 @@ public class OSMPlugin
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      int x = (int) CartagenApplication.getInstance().getFrame().getVisuPanel()
-          .getBounds().getCenterX();
-      int y = (int) CartagenApplication.getInstance().getFrame().getVisuPanel()
-          .getBounds().getCenterY();
+      int x = (int) CartAGenPlugin.getInstance().getApplication().getMainFrame()
+          .getSelectedProjectFrame().getLayerViewPanel().getBounds()
+          .getCenterX();
+      int y = (int) CartAGenPlugin.getInstance().getApplication().getMainFrame()
+          .getSelectedProjectFrame().getLayerViewPanel().getBounds()
+          .getCenterY();
       List<OsmGeneObj> selectedObjs = new ArrayList<OsmGeneObj>();
       for (IFeature obj : SelectionUtil.getSelectedObjects(application)) {
         if (!(obj instanceof OsmGeneObj)) {
@@ -1050,38 +1076,6 @@ public class OSMPlugin
 
     public LodSensitivityAction() {
       this.putValue(Action.NAME, "Level of Detail inference sensitivity");
-    }
-  }
-
-  /**
-   * Launch the frame that triggers LoD harmonisation processes.
-   * 
-   * @author GTouya
-   * 
-   */
-  class HarmonisationFrameAction extends AbstractAction {
-
-    /**
-    * 
-    */
-    private static final long serialVersionUID = 1L;
-
-    @Override
-    public void actionPerformed(ActionEvent arg0) {
-      StyledLayerDescriptor sld = application.getMainFrame()
-          .getSelectedProjectFrame().getSld();
-      GeometryPool pool = CartAGenDoc.getInstance().getCurrentDataset()
-          .getGeometryPool();
-      pool.setSld(sld);
-      CartAGenDoc.getInstance().getCurrentDataset().setSld(sld);
-      HarmonisationFrame frame = new HarmonisationFrame(
-          SelectionUtil.getAllWindowObjects(application), pool);
-      frame.setVisible(true);
-    }
-
-    public HarmonisationFrameAction() {
-      this.putValue(Action.SHORT_DESCRIPTION, "Launch the harmonisation frame");
-      this.putValue(Action.NAME, "Launch harmonisation");
     }
   }
 
@@ -1819,6 +1813,851 @@ public class OSMPlugin
           "Show one OSM user week and weekend contributions in two new layers");
       this.putValue(Action.NAME,
           "Show one user week and weekend contributions");
+    }
+  }
+
+  class ATMQualityAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      GeOxygeneApplication application = CartAGenPlugin.getInstance()
+          .getApplication();
+      JFileChooser fc = new JFileChooser();
+      int returnVal = fc.showSaveDialog(null);
+      if (returnVal != JFileChooser.APPROVE_OPTION) {
+        return;
+      }
+      File file = fc.getSelectedFile();
+      IFeatureCollection<? extends IFeature> points = application.getMainFrame()
+          .getSelectedProjectFrame().getLayer("atms").getFeatureCollection();
+      IFeatureCollection<IFeature> atms = new FT_FeatureCollection<>();
+      for (IFeature point : points) {
+        if (point.getAttribute("type").equals("atm"))
+          atms.add(point);
+      }
+      IFeatureCollection<IFeature> buildings = new FT_FeatureCollection<>();
+      for (IFeature point : application.getMainFrame().getSelectedProjectFrame()
+          .getLayer("paris_buildings").getFeatureCollection()) {
+        buildings.add(point);
+      }
+
+      ATMQualityAssessment atmAssessment = new ATMQualityAssessment(atms,
+          buildings);
+      atmAssessment.assessIndividualPositions();
+      atmAssessment.assessBuildingConsistency();
+
+      // an Excel sheet with the standard comparison table
+      WritableWorkbook workbook;
+      try {
+        workbook = Workbook.createWorkbook(file);
+
+        WritableSheet sheet1 = workbook.createSheet("ATM positions", 0);
+        WritableSheet sheet2 = workbook.createSheet("Consistency in banks", 1);
+
+        sheet1.addCell(new Label(0, 0, "OSM id"));
+        sheet1.addCell(new Label(1, 0, "distance to centroid"));
+        sheet1.addCell(new Label(2, 0, "distance to edge"));
+        int i = 1;
+        for (IFeature atm : atmAssessment.getFeatures()) {
+          sheet1.addCell(new jxl.write.Number(0, i,
+              new Long((String) atm.getAttribute("osm_id"))));
+          Double centroidDist = atmAssessment.getDistToCentroid().get(atm);
+          if (centroidDist == null)
+            sheet1.addCell(new jxl.write.Number(1, i, -1.0));
+          else
+            sheet1.addCell(new jxl.write.Number(1, i, centroidDist));
+          Double edgeDist = atmAssessment.getDistToEdge().get(atm);
+          if (edgeDist == null)
+            sheet1.addCell(new jxl.write.Number(2, i, -1.0));
+          else
+            sheet1.addCell(new jxl.write.Number(2, i, edgeDist));
+          i++;
+        }
+
+        sheet2.addCell(new Label(0, 0, "OSM id of building"));
+        sheet2.addCell(new Label(1, 0, "number of ATMs"));
+        sheet2.addCell(new Label(2, 0, "distance to centroid mean"));
+        sheet2.addCell(new Label(3, 0, "distance to centroid std"));
+        sheet2.addCell(new Label(4, 0, "distance to edge mean"));
+        sheet2.addCell(new Label(5, 0, "distance to edge std"));
+        i = 1;
+        for (BankBuilding bank : atmAssessment.getBanks()) {
+          sheet2.addCell(new jxl.write.Number(0, i,
+              (Long) bank.getBuilding().getAttribute("osm_id")));
+          sheet2.addCell(new jxl.write.Number(1, i, bank.getAtms().size()));
+          sheet2.addCell(
+              new jxl.write.Number(2, i, bank.getMeanDistanceCentroid()));
+          sheet2.addCell(
+              new jxl.write.Number(3, i, bank.getStdDistanceCentroid()));
+          sheet2
+              .addCell(new jxl.write.Number(4, i, bank.getMeanDistanceEdge()));
+          sheet2.addCell(new jxl.write.Number(5, i, bank.getStdDistanceEdge()));
+          i++;
+        }
+
+        workbook.write();
+        workbook.close();
+      } catch (IOException e1) {
+        e1.printStackTrace();
+      } catch (WriteException e1) {
+        e1.printStackTrace();
+      }
+    }
+
+    public ATMQualityAction() {
+      super();
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Assess ATM points quality compared to the related building and store results in Excel file");
+      this.putValue(Action.NAME, "Assess ATM points quality");
+    }
+  }
+
+  class StoresQualityAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      GeOxygeneApplication application = CartAGenPlugin.getInstance()
+          .getApplication();
+      JFileChooser fc = new JFileChooser();
+      int returnVal = fc.showSaveDialog(null);
+      if (returnVal != JFileChooser.APPROVE_OPTION) {
+        return;
+      }
+      File file = fc.getSelectedFile();
+      IFeatureCollection<? extends IFeature> points = application.getMainFrame()
+          .getSelectedProjectFrame().getLayer("bars_cafes_restos")
+          .getFeatureCollection();
+      IFeatureCollection<IFeature> cafes = new FT_FeatureCollection<>();
+      cafes.addAll(points);
+      points = application.getMainFrame().getSelectedProjectFrame()
+          .getLayer("cinemas").getFeatureCollection();
+      IFeatureCollection<IFeature> cinemas = new FT_FeatureCollection<>();
+      cinemas.addAll(points);
+      points = application.getMainFrame().getSelectedProjectFrame()
+          .getLayer("gifts").getFeatureCollection();
+      IFeatureCollection<IFeature> gifts = new FT_FeatureCollection<>();
+      gifts.addAll(points);
+      points = application.getMainFrame().getSelectedProjectFrame()
+          .getLayer("hairdresser").getFeatureCollection();
+      IFeatureCollection<IFeature> hairdressers = new FT_FeatureCollection<>();
+      hairdressers.addAll(points);
+
+      IFeatureCollection<IFeature> buildings = new FT_FeatureCollection<>();
+      for (IFeature point : application.getMainFrame().getSelectedProjectFrame()
+          .getLayer("paris_buildings").getFeatureCollection()) {
+        buildings.add(point);
+      }
+
+      StoreQualityAssessment storeAssessment = new StoreQualityAssessment(
+          cinemas, cafes, gifts, hairdressers, buildings);
+      storeAssessment.assessIndividualPositions();
+
+      // an Excel sheet with the standard comparison table
+      WritableWorkbook workbook;
+      try {
+        workbook = Workbook.createWorkbook(file);
+
+        WritableSheet sheet1 = workbook.createSheet("cinema positions", 0);
+        WritableSheet sheet2 = workbook.createSheet("cafes positions", 1);
+        WritableSheet sheet3 = workbook.createSheet("gifts positions", 2);
+        WritableSheet sheet4 = workbook.createSheet("hairdresser positions", 2);
+
+        sheet1.addCell(new Label(0, 0, "OSM id"));
+        sheet1.addCell(new Label(1, 0, "distance to centroid"));
+        sheet1.addCell(new Label(2, 0, "distance to edge"));
+        int i = 1;
+        System.out.println("store cinemas");
+        for (IFeature atm : storeAssessment.getCinemas()) {
+          sheet1.addCell(new jxl.write.Number(0, i,
+              new Long((String) atm.getAttribute("osm_id"))));
+          Double centroidDist = storeAssessment.getDistToCentroid().get(atm);
+          if (centroidDist == null)
+            sheet1.addCell(new jxl.write.Number(1, i, -1.0));
+          else
+            sheet1.addCell(new jxl.write.Number(1, i, centroidDist));
+          Double edgeDist = storeAssessment.getDistToEdge().get(atm);
+          if (edgeDist == null)
+            sheet1.addCell(new jxl.write.Number(2, i, -1.0));
+          else
+            sheet1.addCell(new jxl.write.Number(2, i, edgeDist));
+          i++;
+        }
+
+        sheet2.addCell(new Label(0, 0, "OSM id"));
+        sheet2.addCell(new Label(1, 0, "distance to centroid"));
+        sheet2.addCell(new Label(2, 0, "distance to edge"));
+        i = 1;
+        System.out.println("store cafes");
+        for (IFeature atm : storeAssessment.getCafes()) {
+          sheet2.addCell(new jxl.write.Number(0, i,
+              new Long((String) atm.getAttribute("osm_id"))));
+          Double centroidDist = storeAssessment.getDistToCentroid().get(atm);
+          if (centroidDist == null)
+            sheet2.addCell(new jxl.write.Number(1, i, -1.0));
+          else
+            sheet2.addCell(new jxl.write.Number(1, i, centroidDist));
+          Double edgeDist = storeAssessment.getDistToEdge().get(atm);
+          if (edgeDist == null)
+            sheet2.addCell(new jxl.write.Number(2, i, -1.0));
+          else
+            sheet2.addCell(new jxl.write.Number(2, i, edgeDist));
+          i++;
+        }
+
+        sheet3.addCell(new Label(0, 0, "OSM id"));
+        sheet3.addCell(new Label(1, 0, "distance to centroid"));
+        sheet3.addCell(new Label(2, 0, "distance to edge"));
+        i = 1;
+        System.out.println("store gifts");
+        for (IFeature atm : storeAssessment.getGifts()) {
+          sheet3.addCell(new jxl.write.Number(0, i,
+              new Long((String) atm.getAttribute("osm_id"))));
+          Double centroidDist = storeAssessment.getDistToCentroid().get(atm);
+          if (centroidDist == null)
+            sheet3.addCell(new jxl.write.Number(1, i, -1.0));
+          else
+            sheet3.addCell(new jxl.write.Number(1, i, centroidDist));
+          Double edgeDist = storeAssessment.getDistToEdge().get(atm);
+          if (edgeDist == null)
+            sheet3.addCell(new jxl.write.Number(2, i, -1.0));
+          else
+            sheet3.addCell(new jxl.write.Number(2, i, edgeDist));
+          i++;
+        }
+
+        sheet4.addCell(new Label(0, 0, "OSM id"));
+        sheet4.addCell(new Label(1, 0, "distance to centroid"));
+        sheet4.addCell(new Label(2, 0, "distance to edge"));
+        i = 1;
+        System.out.println("store hairdressers");
+        for (IFeature atm : storeAssessment.getHairdresser()) {
+          sheet4.addCell(new jxl.write.Number(0, i,
+              new Long((String) atm.getAttribute("osm_id"))));
+          Double centroidDist = storeAssessment.getDistToCentroid().get(atm);
+          if (centroidDist == null)
+            sheet4.addCell(new jxl.write.Number(1, i, -1.0));
+          else
+            sheet4.addCell(new jxl.write.Number(1, i, centroidDist));
+          Double edgeDist = storeAssessment.getDistToEdge().get(atm);
+          if (edgeDist == null)
+            sheet4.addCell(new jxl.write.Number(2, i, -1.0));
+          else
+            sheet4.addCell(new jxl.write.Number(2, i, edgeDist));
+          i++;
+        }
+
+        workbook.write();
+        workbook.close();
+      } catch (IOException e1) {
+        e1.printStackTrace();
+      } catch (WriteException e1) {
+        e1.printStackTrace();
+      }
+    }
+
+    public StoresQualityAction() {
+      super();
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Assess amenity points quality compared to the related building and store results in Excel file");
+      this.putValue(Action.NAME, "Assess amenities points quality");
+    }
+  }
+
+  class SchoolQualityAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      GeOxygeneApplication application = CartAGenPlugin.getInstance()
+          .getApplication();
+      JFileChooser fc = new JFileChooser();
+      int returnVal = fc.showSaveDialog(null);
+      if (returnVal != JFileChooser.APPROVE_OPTION) {
+        return;
+      }
+      File file = fc.getSelectedFile();
+      IFeatureCollection<? extends IFeature> points = application.getMainFrame()
+          .getSelectedProjectFrame().getLayer("schools").getFeatureCollection();
+      IFeatureCollection<IFeature> schools = new FT_FeatureCollection<>();
+      schools.addAll(points);
+      points = application.getMainFrame().getSelectedProjectFrame()
+          .getLayer("school_areas").getFeatureCollection();
+      IFeatureCollection<IFeature> schoolAreas = new FT_FeatureCollection<>();
+      schoolAreas.addAll(points);
+
+      IFeatureCollection<IFeature> buildings = new FT_FeatureCollection<>();
+      for (IFeature point : application.getMainFrame().getSelectedProjectFrame()
+          .getLayer("paris_buildings").getFeatureCollection()) {
+        buildings.add(point);
+      }
+
+      SchoolQualityAssessment schoolAssessment = new SchoolQualityAssessment(
+          schools, schoolAreas, buildings);
+      schoolAssessment.assessIndividualPositions();
+
+      // an Excel sheet with the standard comparison table
+      WritableWorkbook workbook;
+      try {
+        workbook = Workbook.createWorkbook(file);
+
+        WritableSheet sheet1 = workbook.createSheet("positions", 0);
+
+        sheet1.addCell(new Label(0, 0, "OSM id"));
+        sheet1.addCell(new Label(1, 0, "distance to centroid"));
+        sheet1.addCell(new Label(2, 0, "distance to edge"));
+        sheet1.addCell(new Label(3, 0, "distance to school centroid"));
+        sheet1.addCell(new Label(4, 0, "distance to school edge"));
+        sheet1.addCell(new Label(5, 0, "school area"));
+        sheet1.addCell(new Label(6, 0, "building area"));
+        int i = 1;
+        for (IFeature atm : schoolAssessment.getSchools()) {
+          sheet1.addCell(new jxl.write.Number(0, i,
+              new Long((String) atm.getAttribute("osm_id"))));
+          Double centroidDist = schoolAssessment.getDistToCentroid().get(atm);
+          if (centroidDist == null)
+            sheet1.addCell(new jxl.write.Number(1, i, -1.0));
+          else
+            sheet1.addCell(new jxl.write.Number(1, i, centroidDist));
+          Double edgeDist = schoolAssessment.getDistToEdge().get(atm);
+          if (edgeDist == null)
+            sheet1.addCell(new jxl.write.Number(2, i, -1.0));
+          else
+            sheet1.addCell(new jxl.write.Number(2, i, edgeDist));
+          Double centroidSchoolDist = schoolAssessment.getDistToSchoolCentroid()
+              .get(atm);
+          if (centroidSchoolDist == null)
+            sheet1.addCell(new jxl.write.Number(3, i, -1.0));
+          else
+            sheet1.addCell(new jxl.write.Number(3, i, centroidSchoolDist));
+          Double edgeSchoolDist = schoolAssessment.getDistToSchoolEdge()
+              .get(atm);
+          if (edgeSchoolDist == null)
+            sheet1.addCell(new jxl.write.Number(4, i, -1.0));
+          else
+            sheet1.addCell(new jxl.write.Number(4, i, edgeSchoolDist));
+
+          Double schoolArea = schoolAssessment.getSchoolAreaMap().get(atm);
+          if (schoolArea != null)
+            sheet1.addCell(new jxl.write.Number(5, i, schoolArea));
+          Double buildingArea = schoolAssessment.getBuildingAreaMap().get(atm);
+          if (buildingArea != null)
+            sheet1.addCell(new jxl.write.Number(6, i, buildingArea));
+          i++;
+        }
+
+        workbook.write();
+        workbook.close();
+      } catch (IOException e1) {
+        e1.printStackTrace();
+      } catch (WriteException e1) {
+        e1.printStackTrace();
+      }
+
+    }
+
+    public SchoolQualityAction() {
+      super();
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Assess school points quality compared to the related building/school area and store results in Excel file");
+      this.putValue(Action.NAME, "Assess school points quality");
+    }
+  }
+
+  class BusStopQualityAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      GeOxygeneApplication application = CartAGenPlugin.getInstance()
+          .getApplication();
+      JFileChooser fc = new JFileChooser();
+      int returnVal = fc.showSaveDialog(null);
+      if (returnVal != JFileChooser.APPROVE_OPTION) {
+        return;
+      }
+      File file = fc.getSelectedFile();
+      IFeatureCollection<? extends IFeature> points = application.getMainFrame()
+          .getSelectedProjectFrame().getLayer("bus_stops")
+          .getFeatureCollection();
+      IFeatureCollection<IFeature> busStops = new FT_FeatureCollection<>();
+      for (IFeature point : points) {
+        if (point.getAttribute("type").equals("bus_stop"))
+          busStops.add(point);
+      }
+      IFeatureCollection<IFeature> buildings = new FT_FeatureCollection<>();
+      for (IFeature point : application.getMainFrame().getSelectedProjectFrame()
+          .getLayer("paris_buildings").getFeatureCollection()) {
+        buildings.add(point);
+      }
+      IFeatureCollection<IFeature> roads = new FT_FeatureCollection<>();
+      for (IFeature road : application.getMainFrame().getSelectedProjectFrame()
+          .getLayer("roads_lambert93").getFeatureCollection()) {
+        if (road.getAttribute("type").equals("steps"))
+          continue;
+        if (road.getAttribute("type").equals("pedestrian"))
+          continue;
+        roads.add(road);
+      }
+
+      BusStopQualityAssessment atmAssessment = new BusStopQualityAssessment(
+          busStops, roads, buildings);
+      atmAssessment.assessIndividualPositions();
+
+      // an Excel sheet with the standard comparison table
+      WritableWorkbook workbook;
+      try {
+        workbook = Workbook.createWorkbook(file);
+
+        WritableSheet sheet1 = workbook.createSheet("bus stop positions", 0);
+
+        sheet1.addCell(new Label(0, 0, "OSM id"));
+        sheet1.addCell(new Label(1, 0, "distance to road"));
+        sheet1.addCell(new Label(2, 0, "distance to building"));
+        int i = 1;
+        for (IFeature atm : atmAssessment.getBusStops()) {
+          sheet1.addCell(new jxl.write.Number(0, i,
+              new Long((String) atm.getAttribute("osm_id"))));
+          Double centroidDist = atmAssessment.getDistToRoads().get(atm);
+          if (centroidDist == null)
+            sheet1.addCell(new jxl.write.Number(1, i, -1.0));
+          else
+            sheet1.addCell(new jxl.write.Number(1, i, centroidDist));
+          Double edgeDist = atmAssessment.getDistToBuildings().get(atm);
+          if (edgeDist == null)
+            sheet1.addCell(new jxl.write.Number(2, i, -1.0));
+          else
+            sheet1.addCell(new jxl.write.Number(2, i, edgeDist));
+          i++;
+        }
+
+        workbook.write();
+        workbook.close();
+      } catch (IOException e1) {
+        e1.printStackTrace();
+      } catch (WriteException e1) {
+        e1.printStackTrace();
+      }
+
+    }
+
+    public BusStopQualityAction() {
+      super();
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Assess bus stop points quality compared to the nearest buildings & roads and store results in Excel file");
+      this.putValue(Action.NAME, "Assess bus stop points quality");
+    }
+  }
+
+  class MultiPointQualityAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      GeOxygeneApplication application = CartAGenPlugin.getInstance()
+          .getApplication();
+      JFileChooser fc = new JFileChooser();
+      int returnVal = fc.showSaveDialog(null);
+      if (returnVal != JFileChooser.APPROVE_OPTION) {
+        return;
+      }
+      File file = fc.getSelectedFile();
+      IFeatureCollection<? extends IFeature> points = application.getMainFrame()
+          .getSelectedProjectFrame().getLayer("points_paris")
+          .getFeatureCollection();
+      IFeatureCollection<IFeature> pois = new FT_FeatureCollection<>();
+      pois.addAll(points);
+
+      IFeatureCollection<IFeature> buildings = new FT_FeatureCollection<>();
+      for (IFeature point : application.getMainFrame().getSelectedProjectFrame()
+          .getLayer("paris_buildings").getFeatureCollection()) {
+        buildings.add(point);
+      }
+
+      BuildingConsistencyQualityAssessment atmAssessment = new BuildingConsistencyQualityAssessment(
+          pois, buildings);
+      atmAssessment.assessBuildingConsistency();
+
+      // an Excel sheet with the standard comparison table
+      WritableWorkbook workbook;
+      try {
+        workbook = Workbook.createWorkbook(file);
+
+        WritableSheet sheet1 = workbook.createSheet("building consistency", 0);
+
+        sheet1.addCell(new Label(0, 0, "OSM id of building"));
+        sheet1.addCell(new Label(1, 0, "number of ATMs"));
+        sheet1.addCell(new Label(2, 0, "distance to centroid mean"));
+        sheet1.addCell(new Label(3, 0, "distance to centroid std"));
+        sheet1.addCell(new Label(4, 0, "distance to edge mean"));
+        sheet1.addCell(new Label(5, 0, "distance to edge std"));
+        sheet1.addCell(new Label(6, 0, "distance to centroid min"));
+        sheet1.addCell(new Label(7, 0, "distance to edge min"));
+        sheet1.addCell(new Label(8, 0, "distance to centroid max"));
+        sheet1.addCell(new Label(9, 0, "distance to edge max"));
+        int i = 1;
+        for (POIBuilding bank : atmAssessment.getPoiBuildings()) {
+          sheet1.addCell(new jxl.write.Number(0, i,
+              (Long) bank.getBuilding().getAttribute("osm_id")));
+          sheet1.addCell(new jxl.write.Number(1, i, bank.getPois().size()));
+          sheet1.addCell(
+              new jxl.write.Number(2, i, bank.getMeanDistanceCentroid()));
+          sheet1.addCell(
+              new jxl.write.Number(3, i, bank.getStdDistanceCentroid()));
+          sheet1
+              .addCell(new jxl.write.Number(4, i, bank.getMeanDistanceEdge()));
+          sheet1.addCell(new jxl.write.Number(5, i, bank.getStdDistanceEdge()));
+          sheet1.addCell(
+              new jxl.write.Number(6, i, bank.getMinDistanceCentroid()));
+          sheet1.addCell(new jxl.write.Number(7, i, bank.getMinDistanceEdge()));
+          sheet1.addCell(
+              new jxl.write.Number(8, i, bank.getMaxDistanceCentroid()));
+          sheet1.addCell(new jxl.write.Number(9, i, bank.getMaxDistanceEdge()));
+          i++;
+        }
+
+        workbook.write();
+        workbook.close();
+      } catch (IOException e1) {
+        e1.printStackTrace();
+      } catch (WriteException e1) {
+        e1.printStackTrace();
+      }
+    }
+
+    public MultiPointQualityAction() {
+      super();
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Assess buildings that containing multiple points quality and store results in Excel file");
+      this.putValue(Action.NAME,
+          "Assess multiple points in a same building consistency");
+    }
+  }
+
+  class BusStopHistRelAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      GeOxygeneApplication application = CartAGenPlugin.getInstance()
+          .getApplication();
+      JFileChooser fc = new JFileChooser();
+      int returnVal = fc.showSaveDialog(null);
+      if (returnVal != JFileChooser.APPROVE_OPTION) {
+        return;
+      }
+      File file = fc.getSelectedFile();
+
+      Map<String, List<IFeature>> busStops = new HashMap<>();
+      Set<IFeature> remainingFeats = new HashSet<>();
+      IFeatureCollection<? extends IFeature> points = application.getMainFrame()
+          .getSelectedProjectFrame().getLayer("points_history_lambert93")
+          .getFeatureCollection();
+      for (IFeature point : points) {
+        if (busStops.keySet().contains(point.getAttribute("osm_id"))) {
+          String id = (String) point.getAttribute("osm_id");
+          List<IFeature> list = busStops.get(id);
+          list.add(point);
+        } else if (point.getAttribute("type").equals("bus_stop")) {
+          List<IFeature> list = new ArrayList<>();
+          list.add(point);
+          busStops.put((String) point.getAttribute("osm_id"), list);
+        } else
+          remainingFeats.add(point);
+      }
+      for (IFeature point : remainingFeats) {
+        if (busStops.keySet().contains(point.getAttribute("osm_id"))) {
+          String id = (String) point.getAttribute("osm_id");
+          List<IFeature> list = busStops.get(id);
+          list.add(point);
+        }
+      }
+
+      IFeatureCollection<IFeature> buildings = new FT_FeatureCollection<>();
+      for (IFeature point : application.getMainFrame().getSelectedProjectFrame()
+          .getLayer("paris_buildings").getFeatureCollection()) {
+        buildings.add(point);
+      }
+      IFeatureCollection<IFeature> roads = new FT_FeatureCollection<>();
+      for (IFeature road : application.getMainFrame().getSelectedProjectFrame()
+          .getLayer("main_roads_lambert93").getFeatureCollection()) {
+        if (road.getAttribute("type").equals("steps"))
+          continue;
+        if (road.getAttribute("type").equals("pedestrian"))
+          continue;
+        roads.add(road);
+      }
+
+      BusStopHistRelAssessment assessment = new BusStopHistRelAssessment(
+          busStops, roads, buildings);
+      assessment.assessIndividualPositions();
+
+      // an Excel sheet with the standard comparison table
+      WritableWorkbook workbook;
+      try {
+        workbook = Workbook.createWorkbook(file);
+
+        WritableSheet sheet1 = workbook.createSheet("bus stop positions", 0);
+
+        sheet1.addCell(new Label(0, 0, "OSM id"));
+        sheet1.addCell(new Label(1, 0, "OSM version"));
+        sheet1.addCell(new Label(2, 0, "distance to road"));
+        sheet1.addCell(new Label(3, 0, "distance to building"));
+        int i = 1;
+        for (String id : assessment.getBusStops().keySet()) {
+          sheet1.addCell(new jxl.write.Number(0, i, new Long(id)));
+          Map<Long, Double> mapDistToRoads = assessment.getDistToRoads()
+              .get(id);
+          Map<Long, Double> mapDistToBuildings = assessment.getDistToBuildings()
+              .get(id);
+          for (Long version : mapDistToRoads.keySet()) {
+            sheet1.addCell(new jxl.write.Number(0, i, new Long(id)));
+            sheet1.addCell(new jxl.write.Number(1, i, version));
+            Double roadDist = mapDistToRoads.get(version);
+            if (roadDist == null)
+              sheet1.addCell(new jxl.write.Number(2, i, -1.0));
+            else
+              sheet1.addCell(new jxl.write.Number(2, i, roadDist));
+            Double buildDist = mapDistToBuildings.get(version);
+            if (buildDist == null)
+              sheet1.addCell(new jxl.write.Number(3, i, -1.0));
+            else
+              sheet1.addCell(new jxl.write.Number(3, i, buildDist));
+            i++;
+          }
+
+        }
+
+        workbook.write();
+        workbook.close();
+      } catch (IOException e1) {
+        e1.printStackTrace();
+      } catch (WriteException e1) {
+        e1.printStackTrace();
+      }
+
+    }
+
+    public BusStopHistRelAction() {
+      super();
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Assess bus stop points historical quality compared to the nearest buildings & roads and store results in Excel file");
+      this.putValue(Action.NAME, "Assess bus stop points historical quality");
+    }
+  }
+
+  class StationsHistRelAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      GeOxygeneApplication application = CartAGenPlugin.getInstance()
+          .getApplication();
+      JFileChooser fc = new JFileChooser();
+      int returnVal = fc.showSaveDialog(null);
+      if (returnVal != JFileChooser.APPROVE_OPTION) {
+        return;
+      }
+      File file = fc.getSelectedFile();
+
+      Map<String, List<IFeature>> stations = new HashMap<>();
+      for (IFeature station : application.getMainFrame()
+          .getSelectedProjectFrame().getLayer("points_history_lambert93")
+          .getFeatureCollection()) {
+        List<IFeature> list = new ArrayList<>();
+        stations.put((String) station.getAttribute("osm_id"), list);
+      }
+
+      IFeatureCollection<? extends IFeature> points = application.getMainFrame()
+          .getSelectedProjectFrame().getLayer("points_history_lambert93")
+          .getFeatureCollection();
+      for (IFeature point : points) {
+        if (stations.keySet().contains(point.getAttribute("osm_id"))) {
+          String id = (String) point.getAttribute("osm_id");
+          List<IFeature> list = stations.get(id);
+          list.add(point);
+        }
+      }
+
+      IFeatureCollection<IFeature> roads = new FT_FeatureCollection<>();
+      for (IFeature road : application.getMainFrame().getSelectedProjectFrame()
+          .getLayer("subway_l93").getFeatureCollection()) {
+        roads.add(road);
+      }
+
+      StationQualityAssessment assessment = new StationQualityAssessment(
+          new FT_FeatureCollection<IFeature>(), roads);
+      assessment.assessIndividualPositionsWithHistory(stations);
+
+      // an Excel sheet with the standard comparison table
+      WritableWorkbook workbook;
+      try {
+        workbook = Workbook.createWorkbook(file);
+
+        WritableSheet sheet1 = workbook.createSheet("stations positions", 0);
+
+        sheet1.addCell(new Label(0, 0, "OSM id"));
+        sheet1.addCell(new Label(1, 0, "OSM version"));
+        sheet1.addCell(new Label(2, 0, "nb of subway lines"));
+        int i = 1;
+        for (String id : stations.keySet()) {
+          sheet1.addCell(new jxl.write.Number(0, i, new Long(id)));
+          Map<Long, Integer> mapDistToRoads = assessment.getNbLinesHist()
+              .get(id);
+          for (Long version : mapDistToRoads.keySet()) {
+            sheet1.addCell(new jxl.write.Number(0, i, new Long(id)));
+            sheet1.addCell(new jxl.write.Number(1, i, version));
+            Integer nbSub = mapDistToRoads.get(version);
+            if (nbSub == null)
+              sheet1.addCell(new jxl.write.Number(2, i, -1.0));
+            else
+              sheet1.addCell(new jxl.write.Number(2, i, nbSub));
+            i++;
+          }
+
+        }
+
+        workbook.write();
+        workbook.close();
+      } catch (IOException e1) {
+        e1.printStackTrace();
+      } catch (WriteException e1) {
+        e1.printStackTrace();
+      }
+
+    }
+
+    public StationsHistRelAction() {
+      super();
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Assess station points historical quality in relation to subway lines and store results in Excel file");
+      this.putValue(Action.NAME, "Assess station points historical quality");
+    }
+  }
+
+  class MotorJuncHistRelAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      GeOxygeneApplication application = CartAGenPlugin.getInstance()
+          .getApplication();
+      JFileChooser fc = new JFileChooser();
+      int returnVal = fc.showSaveDialog(null);
+      if (returnVal != JFileChooser.APPROVE_OPTION) {
+        return;
+      }
+      File file = fc.getSelectedFile();
+
+      Map<String, List<IFeature>> junctions = new HashMap<>();
+      Set<IFeature> remainingFeats = new HashSet<>();
+      IFeatureCollection<? extends IFeature> points = application.getMainFrame()
+          .getSelectedProjectFrame().getLayer("points_history_lambert93")
+          .getFeatureCollection();
+      for (IFeature point : points) {
+        if (junctions.keySet().contains(point.getAttribute("osm_id"))) {
+          String id = (String) point.getAttribute("osm_id");
+          List<IFeature> list = junctions.get(id);
+          list.add(point);
+        } else if (point.getAttribute("type").equals("bus_stop")) {
+          List<IFeature> list = new ArrayList<>();
+          list.add(point);
+          junctions.put((String) point.getAttribute("osm_id"), list);
+        } else
+          remainingFeats.add(point);
+      }
+      for (IFeature point : remainingFeats) {
+        if (junctions.keySet().contains(point.getAttribute("osm_id"))) {
+          String id = (String) point.getAttribute("osm_id");
+          List<IFeature> list = junctions.get(id);
+          list.add(point);
+        }
+      }
+
+      IFeatureCollection<IFeature> roads = new FT_FeatureCollection<>();
+      for (IFeature road : application.getMainFrame().getSelectedProjectFrame()
+          .getLayer("roads_lambert93").getFeatureCollection()) {
+        if (road.getAttribute("type").equals("steps"))
+          continue;
+        if (road.getAttribute("type").equals("pedestrian"))
+          continue;
+        roads.add(road);
+      }
+
+      System.out.println("start position assessment");
+      System.out.println(junctions.size() + " features to assess");
+      MotorJuncQualityAssessment assessment = new MotorJuncQualityAssessment(
+          new FT_FeatureCollection<>(), roads);
+      assessment.assessIndividualPositionsWithHistory(junctions);
+
+      // an Excel sheet with the standard comparison table
+      System.out.println("write the assessment");
+      WritableWorkbook workbook;
+      try {
+        workbook = Workbook.createWorkbook(file);
+
+        WritableSheet sheet1 = workbook.createSheet("bus stop positions", 0);
+
+        sheet1.addCell(new Label(0, 0, "OSM id"));
+        sheet1.addCell(new Label(1, 0, "OSM version"));
+        sheet1.addCell(new Label(2, 0, "nb of motorways connected"));
+        sheet1.addCell(new Label(3, 0, "nb of roads connected"));
+        int i = 1;
+        for (String id : junctions.keySet()) {
+          sheet1.addCell(new jxl.write.Number(0, i, new Long(id)));
+          Map<Long, Integer> mapNbMotor = assessment.getNbMotorwaysHist()
+              .get(id);
+          Map<Long, Integer> mapNbRoads = assessment.getNbRoadsHist().get(id);
+          for (Long version : mapNbMotor.keySet()) {
+            sheet1.addCell(new jxl.write.Number(0, i, new Long(id)));
+            sheet1.addCell(new jxl.write.Number(1, i, version));
+            Integer nbMotors = mapNbMotor.get(version);
+            if (nbMotors == null)
+              sheet1.addCell(new jxl.write.Number(2, i, -1.0));
+            else
+              sheet1.addCell(new jxl.write.Number(2, i, nbMotors));
+            Integer nbRoads = mapNbRoads.get(version);
+            if (nbRoads == null)
+              sheet1.addCell(new jxl.write.Number(3, i, -1.0));
+            else
+              sheet1.addCell(new jxl.write.Number(3, i, nbRoads));
+            i++;
+          }
+        }
+
+        workbook.write();
+        workbook.close();
+      } catch (IOException e1) {
+        e1.printStackTrace();
+      } catch (WriteException e1) {
+        e1.printStackTrace();
+      }
+
+    }
+
+    public MotorJuncHistRelAction() {
+      super();
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Assess motorway junctions points historical quality in relation to roads and store results in Excel file");
+      this.putValue(Action.NAME,
+          "Assess motorway junctions points historical quality");
     }
   }
 }

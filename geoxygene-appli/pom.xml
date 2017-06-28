@@ -221,13 +221,13 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-cartagen</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 			<scope>compile</scope>
-		</dependency>
+		</dependency>-->
 		<!-- <dependency> <groupId>${project.groupId}</groupId> <artifactId>geoxygene-scripting</artifactId> 
 			<version>${project.version}</version> <type>jar</type> <scope>compile</scope> 
 			</dependency> -->
@@ -251,7 +251,11 @@
 			<artifactId>geoxygene-carto</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>fr.ign.cogit</groupId>
+			<artifactId>cartagen-core</artifactId>
+			<version>0.1-SNAPSHOT</version>
+		</dependency>
 		<!-- JGoodies Forms framework helps you lay out and implement elegant Swing 
 			panels quickly and consistently -->
 		<dependency>
@@ -428,6 +432,11 @@
 			<artifactId>poi</artifactId>
 			<version>3.10.1</version>
 		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.jexcelapi</groupId>
+			<artifactId>jxl</artifactId>
+			<version>2.6.12</version>
+		</dependency>		
 	</dependencies>
 
 	<repositories>

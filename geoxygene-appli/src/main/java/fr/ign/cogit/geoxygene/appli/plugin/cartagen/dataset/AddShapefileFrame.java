@@ -12,21 +12,18 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.xml.bind.JAXBException;
 
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDB;
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDataSet;
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.core.dataset.DigitalLandscapeModel;
+import fr.ign.cogit.cartagen.core.dataset.GeneObjImplementation;
+import fr.ign.cogit.cartagen.core.dataset.SourceDLM;
+import fr.ign.cogit.cartagen.core.dataset.shapefile.ShapeFileClass;
+import fr.ign.cogit.cartagen.core.dataset.shapefile.ShapeFileDB;
+import fr.ign.cogit.cartagen.core.dataset.shapefile.ShapeFileLoader;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildPoint;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
-import fr.ign.cogit.cartagen.software.CartAGenDataSet;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
-import fr.ign.cogit.cartagen.software.dataset.DigitalLandscapeModel;
-import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
-import fr.ign.cogit.cartagen.software.dataset.ShapeFileClass;
-import fr.ign.cogit.cartagen.software.dataset.ShapeFileDB;
-import fr.ign.cogit.cartagen.software.dataset.ShapeFileLoader;
-import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
-import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolGroup;
-import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolList;
-import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolsUtil;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
@@ -104,10 +101,6 @@ public class AddShapefileFrame extends JFrame implements ActionListener {
         doc.addDatabase("default", database);
         database.setDataSet(dataset);
         database.setType(new DigitalLandscapeModel());
-
-        SymbolGroup symbGroup = SymbolsUtil
-            .getSymbolGroup(SourceDLM.SPECIAL_CARTAGEN, 25000);
-        dataset.setSymbols(SymbolList.getSymbolList(symbGroup));
       }
 
       // then get the current panel
@@ -116,15 +109,12 @@ public class AddShapefileFrame extends JFrame implements ActionListener {
       CartAGenDB currentDb = doc.getCurrentDataset().getCartAGenDB();
       if (panel.getLayerName().equals(CartAGenDataSet.RAILWAY_LINES_POP)) {
         // load railway lines from the shapefile
-        SymbolList symbols = SymbolList
-            .getSymbolList(SymbolsUtil.getSymbolGroup(currentDb.getSourceDLM(),
-                currentDb.getSymboScale()));
         currentDb
             .addClass(new ShapeFileClass(currentDb, panel.getFile().getParent(),
                 IRailwayLine.FEAT_TYPE_NAME, ILineString.class));
         try {
           ShapeFileLoader.loadRailwayLineFromSHP(panel.getFile().getPath(),
-              symbols, panel.getAttributeMapping().get("Sidetrack"),
+              panel.getAttributeMapping().get("Sidetrack"),
               currentDb.getDataSet());
         } catch (IOException e1) {
           e1.printStackTrace();

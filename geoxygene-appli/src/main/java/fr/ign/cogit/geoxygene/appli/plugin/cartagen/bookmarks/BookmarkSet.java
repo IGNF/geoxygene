@@ -29,7 +29,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDB;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.XMLFileFilter;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
@@ -69,8 +69,8 @@ public class BookmarkSet {
       throws NoninvertibleTransformException {
     // check that the bookmark is related to the current Dataset
     if (!book.getDatasetName().equals(this.currentDataset.getName())) {
-      BookmarkSet.logger
-          .warn("Bookmark Error : the bookmark is not related to the current dataset !");
+      BookmarkSet.logger.warn(
+          "Bookmark Error : the bookmark is not related to the current dataset !");
       return;
     }
 
@@ -90,7 +90,7 @@ public class BookmarkSet {
       if (book.getDatasetName().equals(dataset)) {
         filteredSet.add(book);
       }
-    }// while boucle sur setBookmark
+    } // while boucle sur setBookmark
 
     return filteredSet;
   }// filterBookmarks
@@ -121,8 +121,8 @@ public class BookmarkSet {
    * @return void
    * 
    */
-  public void loadXmlBookmarks(File file) throws ParserConfigurationException,
-      SAXException, IOException {
+  public void loadXmlBookmarks(File file)
+      throws ParserConfigurationException, SAXException, IOException {
     // on commence par ouvrir le doucment XML pour le parser
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     DocumentBuilder db;
@@ -137,17 +137,17 @@ public class BookmarkSet {
     // loop on the different datasets
     for (int i = 0; i < bookSetElem.getElementsByTagName("cartagen-dataset")
         .getLength(); i++) {
-      Element versionElem = (Element) bookSetElem.getElementsByTagName(
-          "cartagen-dataset").item(i);
+      Element versionElem = (Element) bookSetElem
+          .getElementsByTagName("cartagen-dataset").item(i);
       // get the dataset name
-      Element nomVersionElem = (Element) versionElem.getElementsByTagName(
-          "name").item(0);
+      Element nomVersionElem = (Element) versionElem
+          .getElementsByTagName("name").item(0);
       String nomVersion = nomVersionElem.getChildNodes().item(0).getNodeValue();
       // now loop on the bookmark in this dataset
       for (int j = 0; j < versionElem.getElementsByTagName("bookmark")
           .getLength(); j++) {
-        Element bookElem = (Element) versionElem.getElementsByTagName(
-            "bookmark").item(j);
+        Element bookElem = (Element) versionElem
+            .getElementsByTagName("bookmark").item(j);
         // get its name
         Element nomBookElem = (Element) bookElem.getElementsByTagName("name")
             .item(0);
@@ -177,12 +177,13 @@ public class BookmarkSet {
         Double ymax = new Double(ymaxS);
 
         // create the Bookmark from XML data
-        Bookmark nouveau = new Bookmark(nomVersion, new GM_Envelope(
-            xmin.doubleValue(), xmax.doubleValue(), ymin.doubleValue(),
-            ymax.doubleValue()), nomBook);
+        Bookmark nouveau = new Bookmark(nomVersion,
+            new GM_Envelope(xmin.doubleValue(), xmax.doubleValue(),
+                ymin.doubleValue(), ymax.doubleValue()),
+            nomBook);
         this.setBookmark.add(nouveau);
-      }// for j
-    }// for i
+      } // for j
+    } // for i
   }
 
   /**
@@ -192,15 +193,16 @@ public class BookmarkSet {
    * @return void
    * 
    */
-  public void loadXmlBookmarks() throws ParserConfigurationException,
-      SAXException, IOException {
+  public void loadXmlBookmarks()
+      throws ParserConfigurationException, SAXException, IOException {
     // initialisation
     this.setBookmark = new HashSet<Bookmark>();
 
     // on choisit le fichier XML � importer
     JFileChooser fc = new JFileChooser();
     fc.setCurrentDirectory(new File("goth_dataroot"));
-    fc.setDialogTitle("Ouvrir un fichier XML de mapspecs pour les Moindres carr�s");
+    fc.setDialogTitle(
+        "Ouvrir un fichier XML de mapspecs pour les Moindres carr�s");
     fc.setFileFilter(new XMLFileFilter());
     int returnVal = fc.showOpenDialog(this.currentView.getMainFrame().getGui());
     if (returnVal != JFileChooser.APPROVE_OPTION) {
@@ -225,13 +227,13 @@ public class BookmarkSet {
     // first check if storingFile is null
     if (this.storingFile == null) {
       JFileChooser fc = new JFileChooser();
-      int returnVal = fc.showSaveDialog(this.currentView.getMainFrame()
-          .getGui());
+      int returnVal = fc
+          .showSaveDialog(this.currentView.getMainFrame().getGui());
       if (returnVal != JFileChooser.APPROVE_OPTION) {
         return;
       }
       this.storingFile = fc.getSelectedFile();
-    }// if(fic==null)
+    } // if(fic==null)
 
     Node n = null;
     // ********************************************
@@ -268,23 +270,23 @@ public class BookmarkSet {
         Element extentElem = xmldoc.createElement("extent");
         // add the coordinates elements and the values
         Element xminElem = xmldoc.createElement("x-min");
-        n = xmldoc.createTextNode(String.valueOf(book.getExtent()
-            .getLowerCorner().getX()));
+        n = xmldoc.createTextNode(
+            String.valueOf(book.getExtent().getLowerCorner().getX()));
         xminElem.appendChild(n);
         extentElem.appendChild(xminElem);
         Element yminElem = xmldoc.createElement("y-min");
-        n = xmldoc.createTextNode(String.valueOf(book.getExtent()
-            .getLowerCorner().getY()));
+        n = xmldoc.createTextNode(
+            String.valueOf(book.getExtent().getLowerCorner().getY()));
         yminElem.appendChild(n);
         extentElem.appendChild(yminElem);
         Element xmaxElem = xmldoc.createElement("x-max");
-        n = xmldoc.createTextNode(String.valueOf(book.getExtent()
-            .getUpperCorner().getX()));
+        n = xmldoc.createTextNode(
+            String.valueOf(book.getExtent().getUpperCorner().getX()));
         xmaxElem.appendChild(n);
         extentElem.appendChild(xmaxElem);
         Element ymaxElem = xmldoc.createElement("y-max");
-        n = xmldoc.createTextNode(String.valueOf(book.getExtent()
-            .getUpperCorner().getY()));
+        n = xmldoc.createTextNode(
+            String.valueOf(book.getExtent().getUpperCorner().getY()));
         ymaxElem.appendChild(n);
         extentElem.appendChild(ymaxElem);
         bookElem.appendChild(extentElem);

@@ -26,10 +26,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDB;
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDataSet;
 import fr.ign.cogit.cartagen.core.genericschema.AbstractCreationFactory;
-import fr.ign.cogit.cartagen.software.CartAGenDataSet;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenEnrichment;
 import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
 import fr.ign.cogit.cartagen.spatialanalysis.urban.UrbanEnrichment;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
@@ -233,14 +232,13 @@ public class EnrichFrame extends JDialog implements ActionListener {
       if (this.enrichHydro.isSelected()) {
         NetworkEnrichment.enrichNetwork(this.dataSet,
             this.dataSet.getHydroNetwork(), this.factory);
-        this.addEnrichmentToFrame(CartAGenDataSet.WATER_NODES_POP, IPoint.class);
+        this.addEnrichmentToFrame(CartAGenDataSet.WATER_NODES_POP,
+            IPoint.class);
       }
 
       boolean enrichissementBatiAlign = false;
       if (this.enrichBuildingsAlign.isSelected()) {
         enrichissementBatiAlign = true;
-        db.getEnrichments().add(CartAGenEnrichment.BUILDINGS_ALIGNMENT);
-
       }
 
       if (this.enrichBuildings.isSelected()) {
@@ -287,9 +285,8 @@ public class EnrichFrame extends JDialog implements ActionListener {
     UserStyle style = new UserStyle();
     style.setName("Style créé pour le layer " + populationName);//$NON-NLS-1$
     FeatureTypeStyle fts = new FeatureTypeStyle();
-    fts.getRules().add(
-        LayerFactory.createRule(geometryType, fillColor.darker(), fillColor,
-            opacity, opacity, strokeWidth));
+    fts.getRules().add(LayerFactory.createRule(geometryType, fillColor.darker(),
+        fillColor, opacity, opacity, strokeWidth));
     style.getFeatureTypeStyles().add(fts);
     layer.getStyles().add(style);
     frame.getSld().add(layer);
