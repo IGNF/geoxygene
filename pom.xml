@@ -11,7 +11,7 @@
 	<version>1.9-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>GeOxygene</name>
-	<url>http://oxygene-project.sourceforge.net/</url>
+	<url>https://ignf.github.io/geoxygene/</url>
 
 	<description>
         GeOxygene is an open framework which implements OGC/ISO specifications for the development
@@ -717,7 +717,7 @@
 	</dependencies>
 
 	<distributionManagement>
-		<downloadUrl>http://sourceforge.net/projects/oxygene-project/files/</downloadUrl>
+		<downloadUrl>https://github.com/IGNF/geoxygene/</downloadUrl>
 		<repository>
 			<id>releases</id>
 			<name>Nexus Releases Repository</name>
@@ -731,7 +731,7 @@
 		<site>
 			<id>oxygene-project.sf.net</id>
 			<name>GeOxygene website</name>
-			<url>scp://shell.sourceforge.net/home/project-web/oxygene-project/htdocs</url>
+			<url>https://github.com/IGNF/geoxygene/tree/gh-pages/</url>
 		</site>
 	</distributionManagement>
 

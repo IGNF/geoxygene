@@ -1493,6 +1493,11 @@ public abstract class Operateurs {
 				i = -1;
 			}
 		}
+		
+		if(! linestringList.isEmpty()){
+			Operateurs.logger.warn("WARNING. All input lines are not used to produce the output merged line (unused lines = " + linestringList.size()+")");
+		
+		}
 		return lineStringCourante;
 	}
 
