@@ -42,91 +42,95 @@ import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
  */
 @XmlRootElement(name = "NamedLayer")
 public class NamedLayer extends AbstractLayer {
-    @XmlTransient
-    StyledLayerDescriptor sld = null;
+  @XmlTransient
+  StyledLayerDescriptor sld = null;
 
-    /**
-	 */
-    public NamedLayer() {
-        super();
-    }
+  /**
+   */
+  public NamedLayer() {
+    super();
+  }
 
-    /**
-     * @param layerName
+  /**
+   * @param layerName
+   */
+  public NamedLayer(StyledLayerDescriptor sld, String layerName) {
+    super();
+    this.sld = sld;
+    this.setName(layerName);
+  }
+
+  /**
+   * @return the sld
+   */
+  public StyledLayerDescriptor getSld() {
+    return this.sld;
+  }
+
+  /**
+   * @param sld the sld to set
+   */
+  public final void setSld(StyledLayerDescriptor sld) {
+    this.sld = sld;
+    System.err.println("set layer " + this.getName() + " SLD = " + this.sld);
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public IFeatureCollection<? extends IFeature> getFeatureCollection() {
+    /*
+     * TODO Récupèrer la population à partir d'un vrai DataSet Pour l'instant,
+     * on utilise un singleton de DataSet qu'il faut donc avoir remplit au
+     * préalable...
      */
-    public NamedLayer(StyledLayerDescriptor sld, String layerName) {
-        super();
-        this.sld = sld;
-        this.setName(layerName);
+    DataSet dataset = (this.sld != null) ? this.sld.getDataSet()
+        : DataSet.getInstance();
+    IFeatureCollection<IFeature> pop = (IFeatureCollection<IFeature>) dataset
+        .getPopulation(this.getName());
+    if (pop == null) {
+      pop = new FT_FeatureCollection<IFeature>();
+      IDataSet<?> dataSet = dataset.getComposant(this.getName());
+      if (dataSet == null)
+        return null;
+      if (dataSet.getPopulations() == null)
+        return null;
+      for (IPopulation<? extends IFeature> population : dataSet
+          .getPopulations()) {
+        pop.addCollection((FT_FeatureCollection<IFeature>) population);
+      }
     }
+    return pop;
+  }
 
-    /**
-     * @return the sld
-     */
-    public StyledLayerDescriptor getSld() {
-        return this.sld;
+  @Override
+  public String toString() {
+    String result = "NamedLayer " + this.getName() + "\n"; //$NON-NLS-1$ //$NON-NLS-2$
+    for (Style style : this.getStyles()) {
+      result += "\tStyle " + style + "\n"; //$NON-NLS-1$//$NON-NLS-2$
     }
+    return result;
+  }
 
-    /**
-     * @param sld
-     *            the sld to set
-     */
-    public final void setSld(StyledLayerDescriptor sld) {
-        this.sld = sld;
-        System.err
-                .println("set layer " + this.getName() + " SLD = " + this.sld);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public IFeatureCollection<? extends IFeature> getFeatureCollection() {
-        /*
-         * TODO Récupèrer la population à partir d'un vrai DataSet Pour
-         * l'instant, on utilise un singleton de DataSet qu'il faut donc avoir
-         * remplit au préalable...
-         */
-        DataSet dataset = (this.sld != null) ? this.sld.getDataSet() : DataSet
-                .getInstance();
-        IFeatureCollection<IFeature> pop = (IFeatureCollection<IFeature>) dataset
-                .getPopulation(this.getName());
-        if (pop == null) {
-            pop = new FT_FeatureCollection<IFeature>();
-            IDataSet<?> dataSet = dataset.getComposant(this.getName());
-            for (IPopulation<? extends IFeature> population : dataSet
-                    .getPopulations()) {
-                pop.addCollection((FT_FeatureCollection<IFeature>) population);
-            }
+  @SuppressWarnings("nls")
+  @Override
+  public void destroy() {
+    if (this.getFeatureCollection() != null) {
+      if (this.getFeatureCollection().hasSpatialIndex()) {
+        this.getFeatureCollection().getSpatialIndex().clear();
+      }
+      for (IFeature feat : this.getFeatureCollection()) {
+        if (feat instanceof FT_Coverage) {
+          ((FT_Coverage) feat).coverage().dispose(true);
         }
-        return pop;
+        feat.setPopulation(null);
+        feat.setGeom(null);
+        feat.setFeatureType(null);
+      }
+      DataSet dataset = (this.sld != null) ? this.sld.getDataSet()
+          : DataSet.getInstance();
+      dataset.removePopulation(dataset.getPopulation(this.getName()));
     }
-
-    @Override
-    public String toString() {
-        String result = "NamedLayer " + this.getName() + "\n"; //$NON-NLS-1$ //$NON-NLS-2$
-        for (Style style : this.getStyles()) {
-            result += "\tStyle " + style + "\n"; //$NON-NLS-1$//$NON-NLS-2$
-        }
-        return result;
-    }
-
-    @SuppressWarnings("nls")
-    @Override
-    public void destroy() {
-        if (this.getFeatureCollection().hasSpatialIndex()) {
-            this.getFeatureCollection().getSpatialIndex().clear();
-        }
-        for (IFeature feat : this.getFeatureCollection()) {
-            if (feat instanceof FT_Coverage) {
-                ((FT_Coverage) feat).coverage().dispose(true);
-            }
-            feat.setPopulation(null);
-            feat.setGeom(null);
-            feat.setFeatureType(null);
-        }
-        DataSet dataset = (this.sld != null) ? this.sld.getDataSet() : DataSet
-                .getInstance();
-        dataset.removePopulation(dataset.getPopulation(this.getName()));
-        this.sld = null;
-    }
+    this.sld = null;
+  }
 
 }

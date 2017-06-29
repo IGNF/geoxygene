@@ -1,14 +1,14 @@
 package fr.ign.cogit.geoxygene.osm.importexport;
 
 public abstract class PrimitiveGeomOSM {
-	private OSMResource objet;
+  private OSMResource objet;
 
-	public void setObjet(OSMResource objet) {
-		this.objet = objet;
-	}
+  public void setObjet(OSMResource objet) {
+    this.objet = objet;
+  }
 
-	public OSMResource getObjet() {
-		return objet;
-	}
-	
+  public OSMResource getObjet() {
+    return objet;
+  }
+
 }

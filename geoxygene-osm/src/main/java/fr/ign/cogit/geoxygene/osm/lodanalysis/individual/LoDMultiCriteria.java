@@ -7,18 +7,17 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
-import fr.ign.cogit.cartagen.util.multicriteriadecision.Criterion;
-import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.ConclusionIntervals;
-import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.electretri.RobustELECTRETRIMethod;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.contrib.multicriteriadecision.Criterion;
+import fr.ign.cogit.geoxygene.contrib.multicriteriadecision.classifying.ConclusionIntervals;
+import fr.ign.cogit.geoxygene.contrib.multicriteriadecision.classifying.electretri.RobustELECTRETRIMethod;
 import fr.ign.cogit.geoxygene.osm.lodanalysis.LoDCategory;
-import fr.ign.cogit.geoxygene.osm.schema.OsmGeneObj;
+import fr.ign.cogit.geoxygene.osm.schema.OSMFeature;
 
 /**
  * This class provides static methods to build multiple criteria analysis of
@@ -68,7 +67,7 @@ public class LoDMultiCriteria {
    * @param crit
    * @return
    */
-  public static Map<String, Object> initParameters(OsmGeneObj obj,
+  public static Map<String, Object> initParameters(OSMFeature obj,
       Criterion crit) {
     Map<String, Object> param = new HashMap<String, Object>();
     if ((crit instanceof EdgeLengthMedianCriterion)
@@ -99,19 +98,17 @@ public class LoDMultiCriteria {
    * @param popName
    * @return
    */
-  public static double computeGlobalDensity(String popName) {
-    IPopulation<IGeneObj> pop = CartAGenDocOld.getInstance()
-        .getCurrentDataset().getCartagenPop(popName);
+  public static double computeGlobalDensity(IPopulation<IFeature> pop) {
     IEnvelope env = pop.getEnvelope();
     double numerator = pop.size();
     IGeometry geom = pop.get(0).getGeom();
     if (geom instanceof ILineString) {
       numerator = 0.0;
-      for (IGeneObj obj : pop)
+      for (IFeature obj : pop)
         numerator += obj.getGeom().length();
     } else if (geom instanceof IPolygon) {
       numerator = 0.0;
-      for (IGeneObj obj : pop)
+      for (IFeature obj : pop)
         numerator += obj.getGeom().area();
     }
     return numerator / (env.height() * env.width());

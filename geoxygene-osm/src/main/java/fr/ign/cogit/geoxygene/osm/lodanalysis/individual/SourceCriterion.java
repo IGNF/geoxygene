@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.electretri.ELECTRECriterion;
+import fr.ign.cogit.geoxygene.contrib.multicriteriadecision.classifying.electretri.ELECTRECriterion;
 import fr.ign.cogit.geoxygene.osm.schema.OsmSource;
 
 /**
@@ -20,8 +20,8 @@ public class SourceCriterion extends ELECTRECriterion {
   // //////////////////////////////////////////
 
   // All static fields //
-  private static Logger logger = Logger.getLogger(SourceCriterion.class
-      .getName());
+  private static Logger logger = Logger
+      .getLogger(SourceCriterion.class.getName());
 
   // Public fields //
 

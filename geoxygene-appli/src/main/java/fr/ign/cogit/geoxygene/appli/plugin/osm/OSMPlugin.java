@@ -74,21 +74,17 @@ import fr.ign.cogit.cartagen.core.genericschema.IGeneObjPoint;
 import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
+import fr.ign.cogit.cartagen.osm.schema.OsmGeneObj;
+import fr.ign.cogit.cartagen.osm.schema.landuse.OsmLandUseTypology;
+import fr.ign.cogit.cartagen.osm.schema.network.OsmNetworkSection;
+import fr.ign.cogit.cartagen.osm.schema.urban.OsmBuilding;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
-import fr.ign.cogit.cartagen.software.dataset.DataSetZone;
-import fr.ign.cogit.cartagen.software.dataset.DigitalCartographicModel;
-import fr.ign.cogit.cartagen.software.dataset.GeographicClass;
 import fr.ign.cogit.cartagen.software.dataset.PostgisDB;
-import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.OsmFileFilter;
 import fr.ign.cogit.cartagen.spatialanalysis.clustering.AdjacencyClustering;
 import fr.ign.cogit.cartagen.util.LastSessionParameters;
-import fr.ign.cogit.cartagen.util.multicriteriadecision.Criterion;
-import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.ClassificationResult;
-import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.ConclusionIntervals;
-import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.electretri.RobustELECTRETRIMethod;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
@@ -101,13 +97,15 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
-import fr.ign.cogit.geoxygene.appli.layer.LayerFactory;
 import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.ProjectFramePlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
-import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenProjectPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.SelectionUtil;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
+import fr.ign.cogit.geoxygene.contrib.multicriteriadecision.Criterion;
+import fr.ign.cogit.geoxygene.contrib.multicriteriadecision.classifying.ClassificationResult;
+import fr.ign.cogit.geoxygene.contrib.multicriteriadecision.classifying.ConclusionIntervals;
+import fr.ign.cogit.geoxygene.contrib.multicriteriadecision.classifying.electretri.RobustELECTRETRIMethod;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.Population;
@@ -116,8 +114,6 @@ import fr.ign.cogit.geoxygene.osm.contributor.OSMContributor;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMLoader;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMLoader.OSMLoaderType;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMLoader.OsmLoadingTask;
-import fr.ign.cogit.geoxygene.osm.importexport.OpenStreetMapDb;
-import fr.ign.cogit.geoxygene.osm.importexport.OsmDataset;
 import fr.ign.cogit.geoxygene.osm.lodanalysis.LoDCategory;
 import fr.ign.cogit.geoxygene.osm.lodanalysis.individual.CoalescenceCriterion;
 import fr.ign.cogit.geoxygene.osm.lodanalysis.individual.EdgeLengthMedianCriterion;
@@ -138,10 +134,6 @@ import fr.ign.cogit.geoxygene.osm.quality.spatialrelations.SchoolQualityAssessme
 import fr.ign.cogit.geoxygene.osm.quality.spatialrelations.StationQualityAssessment;
 import fr.ign.cogit.geoxygene.osm.quality.spatialrelations.StoreQualityAssessment;
 import fr.ign.cogit.geoxygene.osm.schema.OSMFeature;
-import fr.ign.cogit.geoxygene.osm.schema.OsmGeneObj;
-import fr.ign.cogit.geoxygene.osm.schema.landuse.OsmLandUseTypology;
-import fr.ign.cogit.geoxygene.osm.schema.network.OsmNetworkSection;
-import fr.ign.cogit.geoxygene.osm.schema.urban.OsmBuilding;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
@@ -149,7 +141,6 @@ import fr.ign.cogit.geoxygene.style.Fill;
 import fr.ign.cogit.geoxygene.style.Graphic;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Mark;
-import fr.ign.cogit.geoxygene.style.NamedLayer;
 import fr.ign.cogit.geoxygene.style.PointSymbolizer;
 import fr.ign.cogit.geoxygene.style.Rule;
 import fr.ign.cogit.geoxygene.style.Stroke;
@@ -179,7 +170,6 @@ public class OSMPlugin
   private JProgressBar progressBar;
   private JLabel taskLabel;
   private OsmLoadingTask currentTask = OsmLoadingTask.POINTS;
-  private OpenStreetMapDb database;
 
   @Override
   public void initialize(GeOxygeneApplication application) {
@@ -287,34 +277,16 @@ public class OSMPlugin
         } catch (IOException e1) {
           e1.printStackTrace();
         }
-        // build database & dataset
-        CartAGenDoc.getInstance().setZone(new DataSetZone(name, null));
-
-        // create the new CartAGen dataset
-        database = new OpenStreetMapDb(name);
-        database.setSourceDLM(SourceDLM.OpenStreetMap);
-        database.setSymboScale(25000);
-        database.setDocument(CartAGenDoc.getInstance());
-        OsmDataset dataset = new OsmDataset();
-        CartAGenDoc.getInstance().addDatabase(name, database);
-        CartAGenDoc.getInstance().setCurrentDataset(dataset);
-        database.setDataSet(dataset);
-        database.setType(new DigitalCartographicModel());
-
         fillLayersTask = new Runnable() {
           @Override
           public void run() {
-            try {
-              addOsmDatabaseToFrame();
-            } catch (JAXBException e) {
-              e.printStackTrace();
-            }
             application.getMainFrame().getGui().setCursor(null);
           }
         };
 
-        loader = new OSMLoader(osmFile, dataset, fillLayersTask, epsg,
-            tagFilter, OSMLoaderType.XML);
+        loader = new OSMLoader(osmFile,
+            application.getMainFrame().getSelectedProjectFrame().getSld(),
+            fillLayersTask, epsg, tagFilter, OSMLoaderType.XML);
         createProgressDialog();
         loader.setDialog(dialog);
         dialog.setVisible(true);
@@ -543,12 +515,12 @@ public class OSMPlugin
       int y = (int) CartAGenPlugin.getInstance().getApplication().getMainFrame()
           .getSelectedProjectFrame().getLayerViewPanel().getBounds()
           .getCenterY();
-      List<OsmGeneObj> selectedObjs = new ArrayList<OsmGeneObj>();
+      List<OSMFeature> selectedObjs = new ArrayList<OSMFeature>();
       for (IFeature obj : SelectionUtil.getSelectedObjects(application)) {
-        if (!(obj instanceof OsmGeneObj)) {
+        if (!(obj instanceof OSMFeature)) {
           continue;
         }
-        selectedObjs.add((OsmGeneObj) obj);
+        selectedObjs.add((OSMFeature) obj);
       }
       try {
         OSMTagBrowser browser = new OSMTagBrowser(new Point(x, y),
@@ -608,34 +580,17 @@ public class OSMPlugin
         e1.printStackTrace();
       }
 
-      // build database & dataset
-      CartAGenDoc.getInstance().setZone(new DataSetZone(name, null));
-
-      // create the new CartAGen dataset
-      database = new OpenStreetMapDb(name);
-      database.setSourceDLM(SourceDLM.OpenStreetMap);
-      database.setSymboScale(25000);
-      database.setDocument(CartAGenDoc.getInstance());
-      OsmDataset dataset = new OsmDataset();
-      CartAGenDoc.getInstance().addDatabase(name, database);
-      CartAGenDoc.getInstance().setCurrentDataset(dataset);
-      database.setDataSet(dataset);
-      database.setType(new DigitalCartographicModel());
-
       fillLayersTask = new Runnable() {
         @Override
         public void run() {
-          try {
-            addOsmDatabaseToFrame();
-          } catch (JAXBException e) {
-            e.printStackTrace();
-          }
           application.getMainFrame().getGui().setCursor(null);
         }
       };
 
-      loader = new OSMLoader(file.getFile(), dataset, fillLayersTask,
-          file.getEpsg(), file.getTagFilter(), OSMLoaderType.XML);
+      loader = new OSMLoader(file.getFile(),
+          application.getMainFrame().getSelectedProjectFrame().getSld(),
+          fillLayersTask, file.getEpsg(), file.getTagFilter(),
+          OSMLoaderType.XML);
       createProgressDialog();
       loader.setDialog(dialog);
       dialog.setVisible(true);
@@ -1159,62 +1114,6 @@ public class OSMPlugin
     }
   }
 
-  /**
-   * Relates a {@link OpenSteetMapDB} to a {@link ProjectFrame} of the
-   * application. Fills the layers of the project frame with the database
-   * objects.
-   * 
-   * @param db
-   */
-  public void addOsmDatabaseToFrame() throws JAXBException {
-    // s'il y a une seule project frame et qu'elle est vide, on la supprime
-    if (application.getMainFrame().getDesktopProjectFrames().length == 1) {
-      ProjectFrame frameIni = application.getMainFrame()
-          .getDesktopProjectFrames()[0];
-      if (frameIni.getLayers().size() == 0) {
-        application.getMainFrame().removeAllProjectFrames();
-      }
-    }
-    ProjectFrame frame = application.getMainFrame().newProjectFrame();
-    CartAGenPlugin.getInstance().getMapDbFrame().put(database.getName(), frame);
-    frame.getSld().setDataSet(database.getDataSet());
-    frame.getLayerViewPanel().getRenderingManager().setHandlingDeletion(true);
-    StyledLayerDescriptor defaultSld = compileOsmSlds();
-    database.getDataSet().setSld(defaultSld);
-    StyledLayerDescriptor.unmarshall(OSMLoader.class.getClassLoader()
-        .getResourceAsStream("sld/roads_sld.xml")); //$NON-NLS-1$
-    float opacity = 0.8f;
-    float strokeWidth = 1.0f;
-    for (GeographicClass geoClass : database.getClasses()) {
-      String populationName = database.getDataSet()
-          .getPopNameFromFeatType(geoClass.getFeatureTypeName());
-      if (frame.getSld().getLayer(populationName) == null) {
-        Color fillColor = new Color((float) Math.random(),
-            (float) Math.random(), (float) Math.random());
-        Layer layer = new NamedLayer(frame.getSld(), populationName);
-        if (layer.getFeatureCollection().size() == 0)
-          continue;
-        if (defaultSld.getLayer(populationName) != null) {
-          layer.getStyles().clear();
-          layer.getStyles()
-              .addAll(defaultSld.getLayer(populationName).getStyles());
-        } else {
-          UserStyle style = new UserStyle();
-          style.setName("Style créé pour le layer " + populationName);//$NON-NLS-1$
-          FeatureTypeStyle fts = new FeatureTypeStyle();
-          fts.getRules().add(LayerFactory.createRule(geoClass.getGeometryType(),
-              fillColor.darker(), fillColor, opacity, opacity, strokeWidth));
-          style.getFeatureTypeStyles().add(fts);
-          layer.getStyles().add(style);
-        }
-        frame.getSld().add(layer);
-      }
-    }
-
-    // initialise the frame with cartagen plugin
-    CartAGenProjectPlugin.getInstance().initialize(frame);
-  }
-
   private StyledLayerDescriptor compileOsmSlds() throws JAXBException {
     // load road sld
     StyledLayerDescriptor defaultSld = StyledLayerDescriptor
@@ -1518,11 +1417,12 @@ public class OSMPlugin
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      OsmDataset dataset = (OsmDataset) CartAGenDoc.getInstance()
-          .getCurrentDataset();
       Collection<OSMFeature> features = new HashSet<>();
-      for (IGeneObj obj : dataset.getAllDatasetFeatures())
-        features.add((OsmGeneObj) obj);
+      for (Layer layer : application.getMainFrame().getSelectedProjectFrame()
+          .getLayers()) {
+        for (IFeature obj : layer.getFeatureCollection())
+          features.add((OSMFeature) obj);
+      }
 
       // get the contributors from the contributions
       Collection<OSMContributor> contributors = OSMContributor
@@ -1607,11 +1507,12 @@ public class OSMPlugin
       // String contribName = JOptionPane
       // .showInputDialog("Enter the name of the user");
       String contribName = "Balaïtous";
-      OsmDataset dataset = (OsmDataset) CartAGenDoc.getInstance()
-          .getCurrentDataset();
       Collection<OSMFeature> features = new HashSet<>();
-      for (IGeneObj obj : dataset.getAllDatasetFeatures())
-        features.add((OsmGeneObj) obj);
+      for (Layer layer : application.getMainFrame().getSelectedProjectFrame()
+          .getLayers()) {
+        for (IFeature obj : layer.getFeatureCollection())
+          features.add((OSMFeature) obj);
+      }
 
       // get the contributors from the contributions
       Collection<OSMContributor> contributors = OSMContributor
@@ -1698,11 +1599,12 @@ public class OSMPlugin
       // String contribName = JOptionPane
       // .showInputDialog("Enter the name of the user");
       String contribName = "Balaïtous";
-      OsmDataset dataset = (OsmDataset) CartAGenDoc.getInstance()
-          .getCurrentDataset();
       Collection<OSMFeature> features = new HashSet<>();
-      for (IGeneObj obj : dataset.getAllDatasetFeatures())
-        features.add((OsmGeneObj) obj);
+      for (Layer layer : application.getMainFrame().getSelectedProjectFrame()
+          .getLayers()) {
+        for (IFeature obj : layer.getFeatureCollection())
+          features.add((OSMFeature) obj);
+      }
 
       // get the contributors from the contributions
       Collection<OSMContributor> contributors = OSMContributor
