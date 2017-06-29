@@ -17,6 +17,7 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.osm.schema.OSMFeature;
 
@@ -32,6 +33,7 @@ public class OSMContributor implements INode {
 	private int nbOfNightTimeContributions;
 	private int nbOfCreatedObjects;
 	private int nbOfDayRecord;
+	private IGeometry activityAreas;
 
 	public OSMContributor(IFeatureCollection<OSMFeature> contributions, String name, int id) {
 		super();
@@ -428,6 +430,14 @@ public class OSMContributor implements INode {
 	public Map<INode, IEdge> getNeighbourEdgeNode() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public IGeometry getActivityAreas() {
+		return activityAreas;
+	}
+
+	public void setActivityAreas(IGeometry activityAreas) {
+		this.activityAreas = activityAreas;
 	}
 
 }

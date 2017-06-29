@@ -13,11 +13,14 @@ import java.util.List;
 
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.SimpleWeightedGraph;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMObject;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMResource;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMWay;
+import fr.ign.cogit.geoxygene.osm.importexport.metrics.ContributorAssessment;
 import fr.ign.cogit.geoxygene.osm.importexport.metrics.IntrinsicAssessment;
 import fr.ign.cogit.geoxygene.osm.importexport.postgis.LoadFromPostGIS;
 
@@ -45,18 +48,34 @@ public class SocialGraph<V, E> {
 		List<String> timespan = new ArrayList<String>();
 		timespan.add("2010-01-01");
 		timespan.add("2015-01-01");
-		loader.selectNodes(bbox, timespan);
-		loader.selectWays(bbox, timespan);
-		DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> usegraph = createUseGraph(loader.myJavaObjects);
-		writeGraph2CSV(usegraph, new File("paris_usegraph_20100101_20150101.csv"));
-		// HashMap<Long, OSMObject> nodeOSMObjects =
-		// IntrinsicAssessment.nodeContributionSummary(loader.myJavaObjects);
+		// loader.selectNodes(bbox, timespan);
+		// loader.selectWays(bbox, timespan);
+		// DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> usegraph =
+		// createUseGraph(loader.myJavaObjects);
+		// writeGraph2CSV(usegraph, new
+		// File("paris_usegraph_20100101_20150101.csv"));
+		List<Double> bbox1 = new ArrayList<Double>();
+		bbox1.add(2.3322);
+		bbox1.add(48.8489);
+		bbox1.add(2.3634);
+		bbox1.add(48.8627);
+		List<String> timespan1 = new ArrayList<String>();
+		timespan1.add("2010-01-01");
+		timespan1.add("2010-06-01");
+		loader.selectNodes(bbox1, timespan1);
+		HashMap<Long, OSMObject> nodeOSMObjects = IntrinsicAssessment.nodeContributionSummary(loader.myJavaObjects);
 		// HashMap<Long, OSMObject> wayOSMObjects =
 		// IntrinsicAssessment.wayContributionSummary(loader.myJavaObjects);
-		// HashMap<Long, OSMContributor> myOSMContributors =
-		// ContributorAssessment
-		// .contributorSummary(loader.myJavaObjects);
-
+		HashMap<Long, OSMContributor> myOSMContributors = ContributorAssessment
+				.contributorSummary(loader.myJavaObjects);
+		// SimpleWeightedGraph<Long, DefaultWeightedEdge> colocationG =
+		// createCoLocationGraph(myOSMContributors, bbox1,
+		// timespan1);
+		// writeCoLocationGraph2CSV(colocationG, new
+		// File("paris_colocationgraph_20100101_20150101.csv"));
+		DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> colocationG = createCoLocationGraph2(myOSMContributors,
+				bbox1, timespan1);
+		writeGraph2CSV(colocationG, new File("paris_colocationgraph2_20100101_20150101.csv"));
 		// DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge>
 		// coeditionGraph = createCoEditionGraph(nodeOSMObjects,
 		// myOSMContributors);
@@ -628,6 +647,111 @@ public class SocialGraph<V, E> {
 		}
 	}
 
+	public static SimpleWeightedGraph<Long, DefaultWeightedEdge> createCoLocationGraph(
+			HashMap<Long, OSMContributor> myOSMContributors, List<Double> bbox, List<String> timespan)
+			throws Exception {
+		SimpleWeightedGraph<Long, DefaultWeightedEdge> g = new SimpleWeightedGraph<Long, DefaultWeightedEdge>(
+				DefaultWeightedEdge.class);
+		// Remplit pour chaque OSMContributor l'attribut ActivityAreas
+		assignActivityAreas(myOSMContributors, bbox, timespan);
+		// OSMContributor[] myContributorList = (OSMContributor[])
+		// myOSMContributors.values().toArray();
+		List<OSMContributor> myContributorList = new ArrayList<OSMContributor>();
+		for (OSMContributor contributor : myOSMContributors.values()) {
+			myContributorList.add(contributor);
+		}
+
+		for (int i = 0; i < myContributorList.size() - 1; i++) {
+			IGeometry areaCurrentContributor = myContributorList.get(i).getActivityAreas();
+			if (areaCurrentContributor == null)
+				continue;
+			if (!g.containsVertex((long) myContributorList.get(i).getId()))
+				g.addVertex((long) myContributorList.get(i).getId());
+			for (int j = i + 1; j < myOSMContributors.size(); j++) {
+				if (!g.containsVertex((long) myContributorList.get(j).getId()))
+					g.addVertex((long) myContributorList.get(j).getId());
+				IGeometry areaNextContributor = myContributorList.get(j).getActivityAreas();
+				if (areaNextContributor == null)
+					continue;
+				System.out.println(areaNextContributor.area());
+				boolean intersects = areaCurrentContributor.intersects(areaNextContributor);
+				if (intersects) {
+					double union = areaCurrentContributor.union(areaNextContributor).area();
+					double intersection = areaCurrentContributor.intersection(areaNextContributor).area();
+					double distance = 1 - intersection / union;
+					DefaultWeightedEdge e = g.addEdge((long) myContributorList.get(i).getId(),
+							(long) myContributorList.get(j).getId());
+					if (distance > 0)
+						g.setEdgeWeight(e, 1 / distance);
+					else
+						g.setEdgeWeight(e, Double.POSITIVE_INFINITY);
+				}
+
+			}
+		}
+
+		return g;
+	}
+
+	public static DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> createCoLocationGraph2(
+			HashMap<Long, OSMContributor> myOSMContributors, List<Double> bbox, List<String> timespan)
+			throws Exception {
+		DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> g = new DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge>(
+				DefaultWeightedEdge.class);
+		// Remplit pour chaque OSMContributor l'attribut ActivityAreas
+		assignActivityAreas(myOSMContributors, bbox, timespan);
+		// OSMContributor[] myContributorList = (OSMContributor[])
+		// myOSMContributors.values().toArray();
+		List<OSMContributor> myContributorList = new ArrayList<OSMContributor>();
+		for (OSMContributor contributor : myOSMContributors.values()) {
+			myContributorList.add(contributor);
+		}
+
+		for (OSMContributor contributor : myOSMContributors.values()) {
+			IGeometry areaCurrentContributor = contributor.getActivityAreas();
+			if (areaCurrentContributor == null)
+				continue;
+			if (!g.containsVertex((long) contributor.getId()))
+				g.addVertex((long) contributor.getId());
+			for (OSMContributor nextContributor : myOSMContributors.values()) {
+				if (contributor.equals(nextContributor))
+					continue;
+				if (!g.containsVertex((long) nextContributor.getId()))
+					g.addVertex((long) nextContributor.getId());
+				IGeometry areaNextContributor = nextContributor.getActivityAreas();
+				if (areaNextContributor == null)
+					continue;
+				System.out.println(areaNextContributor.area());
+				boolean intersects = areaCurrentContributor.intersects(areaNextContributor);
+				if (intersects) {
+					double intersection = areaCurrentContributor.intersection(areaNextContributor).area();
+					double distance = 1 - intersection / areaCurrentContributor.area();
+					DefaultWeightedEdge e = g.addEdge((long) contributor.getId(), (long) nextContributor.getId());
+					if (distance > 0)
+						g.setEdgeWeight(e, 1 / distance);
+					else
+						g.setEdgeWeight(e, Double.POSITIVE_INFINITY);
+				}
+
+			}
+		}
+
+		return g;
+	}
+
+	/**
+	 * Computes for each OSMContributor of the input list of contributors the
+	 * activity areas
+	 **/
+	public static void assignActivityAreas(HashMap<Long, OSMContributor> myOSMContributors, List<Double> bbox,
+			List<String> timespan) throws Exception {
+		for (Long uid : myOSMContributors.keySet()) {
+			List<OSMResource> uidNodes = ActivityArea.selectNodesByUid(uid, bbox, timespan);
+			IGeometry uidArea = ActivityArea.getActivityAreas(uidNodes);
+			myOSMContributors.get(uid).setActivityAreas(uidArea);
+		}
+	}
+
 	public static void writeGraph2CSV(DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> usegraph, File file)
 			throws IOException {
 		CSVWriter writer = new CSVWriter(new FileWriter(file), ';');
@@ -642,6 +766,25 @@ public class SocialGraph<V, E> {
 			line[0] = String.valueOf(usegraph.getEdgeSource(e).longValue());
 			line[1] = String.valueOf(usegraph.getEdgeTarget(e).longValue());
 			line[2] = String.valueOf(usegraph.getEdgeWeight(e));
+			writer.writeNext(line);
+		}
+		writer.close();
+	}
+
+	public static void writeCoLocationGraph2CSV(SimpleWeightedGraph<Long, DefaultWeightedEdge> colocationgraph,
+			File file) throws IOException {
+		CSVWriter writer = new CSVWriter(new FileWriter(file), ';');
+		// write header
+		String[] line = new String[3];
+		line[0] = "source";
+		line[1] = "target";
+		line[2] = "weight";
+		writer.writeNext(line);
+		for (DefaultWeightedEdge e : colocationgraph.edgeSet()) {
+			line = new String[3];
+			line[0] = String.valueOf(colocationgraph.getEdgeSource(e).longValue());
+			line[1] = String.valueOf(colocationgraph.getEdgeTarget(e).longValue());
+			line[2] = String.valueOf(colocationgraph.getEdgeWeight(e));
 			writer.writeNext(line);
 		}
 		writer.close();

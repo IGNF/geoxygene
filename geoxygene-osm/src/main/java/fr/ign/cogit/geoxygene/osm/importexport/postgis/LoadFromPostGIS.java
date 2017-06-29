@@ -55,8 +55,8 @@ public class LoadFromPostGIS {
 		List<String> timespan = new ArrayList<String>();
 		timespan.add("2014-01-01");
 		timespan.add("2015-01-01");
-		// loader.selectNodes(bbox, timespan);
-		loader.selectWaysInit(bbox, "2014-01-01");
+		loader.selectNodes(bbox, timespan);
+		// loader.selectWaysInit(bbox, "2014-01-01");
 
 	}
 

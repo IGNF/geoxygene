@@ -42,50 +42,53 @@ import fr.ign.cogit.geoxygene.style.Layer;
  * @author Julien Perret
  */
 public class TriangulationJTSPlugin extends AbstractGeOxygeneApplicationPlugin {
-  
-  /** Logger. */
-  static final Logger LOGGER = Logger.getLogger(Triangulation.class.getName());
 
-  /**
-   * Initialize the plugin.
-   * @param application the application
-   */
-  @Override
-  public final void initialize(final GeOxygeneApplication application) {
-    this.application = application;
-    
-    JMenu menu = addMenu("Geometry Algorithms", "TriangulationJTS");
-    application.getMainFrame().getMenuBar().add(menu, application.getMainFrame().getMenuBar().getMenuCount() - 2);
-  }
+	/** Logger. */
+	static final Logger LOGGER = Logger.getLogger(Triangulation.class.getName());
 
-  @Override
-  public void actionPerformed(final ActionEvent e) {
-    ProjectFrame project = this.application.getMainFrame().getSelectedProjectFrame();
-    Set<Layer> selectedLayers = project.getLayerLegendPanel().getSelectedLayers();
-    if (selectedLayers.size() != 1) {
-      javax.swing.JOptionPane.showMessageDialog(null, "You need to select one (and only one) layer.");
-      LOGGER.error("You need to select one (and only one) layer."); //$NON-NLS-1$
-      return;
-    }
-    Layer layer = selectedLayers.iterator().next();
-    
-    TriangulationJTS triangulation = new TriangulationJTS("TriangulationJTS");
-    triangulation.importAsNodes(layer.getFeatureCollection());
-    try {
-      triangulation.triangule();
-    } catch (Exception e1) {
-      e1.printStackTrace();
-    }
-    
-    Population<Face> popTriangles = new Population<Face>("Triangles");
-    popTriangles.setElements(triangulation.getPopFaces().getElements());
-    
-    /** créer un featuretype de jeu correspondant */
-    FeatureType newFeatureTypeExterieurs = new FeatureType();
-    newFeatureTypeExterieurs.setGeometryType(GM_Polygon.class);
-    popTriangles.setFeatureType(newFeatureTypeExterieurs);
-    // DataSet.getInstance().addPopulation(popTriangles);
-    LOGGER.info(popTriangles);
-    project.addUserLayer(popTriangles, popTriangles.getNom(), null);
-  }
+	/**
+	 * Initialize the plugin.
+	 * 
+	 * @param application
+	 *            the application
+	 */
+	@Override
+	public final void initialize(final GeOxygeneApplication application) {
+		this.application = application;
+
+		JMenu menu = addMenu("Geometry Algorithms", "TriangulationJTS");
+		application.getMainFrame().getMenuBar().add(menu, application.getMainFrame().getMenuBar().getMenuCount() - 2);
+	}
+
+	@Override
+	public void actionPerformed(final ActionEvent e) {
+		ProjectFrame project = this.application.getMainFrame().getSelectedProjectFrame();
+		Set<Layer> selectedLayers = project.getLayerLegendPanel().getSelectedLayers();
+		if (selectedLayers.size() != 1) {
+			javax.swing.JOptionPane.showMessageDialog(null, "You need to select one (and only one) layer.");
+			LOGGER.error("You need to select one (and only one) layer."); //$NON-NLS-1$
+			return;
+		}
+		Layer layer = selectedLayers.iterator().next();
+
+		TriangulationJTS triangulation = new TriangulationJTS("TriangulationJTS");
+		System.out.println("layer.getFeatureCollection().size() : " + layer.getFeatureCollection().size());
+		triangulation.importAsNodes(layer.getFeatureCollection());
+		try {
+			triangulation.triangule();
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+
+		Population<Face> popTriangles = new Population<Face>("Triangles");
+		popTriangles.setElements(triangulation.getPopFaces().getElements());
+
+		/** créer un featuretype de jeu correspondant */
+		FeatureType newFeatureTypeExterieurs = new FeatureType();
+		newFeatureTypeExterieurs.setGeometryType(GM_Polygon.class);
+		popTriangles.setFeatureType(newFeatureTypeExterieurs);
+		// DataSet.getInstance().addPopulation(popTriangles);
+		LOGGER.info(popTriangles);
+		project.addUserLayer(popTriangles, popTriangles.getNom(), null);
+	}
 }
