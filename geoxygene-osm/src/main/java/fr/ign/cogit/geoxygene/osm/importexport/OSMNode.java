@@ -31,4 +31,5 @@ public class OSMNode extends PrimitiveGeomOSM {
 		// return new DirectPosition(latitude, longitude);
 		return new DirectPosition(longitude, latitude);
 	}
+
 }

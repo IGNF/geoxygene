@@ -5,34 +5,33 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
-import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
-import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
-import fr.ign.cogit.cartagen.util.multicriteriadecision.Criterion;
-import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.ConclusionIntervals;
-import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.electretri.RobustELECTRETRIMethod;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.contrib.multicriteriadecision.Criterion;
+import fr.ign.cogit.geoxygene.contrib.multicriteriadecision.classifying.ConclusionIntervals;
+import fr.ign.cogit.geoxygene.contrib.multicriteriadecision.classifying.electretri.RobustELECTRETRIMethod;
 import fr.ign.cogit.geoxygene.osm.lodanalysis.LoDCategory;
 import fr.ign.cogit.geoxygene.osm.lodanalysis.individual.LoDMultiCriteria;
-import fr.ign.cogit.geoxygene.osm.schema.OsmGeneObj;
+import fr.ign.cogit.geoxygene.osm.schema.OSMFeature;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.GeometryFactory;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.morphomaths.BufferComputing;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.morphomaths.Side;
 
 public class TreeAlongRoad extends LoDSpatialRelationDetection {
 
-  private double minDist, treeWidth;
+  private double minDist, treeWidth, roadWidth;
   private Set<LoDSpatialRelation> rightInstances, leftInstances;
 
-  public TreeAlongRoad(IFeatureCollection<IGeneObj> features1,
-      IFeatureCollection<IGeneObj> features2, int lodDiffThreshold,
-      double minDist, double treeWidth) {
+  public TreeAlongRoad(IFeatureCollection<IFeature> features1,
+      IFeatureCollection<IFeature> features2, int lodDiffThreshold,
+      double minDist, double treeWidth, double roadWidth) {
     super(features1, features2, lodDiffThreshold);
     this.minDist = minDist;
     this.treeWidth = treeWidth;
+    this.roadWidth = roadWidth;
     rightInstances = new HashSet<LoDSpatialRelation>();
     leftInstances = new HashSet<LoDSpatialRelation>();
   }
@@ -44,28 +43,28 @@ public class TreeAlongRoad extends LoDSpatialRelationDetection {
     RobustELECTRETRIMethod electre = LoDMultiCriteria.buildELECTRETRIMethod();
     RobustELECTRETRIMethod electrePt = LoDMultiCriteria
         .buildELECTRETRIMethodForPts();
-    ConclusionIntervals conclusion = LoDMultiCriteria.initConclusion(electre
-        .getCriteria());
+    ConclusionIntervals conclusion = LoDMultiCriteria
+        .initConclusion(electre.getCriteria());
     ConclusionIntervals conclusionPt = LoDMultiCriteria
         .initConclusion(electrePt.getCriteria());
     Set<LoDSpatialRelation> instances = new HashSet<LoDSpatialRelation>();
 
-    for (IGeneObj road : getFeatures1()) {
+    for (IFeature road : getFeatures1()) {
 
       // get the LoD category for the road
       Map<String, Double> valeursCourantes = new HashMap<String, Double>();
       for (Criterion crit : electre.getCriteria()) {
-        Map<String, Object> param = LoDMultiCriteria.initParameters(
-            (OsmGeneObj) road, crit);
+        Map<String, Object> param = LoDMultiCriteria
+            .initParameters((OSMFeature) road, crit);
         valeursCourantes.put(crit.getName(), new Double(crit.value(param)));
       }
-      LoDCategory category1 = LoDCategory.valueOf(electre.decision(
-          electre.getCriteria(), valeursCourantes, conclusion).getCategory());
+      LoDCategory category1 = LoDCategory.valueOf(
+          electre.decision(electre.getCriteria(), valeursCourantes, conclusion)
+              .getCategory());
 
       // widthBuffer is the minDist plus the theoretical width of a tree
       // if minDist is smaller than road symbol width, symbol width is used
-      double widthBuffer = ((INetworkSection) road).getWidth()
-          * Legend.getSYMBOLISATI0N_SCALE() / 1000 + treeWidth;
+      double widthBuffer = roadWidth + treeWidth;
       // create a half buffer of the road on its right side with widthBuffer
       IPolygon rightBuffer = BufferComputing.buildHalfOffsetBuffer(Side.RIGHT,
           (ILineString) road.getGeom(), widthBuffer);
@@ -73,7 +72,7 @@ public class TreeAlongRoad extends LoDSpatialRelationDetection {
       IPolygon leftBuffer = BufferComputing.buildHalfOffsetBuffer(Side.LEFT,
           (ILineString) road.getGeom(), widthBuffer);
 
-      for (IGeneObj tree : getFeatures2()) {
+      for (IFeature tree : getFeatures2()) {
         // search for trees close to the buffer
         if (rightBuffer != null
             && rightBuffer.intersects(GeometryFactory.buildCircle(
@@ -82,14 +81,14 @@ public class TreeAlongRoad extends LoDSpatialRelationDetection {
           // get the LoD category for the tree
           Map<String, Double> valeursCourantes2 = new HashMap<String, Double>();
           for (Criterion crit : electrePt.getCriteria()) {
-            Map<String, Object> param = LoDMultiCriteria.initParameters(
-                (OsmGeneObj) tree, crit);
-            valeursCourantes2
-                .put(crit.getName(), new Double(crit.value(param)));
+            Map<String, Object> param = LoDMultiCriteria
+                .initParameters((OSMFeature) tree, crit);
+            valeursCourantes2.put(crit.getName(),
+                new Double(crit.value(param)));
           }
-          LoDCategory category2 = LoDCategory.valueOf(electrePt.decision(
-              electrePt.getCriteria(), valeursCourantes2, conclusionPt)
-              .getCategory());
+          LoDCategory category2 = LoDCategory
+              .valueOf(electrePt.decision(electrePt.getCriteria(),
+                  valeursCourantes2, conclusionPt).getCategory());
 
           // analyse LoD category difference
           if (Math.abs(category1.ordinal() - category2.ordinal()) < this
@@ -109,13 +108,13 @@ public class TreeAlongRoad extends LoDSpatialRelationDetection {
           // get the LoD category for the tree
           Map<String, Double> valeursCourantes2 = new HashMap<String, Double>();
           for (Criterion crit : electre.getCriteria()) {
-            Map<String, Object> param = LoDMultiCriteria.initParameters(
-                (OsmGeneObj) tree, crit);
-            valeursCourantes2
-                .put(crit.getName(), new Double(crit.value(param)));
+            Map<String, Object> param = LoDMultiCriteria
+                .initParameters((OSMFeature) tree, crit);
+            valeursCourantes2.put(crit.getName(),
+                new Double(crit.value(param)));
           }
-          LoDCategory category2 = LoDCategory.valueOf(electre.decision(
-              electre.getCriteria(), valeursCourantes2, conclusion)
+          LoDCategory category2 = LoDCategory.valueOf(electre
+              .decision(electre.getCriteria(), valeursCourantes2, conclusion)
               .getCategory());
 
           // analyse LoD category difference

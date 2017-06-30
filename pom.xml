@@ -738,7 +738,7 @@
 	<modules>
 		<module>geoxygene-api</module>
 		<module>geoxygene-appli</module>
-		<module>geoxygene-cartagen</module>
+		
 		<module>geoxygene-carto</module>
 		<module>geoxygene-contrib</module>
 		<module>geoxygene-database</module>

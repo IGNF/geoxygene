@@ -169,15 +169,14 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>geoxygene-cartagen</artifactId>
+      <artifactId>geoxygene-io</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>geoxygene-io</artifactId>
+      <artifactId>geoxygene-database</artifactId>
       <version>${project.version}</version>
     </dependency>
-
 
         <dependency>
             <groupId>org.hibernate</groupId>

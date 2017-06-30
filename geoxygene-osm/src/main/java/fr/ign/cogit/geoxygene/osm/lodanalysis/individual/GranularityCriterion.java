@@ -4,9 +4,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.electretri.ELECTRECriterion;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.contrib.multicriteriadecision.classifying.electretri.ELECTRECriterion;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.CommonAlgorithmsFromCartAGen;
 
 /**
@@ -24,8 +24,8 @@ public class GranularityCriterion extends ELECTRECriterion {
   // //////////////////////////////////////////
 
   // All static fields //
-  private static Logger logger = Logger.getLogger(GranularityCriterion.class
-      .getName());
+  private static Logger logger = Logger
+      .getLogger(GranularityCriterion.class.getName());
 
   // Public fields //
 

@@ -2,7 +2,7 @@ package fr.ign.cogit.geoxygene.osm.lodanalysis.relations;
 
 import java.util.Set;
 
-import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 
 /**
@@ -13,30 +13,30 @@ import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
  */
 public abstract class LoDSpatialRelationDetection {
 
-  private IFeatureCollection<IGeneObj> features1, features2;
+  private IFeatureCollection<IFeature> features1, features2;
   private int lodDiffThreshold;
 
-  public LoDSpatialRelationDetection(IFeatureCollection<IGeneObj> features1,
-      IFeatureCollection<IGeneObj> features2, int lodDiffThreshold) {
+  public LoDSpatialRelationDetection(IFeatureCollection<IFeature> features1,
+      IFeatureCollection<IFeature> features2, int lodDiffThreshold) {
     super();
     this.features1 = features1;
     this.features2 = features2;
     this.lodDiffThreshold = lodDiffThreshold;
   }
 
-  public void setFeatures2(IFeatureCollection<IGeneObj> features2) {
+  public void setFeatures2(IFeatureCollection<IFeature> features2) {
     this.features2 = features2;
   }
 
-  public IFeatureCollection<IGeneObj> getFeatures2() {
+  public IFeatureCollection<IFeature> getFeatures2() {
     return features2;
   }
 
-  public void setFeatures1(IFeatureCollection<IGeneObj> features1) {
+  public void setFeatures1(IFeatureCollection<IFeature> features1) {
     this.features1 = features1;
   }
 
-  public IFeatureCollection<IGeneObj> getFeatures1() {
+  public IFeatureCollection<IFeature> getFeatures1() {
     return features1;
   }
 

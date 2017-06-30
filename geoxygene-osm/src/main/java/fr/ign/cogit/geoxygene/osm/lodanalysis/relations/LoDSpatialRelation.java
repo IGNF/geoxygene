@@ -1,15 +1,15 @@
 package fr.ign.cogit.geoxygene.osm.lodanalysis.relations;
 
-import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.osm.lodanalysis.LoDCategory;
 
 public class LoDSpatialRelation {
 
-  private IGeneObj feature1, feature2;
+  private IFeature feature1, feature2;
   private LoDCategory category1, category2;
   private String name;
 
-  public LoDSpatialRelation(IGeneObj feature1, IGeneObj feature2,
+  public LoDSpatialRelation(IFeature feature1, IFeature feature2,
       LoDCategory category1, LoDCategory category2, String name) {
     super();
     this.feature1 = feature1;
@@ -19,19 +19,19 @@ public class LoDSpatialRelation {
     this.setName(name);
   }
 
-  public IGeneObj getFeature1() {
+  public IFeature getFeature1() {
     return feature1;
   }
 
-  public void setFeature1(IGeneObj feature1) {
+  public void setFeature1(IFeature feature1) {
     this.feature1 = feature1;
   }
 
-  public IGeneObj getFeature2() {
+  public IFeature getFeature2() {
     return feature2;
   }
 
-  public void setFeature2(IGeneObj feature2) {
+  public void setFeature2(IFeature feature2) {
     this.feature2 = feature2;
   }
 

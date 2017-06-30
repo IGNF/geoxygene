@@ -51,11 +51,15 @@ public class ActivityArea {
 		timespan.add("2010-01-01");
 		timespan.add("2015-01-01");
 		List<OSMResource> osmNodeList1556219 = selectNodesByUid((long) 1556219, bbox, timespan);
-		System.out.println(osmNodeList1556219.size());
-		IGeometry aggregatedAreas = getActivityAreas(osmNodeList1556219);
-		IFeatureCollection<DefaultFeature> denseActivityAreas = getDenseActivityAreas(aggregatedAreas,
+		List<OSMResource> osmNodeList17286 = selectNodesByUid((long) 17286, bbox, timespan);
+		IGeometry aggregatedAreas1556219 = getActivityAreas(osmNodeList1556219);
+		IGeometry aggregatedAreas17286 = getActivityAreas(osmNodeList17286);
+		IFeatureCollection<DefaultFeature> denseActivityAreas17286 = getDenseActivityAreas(aggregatedAreas17286,
+				osmNodeList17286, 4);
+		IFeatureCollection<DefaultFeature> denseActivityAreas1556219 = getDenseActivityAreas(aggregatedAreas1556219,
 				osmNodeList1556219, 4);
-		System.out.println("nombre de zones d'activité :" + denseActivityAreas.size());
+		System.out.println("intersection ? "
+				+ denseActivityAreas17286.get(0).getGeom().intersects(denseActivityAreas1556219.get(0).getGeom()));
 	}
 
 	/**
@@ -144,7 +148,7 @@ public class ActivityArea {
 				boolean remove = false;
 				if (simple == null)
 					continue;
-				System.out.println(simple.area());
+				System.out.println("aire de la zone =" + simple.area() + "m carrés");
 				if (nodes.intersects(simple))
 					if (nodes.intersection(simple).numPoints() < nbPoints)
 						remove = true;

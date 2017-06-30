@@ -4,9 +4,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.electretri.ELECTRECriterion;
-import fr.ign.cogit.geoxygene.osm.schema.OsmGeneObj;
-import fr.ign.cogit.geoxygene.osm.schema.OsmGeneObjLin;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.contrib.multicriteriadecision.classifying.electretri.ELECTRECriterion;
 
 /**
  * ELECTRE TRI criterion used to assess the Level of Detail of a feature. This
@@ -25,8 +25,8 @@ public class CoalescenceCriterion extends ELECTRECriterion {
   // //////////////////////////////////////////
 
   // All static fields //
-  private static Logger logger = Logger.getLogger(CoalescenceCriterion.class
-      .getName());
+  private static Logger logger = Logger
+      .getLogger(CoalescenceCriterion.class.getName());
 
   // Public fields //
 
@@ -59,10 +59,10 @@ public class CoalescenceCriterion extends ELECTRECriterion {
   // Other public methods //
   @Override
   public double value(Map<String, Object> param) {
-    OsmGeneObj obj = (OsmGeneObj) param.get("feature");
+    IFeature obj = (IFeature) param.get("feature");
     // IGeometry geom = (IGeometry) param.get("geometry");
     double value = 0.5;
-    if (obj instanceof OsmGeneObjLin) {
+    if (obj.getGeom() instanceof ILineString) {
       // compute sinuosity
       // TODO à coder avec une énumération pour le résultat
       // if it is not sinuous, default value
