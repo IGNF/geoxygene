@@ -241,21 +241,28 @@
 			<artifactId>geoxygene-util</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>fr.ign.cogit</groupId>
+            <artifactId>geoxygene-carto</artifactId>
+            <version>${project.version}</version>
+        </dependency>		
 		<dependency>
 			<groupId>fr.ign.cogit</groupId>
 			<artifactId>geoxygene-spatialrelation</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<!--  <dependency>
+            <groupId>fr.ign.cogit</groupId>
+            <<artifactId>geoxygene-carto</artifactId>
+            <version>${project.version}</version>
+        </dependency> -->
+	
 		<dependency>
-			<groupId>fr.ign.cogit</groupId>
-			<artifactId>geoxygene-carto</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>fr.ign.cogit</groupId>
-			<artifactId>cartagen-core</artifactId>
-			<version>0.1-SNAPSHOT</version>
-		</dependency>
+            <groupId>fr.ign.cogit</groupId>
+            <artifactId>cartagen-core</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+		
 		<!-- JGoodies Forms framework helps you lay out and implement elegant Swing 
 			panels quickly and consistently -->
 		<dependency>
@@ -268,12 +275,12 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
-
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt-main</artifactId>
-			<version>${geotools.version}</version>
-		</dependency>
+<!--    <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-main</artifactId>
+            <version>${geotools.version}</version>
+        </dependency> -->
+	
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-opengis</artifactId>
