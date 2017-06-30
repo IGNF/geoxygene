@@ -71,7 +71,6 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 
 import fr.ign.cogit.cartagen.core.genericschema.urban.BuildingCategory;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.XMLFileFilter;
 import fr.ign.cogit.cartagen.spatialanalysis.landmarks.LandmarksFinder;
 import fr.ign.cogit.cartagen.spatialanalysis.landmarks.LandmarksFinderTrainer;
 import fr.ign.cogit.cartagen.spatialanalysis.learningdescriptor.CategoryLearningDescr;
@@ -105,6 +104,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.panel.XMLFileFilter;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.SelectionUtil;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;

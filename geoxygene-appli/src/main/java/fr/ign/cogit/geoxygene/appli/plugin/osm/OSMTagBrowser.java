@@ -20,8 +20,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 import fr.ign.cogit.cartagen.osm.schema.OsmGeneObj;
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.geoxygene.osm.schema.OSMFeature;
+import fr.ign.cogit.geoxygene.osm.util.I18N;
 
 /**
  * A Browser that displays the tags of {@link OsmGeneObj} features rather than

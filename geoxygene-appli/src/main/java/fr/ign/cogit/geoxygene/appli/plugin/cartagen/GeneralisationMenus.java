@@ -30,7 +30,6 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
-import fr.ign.cogit.cartagen.software.interfacecartagen.annexes.GeneralisationLaunchingFrame;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.dataset.DatasetGeoxGUIComponent;
