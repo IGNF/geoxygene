@@ -45,8 +45,8 @@
 	<!-- Revision control -->
 	<!-- =========================================================== -->
 	<scm>
-		<connection>scm:svn:https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/</connection>
-		<url>https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/</url>
+		<connection>scm:svn:https://github.com/IGNF/geoxygene.git/</connection>
+		<url>https://github.com/IGNF/geoxygene.git/</url>
 	</scm>
 
 	<!-- =========================================================== -->
