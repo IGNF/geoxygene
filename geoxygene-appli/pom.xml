@@ -19,11 +19,98 @@
 		<dir.executable>/exec-geox</dir.executable>
 	</properties>
 
-	<profiles>
+
+
+
+	<build>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<testSourceDirectory>src/test/java</testSourceDirectory>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+			</testResource>
+		</testResources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			 <configuration combine.self="override">
+					<compilerVersion>1.8</compilerVersion>
+					<source>1.8</source>
+					<complianceLevel>1.8</complianceLevel>
+					<target>1.8</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+					<excludes>
+						<exclude>**/cartagen/*</exclude>
+						<exclude>**/cartagen/geompool/*</exclude>
+						<exclude>**/cartagen/bookmarks/*</exclude>
+						<exclude>**/cartagen/dataset/*</exclude>
+						<exclude>**/cartagen/selection/*</exclude>
+						<exclude>**/cartagen/themes/*</exclude>
+						<exclude>**/cartagen/util/*</exclude>
+						<exclude>**/osm/*</exclude>
+						<exclude>**/SpatialAnalysisPlugin.java</exclude>
+						<exclude>**/CartoPlugin.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-install-plugin</artifactId>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<id>default-install</id>
+						<phase>install</phase>
+						<goals>
+							<goal>install</goal>
+						</goals>
+					</execution>
+				</executions>
+				 <configuration combine.self="override">
+					<excludes>
+						<exclude>**/cartagen/*</exclude>
+						<exclude>**/cartagen/geompool/*</exclude>
+						<exclude>**/cartagen/bookmarks/*</exclude>
+						<exclude>**/cartagen/dataset/*</exclude>
+						<exclude>**/cartagen/selection/*</exclude>
+						<exclude>**/cartagen/themes/*</exclude>
+						<exclude>**/cartagen/util/*</exclude>
+						<exclude>**/osm/*</exclude>
+						<exclude>**/SpatialAnalysisPlugin.java</exclude>
+						<exclude>**/CartoPlugin.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+<profiles>
+
 		<profile>
 			<id>executable</id>
 			<build>
 				<plugins>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<configuration>
+							<compilerVersion>1.8</compilerVersion>
+							<source>1.8</source>
+							<complianceLevel>1.8</complianceLevel>
+							<target>1.8</target>
+							<encoding>${project.build.sourceEncoding}</encoding>
+							<excludes>
+								<exclude>**/cartagen/**/*.java</exclude>
+							</excludes>
+						</configuration>
+					</plugin>
+
 
 					<!-- On copie toutes les dépendances dans le répertoire /exec/lib -->
 					<plugin>
@@ -42,6 +129,9 @@
 									<overWriteReleases>false</overWriteReleases>
 									<overWriteSnapshots>false</overWriteSnapshots>
 									<overWriteIfNewer>true</overWriteIfNewer>
+														<excludes>
+								<exclude>**/cartagen/*%</exclude>
+							</excludes>
 								</configuration>
 							</execution>
 						</executions>
@@ -75,6 +165,11 @@
 									<goal>run</goal>
 								</goals>
 								<configuration>
+
+									<excludes>
+										<exclude>**/cartagen/*.java</exclude>
+									</excludes>
+
 									<tasks>
 
 										<!-- check if config is available, if not fail -->
@@ -125,7 +220,8 @@
 											todir="${dir.executable}/src/main/resources/xml/" />
 
 										<!-- traduction -->
-										<copy todir="${dir.executable}/language" encoding="ISO-8859-1" outputencoding="ISO-8859-1" >
+										<copy todir="${dir.executable}/language" encoding="ISO-8859-1"
+											outputencoding="ISO-8859-1">
 											<fileset dir="${basedir}/src/main/resources/language" />
 										</copy>
 
@@ -139,12 +235,14 @@
 								</configuration>
 							</execution>
 						</executions>
+
 					</plugin>
 
 				</plugins>
 			</build>
 		</profile>
 	</profiles>
+
 
 	<dependencies>
 		<dependency>
@@ -221,13 +319,9 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
-		<!-- <dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>geoxygene-cartagen</artifactId>
-			<version>${project.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>-->
+		<!-- <dependency> <groupId>${project.groupId}</groupId> <artifactId>geoxygene-cartagen</artifactId> 
+			<version>${project.version}</version> <type>jar</type> <scope>compile</scope> 
+			</dependency> -->
 		<!-- <dependency> <groupId>${project.groupId}</groupId> <artifactId>geoxygene-scripting</artifactId> 
 			<version>${project.version}</version> <type>jar</type> <scope>compile</scope> 
 			</dependency> -->
@@ -241,28 +335,25 @@
 			<artifactId>geoxygene-util</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-        <dependency>
-            <groupId>fr.ign.cogit</groupId>
-            <artifactId>geoxygene-carto</artifactId>
-            <version>${project.version}</version>
-        </dependency>		
+		<dependency>
+			<groupId>fr.ign.cogit</groupId>
+			<artifactId>geoxygene-carto</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>fr.ign.cogit</groupId>
 			<artifactId>geoxygene-spatialrelation</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<!--  <dependency>
-            <groupId>fr.ign.cogit</groupId>
-            <<artifactId>geoxygene-carto</artifactId>
-            <version>${project.version}</version>
-        </dependency> -->
-	
+		<!-- <dependency> <groupId>fr.ign.cogit</groupId> <<artifactId>geoxygene-carto</artifactId> 
+			<version>${project.version}</version> </dependency> -->
+
 		<dependency>
-            <groupId>fr.ign.cogit</groupId>
-            <artifactId>cartagen-core</artifactId>
-            <version>0.1-SNAPSHOT</version>
-        </dependency>
-		
+			<groupId>fr.ign.cogit</groupId>
+			<artifactId>cartagen-core</artifactId>
+			<version>0.1-SNAPSHOT</version>
+		</dependency>
+
 		<!-- JGoodies Forms framework helps you lay out and implement elegant Swing 
 			panels quickly and consistently -->
 		<dependency>
@@ -275,12 +366,9 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
-<!--    <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-main</artifactId>
-            <version>${geotools.version}</version>
-        </dependency> -->
-	
+		<!-- <dependency> <groupId>org.geotools</groupId> <artifactId>gt-main</artifactId> 
+			<version>${geotools.version}</version> </dependency> -->
+
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-opengis</artifactId>
@@ -317,10 +405,10 @@
 			<version>${geotools.version}</version>
 		</dependency>
 		<dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-image</artifactId>
-            <version>${geotools.version}</version>
-        </dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-image</artifactId>
+			<version>${geotools.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.vividsolutions</groupId>
@@ -387,11 +475,11 @@
 			<artifactId>hibernate-jpa-2.0-api</artifactId>
 			<version>1.0.1.Final</version>
 		</dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${hibernate.version}</version>
-        </dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>xml-apis</groupId>
 			<artifactId>xml-apis</artifactId>
@@ -443,7 +531,7 @@
 			<groupId>net.sourceforge.jexcelapi</groupId>
 			<artifactId>jxl</artifactId>
 			<version>2.6.12</version>
-		</dependency>		
+		</dependency>
 	</dependencies>
 
 	<repositories>
