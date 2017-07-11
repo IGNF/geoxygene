@@ -44,7 +44,6 @@ public class TriangulationJTS extends AbstractTriangulation {
 		for (int i = 0; i < triangles.getNumGeometries(); i++) {
 			Polygon triangle = (Polygon) triangles.getGeometryN(i);
 			this.getPopFaces().nouvelElement(AdapterFactory.toGM_Object(triangle));
-			System.out.println("Ajout d'un nouveau triangle");
 		}
 		// logger.info(this.getPopFaces().size() + " triangles créés");
 		if (this.getOptions().indexOf('e') != -1) {
