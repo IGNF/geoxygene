@@ -12,11 +12,8 @@ package fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.electretri.
 import java.util.Map;
 import java.util.logging.Logger;
 
-import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
-import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanElement;
 import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.electretri.ELECTRECriterion;
-import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 
 public class BlockDensityCriterion extends ELECTRECriterion {
 
@@ -25,8 +22,8 @@ public class BlockDensityCriterion extends ELECTRECriterion {
   // //////////////////////////////////////////
 
   // All static fields //
-  private static Logger logger = Logger.getLogger(ELECTRECriterion.class
-      .getName());
+  private static Logger logger = Logger
+      .getLogger(ELECTRECriterion.class.getName());
 
   // Public fields //
 
@@ -60,32 +57,8 @@ public class BlockDensityCriterion extends ELECTRECriterion {
   public double value(Map<String, Object> param) {
     IUrbanBlock block = (IUrbanBlock) param.get("block");
     BlockDensityCriterion.logger.finer("block: " + block.getId());
-    IGeometry geom = block.getGeom();
-    double buildArea = 0.0;
-    for (IUrbanElement e : block.getUrbanElements()) {
-      if (e.isDeleted()) {
-        continue;
-      }
-      if (!geom.contains(e.getGeom())) {
-        continue;
-      }
-      buildArea += e.getGeom().area();
-    }
-
-    for (INetworkSection route : block.getSurroundingNetwork()) {
-      if (route.isDeleted()) {
-        continue;
-      }
-      if (!geom.intersects(route.getGeom())) {
-        continue;
-      }
-      double symbolWidth = route.getWidth() / 2;
-      geom = geom.difference(route.getGeom().buffer(symbolWidth));
-    }
-    double density = 1.0;
-    if (geom.area() != 0.0) {
-      density = Math.min(1.0, buildArea / geom.area());
-    }
+    // 1.3 factor to spread the density distribution for 0 to 1.
+    double density = Math.min(1.0, block.getDensity() * 1.3);
     BlockDensityCriterion.logger.finer(this.getName() + " : " + density);
     return density;
   }

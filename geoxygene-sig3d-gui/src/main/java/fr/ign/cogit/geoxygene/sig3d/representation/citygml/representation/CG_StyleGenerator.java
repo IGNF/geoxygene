@@ -21,6 +21,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
 import fr.ign.cogit.geoxygene.sig3d.equation.ApproximatedPlanEquation;
 import fr.ign.cogit.geoxygene.sig3d.io.xml.citygmlv2.Context;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.appearance.CG_AbstractTextureParameterization;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.appearance.CG_ParameterizedTexture;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.appearance.CG_TexCoordList;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.appearance.CG_TextureCoordinates;
@@ -32,403 +33,403 @@ import fr.ign.cogit.geoxygene.sig3d.util.MathConstant;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 
 public class CG_StyleGenerator {
+	
+	public static boolean LOAD_TEXTURE = false;
 
-  public static List<CG_X3DMaterial> lMaterial = new ArrayList<CG_X3DMaterial>();
-  public static List<Appearance> lAppearance = new ArrayList<Appearance>();
+	public static List<CG_X3DMaterial> lMaterial = new ArrayList<CG_X3DMaterial>();
+	public static List<Appearance> lAppearance = new ArrayList<Appearance>();
 
-  Appearance apparenceFinale = new Appearance();
-  GeometryInfo geometryInfo = null;
-  Shape3D shape = null;
+	Appearance apparenceFinale = new Appearance();
+	GeometryInfo geometryInfo = null;
+	Shape3D shape = null;
 
-  private boolean isAppearanceSet = false;
+	private boolean isAppearanceSet = false;
 
-  public CG_StyleGenerator(GML_Polygon poly, List<Object> lStyles) {
+	public CG_StyleGenerator(GML_Polygon poly, List<Object> lStyles) {
 
-    int nbStylesToApply = lStyles.size();
+		int nbStylesToApply = lStyles.size();
 
-    for (int i = 0; i < nbStylesToApply; i++) {
+		for (int i = 0; i < nbStylesToApply; i++) {
 
-      Object o = lStyles.get(i);
+			Object o = lStyles.get(i);
 
-      if (o instanceof CG_X3DMaterial) {
+			if (o instanceof CG_X3DMaterial) {
 
-        CG_X3DMaterial mat = (CG_X3DMaterial) o;
+				CG_X3DMaterial mat = (CG_X3DMaterial) o;
 
-        int index = CG_StyleGenerator.lMaterial.indexOf(mat);
+				int index = CG_StyleGenerator.lMaterial.indexOf(mat);
 
-        if (index != -1) {
-          this.apparenceFinale = CG_StyleGenerator.lAppearance.get(index);
-          continue;
-        }
+				if (index != -1) {
+					this.apparenceFinale = CG_StyleGenerator.lAppearance.get(index);
+					continue;
+				}
 
-        this.generateMaterial((CG_X3DMaterial) o);
+				this.generateMaterial((CG_X3DMaterial) o);
 
-      } else if (o instanceof CG_ParameterizedTexture) {
+			} else if (o instanceof CG_ParameterizedTexture) {
 
-        if (this.geometryInfo != null) {
+				if (this.geometryInfo != null) {
 
-          System.out.println("2 texturation sur la même face ?");
-        }
+					System.out.println("2 texturation sur la même face ?");
+				}
 
-        this.generateTexturedPolygon(poly, (CG_ParameterizedTexture) o);
-      }
+				
+				if(LOAD_TEXTURE){
+					this.generateTexturedPolygon(poly, (CG_ParameterizedTexture) o);
+				}else{
+					this.generateMaterial(new CG_X3DMaterial());
+				}
+				
+			}
 
-    }
+		}
 
-    if (!this.isAppearanceSet) {
+		if (!this.isAppearanceSet) {
 
-      this.generateDefaultApp();
+			this.generateDefaultApp();
 
-    }
+		}
 
-    if (this.geometryInfo == null) {
+		if (this.geometryInfo == null) {
 
-      this.generateEmptyGeomInfo(poly);
+			this.generateEmptyGeomInfo(poly);
 
-    }
+		}
 
-    this.shape = new Shape3D(this.geometryInfo.getGeometryArray(),
-        this.apparenceFinale);
+		this.shape = new Shape3D(this.geometryInfo.getGeometryArray(), this.apparenceFinale);
 
-  }
+	}
 
-  private void generateTexturedPolygon(GML_Polygon poly,
-      CG_ParameterizedTexture cgParamTexture) {
-    // géométrie de l'objet
-    this.geometryInfo = new GeometryInfo(GeometryInfo.POLYGON_ARRAY);
+	private void generateTexturedPolygon(GML_Polygon poly, CG_ParameterizedTexture cgParamTexture) {
+		// géométrie de l'objet
+		this.geometryInfo = new GeometryInfo(GeometryInfo.POLYGON_ARRAY);
 
-    // On compte le nombres de points
-    int npoints = poly.coord().size();
+		// On compte le nombres de points
+		int npoints = poly.coord().size();
 
-    // On compte le nombre de polygones(trous inclus)
-    int nStrip = poly.getInterior().size() + 1;
+		// On compte le nombre de polygones(trous inclus)
+		int nStrip = poly.getInterior().size() + 1;
 
-    // Nombre de points
-    Point3f[] tabpoints = new Point3f[npoints];
-    Vector3f[] normals = new Vector3f[npoints];
-    TexCoord2f[] texCoord = new TexCoord2f[npoints];
+		// Nombre de points
+		Point3f[] tabpoints = new Point3f[npoints];
+		Vector3f[] normals = new Vector3f[npoints];
+		TexCoord2f[] texCoord = new TexCoord2f[npoints];
 
-    int[] strip = new int[nStrip];
-    int[] contours = new int[1];
+		int[] strip = new int[nStrip];
+		int[] contours = new int[1];
 
-    // compteurs pour remplir le tableau de points
-    int elementajoute = 0;
+		// compteurs pour remplir le tableau de points
+		int elementajoute = 0;
 
-    ApproximatedPlanEquation eq = new ApproximatedPlanEquation(poly);
-    Vecteur vect = eq.getNormale();
+		ApproximatedPlanEquation eq = new ApproximatedPlanEquation(poly);
 
-    // DirectPositionList lPoints = facet.coord();
+		Vecteur vect = eq.getNormale();
 
-    // Nombre de ring composant le polygone
-    int nbContributions = 1 + poly.getInterior().size();
+		// DirectPositionList lPoints = facet.coord();
 
-    // Liste de points utilisés pour définir les faces
-    IDirectPositionList lPoints = null;
+		// Nombre de ring composant le polygone
+		int nbContributions = 1 + poly.getInterior().size();
 
-    // Pour chaque contribution (extérieurs puis intérieursr
-    // Pour Java3D la première contribution en strip est le contour
-    // Les autres sont des trous
+		// Liste de points utilisés pour définir les faces
+		IDirectPositionList lPoints = null;
 
-    List<GML_Ring> lRing = new ArrayList<GML_Ring>();
-    lRing.add((GML_Ring) poly.getExterior());
+		// Pour chaque contribution (extérieurs puis intérieursr
+		// Pour Java3D la première contribution en strip est le contour
+		// Les autres sont des trous
 
-    for (int i = 0; i < nbContributions - 1; i++) {
-      lRing.add((GML_Ring) poly.getInterior().get(i));
+		List<GML_Ring> lRing = new ArrayList<GML_Ring>();
+		lRing.add((GML_Ring) poly.getExterior());
 
-    }
+		for (int i = 0; i < nbContributions - 1; i++) {
+			lRing.add((GML_Ring) poly.getInterior().get(i));
 
-    CG_TexCoordList cgTCL = CG_StyleGenerator.retrieveTextureTexCoordList(
-        poly.getID(), cgParamTexture);
+		}
 
-    for (int k = 0; k < nbContributions; k++) {
+		CG_TexCoordList cgTCL = CG_StyleGenerator.retrieveTextureTexCoordList(poly.getID(), cgParamTexture);
 
-      GML_Ring rActu = lRing.get(k);
-      lPoints = rActu.coord();
+		boolean isTexturedOk = true;
 
-      CG_TextureCoordinates cTexture = CG_StyleGenerator
-          .retrieveTextureCoordinate(rActu.getID(), cgTCL);
+		for (int k = 0; k < nbContributions; k++) {
 
-      // Nombres de points de la contribution
-      int n = lPoints.size();
+			GML_Ring rActu = lRing.get(k);
+			lPoints = rActu.coord();
 
-      Vecteur axe = MathConstant.vectZ;
-      Vecteur vectProject = axe.prodVectoriel(vect);
+			CG_TextureCoordinates cTexture = CG_StyleGenerator.retrieveTextureCoordinate(rActu.getID(), cgTCL);
 
-      if (n != (cTexture.getValue().size() / 2)) {
+			// Nombres de points de la contribution
+			int n = lPoints.size();
 
-        System.out.println("Nombre points :" + n + "  points textures : "
-            + cTexture.getValue().size() / 2);
+			Vecteur axe = MathConstant.vectZ;
+			Vecteur vectProject = axe.prodVectoriel(vect);
 
-      }
+			isTexturedOk = !(n != (cTexture.getValue().size() / 2));
 
-      for (int j = 0; j < n; j++) {
-        // On complète le tableau de points
-        IDirectPosition dp = lPoints.get(j);
-        Point3f point = new Point3f((float) dp.getX(), (float) dp.getY(),
-            (float) dp.getZ());
+			if (!isTexturedOk) {
 
-        tabpoints[elementajoute] = point;
+				System.out.println("Nombre points :" + n + "  points textures : " + cTexture.getValue().size() / 2);
 
-        if (vectProject.norme() < 0.5) {
+			}
 
-          vectProject = MathConstant.vectY.prodVectoriel(vect);
-          axe = MathConstant.vectY;
+			for (int j = 0; j < n; j++) {
+				// On complète le tableau de points
+				IDirectPosition dp = lPoints.get(j);
+				Point3f point = new Point3f((float) dp.getX(), (float) dp.getY(), (float) dp.getZ());
 
-        }
+				tabpoints[elementajoute] = point;
 
-        texCoord[elementajoute] = new TexCoord2f(cTexture.getValue().get(2 * j)
-            .floatValue(), cTexture.getValue().get(2 * j + 1).floatValue());
+				if (vectProject.norme() < 0.5) {
 
-        normals[elementajoute] = new Vector3f((float) vect.getX(),
-            (float) vect.getY(), (float) vect.getZ());
+					vectProject = MathConstant.vectY.prodVectoriel(vect);
+					axe = MathConstant.vectY;
 
-        elementajoute++;
+				}
 
-      }
+				if (isTexturedOk) {
+					texCoord[elementajoute] = new TexCoord2f(cTexture.getValue().get(2 * j).floatValue(),
+							cTexture.getValue().get(2 * j + 1).floatValue());
+				}
 
-      // On indique le nombre de points relatif à la
-      // contribution
-      strip[k] = lPoints.size();
+				if (vect == null) {
+					continue;
+				}
 
-    }
+				normals[elementajoute] = new Vector3f((float) vect.getX(), (float) vect.getY(), (float) vect.getZ());
 
-    // Pour avoir des corps séparés, sinon il peut y avoir des trous
-    contours[0] = nbContributions;
+				elementajoute++;
 
-    // On indique quels sont les points combien il y a de contours et de
-    // polygons
+			}
 
-    this.geometryInfo.setTextureCoordinateParams(1, 2);
+			// On indique le nombre de points relatif à la
+			// contribution
+			strip[k] = lPoints.size();
 
-    this.geometryInfo.setCoordinates(tabpoints);
-    this.geometryInfo.setStripCounts(strip);
-    this.geometryInfo.setContourCounts(contours);
-    this.geometryInfo.setNormals(normals);
+		}
 
-    this.geometryInfo.setTextureCoordinates(0, texCoord);
+		// Pour avoir des corps séparés, sinon il peut y avoir des trous
+		contours[0] = nbContributions;
 
-    String path = Context.CITY_GML_CONTEXT + cgParamTexture.getImageURI();
+		// On indique quels sont les points combien il y a de contours et de
+		// polygons
 
-    File f = new File(path);
 
-    if (f.exists()) {
-      this.apparenceFinale.setTexture(TextureManager.textureLoading(path));
-    } else {
-      System.out.println("Texture introuvable : " + path);
-    }
 
-  }
+		this.geometryInfo.setCoordinates(tabpoints);
+		this.geometryInfo.setStripCounts(strip);
+		this.geometryInfo.setContourCounts(contours);
+		if (vect != null) {
+			this.geometryInfo.setNormals(normals);
+		}
 
-  private static CG_TexCoordList retrieveTextureTexCoordList(String IDPoly,
-      CG_ParameterizedTexture pT) {
+		if (isTexturedOk) {
+			this.geometryInfo.setTextureCoordinateParams(1, 2);
+			this.geometryInfo.setTextureCoordinates(0, texCoord);
+		}
 
-    int nbElem = pT.getTarget().size();
+		String path = Context.CITY_GML_CONTEXT + cgParamTexture.getImageURI();
 
-    for (int i = 0; i < nbElem; i++) {
+		File f = new File(path);
 
-      if (pT.getTextureAssociation().get(i).equals("#" + IDPoly)) {
+		if (f.exists()) {
+			this.apparenceFinale.setTexture(TextureManager.textureLoading(path));
+		} else {
+			System.out.println("Texture introuvable : " + path);
+		}
 
-        return (CG_TexCoordList) (pT.getTarget().get(i));
-      }
+	}
 
-    }
+	private static CG_TexCoordList retrieveTextureTexCoordList(String IDPoly, CG_ParameterizedTexture pT) {
 
-    return null;
-  }
+		CG_AbstractTextureParameterization aB = pT.findTexture("#" + IDPoly);
 
-  private static CG_TextureCoordinates retrieveTextureCoordinate(String ID,
-      CG_TexCoordList cgTCL) {
-    int nbCoordinates = cgTCL.getTextureCoordinates().size();
+		return (CG_TexCoordList) (aB);
 
-    for (int i = 0; i < nbCoordinates; i++) {
-      CG_TextureCoordinates cg = cgTCL.getTextureCoordinates().get(i);
+	}
 
-      if (cg.getRing().equals("#" + ID) || cg.getRing().equals(ID)) {
-        return cg;
-      }
-    }
-    System.out.println("Not found" + ID);
-    return null;
-  }
+	private static CG_TextureCoordinates retrieveTextureCoordinate(String ID, CG_TexCoordList cgTCL) {
+		int nbCoordinates = cgTCL.getTextureCoordinates().size();
 
-  /**
-   * Missing setSmoothness et ambientIntensity
-   * 
-   * @param X3Dmaterial
-   * @return
-   */
-  private void generateMaterial(CG_X3DMaterial X3Dmaterial) {
+		for (int i = 0; i < nbCoordinates; i++) {
+			CG_TextureCoordinates cg = cgTCL.getTextureCoordinates().get(i);
 
-    // Autorisations pour l'apparence
-    this.apparenceFinale
-        .setCapability(Appearance.ALLOW_POLYGON_ATTRIBUTES_READ);
-    this.apparenceFinale
-        .setCapability(Appearance.ALLOW_POLYGON_ATTRIBUTES_WRITE);
+			if (cg.getRing().equals("#" + ID) || cg.getRing().equals(ID)) {
+				return cg;
+			}
+		}
+		System.out.println("Not found" + ID);
+		return null;
+	}
 
-    // Autorisations pour le material
-    this.apparenceFinale.setCapability(Appearance.ALLOW_MATERIAL_READ);
-    this.apparenceFinale.setCapability(Appearance.ALLOW_MATERIAL_WRITE);
+	/**
+	 * Missing setSmoothness et ambientIntensity
+	 * 
+	 * @param X3Dmaterial
+	 * @return
+	 */
+	private void generateMaterial(CG_X3DMaterial X3Dmaterial) {
 
-    this.apparenceFinale
-        .setCapability(Appearance.ALLOW_TEXTURE_ATTRIBUTES_READ);
-    this.apparenceFinale
-        .setCapability(Appearance.ALLOW_TEXTURE_ATTRIBUTES_WRITE);
+		// Autorisations pour l'apparence
+		this.apparenceFinale.setCapability(Appearance.ALLOW_POLYGON_ATTRIBUTES_READ);
+		this.apparenceFinale.setCapability(Appearance.ALLOW_POLYGON_ATTRIBUTES_WRITE);
 
-    this.apparenceFinale.setCapability(Appearance.ALLOW_TEXTURE_WRITE);
+		// Autorisations pour le material
+		this.apparenceFinale.setCapability(Appearance.ALLOW_MATERIAL_READ);
+		this.apparenceFinale.setCapability(Appearance.ALLOW_MATERIAL_WRITE);
 
-    // Création des attributs du polygone
-    PolygonAttributes pa = new PolygonAttributes();
+		this.apparenceFinale.setCapability(Appearance.ALLOW_TEXTURE_ATTRIBUTES_READ);
+		this.apparenceFinale.setCapability(Appearance.ALLOW_TEXTURE_ATTRIBUTES_WRITE);
 
-    pa.setCullFace(PolygonAttributes.CULL_NONE);
-    pa.setCapability(PolygonAttributes.ALLOW_CULL_FACE_WRITE);
+		this.apparenceFinale.setCapability(Appearance.ALLOW_TEXTURE_WRITE);
 
-    // Indique que l'on est en mode surfacique
-    pa.setPolygonMode(PolygonAttributes.POLYGON_FILL);
+		// Création des attributs du polygone
+		PolygonAttributes pa = new PolygonAttributes();
 
-    pa.setBackFaceNormalFlip(false);
+		pa.setCullFace(PolygonAttributes.CULL_NONE);
+		pa.setCapability(PolygonAttributes.ALLOW_CULL_FACE_WRITE);
 
-    // Association à l'apparence des attributs de géométrie et de material
-    this.apparenceFinale.setPolygonAttributes(pa);
+		// Indique que l'on est en mode surfacique
+		pa.setPolygonMode(PolygonAttributes.POLYGON_FILL);
 
-    Material material = new Material();
-    material.setShininess(X3Dmaterial.getShininess().floatValue());
-    material.setSpecularColor(X3Dmaterial.getSpecularColor());
-    material.setDiffuseColor(X3Dmaterial.getDiffuseColor());
-    material.setEmissiveColor(X3Dmaterial.getEmissiveColor());
-    this.apparenceFinale.setMaterial(material);
+		pa.setBackFaceNormalFlip(false);
 
-    if (X3Dmaterial.getTransparency() != 0) {
+		// Association à l'apparence des attributs de géométrie et de material
+		this.apparenceFinale.setPolygonAttributes(pa);
 
-      TransparencyAttributes t_attr = new TransparencyAttributes(
-          TransparencyAttributes.BLENDED, X3Dmaterial.getTransparency()
-              .floatValue(), TransparencyAttributes.BLEND_SRC_ALPHA,
-          TransparencyAttributes.BLENDED);
-      this.apparenceFinale.setTransparencyAttributes(t_attr);
-    }
+		Material material = new Material();
+		material.setShininess(X3Dmaterial.getShininess().floatValue());
+		material.setSpecularColor(X3Dmaterial.getSpecularColor());
+		material.setDiffuseColor(X3Dmaterial.getDiffuseColor());
+		material.setEmissiveColor(X3Dmaterial.getEmissiveColor());
+		this.apparenceFinale.setMaterial(material);
 
-    CG_StyleGenerator.lMaterial.add(X3Dmaterial);
-    CG_StyleGenerator.lAppearance.add(this.apparenceFinale);
+		if (X3Dmaterial.getTransparency() != 0) {
 
-  }
+			TransparencyAttributes t_attr = new TransparencyAttributes(TransparencyAttributes.BLENDED,
+					X3Dmaterial.getTransparency().floatValue(), TransparencyAttributes.BLEND_SRC_ALPHA,
+					TransparencyAttributes.BLENDED);
+			this.apparenceFinale.setTransparencyAttributes(t_attr);
+		}
 
-  private void generateDefaultApp() {
-    this.generateMaterial(new CG_X3DMaterial());
-  }
+		CG_StyleGenerator.lMaterial.add(X3Dmaterial);
+		CG_StyleGenerator.lAppearance.add(this.apparenceFinale);
 
-  private GeometryInfo generateEmptyGeomInfo(GM_Polygon poly) {
+	}
 
-    // géométrie de l'objet
-    this.geometryInfo = new GeometryInfo(GeometryInfo.POLYGON_ARRAY);
+	private void generateDefaultApp() {
+		this.generateMaterial(new CG_X3DMaterial());
+	}
 
-    // Nombre de facettes
-    int nbFacet = 1;
+	private GeometryInfo generateEmptyGeomInfo(GM_Polygon poly) {
 
-    // On compte le nombres de points
-    int npoints = poly.coord().size();
+		// géométrie de l'objet
+		this.geometryInfo = new GeometryInfo(GeometryInfo.POLYGON_ARRAY);
 
-    // On compte le nombre de polygones(trous inclus)
-    int nStrip = poly.getInterior().size() + 1;
+		// Nombre de facettes
+		int nbFacet = 1;
 
-    // Nombre de points
-    Point3d[] Tabpoints = new Point3d[npoints];
+		// On compte le nombres de points
+		int npoints = poly.coord().size();
 
-    Vector3f[] normal = new Vector3f[npoints];
-    // TexCoord2f[] TexCoord = new TexCoord2f[npoints];
+		// On compte le nombre de polygones(trous inclus)
+		int nStrip = poly.getInterior().size() + 1;
 
-    // Peut servir à detecter les trous
-    int[] strip = new int[nStrip];
-    int[] contours = new int[nbFacet];
+		// Nombre de points
+		Point3d[] Tabpoints = new Point3d[npoints];
 
-    // compteurs pour remplir le tableau de points
-    int elementajoute = 0;
+		Vector3f[] normal = new Vector3f[npoints];
+		// TexCoord2f[] TexCoord = new TexCoord2f[npoints];
 
-    // Compteur pour remplir les polygones (trous inclus)
-    int nbStrip = 0;
+		// Peut servir à detecter les trous
+		int[] strip = new int[nStrip];
+		int[] contours = new int[nbFacet];
 
-    // Pour chaque face
+		// compteurs pour remplir le tableau de points
+		int elementajoute = 0;
 
-    // Nombre de ring composant le polygone
-    int nbContributions = 1 + poly.getInterior().size();
+		// Compteur pour remplir les polygones (trous inclus)
+		int nbStrip = 0;
 
-    // Liste de points utilisés pour définir les faces
-    IDirectPositionList lPoints = null;
+		// Pour chaque face
 
-    // Pour chaque contribution (extérieurs puis intérieursr
-    // Pour Java3D la première contribution en strip est le contour
-    // Les autres sont des trous
+		// Nombre de ring composant le polygone
+		int nbContributions = 1 + poly.getInterior().size();
 
-    for (int k = 0; k < nbContributions; k++) {
+		// Liste de points utilisés pour définir les faces
+		IDirectPositionList lPoints = null;
 
-      // Nombre de points de la contribution
-      int nbPointsFace = 0;
+		// Pour chaque contribution (extérieurs puis intérieursr
+		// Pour Java3D la première contribution en strip est le contour
+		// Les autres sont des trous
 
-      // Première contribution = extérieur
-      if (k == 0) {
+		for (int k = 0; k < nbContributions; k++) {
 
-        lPoints = poly.getExterior().getPositive().coord();
-      } else {
+			// Nombre de points de la contribution
+			int nbPointsFace = 0;
 
-        // Contribution de type trou
-        lPoints = poly.getInterior(k - 1).coord(); // Get negative ???
+			// Première contribution = extérieur
+			if (k == 0) {
 
-      }
+				lPoints = poly.getExterior().getPositive().coord();
+			} else {
 
-      // DirectPosition dpMin = lPoints.pointMin();
+				// Contribution de type trou
+				lPoints = poly.getInterior(k - 1).coord(); // Get negative ???
 
-      // Nombres de points de la contribution
-      int n = lPoints.size();
+			}
 
-      // Vectuer normal par défaut
-      Vecteur vect = new Vecteur(0.0, 0.0, 1.0);
+			// DirectPosition dpMin = lPoints.pointMin();
 
-      // On calcul l'équation du plan
-      ApproximatedPlanEquation eq = new ApproximatedPlanEquation(poly);
-      vect = eq.getNormale();
+			// Nombres de points de la contribution
+			int n = lPoints.size();
 
-      for (int j = 0; j < n; j++) {
+			// Vectuer normal par défaut
+			Vecteur vect = new Vecteur(0.0, 0.0, 1.0);
 
-        // On complète le tableau de points
-        IDirectPosition dp = lPoints.get(j);
-        Point3d point = new Point3d((float) dp.getX(), (float) dp.getY(),
-            (float) dp.getZ());
+			// On calcul l'équation du plan
+			ApproximatedPlanEquation eq = new ApproximatedPlanEquation(poly);
+			vect = eq.getNormale();
 
-        Tabpoints[elementajoute] = point;
-        normal[elementajoute] = new Vector3f((float) vect.getX(),
-            (float) vect.getY(), (float) vect.getZ());
+			for (int j = 0; j < n; j++) {
 
-        elementajoute++;
+				// On complète le tableau de points
+				IDirectPosition dp = lPoints.get(j);
+				Point3d point = new Point3d((float) dp.getX(), (float) dp.getY(), (float) dp.getZ());
 
-        // Un point en plus pour la contribution en cours
-        nbPointsFace++;
-      }
+				Tabpoints[elementajoute] = point;
+				normal[elementajoute] = new Vector3f((float) vect.getX(), (float) vect.getY(), (float) vect.getZ());
 
-      // On indique le nombre de points relatif à la
-      // contribution
-      strip[nbStrip] = nbPointsFace;
-      nbStrip++;
-    }
+				elementajoute++;
 
-    // Pour avoir des corps séparés, sinon il peut y avoir des trous
-    contours[0] = nbContributions;
+				// Un point en plus pour la contribution en cours
+				nbPointsFace++;
+			}
 
-    // On indique quels sont les points combien il y a de contours et de
-    // polygons
+			// On indique le nombre de points relatif à la
+			// contribution
+			strip[nbStrip] = nbPointsFace;
+			nbStrip++;
+		}
 
-    // geometryInfo.setTextureCoordinateParams(1, 2);
+		// Pour avoir des corps séparés, sinon il peut y avoir des trous
+		contours[0] = nbContributions;
 
-    this.geometryInfo.setCoordinates(Tabpoints);
-    this.geometryInfo.setStripCounts(strip);
-    this.geometryInfo.setContourCounts(contours);
+		// On indique quels sont les points combien il y a de contours et de
+		// polygons
 
-    this.geometryInfo.setNormals(normal);
-    this.geometryInfo.recomputeIndices();
+		// geometryInfo.setTextureCoordinateParams(1, 2);
 
-    return this.geometryInfo;
+		this.geometryInfo.setCoordinates(Tabpoints);
+		this.geometryInfo.setStripCounts(strip);
+		this.geometryInfo.setContourCounts(contours);
 
-  }
+		this.geometryInfo.setNormals(normal);
+		this.geometryInfo.recomputeIndices();
 
-  public Shape3D getShape() {
-    return this.shape;
-  }
+		return this.geometryInfo;
+
+	}
+
+	public Shape3D getShape() {
+		return this.shape;
+	}
 
 }

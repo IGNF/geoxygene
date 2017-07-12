@@ -1,8 +1,8 @@
 package fr.ign.cogit.geoxygene.sig3d.model.citygml.building;
 
-import org.citygml4j.impl.citygml.building.BuildingPartImpl;
 import org.citygml4j.model.citygml.building.BuildingPart;
-import org.citygml4j.model.citygml.core.CityObject;
+import org.citygml4j.model.citygml.core.AbstractCityObject;
+
 
 /**
  * 
@@ -26,8 +26,8 @@ public class CG_BuildingPart extends CG_AbstractBuilding {
   
 
   @Override
-  public CityObject export() {
-    BuildingPart build = new BuildingPartImpl();
+  public AbstractCityObject export() {
+    BuildingPart build = new BuildingPart();
     this.complete(build);
 
     return build;

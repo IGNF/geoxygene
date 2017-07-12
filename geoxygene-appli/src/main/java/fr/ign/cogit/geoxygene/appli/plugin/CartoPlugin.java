@@ -46,8 +46,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.ImageFileFilter;
 import fr.ign.cogit.cartagen.spatialanalysis.tessellations.gridtess.GridTessellation;
 import fr.ign.cogit.carto.evaluation.clutter.MapLegibilityMethod;
 import fr.ign.cogit.carto.evaluation.clutter.RasterClutterMethod;
@@ -58,9 +56,11 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
+import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.layer.LayerFactory;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
+import fr.ign.cogit.geoxygene.appli.panel.ImageFileFilter;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 import fr.ign.cogit.geoxygene.appli.render.MultithreadedRenderingManager;
 import fr.ign.cogit.geoxygene.feature.Population;
@@ -103,8 +103,8 @@ public class CartoPlugin implements GeOxygeneApplicationPlugin {
     clutterMenu.add(new JMenuItem(new OlssonForegroundAction()));
     menu.add(clutterMenu);
     menu.add(textMenu);
-    application.getMainFrame().getMenuBar()
-        .add(menu, application.getMainFrame().getMenuBar().getMenuCount() - 2);
+    application.getMainFrame().getMenuBar().add(menu,
+        application.getMainFrame().getMenuBar().getMenuCount() - 2);
 
   }
 
@@ -125,7 +125,8 @@ public class CartoPlugin implements GeOxygeneApplicationPlugin {
 
       // path est le chemin jusqu'au fichier
       File path = fc.getSelectedFile();
-      // On fait une instance de buffered image pour pouvoir y recopier l'image
+      // On fait une instance de buffered image pour pouvoir y recopier
+      // l'image
       // choisie
       BufferedImage image;
 
@@ -145,8 +146,7 @@ public class CartoPlugin implements GeOxygeneApplicationPlugin {
 
     public SubbandClutterAction() {
       super();
-      this.putValue(
-          Action.SHORT_DESCRIPTION,
+      this.putValue(Action.SHORT_DESCRIPTION,
           "Compute an the Subband Entropy Clutter global measure (Rosenholtz et al 2007) of the given file image");
       this.putValue(Action.NAME, "Compute Subband Entropy Clutter of the file");
     }
@@ -182,8 +182,7 @@ public class CartoPlugin implements GeOxygeneApplicationPlugin {
 
     public SubbandClutterWindowAction() {
       super();
-      this.putValue(
-          Action.SHORT_DESCRIPTION,
+      this.putValue(Action.SHORT_DESCRIPTION,
           "Compute an the Subband Entropy Clutter global measure (Rosenholtz et al 2007) of the window map");
       this.putValue(Action.NAME,
           "Compute Subband Entropy Clutter of the window map");
@@ -220,8 +219,7 @@ public class CartoPlugin implements GeOxygeneApplicationPlugin {
 
     public EdgeDensityClutterAction() {
       super();
-      this.putValue(
-          Action.SHORT_DESCRIPTION,
+      this.putValue(Action.SHORT_DESCRIPTION,
           "Compute an Edge Density Clutter global measure of the current displayed map as an image");
       this.putValue(Action.NAME, "Compute Edge Density Clutter of the map");
     }
@@ -303,8 +301,7 @@ public class CartoPlugin implements GeOxygeneApplicationPlugin {
 
     public EdgeDensityExportFileAction() {
       super();
-      this.putValue(
-          Action.SHORT_DESCRIPTION,
+      this.putValue(Action.SHORT_DESCRIPTION,
           "Compute an Edge Density Clutter global measure of the given file image and export the edge image");
       this.putValue(Action.NAME,
           "Compute and Export Edge Density Clutter of the file");
@@ -343,8 +340,7 @@ public class CartoPlugin implements GeOxygeneApplicationPlugin {
 
     public OlssonForegroundAction() {
       super();
-      this.putValue(
-          Action.SHORT_DESCRIPTION,
+      this.putValue(Action.SHORT_DESCRIPTION,
           "Compute the grid method for map legibility from Olsson et al 2011, with a selection of foreground layers");
       this.putValue(Action.NAME,
           "Compute Olsson Grid Map Legibility with foreground layers");
@@ -444,8 +440,8 @@ public class CartoPlugin implements GeOxygeneApplicationPlugin {
       // *********************************
       this.getContentPane().add(mainPanel);
       this.getContentPane().add(pBoutons);
-      this.getContentPane().setLayout(
-          new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+      this.getContentPane()
+          .setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
       this.pack();
       this.setAlwaysOnTop(true);
     }
@@ -456,8 +452,8 @@ public class CartoPlugin implements GeOxygeneApplicationPlugin {
     ProjectFrame pFrame = application.getMainFrame().getSelectedProjectFrame();
     LayerViewPanel panel = pFrame.getLayerViewPanel();
 
-    MapLegibilityMethod method = new MapLegibilityMethod(pFrame.getSld(), panel
-        .getViewport().getEnvelopeInModelCoordinates());
+    MapLegibilityMethod method = new MapLegibilityMethod(pFrame.getSld(),
+        panel.getViewport().getEnvelopeInModelCoordinates());
     for (String layerName : foregroundLayers)
       method.addForegroundLayer(layerName);
     GridTessellation<Boolean> grid = method.getOlssonThresholdLegibility(50.0);
@@ -466,7 +462,8 @@ public class CartoPlugin implements GeOxygeneApplicationPlugin {
     Layer layer = pFrame.getSld().createLayer("legibilityGrid", IPolygon.class,
         Color.RED);
     UserStyle style = new UserStyle();
-    //style.setName("Style créé pour le layer legibilityGrid");//$NON-NLS-1$
+    // style.setName("Style créé pour le layer
+    // legibilityGrid");//$NON-NLS-1$
     FeatureTypeStyle fts = new FeatureTypeStyle();
     Rule rule = LayerFactory.createRule(IPolygon.class, Color.RED.darker(),
         Color.RED, 0.8f, 0.8f, 1.0f);
@@ -506,7 +503,8 @@ public class CartoPlugin implements GeOxygeneApplicationPlugin {
 
       // path est le chemin jusqu'au fichier
       File path = fc.getSelectedFile();
-      // On fait une instance de buffered image pour pouvoir y recopier l'image
+      // On fait une instance de buffered image pour pouvoir y recopier
+      // l'image
       // choisie
       BufferedImage image;
       try {
@@ -616,11 +614,12 @@ public class CartoPlugin implements GeOxygeneApplicationPlugin {
       // path est le chemin jusqu'au fichier
       File path = fc.getSelectedFile();
 
-      String result = JOptionPane.showInputDialog(
-          "Grayscale difference threshold", "5");
+      String result = JOptionPane
+          .showInputDialog("Grayscale difference threshold", "5");
       int threshold = Integer.parseInt(result);
 
-      // On fait une instance de buffered image pour pouvoir y recopier l'image
+      // On fait une instance de buffered image pour pouvoir y recopier
+      // l'image
       // choisie
       BufferedImage image;
       try {
@@ -665,8 +664,7 @@ public class CartoPlugin implements GeOxygeneApplicationPlugin {
 
     public QuadtreeExportAction() {
       super();
-      this.putValue(
-          Action.SHORT_DESCRIPTION,
+      this.putValue(Action.SHORT_DESCRIPTION,
           "Compute a quadtree Clutter local measure of the given file image and export result as a file with the quadtree displayed");
       this.putValue(Action.NAME, "Compute quadtree Clutter and export result");
     }
@@ -693,10 +691,8 @@ public class CartoPlugin implements GeOxygeneApplicationPlugin {
         TiledImage pImage = new TiledImage(image, true);
         RasterClutterMethod clutterMethod = new RasterClutterMethod(pImage);
         int minSize = Math.round(image.getHeight() / 100);
-        System.out.println(path.getName()
-            + ": "
-            + clutterMethod.getBravoFaridClutter((float) 5.0, minSize,
-                (float) 0.5));
+        System.out.println(path.getName() + ": " + clutterMethod
+            .getBravoFaridClutter((float) 5.0, minSize, (float) 0.5));
       } catch (IOException e1) {
         e1.printStackTrace();
       }
@@ -743,8 +739,7 @@ public class CartoPlugin implements GeOxygeneApplicationPlugin {
 
     public BravoFaridExportFileAction() {
       super();
-      this.putValue(
-          Action.SHORT_DESCRIPTION,
+      this.putValue(Action.SHORT_DESCRIPTION,
           "Compute a Bravo & Farid Clutter global measure of the given file image and export segmentation");
       this.putValue(Action.NAME,
           "Compute and Export Bravo & Farid Clutter of the file");

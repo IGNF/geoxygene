@@ -25,8 +25,8 @@ public class ChurchCriterion extends ELECTRECriterion {
   // //////////////////////////////////////////
 
   // All static fields //
-  private static Logger logger = Logger.getLogger(ELECTRECriterion.class
-      .getName());
+  private static Logger logger = Logger
+      .getLogger(ELECTRECriterion.class.getName());
 
   // Public fields //
 
@@ -35,6 +35,7 @@ public class ChurchCriterion extends ELECTRECriterion {
   // Package visible fields //
 
   // Private fields //
+  private String attributeValue = "Eglise";
 
   // //////////////////////////////////////////
   // Static methods //
@@ -53,6 +54,15 @@ public class ChurchCriterion extends ELECTRECriterion {
     this.setVeto(0.1);
   }
 
+  public ChurchCriterion(String nom, String attributeValue) {
+    super(nom);
+    this.setWeight(0.7);
+    this.setIndifference(0.05);
+    this.setPreference(0.2);
+    this.setVeto(0.1);
+    this.attributeValue = attributeValue;
+  }
+
   // Getters and setters //
 
   // Other public methods //
@@ -67,17 +77,18 @@ public class ChurchCriterion extends ELECTRECriterion {
       if (!(e instanceof IBuilding))
         continue;
       IBuilding b = (IBuilding) e;
-      if (b.getNature().equals("Eglise")) {
+      if (b.getNature().equals(attributeValue)) {
         church = true;
         break;
       }
     }
 
     if (!church) {
-      ChurchCriterion.logger.finest(this.getName() + " : " + 0.15);
-      return 0.15;
+      ChurchCriterion.logger.finest(this.getName() + " : " + 0.5);
+      return 0.5;
     }
-    double value = 1.0 - 0.2 * (ilot.getComposants().size() - 1.0);
+    double value = Math.max(1.0 - 0.2 * (ilot.getComposants().size() - 1.0),
+        0.5);
     ChurchCriterion.logger.finest(this.getName() + " : " + value);
     return value;
   }

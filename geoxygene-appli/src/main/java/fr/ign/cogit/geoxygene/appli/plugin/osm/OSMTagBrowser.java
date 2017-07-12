@@ -19,8 +19,9 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
-import fr.ign.cogit.geoxygene.osm.schema.OsmGeneObj;
+import fr.ign.cogit.cartagen.osm.schema.OsmGeneObj;
+import fr.ign.cogit.geoxygene.osm.schema.OSMFeature;
+import fr.ign.cogit.geoxygene.osm.util.I18N;
 
 /**
  * A Browser that displays the tags of {@link OsmGeneObj} features rather than
@@ -36,7 +37,7 @@ public class OSMTagBrowser extends JFrame {
   /**
    * The list of selected objects under the mouse click
    */
-  private List<OsmGeneObj> selectedObjs;
+  private List<OSMFeature> selectedObjs;
 
   /**
    * The tree that browse the selected objects attributes
@@ -45,7 +46,7 @@ public class OSMTagBrowser extends JFrame {
 
   private String title, contributeur, changeSet, captureTool;
 
-  public OSMTagBrowser(Point mouseClick, List<OsmGeneObj> selectedObjs)
+  public OSMTagBrowser(Point mouseClick, List<OSMFeature> selectedObjs)
       throws IllegalArgumentException {
     super();
     this.internationalisation();
@@ -59,14 +60,15 @@ public class OSMTagBrowser extends JFrame {
     DefaultMutableTreeNode treeRoot = new DefaultMutableTreeNode("selection");
     DefaultTreeModel model = new DefaultTreeModel(treeRoot);
     // add a tree root for each selected object
-    for (OsmGeneObj obj : this.selectedObjs) {
+    for (OSMFeature obj : this.selectedObjs) {
       String rootName = obj.getClass().getSimpleName() + " - " + obj.getId();
       DefaultMutableTreeNode root = new DefaultMutableTreeNode(rootName);
       // a leaf for area and length
       String areaName = "area = " + obj.getGeom().area();
       String lengthName = "length = " + obj.getGeom().length();
       DefaultMutableTreeNode areaLeaf = new DefaultMutableTreeNode(areaName);
-      DefaultMutableTreeNode lengthLeaf = new DefaultMutableTreeNode(lengthName);
+      DefaultMutableTreeNode lengthLeaf = new DefaultMutableTreeNode(
+          lengthName);
       root.add(areaLeaf);
       root.add(lengthLeaf);
       // leaves for vertices number and centroid coordinates
@@ -82,20 +84,20 @@ public class OSMTagBrowser extends JFrame {
       // leaves for the generic tags (not stored in the tag collection)
       DefaultMutableTreeNode contribLeaf = new DefaultMutableTreeNode(
           this.contributeur + " = " + obj.getContributor());
-      DefaultMutableTreeNode uidLeaf = new DefaultMutableTreeNode("uid = "
-          + obj.getUid());
+      DefaultMutableTreeNode uidLeaf = new DefaultMutableTreeNode(
+          "uid = " + obj.getUid());
       DefaultMutableTreeNode captureToolLeaf = new DefaultMutableTreeNode(
           this.captureTool + " = " + obj.getCaptureTool().name());
       DefaultMutableTreeNode sourceLeaf = new DefaultMutableTreeNode(
           "source = " + obj.getSource());
-      DefaultMutableTreeNode idLeaf = new DefaultMutableTreeNode("OSM id = "
-          + obj.getOsmId());
+      DefaultMutableTreeNode idLeaf = new DefaultMutableTreeNode(
+          "OSM id = " + obj.getOsmId());
       DefaultMutableTreeNode changeSetLeaf = new DefaultMutableTreeNode(
           this.changeSet + " = " + obj.getChangeSet());
       DefaultMutableTreeNode versionLeaf = new DefaultMutableTreeNode(
           "version = " + obj.getVersion());
-      DefaultMutableTreeNode dateLeaf = new DefaultMutableTreeNode("date = "
-          + obj.getDate());
+      DefaultMutableTreeNode dateLeaf = new DefaultMutableTreeNode(
+          "date = " + obj.getDate());
       root.add(contribLeaf);
       root.add(uidLeaf);
       root.add(captureToolLeaf);
@@ -116,8 +118,8 @@ public class OSMTagBrowser extends JFrame {
       treeRoot.add(root);
     }
     this.tree = new JTree(model);
-    this.tree.setPreferredSize(new Dimension(400, 350 * this.selectedObjs
-        .size()));
+    this.tree
+        .setPreferredSize(new Dimension(400, 350 * this.selectedObjs.size()));
     this.tree
         .setMinimumSize(new Dimension(400, 350 * this.selectedObjs.size()));
     this.tree

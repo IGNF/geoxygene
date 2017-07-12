@@ -36,17 +36,14 @@ import javax.swing.text.PlainDocument;
 import javax.swing.text.SimpleAttributeSet;
 import javax.xml.bind.JAXBException;
 
-import fr.ign.cogit.cartagen.software.CartAGenDataSet;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
-import fr.ign.cogit.cartagen.software.dataset.DataSetZone;
-import fr.ign.cogit.cartagen.software.dataset.DigitalCartographicModel;
-import fr.ign.cogit.cartagen.software.dataset.DigitalLandscapeModel;
-import fr.ign.cogit.cartagen.software.dataset.ShapeFileDB;
-import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDataSet;
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.core.dataset.DataSetZone;
+import fr.ign.cogit.cartagen.core.dataset.DigitalCartographicModel;
+import fr.ign.cogit.cartagen.core.dataset.DigitalLandscapeModel;
+import fr.ign.cogit.cartagen.core.dataset.SourceDLM;
+import fr.ign.cogit.cartagen.core.dataset.shapefile.ShapeFileDB;
 import fr.ign.cogit.cartagen.software.interfacecartagen.dataloading.LoadingFrame;
-import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolGroup;
-import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolList;
-import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolsUtil;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 
 public class ImportDataFrame2 extends JFrame implements ActionListener {
@@ -95,8 +92,8 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
   public ImportDataFrame2(boolean isInitial, CartAGenPlugin plugIn) {
     super("Import Shapefile data into a new dataset "
         + (isInitial ? "initial" : ""));
-    System.out.println("Import Shapefile data into a new dataset -- initial "
-        + isInitial);
+    System.out.println(
+        "Import Shapefile data into a new dataset -- initial " + isInitial);
     this.isInitial = isInitial;
     this.plugIn = plugIn;
     this.setSize(600, 300);
@@ -141,8 +138,8 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
     zonePanel2.setLayout(new BoxLayout(zonePanel2, BoxLayout.X_AXIS));
     zonePanel.add(zonePanel1);
     zonePanel.add(zonePanel2);
-    zonePanel.setBorder(BorderFactory.createTitledBorder(blackLine,
-        "Description of the zone"));
+    zonePanel.setBorder(
+        BorderFactory.createTitledBorder(blackLine, "Description of the zone"));
     zonePanel.setLayout(new BoxLayout(zonePanel, BoxLayout.Y_AXIS));
 
     // *********************************
@@ -230,8 +227,8 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
     this.getContentPane().add(zonePanel);
     this.getContentPane().add(pathPanel);
     this.getContentPane().add(btnPanel);
-    this.getContentPane().setLayout(
-        new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+    this.getContentPane()
+        .setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
     this.pack();
     System.out.println("frame created");
   }
@@ -262,17 +259,19 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
 
       if (!this.isInitial) {
         // originally this is void
-        this.importInitialDataSet((SourceDLM) this.cbSourceDlm
-            .getSelectedItem(), Integer.parseInt(this.txtScale.getText()),
-            this.txtZone.getText(), this.txtDataset.getText(), this.txtPath
-                .getText(), this.txtExtent.getText(), this.rbFile.isSelected(),
+        this.importInitialDataSet(
+            (SourceDLM) this.cbSourceDlm.getSelectedItem(),
+            Integer.parseInt(this.txtScale.getText()), this.txtZone.getText(),
+            this.txtDataset.getText(), this.txtPath.getText(),
+            this.txtExtent.getText(), this.rbFile.isSelected(),
             this.cbType.getSelectedItem().equals("DLM"), true);
-      }// end of if(!isInitial
+      } // end of if(!isInitial
       else {
-        this.importInitialDataSet((SourceDLM) this.cbSourceDlm
-            .getSelectedItem(), Integer.parseInt(this.txtScale.getText()),
-            this.txtZone.getText(), this.txtDataset.getText(), this.txtPath
-                .getText(), this.txtExtent.getText(), this.rbFile.isSelected(),
+        this.importInitialDataSet(
+            (SourceDLM) this.cbSourceDlm.getSelectedItem(),
+            Integer.parseInt(this.txtScale.getText()), this.txtZone.getText(),
+            this.txtDataset.getText(), this.txtPath.getText(),
+            this.txtExtent.getText(), this.rbFile.isSelected(),
             this.cbType.getSelectedItem().equals("DLM"), false);
 
       }
@@ -320,16 +319,10 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
       database.setType(new DigitalCartographicModel());
     }
 
-    // SymbolGroup symbGroup = SymbolsUtil.getSymbolGroup(
-    // SourceDLM.SPECIAL_CARTAGEN, scale);
-    SymbolGroup symbGroup = SymbolsUtil.getSymbolGroup(this.sourceDlm, scale);
-
-    dataset.setSymbols(SymbolList.getSymbolList(symbGroup));
-
     CartAGenDoc.getInstance().setInitialDataset(dataset);
     CartAGenDoc.getInstance().setCurrentDataset(dataset);
-    new CartAGenLoader()
-        .loadData(this.filePath, this.sourceDlm, scale, dataset);
+    new CartAGenLoader().loadData(this.filePath, this.sourceDlm, scale,
+        dataset);
 
     // CartagenApplication.getInstance().loadDat(sourceDlm, scale);
 

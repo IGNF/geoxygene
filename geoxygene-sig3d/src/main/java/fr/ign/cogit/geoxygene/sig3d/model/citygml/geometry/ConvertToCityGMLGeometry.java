@@ -4,43 +4,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.citygml4j.builder.copy.CopyBuilder;
-import org.citygml4j.factory.geometry.DimensionMismatchException;
-import org.citygml4j.factory.geometry.GMLGeometryFactory;
-import org.citygml4j.impl.gml.AbstractRingPropertyImpl;
-import org.citygml4j.impl.gml.CoordinatesImpl;
-import org.citygml4j.impl.gml.CurvePropertyImpl;
-import org.citygml4j.impl.gml.LineStringImpl;
-import org.citygml4j.impl.gml.MultiCurveImpl;
-import org.citygml4j.impl.gml.MultiCurvePropertyImpl;
-import org.citygml4j.impl.gml.MultiSurfaceImpl;
-import org.citygml4j.impl.gml.MultiSurfacePropertyImpl;
-import org.citygml4j.impl.gml.RingImpl;
-import org.citygml4j.impl.gml.SolidImpl;
-import org.citygml4j.impl.gml.SolidPropertyImpl;
-import org.citygml4j.impl.gml.SurfaceImpl;
-import org.citygml4j.impl.gml.SurfacePatchArrayPropertyImpl;
-import org.citygml4j.impl.gml.SurfacePropertyImpl;
-import org.citygml4j.impl.gml.TriangleImpl;
-import org.citygml4j.model.gml.AbstractCurve;
-import org.citygml4j.model.gml.AbstractRingProperty;
-import org.citygml4j.model.gml.AbstractSurface;
-import org.citygml4j.model.gml.AbstractSurfacePatch;
-import org.citygml4j.model.gml.Coordinates;
-import org.citygml4j.model.gml.CurveProperty;
-import org.citygml4j.model.gml.GeometryProperty;
-import org.citygml4j.model.gml.LineString;
-import org.citygml4j.model.gml.MultiCurve;
-import org.citygml4j.model.gml.MultiCurveProperty;
-import org.citygml4j.model.gml.MultiSurface;
-import org.citygml4j.model.gml.MultiSurfaceProperty;
-import org.citygml4j.model.gml.Polygon;
-import org.citygml4j.model.gml.Ring;
-import org.citygml4j.model.gml.Solid;
-import org.citygml4j.model.gml.SolidProperty;
-import org.citygml4j.model.gml.Surface;
-import org.citygml4j.model.gml.SurfacePatchArrayProperty;
-import org.citygml4j.model.gml.SurfaceProperty;
-import org.citygml4j.model.gml.Triangle;
+import org.citygml4j.factory.DimensionMismatchException;
+import org.citygml4j.factory.GMLGeometryFactory;
+import org.citygml4j.model.gml.basicTypes.Coordinates;
+import org.citygml4j.model.gml.geometry.GeometryProperty;
+import org.citygml4j.model.gml.geometry.aggregates.MultiCurve;
+import org.citygml4j.model.gml.geometry.aggregates.MultiCurveProperty;
+import org.citygml4j.model.gml.geometry.aggregates.MultiSurface;
+import org.citygml4j.model.gml.geometry.aggregates.MultiSurfaceProperty;
+import org.citygml4j.model.gml.geometry.primitives.AbstractCurve;
+import org.citygml4j.model.gml.geometry.primitives.AbstractRing;
+import org.citygml4j.model.gml.geometry.primitives.AbstractRingProperty;
+import org.citygml4j.model.gml.geometry.primitives.AbstractSurface;
+import org.citygml4j.model.gml.geometry.primitives.AbstractSurfacePatch;
+import org.citygml4j.model.gml.geometry.primitives.CurveProperty;
+import org.citygml4j.model.gml.geometry.primitives.LineString;
+import org.citygml4j.model.gml.geometry.primitives.Polygon;
+import org.citygml4j.model.gml.geometry.primitives.Ring;
+import org.citygml4j.model.gml.geometry.primitives.Solid;
+import org.citygml4j.model.gml.geometry.primitives.SolidProperty;
+import org.citygml4j.model.gml.geometry.primitives.Surface;
+import org.citygml4j.model.gml.geometry.primitives.SurfacePatchArrayProperty;
+import org.citygml4j.model.gml.geometry.primitives.SurfaceProperty;
+import org.citygml4j.model.gml.geometry.primitives.Triangle;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
@@ -56,262 +42,266 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 
 public class ConvertToCityGMLGeometry {
 
-  @SuppressWarnings("unchecked")
-  public static GeometryProperty convertGeometryProperty(IGeometry iGeom) {
+	@SuppressWarnings("unchecked")
+	public static GeometryProperty convertGeometryProperty(IGeometry iGeom) {
 
-    if (iGeom instanceof ISolid) {
+		if (iGeom instanceof ISolid) {
 
-      return (GeometryProperty) convertSolidProperty((ISolid) iGeom);
-    } else if (iGeom instanceof IMultiSurface<?>) {
-      return (GeometryProperty) convertMultiSurfaceProperty((IMultiSurface<IOrientableSurface>) iGeom);
-    } else if (iGeom instanceof IMultiCurve<?>) {
-      return (GeometryProperty) convertMultiCurveProperty((IMultiCurve<IOrientableCurve>) iGeom);
-    } else if (iGeom instanceof IOrientableCurve) {
-      return (GeometryProperty) convertCurveProperty((IOrientableCurve) iGeom);
-    }
+			return (GeometryProperty) convertSolidProperty((ISolid) iGeom);
+		} else if (iGeom instanceof IMultiSurface<?>) {
+			return (GeometryProperty) convertMultiSurfaceProperty((IMultiSurface<IOrientableSurface>) iGeom);
+		} else if (iGeom instanceof IMultiCurve<?>) {
+			return (GeometryProperty) convertMultiCurveProperty((IMultiCurve<IOrientableCurve>) iGeom);
+		} else if (iGeom instanceof IOrientableCurve) {
+			return (GeometryProperty) convertCurveProperty((IOrientableCurve) iGeom);
+		}
 
-    System.out.println("Classe non gérée : " + iGeom.getClass());
+		System.out.println("Classe non gérée : " + iGeom.getClass());
 
-    return null;
+		return null;
 
-  }
+	}
 
-  public static SolidProperty convertSolidProperty(ISolid sol) {
+	public static SolidProperty convertSolidProperty(ISolid sol) {
 
-    SolidProperty sp = new SolidPropertyImpl();
+		SolidProperty sp = new SolidProperty();
 
-    sp.setSolid(convertSolid(sol));
+		sp.setSolid(convertSolid(sol));
 
-    return sp;
+		return sp;
 
-  }
+	}
 
-  public static Solid convertSolid(ISolid sol) {
+	public static Solid convertSolid(ISolid sol) {
 
-    Solid solOut = new SolidImpl();
+		Solid solOut = new Solid();
 
-    SurfaceProperty sp = new SurfacePropertyImpl();
-    sp.setSurface(convertSuface(sol.getFacesList()));
+		SurfaceProperty sp = new SurfaceProperty();
+		sp.setSurface(convertSuface(sol.getFacesList()));
 
-    solOut.setExterior(sp);
+		solOut.setExterior(sp);
 
-    return solOut;
+		return solOut;
 
-  }
+	}
 
-  public static MultiSurfaceProperty convertMultiSurfaceProperty(
-      IMultiSurface<IOrientableSurface> iMS) {
-    MultiSurfaceProperty mSP = new MultiSurfacePropertyImpl();
+	public static MultiSurfaceProperty convertMultiSurfaceProperty(IMultiSurface<IOrientableSurface> iMS) {
+		MultiSurfaceProperty mSP = new MultiSurfaceProperty();
 
-    mSP.setMultiSurface(convertMultiSurface(iMS));
+		mSP.setMultiSurface(convertMultiSurface(iMS));
 
-    return mSP;
+		return mSP;
 
-  }
+	}
 
-  public static MultiSurface convertMultiSurface(
-      IMultiSurface<IOrientableSurface> iMS) {
+	public static MultiSurface convertMultiSurface(IMultiSurface<IOrientableSurface> iMS) {
 
-    MultiSurface mS = new MultiSurfaceImpl();
+		MultiSurface mS = new MultiSurface();
 
-    int nbElem = iMS.size();
+		int nbElem = iMS.size();
 
-    List<SurfaceProperty> lSPT = new ArrayList<SurfaceProperty>();
+		List<SurfaceProperty> lSPT = new ArrayList<SurfaceProperty>();
 
-    for (int i = 0; i < nbElem; i++) {
+		for (int i = 0; i < nbElem; i++) {
 
-      AbstractSurface aS = convertPolygon((GM_Polygon) iMS.get(i));
-      SurfaceProperty sP = new SurfacePropertyImpl();
+			AbstractSurface aS = convertPolygon((GM_Polygon) iMS.get(i));
+			SurfaceProperty sP = new SurfaceProperty();
 
-      sP.setSurface(aS);
-      lSPT.add(sP);
+			sP.setSurface(aS);
+			lSPT.add(sP);
 
-    }
+		}
 
-    mS.setSurfaceMember(lSPT);
+		mS.setSurfaceMember(lSPT);
 
-    return mS;
+		return mS;
 
-  }
+	}
 
-  public static MultiCurveProperty convertMultiCurveProperty(
-      IMultiCurve<IOrientableCurve> iMC) {
+	public static MultiCurveProperty convertMultiCurveProperty(IMultiCurve<IOrientableCurve> iMC) {
 
-    MultiCurveProperty mCP = new MultiCurvePropertyImpl();
-    mCP.setMultiCurve(convertMultiCurve(iMC));
+		MultiCurveProperty mCP = new MultiCurveProperty();
+		mCP.setMultiCurve(convertMultiCurve(iMC));
 
-    return mCP;
+		return mCP;
 
-  }
+	}
 
-  public static MultiCurve convertMultiCurve(IMultiCurve<IOrientableCurve> iMC) {
+	public static MultiCurve convertMultiCurve(IMultiCurve<IOrientableCurve> iMC) {
 
-    List<CurveProperty> lCP = convertRingCurve(iMC.getList());
+		List<CurveProperty> lCP = convertRingCurve(iMC.getList());
 
-    MultiCurve mC = new MultiCurveImpl();
-    mC.setCurveMember(lCP);
+		MultiCurve mC = new MultiCurve();
+		mC.setCurveMember(lCP);
 
-    return mC;
+		return mC;
 
-  }
+	}
 
-  public static AbstractSurface convertPolygon(IPolygon poly) {
+	public static AbstractSurface convertPolygon(IPolygon poly) {
 
-    GMLGeometryFactory geom = new GMLGeometryFactory();
-
-    Polygon p = null;
-    try {
-      p = geom.createLinearPolygon(poly.getExterior().coord().toArray3D(), 3);
-    } catch (DimensionMismatchException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+		GMLGeometryFactory geom = new GMLGeometryFactory();
 
-    return p;
+		Polygon p = null;
+		try {
+			p = geom.createLinearPolygon(poly.getExterior().coord().toArray3D(), 3);
+		} catch (DimensionMismatchException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return p;
+
+		/*
+		 * 
+		 * 
+		 * Polygon polOut = new Polygon(); polOut.setId("Str" + Math.random());
+		 * 
+		 * Ring r = convertRing(poly.getExterior());
+		 * 
+		 * polOut.setExterior(new Ring);
+		 * 
+		 * 
+		 * 
+		 * rPT.setRing(r);
+		 * 
+		 * 
+		 * polOut.setExterior(rPT);
+		 * 
+		 * 
+		 * int nbInt = poly.getInterior().size();
+		 * 
+		 * List<AbstractRingProperty> lARP = new
+		 * ArrayList<AbstractRingProperty>();
+		 * 
+		 * for (int i = 0; i < nbInt; i++) { Ring rInt =
+		 * convertRing(poly.getInterior(i));
+		 * 
+		 * AbstractRingProperty rPTIn = new AbstractRingPropertyImpl() {
+		 * 
+		 * @Override public Object copy(CopyBuilder arg0) { // TODO
+		 * Auto-generated method stub return super.copyTo(this, arg0);
+		 * 
+		 * } };
+		 * 
+		 * rPTIn.setRing(rInt); lARP.add(rPTIn);
+		 * 
+		 * }
+		 * 
+		 * polOut.setInterior(lARP); return polOut;
+		 */
+	}
 
-    /*
-     * 
-     * 
-     * Polygon polOut = new PolygonImpl(); polOut.setId("Str" + Math.random());
-     * 
-     * Ring r = convertRing(poly.getExterior());
-     * 
-     * polOut.setExterior(new Ring);
-     * 
-     * 
-     * 
-     * rPT.setRing(r);
-     * 
-     * 
-     * polOut.setExterior(rPT);
-     * 
-     * 
-     * int nbInt = poly.getInterior().size();
-     * 
-     * List<AbstractRingProperty> lARP = new ArrayList<AbstractRingProperty>();
-     * 
-     * for (int i = 0; i < nbInt; i++) { Ring rInt =
-     * convertRing(poly.getInterior(i));
-     * 
-     * AbstractRingProperty rPTIn = new AbstractRingPropertyImpl() {
-     * 
-     * @Override public Object copy(CopyBuilder arg0) { // TODO Auto-generated
-     * method stub return super.copyTo(this, arg0);
-     * 
-     * } };
-     * 
-     * rPTIn.setRing(rInt); lARP.add(rPTIn);
-     * 
-     * }
-     * 
-     * polOut.setInterior(lARP); return polOut;
-     */
-  }
+	public static AbstractSurface convertSuface(List<IOrientableSurface> lOS) {
 
-  public static AbstractSurface convertSuface(List<IOrientableSurface> lOS) {
+		List<AbstractSurfacePatch> lASP = new ArrayList<AbstractSurfacePatch>();
 
-    List<AbstractSurfacePatch> lASP = new ArrayList<AbstractSurfacePatch>();
+		int nbPatchs = lOS.size();
 
-    int nbPatchs = lOS.size();
+		for (int i = 0; i < nbPatchs; i++) {
 
-    for (int i = 0; i < nbPatchs; i++) {
+			lASP.add(convertPatch(((GM_Polygon) lOS.get(i)).getExterior()));
+		}
 
-      lASP.add(convertPatch(((GM_Polygon) lASP.get(i)).getExterior()));
-    }
+		SurfacePatchArrayProperty sAP = new SurfacePatchArrayProperty();
 
-    SurfacePatchArrayProperty sAP = new SurfacePatchArrayPropertyImpl();
+		sAP.setSurfacePatch(lASP);
 
-    sAP.setSurfacePatch(lASP);
+		Surface as = new Surface();
+		as.setPatches(sAP);
 
-    Surface as = new SurfaceImpl();
-    as.setPatches(sAP);
+		return as;
 
-    return as;
+	}
 
-  }
+	public static AbstractSurfacePatch convertPatch(IRing iRing) {
 
-  public static AbstractSurfacePatch convertPatch(IRing iRing) {
+		Triangle tri = new Triangle();
 
-    Triangle tri = new TriangleImpl();
+		Ring r = convertRing(iRing);
+		AbstractRingProperty rPT = new AbstractRingProperty() {
 
-    Ring r = convertRing(iRing);
-    AbstractRingProperty rPT = new AbstractRingPropertyImpl() {
+			@Override
+			public Object copy(CopyBuilder arg0) {
+				// TODO Auto-generated method stub
+				return super.copyTo(this, arg0);
 
-      @Override
-      public Object copy(CopyBuilder arg0) {
-        // TODO Auto-generated method stub
-        return super.copyTo(this, arg0);
+			}
 
-      }
-    };
+			@Override
+			public Class<AbstractRing> getAssociableClass() {
+				// TODO Auto-generated method stub
+				return AbstractRing.class;
+			}
+		};
 
-    rPT.setRing(convertRing(iRing));
+		rPT.setRing(convertRing(iRing));
 
-    tri.setExterior(rPT);
-    rPT.setRing(r);
+		tri.setExterior(rPT);
+		rPT.setRing(r);
 
-    return tri;
-  }
+		return tri;
+	}
 
-  public static Ring convertRing(IRing r) {
-    Ring rOut = new RingImpl();
+	public static Ring convertRing(IRing r) {
+		Ring rOut = new Ring();
 
-    rOut.setCurveMember(convertRingCurve(r.getGenerator()));
-    return rOut;
+		rOut.setCurveMember(convertRingCurve(r.getGenerator()));
+		return rOut;
 
-  }
+	}
 
-  private static List<CurveProperty> convertRingCurve(List<IOrientableCurve> lOC) {
+	private static List<CurveProperty> convertRingCurve(List<IOrientableCurve> lOC) {
 
-    int nbCurve = lOC.size();
+		int nbCurve = lOC.size();
 
-    List<CurveProperty> lCP = new ArrayList<CurveProperty>(nbCurve);
+		List<CurveProperty> lCP = new ArrayList<CurveProperty>(nbCurve);
 
-    for (int i = 0; i < nbCurve; i++) {
+		for (int i = 0; i < nbCurve; i++) {
 
-      lCP.add(convertCurveProperty(lOC.get(i)));
+			lCP.add(convertCurveProperty(lOC.get(i)));
 
-    }
+		}
 
-    return lCP;
+		return lCP;
 
-  }
+	}
 
-  private static CurveProperty convertCurveProperty(IOrientableCurve iOC) {
+	private static CurveProperty convertCurveProperty(IOrientableCurve iOC) {
 
-    CurveProperty cP = new CurvePropertyImpl();
+		CurveProperty cP = new CurveProperty();
 
-    cP.setCurve(convertCurve(iOC));
+		cP.setCurve(convertCurve(iOC));
 
-    return cP;
+		return cP;
 
-  }
+	}
 
-  public static AbstractCurve convertCurve(IOrientableCurve iOC) {
+	public static AbstractCurve convertCurve(IOrientableCurve iOC) {
 
-    LineString lS = new LineStringImpl();
-    lS.setCoordinates(convertCoordinates(iOC.coord()));
+		LineString lS = new LineString();
+		lS.setCoordinates(convertCoordinates(iOC.coord()));
 
-    return lS;
+		return lS;
 
-  }
+	}
 
-  public static Coordinates convertCoordinates(IDirectPositionList dpl) {
-    CoordinatesImpl coord = new CoordinatesImpl();
+	public static Coordinates convertCoordinates(IDirectPositionList dpl) {
+		Coordinates coord = new Coordinates();
 
-    StringBuffer sB = new StringBuffer();
+		StringBuffer sB = new StringBuffer();
 
-    int nbP = dpl.size();
+		int nbP = dpl.size();
 
-    for (int i = 0; i < nbP; i++) {
+		for (int i = 0; i < nbP; i++) {
 
-      IDirectPosition dp = dpl.get(i);
-      sB.append(dp.getX() + ";" + dp.getY() + ";" + dp.getZ() + ";");
+			IDirectPosition dp = dpl.get(i);
+			sB.append(dp.getX() + ";" + dp.getY() + ";" + dp.getZ() + ";");
 
-    }
+		}
 
-    coord.setValue(sB.toString());
-    return coord;
-  }
+		coord.setValue(sB.toString());
+		return coord;
+	}
 
 }

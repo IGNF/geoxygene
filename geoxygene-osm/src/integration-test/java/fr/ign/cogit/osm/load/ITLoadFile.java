@@ -8,7 +8,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import fr.ign.cogit.geoxygene.osm.importexport.OSMLoader;
-import fr.ign.cogit.geoxygene.osm.importexport.OsmDataset;
 
 /**
  * 
@@ -19,7 +18,6 @@ public class ITLoadFile {
   @Test
   public void BasicAndLightFileLoadTest() {
     try {
-      OsmDataset dataset = new OsmDataset();
       Runnable fillLayersTask = null;
       // OSMLoader loader = new OSMLoader(new File(ITLoadFile.class.getClassLoader().getResource("map.osm").getPath()), dataset, fillLayersTask, "2154");
       

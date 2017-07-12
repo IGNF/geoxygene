@@ -1,11 +1,12 @@
 package fr.ign.cogit.geoxygene.sig3d.model.citygml.relief;
 
-import org.citygml4j.model.citygml.core.CityObject;
-import org.citygml4j.model.citygml.relief.TINRelief;
-import org.citygml4j.model.gml.Tin;
-import org.citygml4j.model.gml.TriangulatedSurface;
 
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
+import org.citygml4j.model.citygml.core.AbstractCityObject;
+import org.citygml4j.model.citygml.relief.TINRelief;
+import org.citygml4j.model.gml.geometry.primitives.Tin;
+import org.citygml4j.model.gml.geometry.primitives.TriangulatedSurface;
+
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_TriangulatedSurface;
 
 /**
@@ -28,11 +29,11 @@ public class CG_TINRelief extends CG_AbstractReliefComponent {
 
       if (rC.getTin().getTriangulatedSurface() instanceof Tin) {
 
-        tin = ConvertyCityGMLGeometry.convertGMLTin((Tin) (rC.getTin()
+        tin = ConvertCityGMLtoGeometry.convertGMLTin((Tin) (rC.getTin()
             .getTriangulatedSurface()));
 
       } else if (rC.getTin().getTriangulatedSurface() instanceof TriangulatedSurface) {
-        tin = ConvertyCityGMLGeometry
+        tin = ConvertCityGMLtoGeometry
             .convertGMLTriangulatedSurface((TriangulatedSurface) (rC.getTin()
                 .getTriangulatedSurface()));
 
@@ -43,7 +44,7 @@ public class CG_TINRelief extends CG_AbstractReliefComponent {
   }
 
   @Override
-  public CityObject export() {
+  public AbstractCityObject export() {
     // TODO Auto-generated method stub
     return null;
   }

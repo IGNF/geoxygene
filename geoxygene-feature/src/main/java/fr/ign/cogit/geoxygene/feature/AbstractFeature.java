@@ -605,9 +605,9 @@ public abstract class AbstractFeature implements IFeature {
         }
         // je cherche le (ou les) role(s) allant de l'association à
         // l'autre featureType
-        List listRoles = role.getAssociationType().getRoles();
+        List<GF_AssociationRole> listRoles = role.getAssociationType().getRoles();
         listRoles.remove(role);
-        List listRolesAGarder = role.getAssociationType().getRoles();
+        List<GF_AssociationRole> listRolesAGarder = role.getAssociationType().getRoles();
         listRolesAGarder.remove(role);
         for (int i = 0; i < listRoles.size(); i++) {
           if (!((AssociationRole) listRoles.get(i)).getFeatureType()

@@ -31,13 +31,13 @@ import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDB;
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDataSet;
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.core.dataset.DatabaseView;
+import fr.ign.cogit.cartagen.core.dataset.GeneObjImplementation;
+import fr.ign.cogit.cartagen.core.dataset.GeographicClass;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
-import fr.ign.cogit.cartagen.software.CartAGenDataSet;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
-import fr.ign.cogit.cartagen.software.dataset.DatabaseView;
-import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
-import fr.ign.cogit.cartagen.software.dataset.GeographicClass;
 import fr.ign.cogit.cartagen.software.interfacecartagen.menus.ConfigMenuComponent;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -61,8 +61,8 @@ import fr.ign.cogit.geoxygene.style.UserStyle;
  * CartAGen plugin.
  * @author Guillaume Touya
  */
-public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
-    ActionListener {
+public class CartAGenPlugin
+    implements GeOxygeneApplicationPlugin, ActionListener {
   /**
    * Logger.
    */
@@ -231,18 +231,18 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
               public void internalFrameActivated(InternalFrameEvent e) {
                 // System.out.println(frameref.getDataSet());
                 CartAGenDoc.getInstance().setCurrentDataset(
-                    (CartAGenDataSet) frameref.getDataSet());
+                    (CartAGenDataSet) frameref.getSld().getDataSet());
               }
             });
         break;
       // FIXME ne fonctionne pas en l'état actuel
       case "tabbed":
-        ((TabbedProjectFrame) frame).getGui().addFocusListener(
-            new FocusAdapter() {
+        ((TabbedProjectFrame) frame).getGui()
+            .addFocusListener(new FocusAdapter() {
               public void focusGained(FocusEvent e) {
                 System.out.println("plop " + frameref.getDataSet());
                 CartAGenDoc.getInstance().setCurrentDataset(
-                    (CartAGenDataSet) frameref.getDataSet());
+                    (CartAGenDataSet) frameref.getSld().getDataSet());
               }
             });
     }
@@ -272,21 +272,21 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
     frame.getSld().setDataSet(db.getDataSet());
     frame.getLayerViewPanel().getRenderingManager().setHandlingDeletion(true);
     StyledLayerDescriptor defaultSld = StyledLayerDescriptor
-        .unmarshall(IGeneObj.class.getClassLoader().getResourceAsStream(
-            "xml/CartagenStyles.xml")); //$NON-NLS-1$
+        .unmarshall(IGeneObj.class.getClassLoader()
+            .getResourceAsStream("xml/CartagenStyles.xml")); //$NON-NLS-1$
     CartAGenDoc.getInstance().getCurrentDataset().setSld(defaultSld);
     float opacity = 0.8f;
     float strokeWidth = 1.0f;
     for (GeographicClass geoClass : db.getClasses()) {
-      String populationName = db.getDataSet().getPopNameFromFeatType(
-          geoClass.getFeatureTypeName());
+      String populationName = db.getDataSet()
+          .getPopNameFromFeatType(geoClass.getFeatureTypeName());
       if (frame.getSld().getLayer(populationName) == null) {
         Color fillColor = new Color((float) Math.random(),
             (float) Math.random(), (float) Math.random());
         Layer layer = new NamedLayer(frame.getSld(), populationName);
         if (defaultSld.getLayer(populationName) != null) {
-          layer.getStyles().addAll(
-              defaultSld.getLayer(populationName).getStyles());
+          layer.getStyles()
+              .addAll(defaultSld.getLayer(populationName).getStyles());
           // set features of differents layer
           for (IFeature f : db.getDataSet().getPopulation(populationName)) {
             ((IGeneObj) f).setSymbolId(-2);
@@ -295,11 +295,8 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
           UserStyle style = new UserStyle();
           style.setName("Style créé pour le layer " + populationName);//$NON-NLS-1$
           FeatureTypeStyle fts = new FeatureTypeStyle();
-          fts.getRules()
-              .add(
-                  LayerFactory.createRule(geoClass.getGeometryType(),
-                      fillColor.darker(), fillColor, opacity, opacity,
-                      strokeWidth));
+          fts.getRules().add(LayerFactory.createRule(geoClass.getGeometryType(),
+              fillColor.darker(), fillColor, opacity, opacity, strokeWidth));
           style.getFeatureTypeStyles().add(fts);
           layer.getStyles().add(style);
         }

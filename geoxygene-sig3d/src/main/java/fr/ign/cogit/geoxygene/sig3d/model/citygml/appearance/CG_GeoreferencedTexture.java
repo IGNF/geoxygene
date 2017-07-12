@@ -1,11 +1,10 @@
 package fr.ign.cogit.geoxygene.sig3d.model.citygml.appearance;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 
 import org.citygml4j.model.citygml.appearance.GeoreferencedTexture;
 
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
 /**
@@ -18,7 +17,7 @@ public class CG_GeoreferencedTexture extends CG_AbstractTexture {
   protected Boolean preferWorldFile;
   protected GM_Point referencePoint;
   protected double[][] orientation = new double[2][2];
-  protected List<String> target;
+  protected HashSet<String> target;
 
   public CG_GeoreferencedTexture(GeoreferencedTexture sD) {
 
@@ -30,7 +29,7 @@ public class CG_GeoreferencedTexture extends CG_AbstractTexture {
 
     if (sD.isSetReferencePoint()) {
 
-      this.referencePoint = ConvertyCityGMLGeometry.convertGMLPoint(sD
+      this.referencePoint = ConvertCityGMLtoGeometry.convertGMLPoint(sD
           .getReferencePoint().getPoint());
     }
 
@@ -154,9 +153,9 @@ public class CG_GeoreferencedTexture extends CG_AbstractTexture {
    * 
    * 
    */
-  public List<String> getTarget() {
+  public HashSet<String> getTarget() {
     if (this.target == null) {
-      this.target = new ArrayList<String>();
+      this.target = new HashSet<String>();
     }
     return this.target;
   }

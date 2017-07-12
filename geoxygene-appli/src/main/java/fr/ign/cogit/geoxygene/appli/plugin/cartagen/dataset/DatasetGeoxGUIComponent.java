@@ -11,6 +11,7 @@ package fr.ign.cogit.geoxygene.appli.plugin.cartagen.dataset;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -61,15 +62,15 @@ import org.hibernate.Session;
 import org.hibernate.cfg.Configuration;
 import org.xml.sax.SAXException;
 
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDB;
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDataSet;
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.core.dataset.DatabaseView;
+import fr.ign.cogit.cartagen.core.dataset.GeographicClass;
+import fr.ign.cogit.cartagen.core.dataset.postgis.PostgisDB;
+import fr.ign.cogit.cartagen.core.dataset.shapefile.ShapeFileDB;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.core.genericschema.IPersistentObject;
-import fr.ign.cogit.cartagen.software.CartAGenDataSet;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
-import fr.ign.cogit.cartagen.software.dataset.DatabaseView;
-import fr.ign.cogit.cartagen.software.dataset.GeographicClass;
-import fr.ign.cogit.cartagen.software.dataset.PostgisDB;
-import fr.ign.cogit.cartagen.software.dataset.ShapeFileDB;
 import fr.ign.cogit.cartagen.software.interfacecartagen.annexes.CartAGenProgressBar;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.XMLFileFilter;
@@ -119,14 +120,14 @@ public class DatasetGeoxGUIComponent extends JMenu {
     }
     this.add(recentDocsMenu);
     this.addSeparator();
-    JMenu importDataMenu = new JMenu("Import Data");
+    JMenu importDataMenu = new JMenu("Import Dataset");
     importDataMenu.add(new JMenuItem(new ImportDataShape1Action()));
     importDataMenu.add(new JMenuItem(new ImportDataXMLAction()));
-
+    importDataMenu.add(new JMenuItem(new ImportDataPostGISAction()));
     JMenu exportDataMenu = new JMenu("Export Data");
     exportDataMenu.add(new JMenuItem(new ExportDataToShapeAction()));
     exportDataMenu.add(new JMenuItem(new ExportDataToPostGisAction()));
-    JMenu addDataMenu = new JMenu("Add Data");
+    JMenu addDataMenu = new JMenu("Add Layer to current dataset");
     addDataMenu.add(new JMenuItem(new AddShapefileAction()));
     addDataMenu.add(new JMenuItem(new AddLayerAction()));
     JMenu overwriteMenu = new JMenu("Overwrite Data");
@@ -391,6 +392,7 @@ public class DatasetGeoxGUIComponent extends JMenu {
       // add the database to the document
       CartAGenDoc.getInstance().addDatabase(this.database.getName(),
           this.database);
+      CartAGenDoc.getInstance().setCurrentDataset(dataset);
       // put the new dataset as the current one
       CartAGenDoc.getInstance().setCurrentDataset(dataset);
       // populate the generalisation dataset from the cartagen dataset
@@ -813,13 +815,11 @@ public class DatasetGeoxGUIComponent extends JMenu {
         }
 
         // start the transaction
-        Session session = hibConfig.buildSessionFactory()
-            .openSession();
+        Session session = hibConfig.buildSessionFactory().openSession();
         // => openSession seems to require to argument
-        //        Session session = hibConfig.buildSessionFactory()
-        //.openSession(PostgisDB.getConnection());
-        
-        
+        // Session session = hibConfig.buildSessionFactory()
+        // .openSession(PostgisDB.getConnection());
+
         CartAGenDoc.getInstance().setPostGisSession(session);
         session.beginTransaction();
       } else {
@@ -1335,6 +1335,53 @@ public class DatasetGeoxGUIComponent extends JMenu {
     public LaunchEnrichmentWindowAction() {
       this.putValue(Action.SHORT_DESCRIPTION, "Launch enrichment panel.");
       this.putValue(Action.NAME, "Enrichment");
+    }
+  }
+
+  /**
+   * Import data from a PostGIS database.
+   * 
+   * @author GTouya
+   * 
+   */
+  class ImportDataPostGISAction extends AbstractAction {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+
+      // Initialise a runnable which launches the initialisation
+      Runnable runnable = new Runnable() {
+        // Method run() of the runnable
+        @Override
+        public void run() {
+          PostGISLoadDatasetByNameFrame frame = null;
+          try {
+            frame = new PostGISLoadDatasetByNameFrame();
+          } catch (HeadlessException e) {
+            e.printStackTrace();
+          } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+          } catch (SecurityException e) {
+            e.printStackTrace();
+          }
+          frame.setVisible(true);
+        }
+      };
+      // Initialise a thread which provides the runnable execution
+      Thread th = new Thread(runnable);
+      // Run the thread
+      th.start();
+    }
+
+    public ImportDataPostGISAction() {
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "import tables from a PostGIS database");
+      this.putValue(Action.NAME, "import from PostGIS");
     }
   }
 

@@ -223,8 +223,8 @@ public class CommonAlgorithmsFromCartAGen {
       return polygon;
     IDirectPositionList pts = new DirectPositionList();
     pts.add(polygon.coord().get(0));
-    List<Segment> segments = Segment.getSegmentList(polygon
-        .exteriorLineString());
+    List<Segment> segments = Segment
+        .getSegmentList(polygon.exteriorLineString());
     boolean added = false;
     for (int i = 0; i < segments.size(); i++) {
       Segment seg = segments.get(i);
@@ -253,8 +253,8 @@ public class CommonAlgorithmsFromCartAGen {
       return polygon;
     IDirectPositionList pts = new DirectPositionList();
     pts.add(polygon.coord().get(0));
-    List<Segment> segments = Segment.getSegmentList(polygon
-        .exteriorLineString());
+    List<Segment> segments = Segment
+        .getSegmentList(polygon.exteriorLineString());
     boolean added = false;
     for (int i = 0; i < segments.size(); i++) {
       Segment seg = segments.get(i);
@@ -364,9 +364,10 @@ public class CommonAlgorithmsFromCartAGen {
     }
     ILineSegment seg1 = new GM_LineSegment(geom.coord().get(rangNearest - 1),
         geom.coord().get(rangNearest));
-    ILineSegment seg2 = new GM_LineSegment(geom.coord().get(rangNearest), geom
-        .coord().get(rangNearest + 1));
-    if (seg1.distance(new GM_Point(point)) > seg2.distance(new GM_Point(point))) {
+    ILineSegment seg2 = new GM_LineSegment(geom.coord().get(rangNearest),
+        geom.coord().get(rangNearest + 1));
+    if (seg1.distance(new GM_Point(point)) > seg2
+        .distance(new GM_Point(point))) {
       return seg2;
     }
     return seg1;
@@ -393,8 +394,8 @@ public class CommonAlgorithmsFromCartAGen {
       e.printStackTrace();
     }
     ls = CommonAlgorithms.rotation(ls, new Coordinate(0.0, 0.0), angle);
-    DirectPosition endPoint = new DirectPosition(ls.getEndPoint().getX(), ls
-        .getEndPoint().getY());
+    DirectPosition endPoint = new DirectPosition(ls.getEndPoint().getX(),
+        ls.getEndPoint().getY());
     return new Vector2D(new DirectPosition(0.0, 0.0), endPoint);
   }
 
@@ -419,6 +420,8 @@ public class CommonAlgorithmsFromCartAGen {
 
     // builds the intersection
     IGeometry inter = poly1.intersection(poly2);
+    if (inter == null)
+      return 0.0;
 
     // Work with the convex hull of the intersection to make sure it is
     // a simple area.
@@ -470,7 +473,8 @@ public class CommonAlgorithmsFromCartAGen {
    * @return an Angle object between [0, Pi]
    * @author GTouya
    */
-  public static double angleBetween2Lines(ILineString line1, ILineString line2) {
+  public static double angleBetween2Lines(ILineString line1,
+      ILineString line2) {
     // search for the intersection point between the two geometries
     DirectPosition coordIni1 = (DirectPosition) line1.startPoint();
     DirectPosition coordFin1 = (DirectPosition) line1.endPoint();
@@ -630,8 +634,9 @@ public class CommonAlgorithmsFromCartAGen {
     }
     if (line1.endPoint().equals(line2.endPoint())) {
       nbCommonNodes++;
-      angleE = Angle.angleTroisPoints(line1.coord().get(line1.numPoints() - 2),
-          line1.endPoint(), line2.coord().get(line2.numPoints() - 2))
+      angleE = Angle
+          .angleTroisPoints(line1.coord().get(line1.numPoints() - 2),
+              line1.endPoint(), line2.coord().get(line2.numPoints() - 2))
           .getValeur();
     }
 
@@ -769,6 +774,8 @@ public class CommonAlgorithmsFromCartAGen {
     IGeometry unionGeom = null;
     int i = 0;
     for (IGeometry geom : geomColn) {
+      if (geom == null)
+        continue;
       i = i + 1;
       // Initialisation
       if (i == 1) {
@@ -1024,7 +1031,8 @@ public class CommonAlgorithmsFromCartAGen {
    * @param geom
    * @return
    */
-  public static IRing getContainingInnerRing(IPolygon multiRing, IGeometry geom) {
+  public static IRing getContainingInnerRing(IPolygon multiRing,
+      IGeometry geom) {
     for (IRing ring : multiRing.getInterior())
       if (new GM_Polygon(ring).contains(geom))
         return ring;
@@ -1194,8 +1202,8 @@ public class CommonAlgorithmsFromCartAGen {
           minLength = seg.length();
       }
     } else if (geom instanceof IPolygon) {
-      for (Segment seg : Segment.getSegmentList((IPolygon) geom, geom.coord()
-          .get(0))) {
+      for (Segment seg : Segment.getSegmentList((IPolygon) geom,
+          geom.coord().get(0))) {
         if (seg.length() < minLength)
           minLength = seg.length();
       }
@@ -1218,8 +1226,8 @@ public class CommonAlgorithmsFromCartAGen {
       for (Segment seg : Segment.getSegmentList((ILineString) geom))
         lengths.add(seg.length());
     } else if (geom instanceof IPolygon) {
-      for (Segment seg : Segment.getSegmentList((IPolygon) geom, geom.coord()
-          .get(0)))
+      for (Segment seg : Segment.getSegmentList((IPolygon) geom,
+          geom.coord().get(0)))
         lengths.add(seg.length());
     }
     // sort the list of lengths
@@ -1232,10 +1240,10 @@ public class CommonAlgorithmsFromCartAGen {
     if (lengths.size() % 2 == 0)
       return lengths.get(lengths.size() / 2);
     else {
-      double before = lengths.get(new Double(Math.floor(lengths.size() / 2))
-          .intValue() - 1);
-      double after = lengths.get(new Double(Math.floor(lengths.size() / 2))
-          .intValue());
+      double before = lengths
+          .get(new Double(Math.floor(lengths.size() / 2)).intValue() - 1);
+      double after = lengths
+          .get(new Double(Math.floor(lengths.size() / 2)).intValue());
       return (after + before) / 2.0;
     }
   }
@@ -1371,8 +1379,8 @@ public class CommonAlgorithmsFromCartAGen {
     double maxX = ((IDirectPosition) getPtMaxXFromPolygon(horiz).get(0)).getX();
     // then, find the longest segment by looping on the vertices
     for (IDirectPosition vertex : horiz.coord()) {
-      ILineSegment seg = new GM_LineSegment(vertex, new DirectPosition(maxX,
-          vertex.getY()));
+      ILineSegment seg = new GM_LineSegment(vertex,
+          new DirectPosition(maxX, vertex.getY()));
       // the segment is intersected with the rotated polygon
       IGeometry inter = horiz.intersection(seg);
       if (inter instanceof ILineString) {
@@ -1382,7 +1390,8 @@ public class CommonAlgorithmsFromCartAGen {
         longest = seg;
       } else if (inter instanceof IMultiCurve) {
         @SuppressWarnings("unchecked")
-        ILineString longestCurve = getLongestFromMultiCurve((IMultiCurve<IOrientableCurve>) inter);
+        ILineString longestCurve = getLongestFromMultiCurve(
+            (IMultiCurve<IOrientableCurve>) inter);
         if (longestCurve.length() < maxDist)
           continue;
         maxDist = seg.length();
@@ -1474,9 +1483,11 @@ public class CommonAlgorithmsFromCartAGen {
     points.remove(points.size() - 1);
     points.addAll(polygon.coord().getList());
     List<IDirectPosition> sharpVertices = new ArrayList<IDirectPosition>();
-    for (int i = polygon.coord().size(); i < 2 * polygon.coord().size() - 1; i++) {
-      double angle = Angle.angleTroisPoints(points.get(i - 1), points.get(i),
-          points.get(i + 1)).getValeur();
+    for (int i = polygon.coord().size(); i < 2 * polygon.coord().size()
+        - 1; i++) {
+      double angle = Angle
+          .angleTroisPoints(points.get(i - 1), points.get(i), points.get(i + 1))
+          .getValeur();
       if (angle > Math.PI) {
         angle = 2 * Math.PI - angle;
       }
@@ -1536,8 +1547,8 @@ public class CommonAlgorithmsFromCartAGen {
         toTest.remove(segments.get(i + 1));
       for (Segment other : toTest) {
         if (segment.intersects(other)) {
-          if (!selfIntersections.contains(segment.intersection(other)
-              .centroid()))
+          if (!selfIntersections
+              .contains(segment.intersection(other).centroid()))
             selfIntersections.add(segment.intersection(other).centroid());
         }
       }
@@ -1552,7 +1563,8 @@ public class CommonAlgorithmsFromCartAGen {
    * @return
    * @throws Exception
    */
-  public static ILineString removeDuplicates(ILineString line) throws Exception {
+  public static ILineString removeDuplicates(ILineString line)
+      throws Exception {
     Coordinate[] coordinateArray = JtsGeOxygene.makeJtsGeom(line)
         .getCoordinates();
     IDirectPositionList coords = new DirectPositionList();
@@ -1562,8 +1574,8 @@ public class CommonAlgorithmsFromCartAGen {
     coords.add(new DirectPosition(previous.x, previous.y));
     for (int i = 1; i < coordinateArray.length; i++) {
       if (!coordinateArray[i].equals2D(previous)) {
-        coords.add(new DirectPosition(coordinateArray[i].x,
-            coordinateArray[i].y));
+        coords.add(
+            new DirectPosition(coordinateArray[i].x, coordinateArray[i].y));
         previous = coordinateArray[i];
       }
     }

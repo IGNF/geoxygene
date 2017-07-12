@@ -9,12 +9,16 @@
  ******************************************************************************/
 package fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.electretri.towncentre;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
 import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.electretri.ELECTRECriterion;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 
 public class LimitCriterion extends ELECTRECriterion {
 
@@ -23,8 +27,8 @@ public class LimitCriterion extends ELECTRECriterion {
   // //////////////////////////////////////////
 
   // All static fields //
-  private static Logger logger = Logger.getLogger(ELECTRECriterion.class
-      .getName());
+  private static Logger logger = Logger
+      .getLogger(ELECTRECriterion.class.getName());
 
   // Public fields //
 
@@ -33,6 +37,7 @@ public class LimitCriterion extends ELECTRECriterion {
   // Package visible fields //
 
   // Private fields //
+  private IFeatureCollection<IWaterArea> waterAreas;
 
   // //////////////////////////////////////////
   // Static methods //
@@ -49,6 +54,16 @@ public class LimitCriterion extends ELECTRECriterion {
     this.setIndifference(0.05);
     this.setPreference(0.2);
     this.setVeto(0.9);
+    waterAreas = new FT_FeatureCollection<>();
+  }
+
+  public LimitCriterion(String nom, IFeatureCollection<IWaterArea> waterAreas) {
+    super(nom);
+    this.setWeight(0.7);
+    this.setIndifference(0.05);
+    this.setPreference(0.2);
+    this.setVeto(0.9);
+    this.waterAreas = waterAreas;
   }
 
   // Getters and setters //
@@ -61,6 +76,9 @@ public class LimitCriterion extends ELECTRECriterion {
     ILineString outline = (ILineString) param.get("outline");
     if (block.getGeom().intersects(outline)) {
       LimitCriterion.logger.finest(this.getName() + " : " + 0.0);
+      Collection<IWaterArea> interAreas = waterAreas.select(block.getGeom());
+      if (interAreas.size() > 1)
+        return 0.25;
       return 0.0;
     }
     LimitCriterion.logger.finest(this.getName() + " : " + 0.5);

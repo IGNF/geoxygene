@@ -19,7 +19,6 @@ package fr.ign.cogit.geoxygene.sig3d.indicator;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 
 /**
  * 

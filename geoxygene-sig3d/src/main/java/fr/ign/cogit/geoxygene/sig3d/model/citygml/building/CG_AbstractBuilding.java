@@ -7,19 +7,8 @@ import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.citygml4j.impl.citygml.building.BoundarySurfaceImpl;
-import org.citygml4j.impl.citygml.building.BoundarySurfacePropertyImpl;
-import org.citygml4j.impl.citygml.building.BuildingInstallationPropertyImpl;
-import org.citygml4j.impl.citygml.building.BuildingPartPropertyImpl;
-import org.citygml4j.impl.citygml.building.IntBuildingInstallationPropertyImpl;
-import org.citygml4j.impl.citygml.building.InteriorRoomPropertyImpl;
-import org.citygml4j.impl.gml.DoubleOrNullImpl;
-import org.citygml4j.impl.gml.LengthImpl;
-import org.citygml4j.impl.gml.MeasureOrNullListImpl;
-import org.citygml4j.jaxb.gml._3_1_1.LengthType;
-import org.citygml4j.jaxb.gml._3_1_1.MeasureOrNullListType;
+import org.citygml4j.model.citygml.building.AbstractBoundarySurface;
 import org.citygml4j.model.citygml.building.AbstractBuilding;
-import org.citygml4j.model.citygml.building.BoundarySurface;
 import org.citygml4j.model.citygml.building.BoundarySurfaceProperty;
 import org.citygml4j.model.citygml.building.BuildingInstallation;
 import org.citygml4j.model.citygml.building.BuildingInstallationProperty;
@@ -28,9 +17,10 @@ import org.citygml4j.model.citygml.building.IntBuildingInstallation;
 import org.citygml4j.model.citygml.building.IntBuildingInstallationProperty;
 import org.citygml4j.model.citygml.building.InteriorRoomProperty;
 import org.citygml4j.model.citygml.building.Room;
-import org.citygml4j.model.gml.DoubleOrNull;
-import org.citygml4j.model.gml.Length;
-import org.citygml4j.model.gml.MeasureOrNullList;
+import org.citygml4j.model.gml.basicTypes.Code;
+import org.citygml4j.model.gml.basicTypes.DoubleOrNull;
+import org.citygml4j.model.gml.basicTypes.MeasureOrNullList;
+import org.citygml4j.model.gml.measures.Length;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
@@ -39,8 +29,10 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISolid;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_AbstractSite;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_Address;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertToCityGMLGeometry;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
+import net.opengis.gml.LengthType;
+import net.opengis.gml.MeasureOrNullListType;
 
 /**
  * 
@@ -81,29 +73,29 @@ public abstract class CG_AbstractBuilding extends CG_AbstractSite {
 
     if (this.isSetMeasuredHeight()) {
 
-      Length l = new LengthImpl();
+      Length l = new Length();
       l.setValue(this.getMeasuredHeight());
       aB.setMeasuredHeight(l);
     }
 
     if (this.isSetStoreyHeightsAboveGround()) {
 
-      MeasureOrNullList mNL = new MeasureOrNullListImpl();
+      MeasureOrNullList mNL = new MeasureOrNullList();
 
       double d = this.getStoreyHeightsAboveGround();
       List<DoubleOrNull> lD = new ArrayList<DoubleOrNull>();
-      lD.add(new DoubleOrNullImpl(d));
+      lD.add(new DoubleOrNull(d));
       mNL.setDoubleOrNull(lD);
       aB.setStoreyHeightsAboveGround(mNL);
     }
 
     if (this.isSetStoreyHeightsBelowGround()) {
 
-      MeasureOrNullList mNL = new MeasureOrNullListImpl();
+      MeasureOrNullList mNL = new MeasureOrNullList();
 
       double d = this.getStoreyHeightsBelowGround();
       List<DoubleOrNull> lD = new ArrayList<DoubleOrNull>();
-      lD.add(new DoubleOrNullImpl(d));
+      lD.add(new DoubleOrNull(d));
       mNL.setDoubleOrNull(lD);
       aB.setStoreyHeightsBelowGround(mNL);
     }
@@ -210,7 +202,7 @@ public abstract class CG_AbstractBuilding extends CG_AbstractSite {
 
         for (int i = 0; i < nbOuterBuildingInstallation; i++) {
           
-          BuildingInstallationProperty bIP = new BuildingInstallationPropertyImpl();
+          BuildingInstallationProperty bIP = new BuildingInstallationProperty();
           
           bIP.setBuildingInstallation(    ((BuildingInstallation)this.getOuterBuildingInstallation().get(i).export()) );
           
@@ -232,7 +224,7 @@ public abstract class CG_AbstractBuilding extends CG_AbstractSite {
 
         for (int i = 0; i < nbIntBuildingInstallation; i++) {
           
-          IntBuildingInstallationProperty iBIP = new IntBuildingInstallationPropertyImpl();
+          IntBuildingInstallationProperty iBIP = new IntBuildingInstallationProperty();
           
           iBIP.setIntBuildingInstallation((IntBuildingInstallation) this.getInteriorBuildingInstallation().get(i).export()  );
           
@@ -250,7 +242,7 @@ public abstract class CG_AbstractBuilding extends CG_AbstractSite {
 
       for (int i = 0; i < nbRooms; i++) {
         
-        InteriorRoomProperty iRP = new InteriorRoomPropertyImpl();
+        InteriorRoomProperty iRP = new InteriorRoomProperty();
         
         
         iRP.setRoom((Room)this.getInteriorRoom().get(i).export());
@@ -266,7 +258,7 @@ public abstract class CG_AbstractBuilding extends CG_AbstractSite {
       aB.setConsistsOfBuildingPart(new ArrayList<BuildingPartProperty>());
 
       for (int i = 0; i < nbPart; i++) {
-        BuildingPartProperty bPP = new BuildingPartPropertyImpl();
+        BuildingPartProperty bPP = new BuildingPartProperty();
           
         
         
@@ -284,11 +276,11 @@ public abstract class CG_AbstractBuilding extends CG_AbstractSite {
       
       
       for (int i = 0; i < nbBoundingSurface; i++) {
-        BoundarySurfaceImpl bs = (BoundarySurfaceImpl) this.getBoundedBySurfaces().get(i)
+    	  AbstractBoundarySurface bs = (AbstractBoundarySurface) this.getBoundedBySurfaces().get(i)
             .export();
         
         
-        BoundarySurfaceProperty bSP = new BoundarySurfacePropertyImpl();
+        BoundarySurfaceProperty bSP = new BoundarySurfaceProperty();
         bSP.setObject(bs);
         
 
@@ -334,78 +326,78 @@ public abstract class CG_AbstractBuilding extends CG_AbstractSite {
     }
 
     if (build.isSetLod1Solid()) {
-      this.lod1Solid = ConvertyCityGMLGeometry.convertGMLSolid(build
+      this.lod1Solid = ConvertCityGMLtoGeometry.convertGMLSolid(build
           .getLod1Solid());
     }
 
     if (build.isSetLod2Solid()) {
-      this.lod2Solid = ConvertyCityGMLGeometry.convertGMLSolid(build
+      this.lod2Solid = ConvertCityGMLtoGeometry.convertGMLSolid(build
           .getLod2Solid());
     }
 
     if (build.isSetLod3Solid()) {
-      this.lod3Solid = ConvertyCityGMLGeometry.convertGMLSolid(build
+      this.lod3Solid = ConvertCityGMLtoGeometry.convertGMLSolid(build
           .getLod3Solid());
     }
 
     if (build.isSetLod4Solid()) {
-      this.lod4Solid = ConvertyCityGMLGeometry.convertGMLSolid(build
+      this.lod4Solid = ConvertCityGMLtoGeometry.convertGMLSolid(build
           .getLod4Solid());
     }
 
     if (build.isSetLod1MultiSurface()) {
-      this.lod1MultiSurface = ConvertyCityGMLGeometry
+      this.lod1MultiSurface = ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(build.getLod1MultiSurface());
     }
 
     if (build.isSetLod2MultiSurface()) {
-      this.lod2MultiSurface = ConvertyCityGMLGeometry
+      this.lod2MultiSurface = ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(build.getLod2MultiSurface());
     }
 
     if (build.isSetLod3MultiSurface()) {
-      this.lod3MultiSurface = ConvertyCityGMLGeometry
+      this.lod3MultiSurface = ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(build.getLod3MultiSurface());
     }
 
     if (build.isSetLod4MultiSurface()) {
-      this.lod4MultiSurface = ConvertyCityGMLGeometry
+      this.lod4MultiSurface = ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(build.getLod4MultiSurface());
     }
 
     if (build.isSetLod1TerrainIntersection()) {
 
-      this.lod1TerrainIntersection = ConvertyCityGMLGeometry
+      this.lod1TerrainIntersection = ConvertCityGMLtoGeometry
           .convertGMLMultiCurve(build.getLod1TerrainIntersection());
     }
 
     if (build.isSetLod2TerrainIntersection()) {
-      this.lod2TerrainIntersection = ConvertyCityGMLGeometry
+      this.lod2TerrainIntersection = ConvertCityGMLtoGeometry
           .convertGMLMultiCurve(build.getLod2TerrainIntersection());
     }
 
     if (build.isSetLod3TerrainIntersection()) {
-      this.lod3TerrainIntersection = ConvertyCityGMLGeometry
+      this.lod3TerrainIntersection = ConvertCityGMLtoGeometry
           .convertGMLMultiCurve(build.getLod3TerrainIntersection());
     }
 
     if (build.isSetLod4TerrainIntersection()) {
-      this.lod4TerrainIntersection = ConvertyCityGMLGeometry
+      this.lod4TerrainIntersection = ConvertCityGMLtoGeometry
           .convertGMLMultiCurve(build.getLod4TerrainIntersection());
     }
 
     if (build.isSetLod2MultiCurve()) {
-      this.lod2MultiCurve = ConvertyCityGMLGeometry.convertGMLMultiCurve(build
+      this.lod2MultiCurve = ConvertCityGMLtoGeometry.convertGMLMultiCurve(build
           .getLod2MultiCurve());
     }
 
     if (build.isSetLod3MultiCurve()) {
-      this.lod3MultiCurve = ConvertyCityGMLGeometry.convertGMLMultiCurve(build
+      this.lod3MultiCurve = ConvertCityGMLtoGeometry.convertGMLMultiCurve(build
           .getLod3MultiCurve());
     }
 
     if (build.isSetLod4MultiCurve()) {
-      this.lod4MultiCurve = ConvertyCityGMLGeometry.convertGMLMultiCurve(build
+      this.lod4MultiCurve = ConvertCityGMLtoGeometry.convertGMLMultiCurve(build
           .getLod4MultiCurve());
     }
 
@@ -481,7 +473,7 @@ public abstract class CG_AbstractBuilding extends CG_AbstractSite {
       int nbBoundingSurface = build.getBoundedBySurface().size();
 
       for (int i = 0; i < nbBoundingSurface; i++) {
-        BoundarySurface bs = build.getBoundedBySurface().get(i)
+    	  AbstractBoundarySurface bs = build.getBoundedBySurface().get(i)
             .getBoundarySurface();
 
         this.getBoundedBySurfaces().add(
@@ -492,14 +484,14 @@ public abstract class CG_AbstractBuilding extends CG_AbstractSite {
 
   }
 
-  protected String clazz;
-  protected List<String> function;
-  protected List<String> usage;
+  protected Code clazz;
+  protected List<Code> function;
+  protected List<Code> usage;
 
   protected GregorianCalendar yearOfConstruction;
 
   protected GregorianCalendar yearOfDemolition;
-  protected String roofType;
+  protected Code roofType;
   protected Double /* LengthType */measuredHeight = Double.NaN;
 
   protected int storeysAboveGround = -1;
@@ -536,7 +528,7 @@ public abstract class CG_AbstractBuilding extends CG_AbstractSite {
    * @return possible object is {@link String }
    * 
    */
-  public String getClazz() {
+  public Code getClazz() {
     return this.clazz;
   }
 
@@ -546,7 +538,7 @@ public abstract class CG_AbstractBuilding extends CG_AbstractSite {
    * @param value allowed object is {@link String }
    * 
    */
-  public void setClazz(String value) {
+  public void setClazz(Code value) {
     this.clazz = value;
   }
 
@@ -576,9 +568,9 @@ public abstract class CG_AbstractBuilding extends CG_AbstractSite {
    * 
    * 
    */
-  public List<String> getFunction() {
+  public List<Code> getFunction() {
     if (this.function == null) {
-      this.function = new ArrayList<String>();
+      this.function = new ArrayList<Code>();
     }
     return this.function;
   }
@@ -613,9 +605,9 @@ public abstract class CG_AbstractBuilding extends CG_AbstractSite {
    * 
    * 
    */
-  public List<String> getUsage() {
+  public List<Code> getUsage() {
     if (this.usage == null) {
-      this.usage = new ArrayList<String>();
+      this.usage = new ArrayList<Code>();
     }
     return this.usage;
   }
@@ -682,7 +674,7 @@ public abstract class CG_AbstractBuilding extends CG_AbstractSite {
    * @return possible object is {@link String }
    * 
    */
-  public String getRoofType() {
+  public Code getRoofType() {
     return this.roofType;
   }
 
@@ -692,7 +684,7 @@ public abstract class CG_AbstractBuilding extends CG_AbstractSite {
    * @param value allowed object is {@link String }
    * 
    */
-  public void setRoofType(String value) {
+  public void setRoofType(Code value) {
     this.roofType = value;
   }
 

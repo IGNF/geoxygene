@@ -5,6 +5,7 @@ import javax.vecmath.Color3f;
 import org.citygml4j.model.citygml.appearance.AbstractTexture;
 import org.citygml4j.model.citygml.appearance.GeoreferencedTexture;
 import org.citygml4j.model.citygml.appearance.ParameterizedTexture;
+import org.citygml4j.model.gml.basicTypes.Code;
 
 /**
  * 
@@ -14,7 +15,7 @@ import org.citygml4j.model.citygml.appearance.ParameterizedTexture;
 public class CG_AbstractTexture extends CG_AbstractSurfaceData {
 
   protected String imageURI;
-  protected String mimeType;
+  protected Code mimeType;
 
   /*
    * +typical +specific +unknown
@@ -104,7 +105,7 @@ public class CG_AbstractTexture extends CG_AbstractSurfaceData {
    * @return possible object is {@link String }
    * 
    */
-  public String getMimeType() {
+  public Code getMimeType() {
     return this.mimeType;
   }
 
@@ -114,7 +115,7 @@ public class CG_AbstractTexture extends CG_AbstractSurfaceData {
    * @param value allowed object is {@link String }
    * 
    */
-  public void setMimeType(String value) {
+  public void setMimeType(Code value) {
     this.mimeType = value;
   }
 

@@ -81,6 +81,40 @@ public class SLDUtilCartagen extends SLDUtil {
   }
 
   /**
+   * Gets the symbol width of a linear object from the SLD value for this
+   * object. The width value is in terrain meters.
+   * @param obj
+   * @return
+   */
+  public static double getSymbolMaxWidth(IFeature obj) {
+    String layerName = CartAGenDoc.getInstance().getCurrentDataset()
+        .getPopNameFromObj(obj);
+
+    StyledLayerDescriptor sld = CartAGenDoc.getInstance().getCurrentDataset()
+        .getSld();
+
+    if (sld == null) {
+      return 0.0;
+    }
+    Layer layer = sld.getLayer(layerName);
+    // get the background style (max width is the bottom style width)
+    Style style = layer.getStyles().get(0);
+    double width = 0.0;
+    for (FeatureTypeStyle ftStyle : style.getFeatureTypeStyles()) {
+      Rule rule = ftStyle.getRules().get(0);
+      if (rule.getFilter() != null)
+        if (!rule.getFilter().evaluate(obj))
+          continue;
+
+      for (Symbolizer symbolizer : rule.getSymbolizers()) {
+        if (symbolizer instanceof LineSymbolizer)
+          width = Math.max(symbolizer.getStroke().getStrokeWidth(), width);
+      }
+    }
+    return width;
+  }
+
+  /**
    * Gets the innner symbol width of a linear object from the SLD value for this
    * object. The width value is in terrain meters.
    * @param obj

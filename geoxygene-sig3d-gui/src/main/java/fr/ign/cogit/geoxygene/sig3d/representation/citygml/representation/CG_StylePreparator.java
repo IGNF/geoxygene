@@ -110,6 +110,7 @@ public class CG_StylePreparator {
   private static List<Object> retrieveStyle(String ID,
       List<CG_AbstractSurfaceData> lCGA) {
 
+	  String searchedID = "#"+ID;
     // On génère les représentations qui sont appliquables
     List<Object> lRep = new ArrayList<Object>();
 
@@ -122,8 +123,7 @@ public class CG_StylePreparator {
 
       if (cABS instanceof CG_X3DMaterial) {
 
-        if (CG_StylePreparator
-            .isInList(ID, ((CG_X3DMaterial) cABS).getTarget())) {
+        if ((((CG_X3DMaterial) cABS).getTarget().contains(searchedID))){
 
           lRep.add(cABS);
 
@@ -132,16 +132,14 @@ public class CG_StylePreparator {
 
       } else if (cABS instanceof CG_GeoreferencedTexture) {
 
-        if (CG_StylePreparator.isInList(ID,
-            ((CG_GeoreferencedTexture) cABS).getTarget())) {
+        if (((CG_GeoreferencedTexture) cABS).getTarget().contains(searchedID)) {
           lRep.add(cABS);
         }
         continue;
 
       } else if (cABS instanceof CG_ParameterizedTexture) {
 
-        if (CG_StylePreparator.isInList(ID,
-            ((CG_ParameterizedTexture) cABS).getTextureAssociation())) {
+        if  ((((CG_ParameterizedTexture) cABS).getMapTarget().containsKey(searchedID))){
           lRep.add(cABS);
         }
 
@@ -154,7 +152,8 @@ public class CG_StylePreparator {
     return lRep;
   }
 
-  private static boolean isInList(String ID, List<String> lS) {
+  /*
+  private static boolean isInList(String ID, HashSet<String> lS) {
 
     int nbElem = lS.size();
 
@@ -167,6 +166,6 @@ public class CG_StylePreparator {
     }
 
     return false;
-  }
+  }*/
 
 }

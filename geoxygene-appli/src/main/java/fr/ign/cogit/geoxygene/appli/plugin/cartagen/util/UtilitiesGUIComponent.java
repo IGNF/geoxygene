@@ -31,8 +31,8 @@ import javax.xml.transform.TransformerException;
 
 import org.xml.sax.SAXException;
 
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDB;
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
@@ -186,13 +186,13 @@ public class UtilitiesGUIComponent extends JMenu {
 
     /****/
     private static final long serialVersionUID = 1L;
-    private JComboBox combo;
+    private JComboBox<Locale> combo;
 
     InternationalisationFrame() {
       super(I18N.getString("MainLabels.changeLanguage"));
       this.setSize(200, 150);
       this.setAlwaysOnTop(true);
-      combo = new JComboBox(new Locale[] { Locale.FRANCE, Locale.ENGLISH });
+      combo = new JComboBox<>(new Locale[] { Locale.FRANCE, Locale.ENGLISH });
       combo.setPreferredSize(new Dimension(150, 20));
       combo.setMaximumSize(new Dimension(150, 20));
       combo.setMinimumSize(new Dimension(150, 20));
@@ -208,8 +208,8 @@ public class UtilitiesGUIComponent extends JMenu {
       pButtons.add(btnCancel);
       pButtons.setLayout(new BoxLayout(pButtons, BoxLayout.X_AXIS));
       this.getContentPane().add(pButtons);
-      this.getContentPane().setLayout(
-          new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+      this.getContentPane()
+          .setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
       this.pack();
     }
 

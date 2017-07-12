@@ -31,16 +31,16 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import fr.ign.cogit.cartagen.util.CRSConversion;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.datatools.CRSConversion;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMRelation.RoleMembre;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMRelation.TypeRelation;
-import fr.ign.cogit.geoxygene.osm.schema.OsmGeneObj;
+import fr.ign.cogit.geoxygene.osm.schema.OSMFeature;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
@@ -150,19 +150,19 @@ public class OsmXmlParser {
     Element root = (Element) doc.getElementsByTagName("osm").item(0);
 
     // On charge les objets ponctuels
-    int nbNoeuds = root.getElementsByTagName(OsmGeneObj.TAG_NODE).getLength();
+    int nbNoeuds = root.getElementsByTagName(OSMFeature.TAG_NODE).getLength();
     for (int i = 0; i < nbNoeuds; i++) {
 
-      Element elem = (Element) root.getElementsByTagName(OsmGeneObj.TAG_NODE)
+      Element elem = (Element) root.getElementsByTagName(OSMFeature.TAG_NODE)
           .item(i);
 
       // On récupère son ID
-      long id = Long.valueOf(elem.getAttribute(OsmGeneObj.ATTR_ID));
+      long id = Long.valueOf(elem.getAttribute(OSMFeature.ATTR_ID));
       // String versionAttr = elem.getAttribute(OsmGeneObj.ATTR_VERSION);
 
       // on récupère sa géométrie
-      double lat = Double.valueOf(elem.getAttribute(OsmGeneObj.ATTR_LAT));
-      double lon = Double.valueOf(elem.getAttribute(OsmGeneObj.ATTR_LON));
+      double lat = Double.valueOf(elem.getAttribute(OSMFeature.ATTR_LAT));
+      double lon = Double.valueOf(elem.getAttribute(OSMFeature.ATTR_LON));
       OSMNode geom = new OSMNode(lat, lon);
 
       if (elem.getElementsByTagName("tag").getLength() > 0) {
@@ -196,14 +196,14 @@ public class OsmXmlParser {
     LOGGER.info(nbNoeuds + " points chargés");
 
     // On charge les objets linéaires
-    int nbWays = root.getElementsByTagName(OsmGeneObj.TAG_WAY).getLength();
+    int nbWays = root.getElementsByTagName(OSMFeature.TAG_WAY).getLength();
     for (int i = 0; i < nbWays; i++) {
 
-      Element elem = (Element) root.getElementsByTagName(OsmGeneObj.TAG_WAY)
+      Element elem = (Element) root.getElementsByTagName(OSMFeature.TAG_WAY)
           .item(i);
 
       // on récupère les attributs de l'élément
-      int id = Integer.valueOf(elem.getAttribute(OsmGeneObj.ATTR_ID));
+      int id = Integer.valueOf(elem.getAttribute(OSMFeature.ATTR_ID));
 
       boolean isRoad = false;
       if (elem.getElementsByTagName("tag").getLength() > 0) {
@@ -276,14 +276,14 @@ public class OsmXmlParser {
     LOGGER.info(nbWays + " lignes chargées");
 
     // On charge les relations
-    int nbRels = root.getElementsByTagName(OsmGeneObj.TAG_REL).getLength();
+    int nbRels = root.getElementsByTagName(OSMFeature.TAG_REL).getLength();
     for (int i = 0; i < nbRels; i++) {
 
-      Element elem = (Element) root.getElementsByTagName(OsmGeneObj.TAG_REL)
+      Element elem = (Element) root.getElementsByTagName(OSMFeature.TAG_REL)
           .item(i);
 
       // on récupère les attributs de l'élément
-      int id = Integer.valueOf(elem.getAttribute(OsmGeneObj.ATTR_ID));
+      int id = Integer.valueOf(elem.getAttribute(OSMFeature.ATTR_ID));
 
       // On récupère sa primitive
       TypeRelation type = TypeRelation.NON_DEF;
@@ -321,7 +321,7 @@ public class OsmXmlParser {
       Element tagElem = (Element) elem.getElementsByTagName("tag").item(j);
       String cle = tagElem.getAttribute("k");
       // cas du tag outil
-      if (cle.equals(OsmGeneObj.TAG_OUTIL)) {
+      if (cle.equals(OSMFeature.TAG_OUTIL)) {
         /*
          * String txt = tagElem.getAttribute("v"); OsmCaptureTool outil =
          * OsmCaptureTool.valueOfTexte(txt); //obj.setCaptureTool(outil);
@@ -329,7 +329,7 @@ public class OsmXmlParser {
         continue;
       }
       // cas du tag source
-      if (cle.equals(OsmGeneObj.TAG_SOURCE)) {
+      if (cle.equals(OSMFeature.TAG_SOURCE)) {
         /*
          * String txt = tagElem.getAttribute("v"); //obj.setSource(txt);
          */

@@ -16,10 +16,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -42,6 +44,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
@@ -51,9 +54,23 @@ import javax.swing.SpinnerNumberModel;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.apache.commons.math.stat.Frequency;
+import org.geotools.data.DataUtilities;
+import org.geotools.data.DefaultTransaction;
+import org.geotools.data.Transaction;
+import org.geotools.data.shapefile.ShapefileDataStore;
+import org.geotools.data.store.ContentFeatureStore;
+import org.geotools.feature.SchemaException;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.xml.sax.SAXException;
 
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.XMLFileFilter;
+import com.vividsolutions.jts.geom.GeometryFactory;
+
+import fr.ign.cogit.cartagen.core.genericschema.urban.BuildingCategory;
+import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.spatialanalysis.landmarks.LandmarksFinder;
 import fr.ign.cogit.cartagen.spatialanalysis.landmarks.LandmarksFinderTrainer;
 import fr.ign.cogit.cartagen.spatialanalysis.learningdescriptor.CategoryLearningDescr;
@@ -87,6 +104,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.panel.XMLFileFilter;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.SelectionUtil;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
@@ -110,6 +128,7 @@ import fr.ign.cogit.geoxygene.style.SLDUtil;
 import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.measure.shape.PolygonSignatureFunction;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.measure.shape.PolygonTurningFunction;
+import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 
 public class SpatialAnalysisPlugin
     implements ProjectFramePlugin, GeOxygeneApplicationPlugin {
@@ -130,8 +149,10 @@ public class SpatialAnalysisPlugin
     urbanMenu.add(new JMenuItem(new BoffetUrbanAreasAction()));
     urbanMenu.add(new JMenuItem(new CitinessUrbanAreasAction()));
     JMenu buildClassifMenu = new JMenu("Building Classification");
-    buildClassifMenu.add(new JMenuItem(new AddTrainingDataLandmarksAction()));
-    buildClassifMenu.add(new JMenuItem(new LandmarksFinderAction()));
+    buildClassifMenu.add(new JMenuItem(new AddTrainingDataAction()));
+    buildClassifMenu.add(new JMenuItem(new BuildingClassifSVMAction()));
+    buildClassifMenu.add(new JMenuItem(new ClassifyBlocksAction()));
+    buildClassifMenu.add(new JMenuItem(new ExportBlocksClassifAsShapeAction()));
     urbanMenu.add(buildClassifMenu);
     JMenu landmarksMenu = new JMenu("Landmarks");
     landmarksMenu.add(new JMenuItem(new AddTrainingDataLandmarksAction()));
@@ -1163,7 +1184,7 @@ public class SpatialAnalysisPlugin
       txtFile.setMaximumSize(new Dimension(250, 20));
       txtFile.setMinimumSize(new Dimension(250, 20));
       btnBrowse = new JButton(new ImageIcon(
-          this.getClass().getResource("images/icons/folder_add.png")));
+          this.getClass().getResource("/images/icons/folder_add.png")));
       btnBrowse.addActionListener(this);
       btnBrowse.setActionCommand("browse");
       DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
@@ -1389,6 +1410,7 @@ public class SpatialAnalysisPlugin
     public void actionPerformed(ActionEvent e) {
       if (e.getActionCommand().equals("OK")) {
         Set<IFeature> selected = SelectionUtil.getSelectedObjects(app);
+        Set<IFeature> notSelected = new HashSet<>();
         buildings = new FT_FeatureCollection<>();
         roads = new FT_FeatureCollection<>();
         crossroads = new FT_FeatureCollection<>();
@@ -1396,8 +1418,14 @@ public class SpatialAnalysisPlugin
             .getSelectedProjectFrame()
             .getLayer((String) comboLayer.getSelectedItem())
             .getFeatureCollection()) {
-          if (feat.getGeom() instanceof IPolygon)
+          if (feat.getGeom() instanceof IPolygon) {
             buildings.add(feat);
+            if (!selected.contains(feat))
+              notSelected.add(feat);
+            if (feat instanceof IBuilding)
+              ((IBuilding) feat).setBuildingCategory(BuildingCategory
+                  .fromNatureName(((IBuilding) feat).getNature()));
+          }
         }
         for (IFeature feat : application.getMainFrame()
             .getSelectedProjectFrame()
@@ -1415,7 +1443,7 @@ public class SpatialAnalysisPlugin
         }
         getDescriptors();
         try {
-          addToTrainingSet(selected);
+          addToTrainingSet(notSelected, selected);
         } catch (Exception e1) {
           e1.printStackTrace();
         }
@@ -1456,21 +1484,24 @@ public class SpatialAnalysisPlugin
       this.descriptors.add(new VerticesNbLearningDescr());
     }
 
-    private void addToTrainingSet(Set<IFeature> buildings)
-        throws ParserConfigurationException, SAXException, IOException,
-        TransformerException {
+    private void addToTrainingSet(Set<IFeature> buildings,
+        Set<IFeature> landmarks) throws ParserConfigurationException,
+        SAXException, IOException, TransformerException {
       File file = new File(this.txtFile.getText());
       LandmarksFinderTrainer trainer = new LandmarksFinderTrainer(descriptors,
           file);
-      Boolean response = new Boolean(true);
-      if (this.radioNo.isSelected())
-        response = new Boolean(false);
 
       for (IFeature feat : buildings) {
         Map<String, Double> descrValues = new HashMap<>();
         for (LearningDescriptor descr : this.descriptors)
           descrValues.put(descr.getName(), descr.getValue(feat));
-        trainer.addExample(descrValues, response);
+        trainer.addExample(descrValues, false);
+      }
+      for (IFeature feat : landmarks) {
+        Map<String, Double> descrValues = new HashMap<>();
+        for (LearningDescriptor descr : this.descriptors)
+          descrValues.put(descr.getName(), descr.getValue(feat));
+        trainer.addExample(descrValues, true);
       }
       trainer.writeToXml(file);
     }
@@ -1502,6 +1533,7 @@ public class SpatialAnalysisPlugin
           layer = application.getMainFrame().getSelectedProjectFrame()
               .getLayerFromFeature(feat);
       }
+      SelectionUtil.clearSelection(application);
       // On choisit le fichier
       JFileChooser fc = new JFileChooser();
       fc.setFileFilter(new XMLFileFilter());
@@ -1517,8 +1549,12 @@ public class SpatialAnalysisPlugin
 
       IFeatureCollection<IFeature> buildings = new FT_FeatureCollection<>();
       IFeatureCollection<IFeature> crossroads = new FT_FeatureCollection<>();
-      for (IFeature feat : layer.getFeatureCollection())
+      for (IFeature feat : layer.getFeatureCollection()) {
         buildings.add(feat);
+        if (feat instanceof IBuilding)
+          ((IBuilding) feat).setBuildingCategory(
+              BuildingCategory.fromNatureName(((IBuilding) feat).getNature()));
+      }
       for (IFeature feat : application.getMainFrame().getSelectedProjectFrame()
           .getLayer("roadNodes").getFeatureCollection())
         crossroads.add(feat);
@@ -1542,8 +1578,20 @@ public class SpatialAnalysisPlugin
             finder.getDescriptors(), path);
         finder.train(trainer);
         for (IFeature feat : selected) {
-          Boolean result = finder.predictLandmark(feat);
+          Boolean result = finder.predictLandmark(feat, 0.95);
           System.out.println("for building: " + feat.getId() + " = " + result);
+          if (result) {
+            // display the output
+            Color color = Color.RED;
+            PolygonSymbolizer symbolizer = new PolygonSymbolizer();
+            Fill fill = new Fill();
+            fill.setColor(color);
+            symbolizer.setFill(fill);
+            SLDUtil.addFeatureRule(style, feat, "classifier output",
+                symbolizer);
+            // add it to the selection
+            SelectionUtil.addFeatureToSelection(application, feat);
+          }
         }
       } catch (ParserConfigurationException | SAXException | IOException e) {
         e.printStackTrace();
@@ -1555,6 +1603,307 @@ public class SpatialAnalysisPlugin
       this.putValue(Action.SHORT_DESCRIPTION,
           "Classifies the selected building using a decision tree into landmark or not, method from (Elias 2003)");
       this.putValue(Action.NAME, "Landmarks Classifier");
+    }
+  }
+
+  /**
+   * Classify the building blocks/groups according to the classification of its
+   * innner buildings: takes the majority class, or "heterogeneous".
+   * 
+   * @author GTouya
+   * 
+   */
+  class ClassifyBlocksAction extends AbstractAction {
+
+    /**
+    * 
+    */
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+
+      // On choisit le fichier
+      JFileChooser fc = new JFileChooser();
+      fc.setFileFilter(new XMLFileFilter());
+      int returnVal = fc.showDialog(null, "Choose the training set file");
+      if (returnVal != JFileChooser.APPROVE_OPTION) {
+        return;
+      }
+
+      String buildingName = JOptionPane
+          .showInputDialog("Name of the layer of buildings");
+      Layer layerBuildings = application.getMainFrame()
+          .getSelectedProjectFrame().getLayer(buildingName);
+
+      String groupName = JOptionPane
+          .showInputDialog("Name of the layer of building groups");
+      Layer layerGroups = application.getMainFrame().getSelectedProjectFrame()
+          .getLayer(groupName);
+
+      IFeatureCollection<IFeature> buildings = new FT_FeatureCollection<>();
+      buildings.addAll(layerBuildings.getFeatureCollection());
+      IFeatureCollection<IFeature> buildingGroups = new FT_FeatureCollection<>();
+      buildingGroups.addAll(layerGroups.getFeatureCollection());
+
+      // path est le chemin jusqu'au fichier
+      File path = fc.getSelectedFile();
+
+      Style style = layerGroups.getStyles()
+          .get(layerGroups.getStyles().size() - 1);
+
+      BuildingClassifierSVM classifier = new BuildingClassifierSVM(buildings);
+      classifier.removeDescriptor(BuildingDescriptor.BCy);
+      try {
+        TrainingData trainingData = classifier.new TrainingData(path,
+            classifier.getDescriptorNames());
+        System.out.println("start training...");
+        classifier.train(trainingData);
+        System.out.println("...end of training");
+
+        for (IFeature group : buildingGroups) {
+          Collection<IFeature> innerBuildings = buildings
+              .select(group.getGeom());
+          Frequency freq = new Frequency();
+          for (IFeature building : innerBuildings) {
+            BuildingClass result = classifier.predict(building);
+            System.out.println("prediction for building " + building + " is: "
+                + result.name());
+            freq.addValue(result.ordinal());
+          }
+          boolean majority = false;
+          double max = 0.0;
+          BuildingClass bigger = null;
+          for (BuildingClass buildingClass : BuildingClass.values()) {
+            double pct = freq.getPct(buildingClass.ordinal());
+            if (pct > max) {
+              max = pct;
+              bigger = buildingClass;
+            }
+            if (max >= 0.5)
+              majority = true;
+          }
+          // display the output
+          Color color = Color.PINK;
+          if (majority)
+            color = bigger.getColor();
+          PolygonSymbolizer symbolizer = new PolygonSymbolizer();
+          Fill fill = new Fill();
+          fill.setColor(color);
+          symbolizer.setFill(fill);
+          SLDUtil.addFeatureRule(style, group, "classifier output", symbolizer);
+        }
+      } catch (ParserConfigurationException | SAXException | IOException e) {
+        e.printStackTrace();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+
+    }
+
+    public ClassifyBlocksAction() {
+      this.putValue(Action.NAME, "Classify blocks from buildings");
+    }
+  }
+
+  /**
+   * Classify the building blocks/groups according to the classification of its
+   * innner buildings: takes the majority class, or "heterogeneous". Then,
+   * export each class as a shapefile.
+   * 
+   * @author GTouya
+   * 
+   */
+  class ExportBlocksClassifAsShapeAction extends AbstractAction {
+
+    /**
+    * 
+    */
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+
+      // On choisit le fichier
+      JFileChooser fc = new JFileChooser();
+      fc.setFileFilter(new XMLFileFilter());
+      int returnVal = fc.showDialog(null, "Choose the training set file");
+      if (returnVal != JFileChooser.APPROVE_OPTION) {
+        return;
+      }
+
+      String buildingName = JOptionPane
+          .showInputDialog("Name of the layer of buildings");
+      Layer layerBuildings = application.getMainFrame()
+          .getSelectedProjectFrame().getLayer(buildingName);
+
+      String groupName = JOptionPane
+          .showInputDialog("Name of the layer of building groups");
+      Layer layerGroups = application.getMainFrame().getSelectedProjectFrame()
+          .getLayer(groupName);
+      CoordinateReferenceSystem crs = layerBuildings.getCRS();
+      IFeatureCollection<IFeature> buildings = new FT_FeatureCollection<>();
+      buildings.addAll(layerBuildings.getFeatureCollection());
+      IFeatureCollection<IFeature> buildingGroups = new FT_FeatureCollection<>();
+      buildingGroups.addAll(layerGroups.getFeatureCollection());
+
+      // path est le chemin jusqu'au fichier
+      File path = fc.getSelectedFile();
+
+      Style style = layerGroups.getStyles()
+          .get(layerGroups.getStyles().size() - 1);
+
+      // create a feature collection for each class
+      IFeatureCollection<IFeature> innerCityBlocks = new FT_FeatureCollection<>();
+      IFeatureCollection<IFeature> urbanBlocks = new FT_FeatureCollection<>();
+      IFeatureCollection<IFeature> indusBlocks = new FT_FeatureCollection<>();
+      IFeatureCollection<IFeature> suburbBlocks = new FT_FeatureCollection<>();
+      IFeatureCollection<IFeature> ruralBlocks = new FT_FeatureCollection<>();
+      IFeatureCollection<IFeature> heteroBlocks = new FT_FeatureCollection<>();
+
+      BuildingClassifierSVM classifier = new BuildingClassifierSVM(buildings);
+      classifier.removeDescriptor(BuildingDescriptor.BCy);
+      try {
+        TrainingData trainingData = classifier.new TrainingData(path,
+            classifier.getDescriptorNames());
+        System.out.println("start training...");
+        classifier.train(trainingData);
+        System.out.println("...end of training");
+
+        for (IFeature group : buildingGroups) {
+          Collection<IFeature> innerBuildings = buildings
+              .select(group.getGeom());
+          Frequency freq = new Frequency();
+          for (IFeature building : innerBuildings) {
+            BuildingClass result = classifier.predict(building);
+            System.out.println("prediction for building " + building + " is: "
+                + result.name());
+            freq.addValue(result.ordinal());
+          }
+          boolean majority = false;
+          double max = 0.0;
+          BuildingClass bigger = null;
+          for (BuildingClass buildingClass : BuildingClass.values()) {
+            double pct = freq.getPct(buildingClass.ordinal());
+            if (pct > max) {
+              max = pct;
+              bigger = buildingClass;
+            }
+            if (max >= 0.5)
+              majority = true;
+          }
+
+          if (majority) {
+            if (bigger.equals(BuildingClass.INNER_CITY))
+              innerCityBlocks.add(group);
+            else if (bigger.equals(BuildingClass.URBAN))
+              urbanBlocks.add(group);
+            else if (bigger.equals(BuildingClass.INDUSTRY))
+              indusBlocks.add(group);
+            else if (bigger.equals(BuildingClass.SUBURBAN))
+              suburbBlocks.add(group);
+            else if (bigger.equals(BuildingClass.RURAL))
+              ruralBlocks.add(group);
+          } else {
+            heteroBlocks.add(group);
+          }
+
+        }
+        JFileChooser choix = new JFileChooser();
+        choix.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int retour = choix.showDialog(null, "Select export directory");
+        if (retour == JFileChooser.APPROVE_OPTION) {
+          String folder = choix.getSelectedFile().getAbsolutePath();
+
+          write(innerCityBlocks, IPolygon.class, folder + "\\innerBlocks.shp",
+              "innerBlocks");
+          write(urbanBlocks, IPolygon.class, folder + "\\urbanBlocks.shp",
+              "urbanBlocks");
+          write(indusBlocks, IPolygon.class, folder + "\\indusBlocks.shp",
+              "indusBlocks");
+          write(suburbBlocks, IPolygon.class, folder + "\\suburbBlocks.shp",
+              "suburbBlocks");
+          write(ruralBlocks, IPolygon.class, folder + "\\ruralBlocks.shp",
+              "ruralBlocks");
+          write(heteroBlocks, IPolygon.class,
+              folder + "\\heterogeneousBlocks.shp", "heterogeneousBlocks");
+        }
+
+      } catch (ParserConfigurationException | SAXException | IOException e) {
+        e.printStackTrace();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+
+    }
+
+    public ExportBlocksClassifAsShapeAction() {
+      this.putValue(Action.NAME,
+          "Classify blocks from buildings and export as shapefiles");
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public <Feature extends IFeature> void write(
+        IFeatureCollection<IFeature> featurePop,
+        Class<? extends IGeometry> geomType, String shpName, String layerName) {
+      if (featurePop == null) {
+        return;
+      }
+      if (featurePop.isEmpty()) {
+        return;
+      }
+      String shapefileName = shpName;
+      try {
+        if (!shapefileName.contains(".shp")) { //$NON-NLS-1$
+          shapefileName = shapefileName + ".shp"; //$NON-NLS-1$
+        }
+        ShapefileDataStore store = new ShapefileDataStore(
+            new File(shapefileName).toURI().toURL());
+
+        // specify the geometry type
+        String specs = "the_geom:"; //$NON-NLS-1$
+        specs += AdapterFactory.toJTSGeometryType(geomType).getSimpleName();
+
+        // specify the attributes: there is only one the MRDB link
+        specs += "," + "a_pour_antecedant" + ":" + Integer.class.getName();
+
+        SimpleFeatureType type = DataUtilities.createType(layerName, specs);
+        store.createSchema(type);
+        ContentFeatureStore featureStore = (ContentFeatureStore) store
+            .getFeatureSource(layerName);
+        Transaction t = new DefaultTransaction();
+        Collection features = new HashSet<>();
+        int i = 1;
+        for (IFeature feature : featurePop) {
+          if (feature.isDeleted()) {
+            continue;
+          }
+          List<Object> liste = new ArrayList<Object>(0);
+          // change the CRS if needed
+          IGeometry geom = feature.getGeom();
+          if ((geom instanceof ILineString) && (geom.coord().size() < 2))
+            continue;
+
+          liste.add(AdapterFactory.toGeometry(new GeometryFactory(), geom));
+          liste.add(feature.getId());
+          // put the attributes in the list, after the geometry
+          SimpleFeature simpleFeature = SimpleFeatureBuilder.build(type,
+              liste.toArray(), String.valueOf(i++));
+          features.add(simpleFeature);
+        }
+        featureStore.addFeatures(features);
+        t.commit();
+        t.close();
+        store.dispose();
+      } catch (MalformedURLException e) {
+        e.printStackTrace();
+      } catch (IOException e) {
+        e.printStackTrace();
+      } catch (SchemaException e) {
+        e.printStackTrace();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
   }
 

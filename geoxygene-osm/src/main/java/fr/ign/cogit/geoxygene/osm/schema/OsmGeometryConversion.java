@@ -2,12 +2,12 @@ package fr.ign.cogit.geoxygene.osm.schema;
 
 import java.util.Collection;
 
-import fr.ign.cogit.cartagen.util.CRSConversion;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.datatools.CRSConversion;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMNode;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMResource;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMWay;
@@ -33,6 +33,7 @@ public class OsmGeometryConversion {
    * Converts a way into a {@link ILineString} using a collection of the nodes,
    * as ways only describe the node id of the vertices. The coordinates are
    * projected in the given coordinate system.
+   * 
    * @param way
    * @param nodes
    * @return
@@ -52,7 +53,8 @@ public class OsmGeometryConversion {
       if (vertex != null) {
         IDirectPosition pt = CRSConversion
             .changeCRS(new GM_Point(vertex.getPosition()), "4326", epsg, false,
-                false).coord().get(0);
+                false)
+            .coord().get(0);
         coord.add(pt);
       }
     }
@@ -63,6 +65,7 @@ public class OsmGeometryConversion {
    * Converts a way into a {@link ILineString} using a collection of the nodes,
    * as ways only describe the node id of the vertices. The coordinates are
    * projected in Lambert93 so it doesn't work on non-French data.
+   * 
    * @param way
    * @param nodes
    * @return
@@ -79,8 +82,8 @@ public class OsmGeometryConversion {
         }
       }
       if (vertex != null) {
-        IDirectPosition pt = CRSConversion.wgs84ToLambert93(
-            vertex.getLatitude(), vertex.getLongitude());
+        IDirectPosition pt = CRSConversion
+            .wgs84ToLambert93(vertex.getLatitude(), vertex.getLongitude());
         coord.add(pt);
       }
     }
@@ -92,6 +95,7 @@ public class OsmGeometryConversion {
    * ways only describe the node id of the vertices. If the way does not
    * represent a polygon, returns null. The coordinates are projected in
    * Lambert93 so it doesn't work on non-French data.
+   * 
    * @param way
    * @param nodes
    * @return
@@ -111,8 +115,8 @@ public class OsmGeometryConversion {
         }
       }
       if (vertex != null) {
-        IDirectPosition pt = CRSConversion.wgs84ToLambert93(
-            vertex.getLatitude(), vertex.getLongitude());
+        IDirectPosition pt = CRSConversion
+            .wgs84ToLambert93(vertex.getLatitude(), vertex.getLongitude());
         coord.add(pt);
       }
     }
@@ -123,6 +127,7 @@ public class OsmGeometryConversion {
    * Converts a way into a {@link IPolygon} using a collection of the nodes, as
    * ways only describe the node id of the vertices. If the way does not
    * represent a polygon, returns null.
+   * 
    * @param way
    * @param nodes
    * @return
@@ -145,7 +150,8 @@ public class OsmGeometryConversion {
       if (vertex != null) {
         IDirectPosition pt = CRSConversion
             .changeCRS(new GM_Point(vertex.getPosition()), "4326", epsg, false,
-                false).coord().get(0);
+                false)
+            .coord().get(0);
         coord.add(pt);
       }
     }

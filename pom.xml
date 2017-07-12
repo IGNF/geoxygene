@@ -11,7 +11,7 @@
 	<version>1.9-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>GeOxygene</name>
-	<url>http://oxygene-project.sourceforge.net/</url>
+	<url>https://ignf.github.io/geoxygene/</url>
 
 	<description>
         GeOxygene is an open framework which implements OGC/ISO specifications for the development
@@ -45,8 +45,8 @@
 	<!-- Revision control -->
 	<!-- =========================================================== -->
 	<scm>
-		<connection>scm:svn:https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/</connection>
-		<url>https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/</url>
+		<connection>scm:svn:https://github.com/IGNF/geoxygene.git/</connection>
+		<url>https://github.com/IGNF/geoxygene.git/</url>
 	</scm>
 
 	<!-- =========================================================== -->
@@ -356,7 +356,7 @@
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>2.4.3</version>
 				<configuration>
-					<encoding>${project.build.sourceEncoding}</encoding>
+					<encoding>ISO-8859-1</encoding>
 					<includeEmptyDirs>true</includeEmptyDirs>
 				</configuration>
 			</plugin>
@@ -717,7 +717,7 @@
 	</dependencies>
 
 	<distributionManagement>
-		<downloadUrl>http://sourceforge.net/projects/oxygene-project/files/</downloadUrl>
+		<downloadUrl>https://github.com/IGNF/geoxygene/</downloadUrl>
 		<repository>
 			<id>releases</id>
 			<name>Nexus Releases Repository</name>
@@ -731,14 +731,14 @@
 		<site>
 			<id>oxygene-project.sf.net</id>
 			<name>GeOxygene website</name>
-			<url>scp://shell.sourceforge.net/home/project-web/oxygene-project/htdocs</url>
+			<url>https://github.com/IGNF/geoxygene/tree/gh-pages/</url>
 		</site>
 	</distributionManagement>
 
 	<modules>
 		<module>geoxygene-api</module>
 		<module>geoxygene-appli</module>
-		<module>geoxygene-cartagen</module>
+		
 		<module>geoxygene-carto</module>
 		<module>geoxygene-contrib</module>
 		<module>geoxygene-database</module>

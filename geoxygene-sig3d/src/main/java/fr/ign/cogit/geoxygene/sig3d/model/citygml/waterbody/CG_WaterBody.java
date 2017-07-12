@@ -3,18 +3,19 @@ package fr.ign.cogit.geoxygene.sig3d.model.citygml.waterbody;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.citygml4j.jaxb.gml._3_1_1.MultiCurvePropertyType;
-import org.citygml4j.jaxb.gml._3_1_1.MultiSurfacePropertyType;
-import org.citygml4j.jaxb.gml._3_1_1.SolidPropertyType;
-import org.citygml4j.model.citygml.core.CityObject;
+import org.citygml4j.model.citygml.core.AbstractCityObject;
 import org.citygml4j.model.citygml.waterbody.WaterBody;
+import org.citygml4j.model.gml.basicTypes.Code;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISolid;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
+import net.opengis.gml.MultiCurvePropertyType;
+import net.opengis.gml.MultiSurfacePropertyType;
+import net.opengis.gml.SolidPropertyType;
 
 public class CG_WaterBody extends CG_AbstractWaterObject {
 
@@ -34,42 +35,42 @@ public class CG_WaterBody extends CG_AbstractWaterObject {
     }
 
     if (wB.isSetLod0MultiCurve()) {
-      this.setLod0MultiCurve(ConvertyCityGMLGeometry.convertGMLMultiCurve(wB
+      this.setLod0MultiCurve(ConvertCityGMLtoGeometry.convertGMLMultiCurve(wB
           .getLod0MultiCurve()));
     }
 
     if (wB.isSetLod1MultiCurve()) {
-      this.setLod1MultiCurve(ConvertyCityGMLGeometry.convertGMLMultiCurve(wB
+      this.setLod1MultiCurve(ConvertCityGMLtoGeometry.convertGMLMultiCurve(wB
           .getLod1MultiCurve()));
     }
 
     if (wB.isSetLod0MultiSurface()) {
-      this.setLod0MultiSurface(ConvertyCityGMLGeometry
+      this.setLod0MultiSurface(ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(wB.getLod0MultiSurface()));
     }
 
     if (wB.isSetLod1MultiSurface()) {
-      this.setLod1MultiSurface(ConvertyCityGMLGeometry
+      this.setLod1MultiSurface(ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(wB.getLod1MultiSurface()));
     }
 
     if (wB.isSetLod1Solid()) {
-      this.setLod1Solid(ConvertyCityGMLGeometry.convertGMLSolid(wB
+      this.setLod1Solid(ConvertCityGMLtoGeometry.convertGMLSolid(wB
           .getLod1Solid()));
     }
 
     if (wB.isSetLod2Solid()) {
-      this.setLod2Solid(ConvertyCityGMLGeometry.convertGMLSolid(wB
+      this.setLod2Solid(ConvertCityGMLtoGeometry.convertGMLSolid(wB
           .getLod2Solid()));
     }
 
     if (wB.isSetLod3Solid()) {
-      this.setLod3Solid(ConvertyCityGMLGeometry.convertGMLSolid(wB
+      this.setLod3Solid(ConvertCityGMLtoGeometry.convertGMLSolid(wB
           .getLod3Solid()));
     }
 
     if (wB.isSetLod4Solid()) {
-      this.setLod4Solid(ConvertyCityGMLGeometry.convertGMLSolid(wB
+      this.setLod4Solid(ConvertCityGMLtoGeometry.convertGMLSolid(wB
           .getLod4Solid()));
     }
 
@@ -88,9 +89,9 @@ public class CG_WaterBody extends CG_AbstractWaterObject {
 
   }
 
-  protected String clazz;
-  protected List<String> function;
-  protected List<String> usage;
+  protected Code clazz;
+  protected List<Code> function;
+  protected List<Code> usage;
   protected IMultiCurve<IOrientableCurve> lod0MultiCurve;
   protected IMultiSurface<IOrientableSurface> lod0MultiSurface;
   protected IMultiCurve<IOrientableCurve> lod1MultiCurve;
@@ -107,7 +108,7 @@ public class CG_WaterBody extends CG_AbstractWaterObject {
    * @return possible object is {@link String }
    * 
    */
-  public String getClazz() {
+  public Code getClazz() {
     return this.clazz;
   }
 
@@ -117,7 +118,7 @@ public class CG_WaterBody extends CG_AbstractWaterObject {
    * @param value allowed object is {@link String }
    * 
    */
-  public void setClazz(String value) {
+  public void setClazz(Code value) {
     this.clazz = value;
   }
 
@@ -125,9 +126,9 @@ public class CG_WaterBody extends CG_AbstractWaterObject {
     return (this.clazz != null);
   }
 
-  public List<String> getFunction() {
+  public List<Code> getFunction() {
     if (this.function == null) {
-      this.function = new ArrayList<String>();
+      this.function = new ArrayList<Code>();
     }
     return this.function;
   }
@@ -140,9 +141,9 @@ public class CG_WaterBody extends CG_AbstractWaterObject {
     this.function = null;
   }
 
-  public List<String> getUsage() {
+  public List<Code> getUsage() {
     if (this.usage == null) {
-      this.usage = new ArrayList<String>();
+      this.usage = new ArrayList<Code>();
     }
     return this.usage;
   }
@@ -364,7 +365,7 @@ public class CG_WaterBody extends CG_AbstractWaterObject {
   }
 
   @Override
-  public CityObject export() {
+  public AbstractCityObject export() {
     // TODO Auto-generated method stub
     return null;
   }

@@ -18,21 +18,21 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+import fr.ign.cogit.cartagen.core.GeneralisationLegend;
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDataSet;
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.core.dataset.geompool.GeometryPool;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ITown;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
-import fr.ign.cogit.cartagen.software.CartAGenDataSet;
-import fr.ign.cogit.cartagen.software.GeneralisationLegend;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
-import fr.ign.cogit.cartagen.software.dataset.GeometryPool;
-import fr.ign.cogit.cartagen.software.interfacecartagen.dataloading.ProgressFrame;
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.selection.SelectionUtil;
 import fr.ign.cogit.cartagen.spatialanalysis.urban.UrbanEnrichment;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
+import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
+import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.SelectionUtil;
+import fr.ign.cogit.geoxygene.appli.plugin.cartagen.util.ProgressFrame;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.style.Layer;
@@ -92,8 +92,8 @@ public class TownMenu extends JMenu {
               "Enrichement in progress...", true);
           progressFrame.setVisible(true);
           progressFrame.setTextAndValue("Urban enrichment in progress", 0);
-          UrbanEnrichment.buildTowns(dataset, false, dataset.getCartAGenDB()
-              .getGeneObjImpl().getCreationFactory());
+          UrbanEnrichment.buildTowns(dataset, false,
+              dataset.getCartAGenDB().getGeneObjImpl().getCreationFactory());
           progressFrame.setTextAndValue("Urban enrichment in progress", 100);
           progressFrame.setVisible(false);
           progressFrame = null;
@@ -164,7 +164,8 @@ public class TownMenu extends JMenu {
           .getGeometryPool();
       pool.setSld(CartAGenPlugin.getInstance().getApplication().getMainFrame()
           .getSelectedProjectFrame().getSld());
-      for (IFeature sel : SelectionUtil.getSelectedObjects()) {
+      for (IFeature sel : SelectionUtil
+          .getSelectedObjects(CartAGenPlugin.getInstance().getApplication())) {
         if (!(sel instanceof IUrbanBlock)) {
           continue;
         }
@@ -186,8 +187,7 @@ public class TownMenu extends JMenu {
     }
 
     public IsTownCentreAction() {
-      this.putValue(
-          Action.SHORT_DESCRIPTION,
+      this.putValue(Action.SHORT_DESCRIPTION,
           "Trigger the multicriteria decision technique to check if a block is part of town centre");
       this.putValue(Action.NAME, "Is block a town centre?");
     }

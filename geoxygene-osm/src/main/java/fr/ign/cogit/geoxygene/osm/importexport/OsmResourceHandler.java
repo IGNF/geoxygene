@@ -15,8 +15,8 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import fr.ign.cogit.geoxygene.osm.importexport.OSMRelation.RoleMembre;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMRelation.TypeRelation;
+import fr.ign.cogit.geoxygene.osm.schema.OSMFeature;
 import fr.ign.cogit.geoxygene.osm.schema.OsmCaptureTool;
-import fr.ign.cogit.geoxygene.osm.schema.OsmGeneObj;
 
 public class OsmResourceHandler extends DefaultHandler {
 
@@ -58,8 +58,8 @@ public class OsmResourceHandler extends DefaultHandler {
       i++;
       resource = createResource(attributes);
       // on récupère sa géométrie
-      double lat = Double.valueOf(attributes.getValue(OsmGeneObj.ATTR_LAT));
-      double lon = Double.valueOf(attributes.getValue(OsmGeneObj.ATTR_LON));
+      double lat = Double.valueOf(attributes.getValue(OSMFeature.ATTR_LAT));
+      double lon = Double.valueOf(attributes.getValue(OSMFeature.ATTR_LON));
       OSMNode geom = new OSMNode(lat, lon);
       resource.setGeom(geom);
       geom.setObjet(resource);
@@ -93,8 +93,8 @@ public class OsmResourceHandler extends DefaultHandler {
       }
       // special case: the tag created_by
       else if (attributes.getValue("k").equals("created_by")) {
-        OsmCaptureTool outil = OsmCaptureTool.valueOfTexte(attributes
-            .getValue("v"));
+        OsmCaptureTool outil = OsmCaptureTool
+            .valueOfTexte(attributes.getValue("v"));
         resource.setCaptureTool(outil);
       }
       // special case: the tag source
@@ -112,8 +112,8 @@ public class OsmResourceHandler extends DefaultHandler {
       String type = attributes.getValue("type");
       if ("node".equals(type))
         node = true;
-      members.add(new OsmRelationMember(RoleMembre.valueOfTexte(role), node,
-          ref));
+      members
+          .add(new OsmRelationMember(RoleMembre.valueOfTexte(role), node, ref));
     } else {
       // do nothing for unknowns tags
     }
@@ -125,19 +125,19 @@ public class OsmResourceHandler extends DefaultHandler {
 
   private OSMResource createResource(Attributes attributes) {
     // on récupère les attributs de l'élément
-    long id = Long.valueOf(attributes.getValue(OsmGeneObj.ATTR_ID));
-    String versionAttr = attributes.getValue(OsmGeneObj.ATTR_VERSION);
+    long id = Long.valueOf(attributes.getValue(OSMFeature.ATTR_ID));
+    String versionAttr = attributes.getValue(OSMFeature.ATTR_VERSION);
     int version = 1;
     if (versionAttr != null) {
       version = Integer.valueOf(versionAttr);
     }
-    int changeSet = Integer.valueOf(attributes.getValue(OsmGeneObj.ATTR_SET));
-    String contributeur = attributes.getValue(OsmGeneObj.ATTR_USER);
+    int changeSet = Integer.valueOf(attributes.getValue(OSMFeature.ATTR_SET));
+    String contributeur = attributes.getValue(OSMFeature.ATTR_USER);
     int uid = 0;
     if (contributeur != null && !contributeur.equals("")) {
-      uid = Integer.valueOf(attributes.getValue(OsmGeneObj.ATTR_UID));
+      uid = Integer.valueOf(attributes.getValue(OSMFeature.ATTR_UID));
     }
-    String timeStamp = attributes.getValue(OsmGeneObj.ATTR_DATE);
+    String timeStamp = attributes.getValue(OSMFeature.ATTR_DATE);
     Date date = null;
     try {
       date = formatDate.parse(timeStamp);
@@ -165,18 +165,18 @@ public class OsmResourceHandler extends DefaultHandler {
     if (qName.equals("node")) {
       loader.getNodes().add(resource);
       resource = null;
-      loader.setProgressForBar(Math
-          .min(100, (int) (i * 100 / this.nbResources)));
+      loader
+          .setProgressForBar(Math.min(100, (int) (i * 100 / this.nbResources)));
     } else if (qName.equals("way")) {
       loader.getWays().add(resource);
       resource = null;
-      loader.setProgressForBar(Math
-          .min(100, (int) (i * 100 / this.nbResources)));
+      loader
+          .setProgressForBar(Math.min(100, (int) (i * 100 / this.nbResources)));
     } else if (qName.equals("relation")) {
       loader.getRelations().add(resource);
       resource = null;
-      loader.setProgressForBar(Math
-          .min(100, (int) (i * 100 / this.nbResources)));
+      loader
+          .setProgressForBar(Math.min(100, (int) (i * 100 / this.nbResources)));
     } else if (qName.equals("nd")) {
       OSMWay geom = new OSMWay(vertices);
       resource.setGeom(geom);

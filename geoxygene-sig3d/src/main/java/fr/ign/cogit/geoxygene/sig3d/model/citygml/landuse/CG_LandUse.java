@@ -3,13 +3,14 @@ package fr.ign.cogit.geoxygene.sig3d.model.citygml.landuse;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.citygml4j.model.citygml.core.CityObject;
+import org.citygml4j.model.citygml.core.AbstractCityObject;
 import org.citygml4j.model.citygml.landuse.LandUse;
+import org.citygml4j.model.gml.basicTypes.Code;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_CityObject;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
 
 /**
  * 
@@ -42,39 +43,39 @@ public class CG_LandUse extends CG_CityObject {
 
     if (build.isSetLod0MultiSurface()) {
 
-      this.lod0MultiSurface = ConvertyCityGMLGeometry
+      this.lod0MultiSurface = ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(build.getLod0MultiSurface());
 
     }
 
     if (build.isSetLod1MultiSurface()) {
 
-      this.lod1MultiSurface = ConvertyCityGMLGeometry
+      this.lod1MultiSurface = ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(build.getLod1MultiSurface());
 
     }
 
     if (build.isSetLod2MultiSurface()) {
-      this.lod2MultiSurface = ConvertyCityGMLGeometry
+      this.lod2MultiSurface = ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(build.getLod2MultiSurface());
     }
 
     if (build.isSetLod3MultiSurface()) {
-      this.lod3MultiSurface = ConvertyCityGMLGeometry
+      this.lod3MultiSurface = ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(build.getLod3MultiSurface());
 
     }
 
     if (build.isSetLod4MultiSurface()) {
-      this.lod4MultiSurface = ConvertyCityGMLGeometry
+      this.lod4MultiSurface = ConvertCityGMLtoGeometry
           .convertGMLMultiSurface(build.getLod4MultiSurface());
     }
 
   }
 
-  protected String clazz;
-  protected List<String> function;
-  protected List<String> usage;
+  protected Code clazz;
+  protected List<Code> function;
+  protected List<Code> usage;
   protected IMultiSurface<IOrientableSurface> lod0MultiSurface;
   protected IMultiSurface<IOrientableSurface> lod1MultiSurface;
   protected IMultiSurface<IOrientableSurface> lod2MultiSurface;
@@ -87,7 +88,7 @@ public class CG_LandUse extends CG_CityObject {
    * @return possible object is {@link String }
    * 
    */
-  public String getClazz() {
+  public Code getClazz() {
     return this.clazz;
   }
 
@@ -97,7 +98,7 @@ public class CG_LandUse extends CG_CityObject {
    * @param value allowed object is {@link String }
    * 
    */
-  public void setClazz(String value) {
+  public void setClazz(Code value) {
     this.clazz = value;
   }
 
@@ -127,9 +128,9 @@ public class CG_LandUse extends CG_CityObject {
    * 
    * 
    */
-  public List<String> getFunction() {
+  public List<Code> getFunction() {
     if (this.function == null) {
-      this.function = new ArrayList<String>();
+      this.function = new ArrayList<Code>();
     }
     return this.function;
   }
@@ -164,9 +165,9 @@ public class CG_LandUse extends CG_CityObject {
    * 
    * 
    */
-  public List<String> getUsage() {
+  public List<Code> getUsage() {
     if (this.usage == null) {
-      this.usage = new ArrayList<String>();
+      this.usage = new ArrayList<Code>();
     }
     return this.usage;
   }
@@ -300,7 +301,7 @@ public class CG_LandUse extends CG_CityObject {
   }
 
   @Override
-  public CityObject export() {
+  public AbstractCityObject export() {
     // TODO Auto-generated method stub
     return null;
   }

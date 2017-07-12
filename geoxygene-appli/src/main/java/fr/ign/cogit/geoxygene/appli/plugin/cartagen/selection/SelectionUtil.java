@@ -96,9 +96,9 @@ public class SelectionUtil {
         continue;
       IPopulation<IGeneObj> pop = CartAGenDoc.getInstance().getCurrentDataset()
           .getCartagenPop(layer.getName());
-      allWindowObjs.addAll(pop.select(appli.getMainFrame()
-          .getSelectedProjectFrame().getLayerViewPanel().getViewport()
-          .getEnvelopeInModelCoordinates()));
+      allWindowObjs.addAll(pop.select(
+          appli.getMainFrame().getSelectedProjectFrame().getLayerViewPanel()
+              .getViewport().getEnvelopeInModelCoordinates()));
     }
     return allWindowObjs;
   }
@@ -110,6 +110,17 @@ public class SelectionUtil {
    */
   public static void addFeatureToSelection(GeOxygeneApplication appli,
       IGeneObj feature) {
+    appli.getMainFrame().getSelectedProjectFrame().getLayerViewPanel()
+        .getSelectedFeatures().add(feature);
+  }
+
+  /**
+   * Add a feature to the selection.
+   * @param appli
+   * @param feature
+   */
+  public static void addFeatureToSelection(GeOxygeneApplication appli,
+      IFeature feature) {
     appli.getMainFrame().getSelectedProjectFrame().getLayerViewPanel()
         .getSelectedFeatures().add(feature);
   }

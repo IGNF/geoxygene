@@ -59,7 +59,7 @@ public final class GeneralisationSpecifications {
 
   // taille
   // aire minimale que doit avoir tout batiment (en mm²)
-  public static double AIRE_MINIMALE_BATIMENT = 0.32;
+  public static double AIRE_MINIMALE_BATIMENT = 0.2;
   // aire en deca de laquelle le batiment est supprime (en m²)
   public static double AIRE_SEUIL_SUPPRESSION_BATIMENT = 70.0;
 
@@ -90,7 +90,7 @@ public final class GeneralisationSpecifications {
   // distance minimale inter-batiments (en mm carte)
   public static double DISTANCE_SEPARATION_INTER_BATIMENT = 0.1;
   // distance maximale de déplacement d'un batiment (en mm carte)
-  public static double DISTANCE_MAX_DEPLACEMENT_BATIMENT = 1.0;
+  public static double DISTANCE_MAX_DEPLACEMENT_BATIMENT = 1.5;
   // distance minimale batiments-routes (en mm carte)
   public static double DISTANCE_SEPARATION_BATIMENT_ROUTE = 0.1;
   // distance minimale étendues eau-routes (en mm carte)
@@ -115,6 +115,10 @@ public final class GeneralisationSpecifications {
   // conservation des grands batiments
   // aire (en m2) des grands batiments
   public static double GRANDS_BATIMENTS_AIRE = 600.0;
+
+  // towns
+  // minimum area to be kept as a town feature
+  public static double TOWN_MIN_AREA = 750000.0;
 
   // routier
 
