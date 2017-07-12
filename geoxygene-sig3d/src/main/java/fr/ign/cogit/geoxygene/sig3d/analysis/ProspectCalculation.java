@@ -65,6 +65,7 @@ public class ProspectCalculation {
       GM_Object geom2 = new GM_Point(dp);
       double distance = geom2.distance(geom);
 
+    
       dpl.add(new DirectPosition(dp.getX(), dp.getY(), distance * pente + zObj + hObj));
 
     }
