@@ -97,7 +97,7 @@ public class CartooMod2 extends Default3DRep {
    */
   public CartooMod2(IFeature feat, Color color) {
 
-    this(feat, color, Color.black, 3, 1);
+    this(feat, color, Color.black, 2, 1);
 
   }
 
