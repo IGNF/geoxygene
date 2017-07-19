@@ -385,7 +385,7 @@ public class Object2d extends BasicRep3D {
 
     }
 
-    pa.setBackFaceNormalFlip(true);
+    pa.setBackFaceNormalFlip(false);
 
     // Association à l'apparence des attributs de géométrie et de material
     apparenceFinale.setPolygonAttributes(pa);
