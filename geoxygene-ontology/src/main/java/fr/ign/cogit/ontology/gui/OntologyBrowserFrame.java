@@ -25,7 +25,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 public class OntologyBrowserFrame extends JFrame implements ActionListener {
@@ -33,7 +32,7 @@ public class OntologyBrowserFrame extends JFrame implements ActionListener {
   /****/
   private static final long serialVersionUID = 1L;
   OntologyBrowser tree;
- // JTextField texteCourant;
+  // JTextField texteCourant;
 
   /*
    * (non-Javadoc)
@@ -47,13 +46,13 @@ public class OntologyBrowserFrame extends JFrame implements ActionListener {
     if (e.getActionCommand().equals("OK")) {
       DefaultMutableTreeNode node = (DefaultMutableTreeNode) this.tree
           .getLastSelectedPathComponent();
-      /*if (this.texteCourant.isEditable()) {
-        this.texteCourant.setText(node.getUserObject().toString());
-      } else {
-        this.texteCourant.setEditable(true);
-        this.texteCourant.setText(node.getUserObject().toString());
-        this.texteCourant.setEditable(false);
-      }*/
+      /*
+       * if (this.texteCourant.isEditable()) {
+       * this.texteCourant.setText(node.getUserObject().toString()); } else {
+       * this.texteCourant.setEditable(true);
+       * this.texteCourant.setText(node.getUserObject().toString());
+       * this.texteCourant.setEditable(false); }
+       */
       this.tree.clearSelection();
       this.setVisible(false);
 
@@ -63,7 +62,7 @@ public class OntologyBrowserFrame extends JFrame implements ActionListener {
     }
   }
 
-  public OntologyBrowserFrame(/*JTextField txt,*/ OWLOntology ontology,
+  public OntologyBrowserFrame(/* JTextField txt, */ OWLOntology ontology,
       String rootConcept) {
     super("Pick a concept from the ontology");
     // this.texteCourant = txt;
@@ -114,29 +113,30 @@ public class OntologyBrowserFrame extends JFrame implements ActionListener {
     this.getContentPane().add(panelTotal);
     this.setVisible(true);
   }
-  
-  
+
   public static void main(String[] args) {
-    
+
     try {
-      
+
       // File srOwl = new File();
-      System.out.println(OntologyBrowserFrame.class.getClassLoader().getResource("spatialrelations.owl").getPath());
-      
+      System.out.println(OntologyBrowserFrame.class.getClassLoader()
+          .getResource("spatialrelations.owl").getPath());
+
       OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-      IRI physicalURI = IRI.create(new File(OntologyBrowserFrame.class.getClassLoader().getResource("spatialrelations.owl").getPath()));
-    
-      OWLOntology ontology = manager.loadOntologyFromOntologyDocument(physicalURI);
-      
+      IRI physicalURI = IRI.create(new File(OntologyBrowserFrame.class
+          .getClassLoader().getResource("spatialrelations.owl").getPath()));
+
+      OWLOntology ontology = manager
+          .loadOntologyFromOntologyDocument(physicalURI);
+
       OntologyBrowserFrame fenetre = new OntologyBrowserFrame(ontology, "");
       fenetre.setVisible(true);
-      
+
       System.out.println("The End");
-      
+
     } catch (Exception e) {
       e.printStackTrace();
     }
-    
+
   }
 }
-

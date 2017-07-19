@@ -1,4 +1,4 @@
-package fr.ign.cogit.geoxygene.appli.plugin.cartagen.util;
+package fr.ign.cogit.geoxygene.appli.plugin.cartagen.util.renderer;
 
 import java.awt.Color;
 import java.awt.Component;

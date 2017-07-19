@@ -13,7 +13,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.NoninvertibleTransformException;
 import java.io.File;
 
 import javax.swing.BorderFactory;
@@ -34,7 +33,6 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 import javax.swing.text.SimpleAttributeSet;
-import javax.xml.bind.JAXBException;
 
 import fr.ign.cogit.cartagen.core.dataset.CartAGenDataSet;
 import fr.ign.cogit.cartagen.core.dataset.CartAGenDoc;
@@ -43,35 +41,30 @@ import fr.ign.cogit.cartagen.core.dataset.DigitalCartographicModel;
 import fr.ign.cogit.cartagen.core.dataset.DigitalLandscapeModel;
 import fr.ign.cogit.cartagen.core.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.core.dataset.shapefile.ShapeFileDB;
-import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 
-public class ImportDataFrame2 extends JFrame implements ActionListener {
+public class ImportDataFrame extends JFrame implements ActionListener {
 
   /**
    * 
    */
   private static final long serialVersionUID = 1L;
 
-  private static ImportDataFrame2 importDataFrame = null;
+  private static ImportDataFrame importDataFrame = null;
 
   /**
    * Recuperation de l'instance unique (singleton)
    * @return instance unique (singleton) de EnrichFrame
    */
-  public static ImportDataFrame2 getInstance(boolean isInitial,
-      CartAGenPlugin plugIn) {
-    if (ImportDataFrame2.importDataFrame == null) {
+  public static ImportDataFrame getInstance(boolean isInitial) {
+    if (ImportDataFrame.importDataFrame == null) {
       synchronized (EnrichFrame.class) {
-        if (ImportDataFrame2.importDataFrame == null) {
-          ImportDataFrame2.importDataFrame = new ImportDataFrame2(isInitial,
-              plugIn);
+        if (ImportDataFrame.importDataFrame == null) {
+          ImportDataFrame.importDataFrame = new ImportDataFrame(isInitial);
         }
       }
     }
-    return ImportDataFrame2.importDataFrame;
+    return ImportDataFrame.importDataFrame;
   }
-
-  private CartAGenPlugin plugIn;
 
   private SourceDLM sourceDlm;
   private int scale;
@@ -88,15 +81,10 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
   private final JButton btnBrowse;
   private final JRadioButton rbComputed, rbFile;
 
-  public ImportDataFrame2(boolean isInitial, CartAGenPlugin plugIn) {
-    super("Import Shapefile data into a new dataset "
-        + (isInitial ? "initial" : ""));
-    System.out.println(
-        "Import Shapefile data into a new dataset -- initial " + isInitial);
+  public ImportDataFrame(boolean isInitial) {
+    super("Import Shapefile data into a new dataset");
     this.isInitial = isInitial;
-    this.plugIn = plugIn;
     this.setSize(600, 300);
-    this.setAlwaysOnTop(true);
 
     // *********************************
     // THE ZONE PARAMETERS PANEL
@@ -182,7 +170,7 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
     this.txtPath.setPreferredSize(new Dimension(170, 20));
     this.txtPath.setMaximumSize(new Dimension(170, 20));
     this.txtPath.setMinimumSize(new Dimension(170, 20));
-    ImageIcon icon = new ImageIcon(ImportDataFrame2.class
+    ImageIcon icon = new ImageIcon(ImportDataFrame.class
         .getResource("/images/browse.jpeg").getPath().replaceAll("%20", " "));
     this.btnBrowse = new JButton(icon);
     this.btnBrowse.addActionListener(this);
@@ -229,18 +217,24 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
     this.getContentPane()
         .setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
     this.pack();
-    System.out.println("frame created");
   }
 
   @Override
   public void actionPerformed(ActionEvent e) {
+    // What button has been pressed??
     if (e.getActionCommand().equals("Cancel")) {
+      // ////
+      // Case where the CANCEL button has been pressed
+      // ////
       this.setVisible(false);
     } else if (e.getActionCommand().equals("Browse")) {
-
+      // ////
+      // Case where the BROWSE button has been pressed
+      // ////
       JFileChooser fc;
       try {
-        fc = new JFileChooser(plugIn.getCheminDonnees());
+        // End modif Cecile
+        fc = new JFileChooser();
       } catch (Exception exception) {
         fc = new JFileChooser();
       }
@@ -255,32 +249,27 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
       this.txtPath.setText(file.getPath());
 
     } else if (e.getActionCommand().equals("OK")) {
-
+      // ////
+      // Case where the OK button has been pressed
+      // ////
+      // The data import can continue... we just need to know if we are loading
+      // an initial or a current dataset
       if (!this.isInitial) {
-        // originally this is void
-        this.importInitialDataSet(
+        this.importCurrentDataSet(
             (SourceDLM) this.cbSourceDlm.getSelectedItem(),
             Integer.parseInt(this.txtScale.getText()), this.txtZone.getText(),
             this.txtDataset.getText(), this.txtPath.getText(),
             this.txtExtent.getText(), this.rbFile.isSelected(),
             this.cbType.getSelectedItem().equals("DLM"), true);
-      } // end of if(!isInitial
+      } // end of if(!isInitial)
       else {
         this.importInitialDataSet(
             (SourceDLM) this.cbSourceDlm.getSelectedItem(),
             Integer.parseInt(this.txtScale.getText()), this.txtZone.getText(),
             this.txtDataset.getText(), this.txtPath.getText(),
             this.txtExtent.getText(), this.rbFile.isSelected(),
-            this.cbType.getSelectedItem().equals("DLM"), false);
-
-      }
-
-      try {
-        plugIn.getProjectFrameFromDbName(this.txtDataset.getText())
-            .getLayerViewPanel().getViewport().zoomToFullExtent();
-      } catch (NoninvertibleTransformException e1) {
-        e1.printStackTrace();
-      }
+            this.cbType.getSelectedItem().equals("DLM"));
+      } // End of if (!isInitial)... else...
 
     }
 
@@ -288,28 +277,26 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
 
   public void importInitialDataSet(SourceDLM source, int scale, String txtZone,
       String txtDataset, String filePath, String txtExtent,
-      boolean rbFileSelected, boolean dlmSelected, boolean withEnrichment) {
-    plugIn.setCheminDonneesInitial(this.filePath);
+      boolean rbFileSelected, boolean dlmSelected) {
     this.setVisible(false);
+
     this.sourceDlm = source;
     this.setScale(scale);
     CartAGenDoc.getInstance().setZone(new DataSetZone(txtZone, null));
     this.datasetName = txtDataset;
     this.filePath = filePath;
     if (rbFileSelected) {
-      extentFile = true;
-      extentClass = txtExtent;
+      ImportDataFrame.extentFile = true;
+      ImportDataFrame.extentClass = txtExtent;
     }
-    System.out.println(txtExtent + " " + rbFileSelected + " " + dlmSelected);
     // create the new CartAGen dataset
     ShapeFileDB database = new ShapeFileDB(this.datasetName);
-    database.setDocument(CartAGenDoc.getInstance());
     database.setSourceDLM(this.sourceDlm);
     database.setSymboScale(this.scale);
     database.setSystemPath(this.filePath);
-    database.setGeneObjImpl(CartAGenPlugin.getInstance().getGeneObjImpl());
+    database.setDocument(CartAGenDoc.getInstance());
     CartAGenDataSet dataset = new CartAGenDataSet();
-    plugIn.getDocument().addDatabase(this.datasetName, database);
+    CartAGenDoc.getInstance().addDatabase(this.datasetName, database);
     LoadingFrame.cheminAbsolu = this.filePath;
     database.setDataSet(dataset);
     if (dlmSelected) {
@@ -317,28 +304,100 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
     } else {
       database.setType(new DigitalCartographicModel());
     }
-
-    CartAGenDoc.getInstance().setInitialDataset(dataset);
-    CartAGenDoc.getInstance().setCurrentDataset(dataset);
-    new CartAGenLoader().loadData(this.filePath, this.sourceDlm, scale,
-        dataset);
-
+    CartAGenLoader loader = new CartAGenLoader();
+    loader.loadData(this.filePath, this.sourceDlm, this.scale, dataset);
     // CartagenApplication.getInstance().loadDat(sourceDlm, scale);
 
-    // on crée la projectFrame associée à la BD
-    try {
-      plugIn.addDatabaseToFrame(database);
-    } catch (JAXBException e) {
-      e.printStackTrace();
+    CartAGenDoc.getInstance().setInitialDataset(dataset);
+  }
+
+  public void importCurrentDataSet(SourceDLM selectedItem, String filePath) {
+    this.importCurrentDataSet(selectedItem,
+        Integer.parseInt(this.txtScale.getText()), this.txtZone.getText(),
+        this.txtDataset.getText(), filePath, this.txtExtent.getText(),
+        this.rbFile.isSelected(), this.cbType.getSelectedItem().equals("DLM"),
+        false);
+  }
+
+  public void importCurrentDataSet(SourceDLM selectedItem, int scale,
+      String txtZone, String txtDataset, String filePath, String txtExtent,
+      boolean rbFileSelected, boolean dlmSelected, boolean withEnrichement) {
+    this.sourceDlm = selectedItem;
+    this.setScale(scale);
+    CartAGenDoc.getInstance().setZone(new DataSetZone(txtZone, null));
+    this.datasetName = txtDataset;
+    this.filePath = filePath;
+    if (rbFileSelected) {
+      ImportDataFrame.extentFile = true;
+      ImportDataFrame.extentClass = txtExtent;
+    }
+    // create the new CartAGen dataset
+    ShapeFileDB database = new ShapeFileDB(this.datasetName);
+    database.setSourceDLM(this.sourceDlm);
+    database.setSymboScale(this.scale);
+    // Modif Cecile: the database.systemPath will be assigned once the data
+    // are actually loaded, after being first copied into .../loaded_data
+    // Old code commented out:
+    // database.setSystemPath(this.filePath);
+    // End Modif Cecile
+    database.setDocument(CartAGenDoc.getInstance());
+    CartAGenDataSet dataset = new CartAGenDataSet();
+    CartAGenDoc.getInstance().addDatabase(this.datasetName, database);
+    CartAGenDoc.getInstance().setCurrentDataset(dataset);
+    database.setDataSet(dataset);
+    if (dlmSelected) {
+      database.setType(new DigitalLandscapeModel());
+    } else {
+      database.setType(new DigitalCartographicModel());
     }
 
-    // CartAGenDoc.getInstance().setInitialDataset(dataset);
+    // launch the import plug-in
+    // What data schema for the source DLM?
+    if (this.sourceDlm == SourceDLM.SPECIAL_CARTAGEN) {
 
-    if (withEnrichment) {
-      // EnrichFrame enrichFrame = EnrichFrame.getInstance();
-      // enrichFrame.setDataSet(dataset);
-      // enrichFrame.setFactory(new DefaultCreationFactory());
-      // enrichFrame.setVisible(true);
+      // Copy the path of the source data into a variable of the loading
+      // frame
+      LoadingFrame.cheminAbsolu = this.filePath;
+      // Modif Cecile: the XML does not need to be updated as it will not be
+      // read any more (it has already been read once).
+      // It is also unclear why it was needed to modify the separator
+      // character in this.filePath.
+      // Old code commented out:
+      // DataLoadingConfig ccd = new DataLoadingConfig();
+      // this.filePath = this.filePath.replace("\\", "/");
+      // ccd.configuration(this.filePath);
+      // End modif Cecile
+      // Copy the path of the source data into the appropriate variable of
+      // the CartaGenApplication
+      this.setVisible(false);
+      LoadingFrame loadingFrame = new LoadingFrame(new File(this.filePath));
+      // Test if the loading frame can be skipped (occurs if the source data
+      // have already been copied into /loded_data AND the user is ok to
+      // reuse them). In that case, launch the enrichment frame
+      if (loadingFrame.test()) {
+        EnrichFrame.getInstance().setVisible(true);
+        return;
+      }
+      // Launch the loading frame
+      loadingFrame.setVisible(true);
+    } else {
+      // Case where the source DLM has a schema of another type than
+      // "SPECIAL_CARTAGEN". This case should certainly be modified in the
+      // same direction as the previous case. But it does not seem to be
+      // very well managed at this time
+      LoadingFrame.cheminAbsolu = this.filePath;
+      DataLoadingConfig ccd = new DataLoadingConfig();
+      this.filePath = this.filePath.replace("\\", "/");
+      ccd.configuration(this.filePath);
+
+      this.setVisible(false);
+      // loadingFrameMultiBD.setVisible(true);
+      if (withEnrichement) {
+        EnrichFrame enrichFrame = EnrichFrame.getInstance();
+        enrichFrame.setVersion(2);
+        enrichFrame.setVisible(true);
+      }
+
     }
   }
 

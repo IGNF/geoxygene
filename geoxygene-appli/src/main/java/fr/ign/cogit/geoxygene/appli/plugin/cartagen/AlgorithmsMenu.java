@@ -20,11 +20,11 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
+import fr.ign.cogit.cartagen.algorithms.block.deletion.BuildingDeletionOverlap;
+import fr.ign.cogit.cartagen.algorithms.block.displacement.BuildingDisplacementRandom;
+import fr.ign.cogit.cartagen.algorithms.polygon.RaposoSimplification;
+import fr.ign.cogit.cartagen.algorithms.polygon.VisvalingamWhyatt;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
-import fr.ign.cogit.cartagen.genealgorithms.block.BuildingDeletionOverlap;
-import fr.ign.cogit.cartagen.genealgorithms.block.BuildingDisplacementRandom;
-import fr.ign.cogit.cartagen.genealgorithms.polygon.RaposoSimplification;
-import fr.ign.cogit.cartagen.genealgorithms.polygon.VisvalingamWhyatt;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;

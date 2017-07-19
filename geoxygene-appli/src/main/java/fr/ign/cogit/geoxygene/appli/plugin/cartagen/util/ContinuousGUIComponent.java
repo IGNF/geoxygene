@@ -34,7 +34,9 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
+import fr.ign.cogit.cartagen.algorithms.polygon.VisvalingamWhyatt;
 import fr.ign.cogit.cartagen.continuous.BasicMorphing;
+import fr.ign.cogit.cartagen.continuous.LeastSquaresMorphing;
 import fr.ign.cogit.cartagen.continuous.MorphingVertexMapping;
 import fr.ign.cogit.cartagen.continuous.discontinuities.CoalescenceFunction;
 import fr.ign.cogit.cartagen.continuous.discontinuities.DiscontinuitiesMeasure;
@@ -43,13 +45,10 @@ import fr.ign.cogit.cartagen.continuous.discontinuities.HausdorffDistanceFunctio
 import fr.ign.cogit.cartagen.continuous.discontinuities.MeanLineDistanceFunction;
 import fr.ign.cogit.cartagen.continuous.discontinuities.NbOfBendsFunction;
 import fr.ign.cogit.cartagen.continuous.discontinuities.TopologyValidationFunction;
-import fr.ign.cogit.cartagen.continuous.leastsquares.LeastSquaresMorphing;
 import fr.ign.cogit.cartagen.continuous.optcor.OptCorMorphing;
-import fr.ign.cogit.cartagen.genealgorithms.polygon.VisvalingamWhyatt;
-import fr.ign.cogit.cartagen.software.CartAGenDataSet;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
-import fr.ign.cogit.cartagen.software.dataset.GeometryPool;
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.XMLFileFilter;
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDataSet;
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.core.dataset.geompool.GeometryPool;
 import fr.ign.cogit.geoxygene.api.feature.IDataSet;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -61,6 +60,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
+import fr.ign.cogit.geoxygene.appli.panel.XMLFileFilter;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.LoadSelectionFrame;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.ObjectSelection;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.SelectionUtil;
@@ -269,8 +269,8 @@ public class ContinuousGUIComponent extends JMenu {
         MorphingVertexMapping mapping = morphing.matchLinesVertices();
 
         double[][] distanceTable = morphing.getDistanceTable();
-        Object[][] tableContent = new Object[morphing.getSubLinesIni().size() + 1][morphing
-            .getSubLinesFin().size() + 1];
+        Object[][] tableContent = new Object[morphing.getSubLinesIni().size()
+            + 1][morphing.getSubLinesFin().size() + 1];
         for (int i = 0; i <= morphing.getSubLinesIni().size(); i++) {
           for (int j = 0; j <= morphing.getSubLinesFin().size(); j++) {
             tableContent[i][j] = distanceTable[i][j];
@@ -289,8 +289,9 @@ public class ContinuousGUIComponent extends JMenu {
 
         for (IDirectPosition pt : mapping.getInitialCoords()) {
           IDirectPosition other = mapping.getMapping(pt);
-          pool.addFeatureToGeometryPool(GeometryEngine.getFactory()
-              .createLineSegment(pt, other), Color.RED, 3);
+          pool.addFeatureToGeometryPool(
+              GeometryEngine.getFactory().createLineSegment(pt, other),
+              Color.RED, 3);
         }
       }
     }
@@ -363,8 +364,8 @@ public class ContinuousGUIComponent extends JMenu {
     @Override
     public void actionPerformed(ActionEvent arg0) {
       CartAGenDataSet dataset = CartAGenDoc.getInstance().getCurrentDataset();
-      StyledLayerDescriptor sld = appli.getMainFrame()
-          .getSelectedProjectFrame().getSld();
+      StyledLayerDescriptor sld = appli.getMainFrame().getSelectedProjectFrame()
+          .getSld();
       IDataSet<?> dataset2 = sld.getDataSet();
       GeometryPool pool = null;
       if (dataset == null) {
@@ -415,7 +416,8 @@ public class ContinuousGUIComponent extends JMenu {
       IGeometry morphed = lsMorphing.continuousGeneralisation(0.6);
       // IGeometry morphed2 = lsMorphing2.continuousGeneralisation(0.6);
 
-      for (int i = 0; i < lsMorphing.getMapping().getInitialCoords().size(); i++) {
+      for (int i = 0; i < lsMorphing.getMapping().getInitialCoords()
+          .size(); i++) {
         IDirectPosition startPoint = lsMorphing.getMapping().getInitialCoords()
             .get(i);
         IDirectPosition endPoint = lsMorphing.getMapping().getFinalCoords()
@@ -457,8 +459,8 @@ public class ContinuousGUIComponent extends JMenu {
     @Override
     public void actionPerformed(ActionEvent arg0) {
       CartAGenDataSet dataset = CartAGenDoc.getInstance().getCurrentDataset();
-      StyledLayerDescriptor sld = appli.getMainFrame()
-          .getSelectedProjectFrame().getSld();
+      StyledLayerDescriptor sld = appli.getMainFrame().getSelectedProjectFrame()
+          .getSld();
       IDataSet<?> dataset2 = sld.getDataSet();
       GeometryPool pool = null;
       if (dataset == null) {
@@ -537,12 +539,12 @@ public class ContinuousGUIComponent extends JMenu {
     @Override
     public void actionPerformed(ActionEvent arg0) {
 
-      double iniScale = new Double(JOptionPane.showInputDialog(
-          "Enter initial scale", 25000.0));
-      double finScale = new Double(JOptionPane.showInputDialog(
-          "Enter final scale", 250000.0));
-      int nbScales = new Integer(JOptionPane.showInputDialog(
-          "Enter the number of intermediate scales", 100));
+      double iniScale = new Double(
+          JOptionPane.showInputDialog("Enter initial scale", 25000.0));
+      double finScale = new Double(
+          JOptionPane.showInputDialog("Enter final scale", 250000.0));
+      int nbScales = new Integer(JOptionPane
+          .showInputDialog("Enter the number of intermediate scales", 100));
 
       JFileChooser fc = new JFileChooser("Save the measures to CSV file");
       int returnVal = fc.showSaveDialog(appli.getMainFrame().getGui());
@@ -551,8 +553,8 @@ public class ContinuousGUIComponent extends JMenu {
       }
       File file = fc.getSelectedFile();
 
-      StyledLayerDescriptor sld = appli.getMainFrame()
-          .getSelectedProjectFrame().getSld();
+      StyledLayerDescriptor sld = appli.getMainFrame().getSelectedProjectFrame()
+          .getSld();
 
       Set<ILineString> layer1Feats = new HashSet<>();
       Set<ILineString> layer2Feats = new HashSet<>();
@@ -618,10 +620,10 @@ public class ContinuousGUIComponent extends JMenu {
       measure.addLegibilityFunction(new CoalescenceFunction(0.8));
       measure.addLegibilityFunction(new TopologyValidationFunction());
       measure.addDistanceFunction(new HausdorffDistanceFunction("Hausdorff"));
-      measure.addDistanceFunction(new MeanLineDistanceFunction(
-          "Mean line distance"));
-      measure.addDistanceFunction(new FrechetDistanceFunction(
-          "Fréchet distance"));
+      measure.addDistanceFunction(
+          new MeanLineDistanceFunction("Mean line distance"));
+      measure
+          .addDistanceFunction(new FrechetDistanceFunction("Fréchet distance"));
       measure.computeDiscontinuities();
       try {
         measure.writeToCsv(file);
@@ -659,12 +661,12 @@ public class ContinuousGUIComponent extends JMenu {
     @Override
     public void actionPerformed(ActionEvent arg0) {
 
-      double iniScale = new Double(JOptionPane.showInputDialog(
-          "Enter initial scale", 10000.0));
-      double finScale = new Double(JOptionPane.showInputDialog(
-          "Enter final scale", 250000.0));
-      int nbScales = new Integer(JOptionPane.showInputDialog(
-          "Enter the number of intermediate scales", 100));
+      double iniScale = new Double(
+          JOptionPane.showInputDialog("Enter initial scale", 10000.0));
+      double finScale = new Double(
+          JOptionPane.showInputDialog("Enter final scale", 250000.0));
+      int nbScales = new Integer(JOptionPane
+          .showInputDialog("Enter the number of intermediate scales", 100));
 
       JFileChooser fc = new JFileChooser("Select the file with selected lines");
       fc.setFileFilter(new XMLFileFilter());
@@ -674,7 +676,8 @@ public class ContinuousGUIComponent extends JMenu {
       }
       File selectionFile = fc.getSelectedFile();
 
-      JFileChooser fc2 = new JFileChooser("Select a directory for output files");
+      JFileChooser fc2 = new JFileChooser(
+          "Select a directory for output files");
       fc2.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
       returnVal = fc2.showSaveDialog(appli.getMainFrame().getGui());
       if (returnVal != JFileChooser.APPROVE_OPTION) {
@@ -682,8 +685,8 @@ public class ContinuousGUIComponent extends JMenu {
       }
       File directory = fc2.getSelectedFile();
 
-      StyledLayerDescriptor sld = appli.getMainFrame()
-          .getSelectedProjectFrame().getSld();
+      StyledLayerDescriptor sld = appli.getMainFrame().getSelectedProjectFrame()
+          .getSld();
 
       // get the ObjectSelection by parsing the file
       try {
@@ -728,7 +731,8 @@ public class ContinuousGUIComponent extends JMenu {
           IFeatureCollection<IFeature> featureCollection = new FT_FeatureCollection<>();
           FeatureType featureType = new FeatureType();
           featureType.setNomClasse("continuous");
-          GF_AttributeType attr = new AttributeType("scale", "scale", "Integer");
+          GF_AttributeType attr = new AttributeType("scale", "scale",
+              "Integer");
           featureType.addFeatureAttribute(attr);
           featureType.setGeometryType(ILineString.class);
           featureCollection.setFeatureType(featureType);
@@ -777,14 +781,14 @@ public class ContinuousGUIComponent extends JMenu {
           measure.addLegibilityFunction(new TopologyValidationFunction());
           measure
               .addDistanceFunction(new HausdorffDistanceFunction("Hausdorff"));
-          measure.addDistanceFunction(new MeanLineDistanceFunction(
-              "Mean line distance"));
-          measure.addDistanceFunction(new FrechetDistanceFunction(
-              "Fréchet distance"));
+          measure.addDistanceFunction(
+              new MeanLineDistanceFunction("Mean line distance"));
+          measure.addDistanceFunction(
+              new FrechetDistanceFunction("Fréchet distance"));
           measure.computeDiscontinuities();
           try {
-            File file = new File(directory.getPath() + "//" + selectionName
-                + ".csv");
+            File file = new File(
+                directory.getPath() + "//" + selectionName + ".csv");
             measure.writeToCsv(file);
           } catch (IOException e) {
             e.printStackTrace();

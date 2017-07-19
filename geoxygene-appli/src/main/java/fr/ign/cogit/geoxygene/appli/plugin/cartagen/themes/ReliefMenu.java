@@ -19,7 +19,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
-import fr.ign.cogit.cartagen.genealgorithms.relief.ContourLineSelection;
+import fr.ign.cogit.cartagen.algorithms.relief.ContourLineSelection;
 
 public class ReliefMenu extends JMenu {
 

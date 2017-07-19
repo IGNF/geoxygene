@@ -28,10 +28,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.XMLFileFilter;
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDoc;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
+import fr.ign.cogit.geoxygene.appli.panel.XMLFileFilter;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.util.XMLUtil;
 
@@ -75,8 +75,8 @@ public class SaveObjectSelection extends AbstractAction {
   }
 
   private void saveSelectionToXml(Collection<IFeature> selection, String name,
-      File file) throws IOException, SAXException,
-      ParserConfigurationException, TransformerException {
+      File file) throws IOException, SAXException, ParserConfigurationException,
+      TransformerException {
     String cartagenDataset = "default";
     if (CartAGenDoc.getInstance().getCurrentDataset() != null)
       cartagenDataset = CartAGenDoc.getInstance().getCurrentDataset()
@@ -102,8 +102,8 @@ public class SaveObjectSelection extends AbstractAction {
     doc = db.parse(file);
     doc.getDocumentElement().normalize();
 
-    Element root = (Element) doc.getElementsByTagName("object-selection").item(
-        0);
+    Element root = (Element) doc.getElementsByTagName("object-selection")
+        .item(0);
 
     // add the new object selection in the XML file
     addSelectionXML(root, doc, selection, name, cartagenDataset);

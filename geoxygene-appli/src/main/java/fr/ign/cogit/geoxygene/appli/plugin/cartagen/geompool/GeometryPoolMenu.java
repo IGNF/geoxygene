@@ -38,24 +38,23 @@ import javax.swing.SpinnerNumberModel;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.cartagen.core.carto.SLDUtilCartagen;
+import fr.ign.cogit.cartagen.core.SLDUtilCartagen;
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDataSet;
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.core.dataset.geompool.GeometryPool;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
-import fr.ign.cogit.cartagen.software.CartAGenDataSet;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
-import fr.ign.cogit.cartagen.software.dataset.GeometryPool;
-import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.geompool.GeomPoolFrame;
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.component.JColorSelectionButton;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
+import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.util.ColorEditor;
-import fr.ign.cogit.geoxygene.appli.plugin.cartagen.util.ColorRenderer;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.util.DisplayLayerTableModel;
+import fr.ign.cogit.geoxygene.appli.plugin.cartagen.util.JColorSelectionButton;
+import fr.ign.cogit.geoxygene.appli.plugin.cartagen.util.renderer.ColorRenderer;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
@@ -121,7 +120,8 @@ public class GeometryPoolMenu extends JMenu {
     super(title);
     this.application = application;
     // geometries pool menu
-    this.setToolTipText("geometries pool: a set of geometries usefull to display");
+    this.setToolTipText(
+        "geometries pool: a set of geometries usefull to display");
     this.geomPoolLayer = new NamedLayer();
     this.geomPoolLayer.setName(CartAGenDataSet.GEOM_POOL);
     this.geomPoolLayer.getStyles().add(new UserStyle());
@@ -198,13 +198,9 @@ public class GeometryPoolMenu extends JMenu {
           geometryPool.addFeatureToGeometryPool(feat, defaultColor);
         }
       } else {
-        CartAGenDoc
-            .getInstance()
-            .getCurrentDataset()
-            .getGeometryPool()
-            .setSld(
-                CartAGenPlugin.getInstance().getApplication().getMainFrame()
-                    .getSelectedProjectFrame().getSld());
+        CartAGenDoc.getInstance().getCurrentDataset().getGeometryPool()
+            .setSld(CartAGenPlugin.getInstance().getApplication().getMainFrame()
+                .getSelectedProjectFrame().getSld());
         for (IFeature feat : CartAGenPlugin.getInstance().getApplication()
             .getMainFrame().getSelectedProjectFrame().getLayerViewPanel()
             .getSelectedFeatures()) {
@@ -262,9 +258,9 @@ public class GeometryPoolMenu extends JMenu {
         chkOffsetL, chkMbr, chkConvex;
     private JColorSelectionButton colorBuffer, colorHalfR, colorHalfL,
         colorCentroid, colorOffsetR, colorOffsetL, colorMbr, colorConvex;
-    private JSpinner spinBuffer, spinHalfR, spinHalfL, spinOffsetR,
-        spinOffsetL, spinBufferWidth, spinHalfRWidth, spinHalfLWidth,
-        spinOffsetRWidth, spinOffsetLWidth, spinMbrWidth, spinConvexWidth;
+    private JSpinner spinBuffer, spinHalfR, spinHalfL, spinOffsetR, spinOffsetL,
+        spinBufferWidth, spinHalfRWidth, spinHalfLWidth, spinOffsetRWidth,
+        spinOffsetLWidth, spinMbrWidth, spinConvexWidth;
 
     AddBufferEtcFrame(Set<IGeneObj> objects) {
       super("Draw in geometry pool");
@@ -454,8 +450,8 @@ public class GeometryPoolMenu extends JMenu {
       this.getContentPane().add(new JScrollPane(mainPanel));
       this.getContentPane().add(Box.createVerticalGlue());
       this.getContentPane().add(btnPanel);
-      this.getContentPane().setLayout(
-          new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+      this.getContentPane()
+          .setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
       this.pack();
     }
 
@@ -472,19 +468,13 @@ public class GeometryPoolMenu extends JMenu {
     }
 
     private void drawToGeomPool() {
-      CartAGenDoc
-          .getInstance()
-          .getCurrentDataset()
-          .getGeometryPool()
-          .setSld(application.getMainFrame().getSelectedProjectFrame().getSld());
+      CartAGenDoc.getInstance().getCurrentDataset().getGeometryPool().setSld(
+          application.getMainFrame().getSelectedProjectFrame().getSld());
       for (IGeneObj obj : objects) {
         if (chkBuffer.isSelected()) {
-          IGeometry buffer = obj.getGeom().buffer(
-              (Double) spinBuffer.getValue());
-          CartAGenDoc
-              .getInstance()
-              .getCurrentDataset()
-              .getGeometryPool()
+          IGeometry buffer = obj.getGeom()
+              .buffer((Double) spinBuffer.getValue());
+          CartAGenDoc.getInstance().getCurrentDataset().getGeometryPool()
               .addFeatureToGeometryPool(buffer, colorBuffer.getColor(),
                   (Integer) spinBufferWidth.getValue());
         }
@@ -494,10 +484,7 @@ public class GeometryPoolMenu extends JMenu {
                 (ILineString) obj.getGeom(), (Double) spinHalfR.getValue(),
                 Side.RIGHT);
 
-            CartAGenDoc
-                .getInstance()
-                .getCurrentDataset()
-                .getGeometryPool()
+            CartAGenDoc.getInstance().getCurrentDataset().getGeometryPool()
                 .addFeatureToGeometryPool(buffer, colorHalfR.getColor(),
                     (Integer) spinHalfRWidth.getValue());
           }
@@ -507,10 +494,7 @@ public class GeometryPoolMenu extends JMenu {
             IGeometry buffer = BufferComputing.buildLineHalfBuffer(
                 (ILineString) obj.getGeom(), (Double) spinHalfL.getValue(),
                 Side.LEFT);
-            CartAGenDoc
-                .getInstance()
-                .getCurrentDataset()
-                .getGeometryPool()
+            CartAGenDoc.getInstance().getCurrentDataset().getGeometryPool()
                 .addFeatureToGeometryPool(buffer, colorHalfL.getColor(),
                     (Integer) spinHalfLWidth.getValue());
           }
@@ -519,10 +503,7 @@ public class GeometryPoolMenu extends JMenu {
           if (obj.getGeom() instanceof ILineString) {
             IGeometry buffer = BufferComputing.buildHalfOffsetLine(Side.RIGHT,
                 (ILineString) obj.getGeom(), (Double) spinOffsetR.getValue());
-            CartAGenDoc
-                .getInstance()
-                .getCurrentDataset()
-                .getGeometryPool()
+            CartAGenDoc.getInstance().getCurrentDataset().getGeometryPool()
                 .addFeatureToGeometryPool(buffer, colorOffsetR.getColor(),
                     (Integer) spinOffsetRWidth.getValue());
           }
@@ -531,10 +512,7 @@ public class GeometryPoolMenu extends JMenu {
           if (obj.getGeom() instanceof ILineString) {
             IGeometry buffer = BufferComputing.buildHalfOffsetLine(Side.LEFT,
                 (ILineString) obj.getGeom(), (Double) spinOffsetL.getValue());
-            CartAGenDoc
-                .getInstance()
-                .getCurrentDataset()
-                .getGeometryPool()
+            CartAGenDoc.getInstance().getCurrentDataset().getGeometryPool()
                 .addFeatureToGeometryPool(buffer, colorOffsetL.getColor(),
                     (Integer) spinOffsetLWidth.getValue());
           }
@@ -545,21 +523,15 @@ public class GeometryPoolMenu extends JMenu {
               .addFeatureToGeometryPool(centroid, colorCentroid.getColor(), 1);
         }
         if (chkMbr.isSelected()) {
-          IGeometry mbr = SmallestSurroundingRectangleComputation.getSSR(obj
-              .getGeom());
-          CartAGenDoc
-              .getInstance()
-              .getCurrentDataset()
-              .getGeometryPool()
+          IGeometry mbr = SmallestSurroundingRectangleComputation
+              .getSSR(obj.getGeom());
+          CartAGenDoc.getInstance().getCurrentDataset().getGeometryPool()
               .addFeatureToGeometryPool(mbr, colorMbr.getColor(),
                   (Integer) spinMbrWidth.getValue());
         }
         if (chkConvex.isSelected()) {
           IGeometry hull = obj.getGeom().convexHull();
-          CartAGenDoc
-              .getInstance()
-              .getCurrentDataset()
-              .getGeometryPool()
+          CartAGenDoc.getInstance().getCurrentDataset().getGeometryPool()
               .addFeatureToGeometryPool(hull, colorConvex.getColor(),
                   (Integer) spinConvexWidth.getValue());
         }
@@ -676,8 +648,8 @@ public class GeometryPoolMenu extends JMenu {
       // main frame layout setup
       this.getContentPane().add(new JScrollPane(jtable));
       this.getContentPane().add(pButtons);
-      this.getContentPane().setLayout(
-          new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+      this.getContentPane()
+          .setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
     }
 
     @Override
@@ -699,13 +671,9 @@ public class GeometryPoolMenu extends JMenu {
               CartAGenPlugin.getInstance().getApplication().getMainFrame()
                   .getSelectedProjectFrame().getSld());
       } else {
-        CartAGenDoc
-            .getInstance()
-            .getCurrentDataset()
-            .getGeometryPool()
-            .setSld(
-                CartAGenPlugin.getInstance().getApplication().getMainFrame()
-                    .getSelectedProjectFrame().getSld());
+        CartAGenDoc.getInstance().getCurrentDataset().getGeometryPool()
+            .setSld(CartAGenPlugin.getInstance().getApplication().getMainFrame()
+                .getSelectedProjectFrame().getSld());
         geometryPool = CartAGenDoc.getInstance().getCurrentDataset()
             .getGeometryPool();
       }
@@ -756,11 +724,8 @@ public class GeometryPoolMenu extends JMenu {
         if (mGeomPoolVisible.isSelected()) {
           if (DataSet.getInstance()
               .getPopulation(geomPoolLayer.getName()) == null) {
-            geomPoolLayer
-                .getSld()
-                .getDataSet()
-                .addPopulation(
-                    new Population<IFeature>(geomPoolLayer.getName()));
+            geomPoolLayer.getSld().getDataSet().addPopulation(
+                new Population<IFeature>(geomPoolLayer.getName()));
           }
           frame.addLayer(geomPoolLayer);
         } else {

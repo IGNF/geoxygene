@@ -15,7 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.ShapeFileFilter;
+import fr.ign.cogit.geoxygene.appli.panel.ShapeFileFilter;
 
 public class ShapeFileToLayerPanel extends JPanel implements ActionListener {
 

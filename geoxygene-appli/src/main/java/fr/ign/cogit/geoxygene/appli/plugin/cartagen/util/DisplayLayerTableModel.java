@@ -2,7 +2,7 @@ package fr.ign.cogit.geoxygene.appli.plugin.cartagen.util;
 
 import javax.swing.table.AbstractTableModel;
 
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
+import fr.ign.cogit.geoxygene.appli.I18N;
 
 /**
  * An abstract table model for tables filled with the layers and columns to

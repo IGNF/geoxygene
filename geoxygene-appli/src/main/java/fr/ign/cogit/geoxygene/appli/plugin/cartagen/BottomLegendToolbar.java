@@ -30,9 +30,9 @@ import javax.swing.JButton;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
-import fr.ign.cogit.cartagen.core.carto.SLDUtilCartagen;
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
+import fr.ign.cogit.cartagen.core.SLDUtilCartagen;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
+import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.LayerLegendPanel;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.layer.LayerFactory;
@@ -159,9 +159,9 @@ public class BottomLegendToolbar extends JToolBar {
         StyledLayerDescriptor sld = frame.getSld();
         // add a textsymbolizer for each layer of the sld
         for (Layer layer : sld.getLayers()) {
-          Style style = LayerFactory.createStyle("IdDisplay", "id", new Color(
-              135, 89, 26), new Font("Arial", Font.PLAIN, 6), Color.BLACK,
-              0.0f, 0.0f, 0.0f, 0.0f);
+          Style style = LayerFactory.createStyle("IdDisplay", "id",
+              new Color(135, 89, 26), new Font("Arial", Font.PLAIN, 6),
+              Color.BLACK, 0.0f, 0.0f, 0.0f, 0.0f);
           layer.getStyles().add(style);
         }
       } else {

@@ -25,10 +25,10 @@ import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ICemetery;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ISportsField;
-import fr.ign.cogit.cartagen.software.interfacecartagen.dataloading.ProgressFrame;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.appli.plugin.cartagen.util.ProgressFrame;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 public class CartAGenLoader {

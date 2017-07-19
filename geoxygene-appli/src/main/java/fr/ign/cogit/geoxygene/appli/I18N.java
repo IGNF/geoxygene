@@ -22,7 +22,7 @@ public final class I18N {
    * @see #BUNDLE_NAME
    * @see #getString(String)
    */
-  private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
+  private static ResourceBundle RESOURCE_BUNDLE = ResourceBundle
       .getBundle(I18N.BUNDLE_NAME, Locale.getDefault());
 
   /**
@@ -41,5 +41,9 @@ public final class I18N {
     } catch (MissingResourceException e) {
       return '!' + key + '!';
     }
+  }
+
+  public static void changeLocale(Locale loc) {
+    RESOURCE_BUNDLE = ResourceBundle.getBundle(I18N.BUNDLE_NAME, loc);
   }
 }

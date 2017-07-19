@@ -45,17 +45,17 @@ import javax.swing.event.ListSelectionListener;
 
 import org.jfree.util.ClassComparator;
 
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDataSet;
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
-import fr.ign.cogit.cartagen.software.CartAGenDataSet;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.component.OGCFilterPanel;
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.RealLimitator;
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.renderer.ClassSimpleNameListRenderer;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
+import fr.ign.cogit.geoxygene.appli.I18N;
+import fr.ign.cogit.geoxygene.appli.panel.RealLimitator;
+import fr.ign.cogit.geoxygene.appli.plugin.cartagen.util.OGCFilterPanel;
+import fr.ign.cogit.geoxygene.appli.plugin.cartagen.util.renderer.ClassSimpleNameListRenderer;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.NamedLayer;
@@ -124,10 +124,9 @@ public class AttributeQueryFrame extends JFrame implements ActionListener,
     this.classJList.addListSelectionListener(this);
     this.pClass.add(new JLabel(this.lblClasses + " : "));
     this.pClass.add(new JScrollPane(this.classJList));
-    Border titled = BorderFactory
-        .createTitledBorder(
-            BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
-            this.classTitle);
+    Border titled = BorderFactory.createTitledBorder(
+        BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
+        this.classTitle);
     this.pClass.setBorder(BorderFactory.createCompoundBorder(titled,
         BorderFactory.createEmptyBorder(5, 5, 5, 5)));
     this.pClass.setLayout(new BoxLayout(this.pClass, BoxLayout.X_AXIS));
@@ -141,10 +140,10 @@ public class AttributeQueryFrame extends JFrame implements ActionListener,
     // a panel to define the extent of the query
     this.pExtent = new JPanel();
     JPanel pDb = new JPanel();
-    this.cbDbs = new JComboBox(CartAGenDoc.getInstance().getDatabases()
-        .keySet().toArray());
-    this.cbDbs.setSelectedItem(CartAGenDoc.getInstance().getCurrentDataset()
-        .getCartAGenDB());
+    this.cbDbs = new JComboBox(
+        CartAGenDoc.getInstance().getDatabases().keySet().toArray());
+    this.cbDbs.setSelectedItem(
+        CartAGenDoc.getInstance().getCurrentDataset().getCartAGenDB());
     this.cbDbs.setPreferredSize(new Dimension(110, 20));
     this.cbDbs.setMaximumSize(new Dimension(110, 20));
     this.cbDbs.setMinimumSize(new Dimension(110, 20));
@@ -251,8 +250,8 @@ public class AttributeQueryFrame extends JFrame implements ActionListener,
     this.displayedPanel = this.pClass;
     this.getContentPane().add(this.pClass);
     this.getContentPane().add(pButtons);
-    this.getContentPane().setLayout(
-        new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+    this.getContentPane()
+        .setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
     this.pack();
   }
 
@@ -316,8 +315,8 @@ public class AttributeQueryFrame extends JFrame implements ActionListener,
   public void valueChanged(ListSelectionEvent e) {
     if (e.getSource().equals(this.classJList)) {
       if (!e.getValueIsAdjusting()) {
-        this.pFilter.changeSelectedClass((Class<?>) this.classJList
-            .getSelectedValue());
+        this.pFilter
+            .changeSelectedClass((Class<?>) this.classJList.getSelectedValue());
       }
     }
   }
@@ -330,8 +329,8 @@ public class AttributeQueryFrame extends JFrame implements ActionListener,
     CartAGenDoc doc = CartAGenDoc.getInstance();
     CartAGenDataSet dataset = doc.getDataset(this.dbName);
     // now get the population from the class
-    String popName = dataset.getPopNameFromClass(this.pFilter
-        .getFilteredClass());
+    String popName = dataset
+        .getPopNameFromClass(this.pFilter.getFilteredClass());
     IPopulation<IGeneObj> pop = dataset.getCartagenPop(popName);
     Collection<IGeneObj> queryColn = pop;
     // reduce the query collection if there is an extent specified
@@ -344,8 +343,9 @@ public class AttributeQueryFrame extends JFrame implements ActionListener,
       }
       if (this.extentType == ExtentType.ENVELOPE) {
         geom = new GM_Envelope(Double.valueOf(this.txtXMin.getText()),
-            Double.valueOf(this.txtXMax.getText()), Double.valueOf(this.txtYMin
-                .getText()), Double.valueOf(this.txtYMax.getText())).getGeom();
+            Double.valueOf(this.txtXMax.getText()),
+            Double.valueOf(this.txtYMin.getText()),
+            Double.valueOf(this.txtYMax.getText())).getGeom();
       }
       if (this.extentType == ExtentType.GEOMETRY) {
         geom = appli.getMainFrame().getSelectedProjectFrame()

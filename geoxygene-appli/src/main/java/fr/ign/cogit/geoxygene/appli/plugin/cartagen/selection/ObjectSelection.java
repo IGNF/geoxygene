@@ -16,8 +16,8 @@ import javax.swing.JOptionPane;
 
 import org.w3c.dom.Element;
 
-import fr.ign.cogit.cartagen.software.CartAGenDataSet;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDataSet;
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDoc;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 

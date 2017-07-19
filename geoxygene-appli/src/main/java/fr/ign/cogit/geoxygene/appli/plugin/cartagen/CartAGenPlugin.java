@@ -38,7 +38,6 @@ import fr.ign.cogit.cartagen.core.dataset.DatabaseView;
 import fr.ign.cogit.cartagen.core.dataset.GeneObjImplementation;
 import fr.ign.cogit.cartagen.core.dataset.GeographicClass;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
-import fr.ign.cogit.cartagen.software.interfacecartagen.menus.ConfigMenuComponent;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;

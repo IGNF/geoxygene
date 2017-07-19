@@ -30,9 +30,9 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import fr.ign.cogit.cartagen.core.dataset.CartAGenDB;
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.XMLFileFilter;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.panel.XMLFileFilter;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.util.XMLUtil;
 

@@ -33,8 +33,8 @@ import org.xml.sax.SAXException;
 
 import fr.ign.cogit.cartagen.core.dataset.CartAGenDB;
 import fr.ign.cogit.cartagen.core.dataset.CartAGenDoc;
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
+import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.bookmarks.Bookmark;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.bookmarks.BookmarkSet;

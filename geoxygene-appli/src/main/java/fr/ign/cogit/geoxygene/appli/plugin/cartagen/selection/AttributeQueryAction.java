@@ -13,7 +13,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
+import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 
 public class AttributeQueryAction extends AbstractAction {
@@ -24,14 +24,15 @@ public class AttributeQueryAction extends AbstractAction {
   private static final long serialVersionUID = 833324511619057181L;
 
   public AttributeQueryAction() {
-    putValue(SHORT_DESCRIPTION, I18N.getString("AttributeQueryFrame.menuDescr")); //$NON-NLS-1$
+    putValue(SHORT_DESCRIPTION,
+        I18N.getString("AttributeQueryFrame.menuDescr")); //$NON-NLS-1$
     putValue(NAME, I18N.getString("AttributeQueryFrame.menuName")); //$NON-NLS-1$
   }
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    AttributeQueryFrame frame = new AttributeQueryFrame(CartAGenPlugin
-        .getInstance().getApplication());
+    AttributeQueryFrame frame = new AttributeQueryFrame(
+        CartAGenPlugin.getInstance().getApplication());
     frame.setVisible(true);
   }
 

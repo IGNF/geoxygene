@@ -35,6 +35,7 @@ import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.dataset.DatasetGeoxGUIComponent;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.themes.DataThemesGUIComponent;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.util.GeneralisationConfigurationFrame;
+import fr.ign.cogit.geoxygene.appli.plugin.cartagen.util.GeneralisationLaunchingFrame;
 import fr.ign.cogit.geoxygene.style.Layer;
 
 /**

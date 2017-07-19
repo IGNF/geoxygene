@@ -24,12 +24,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
-import fr.ign.cogit.cartagen.software.dataset.GeometryPool;
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.component.JColorSelectionButton;
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.core.dataset.geompool.GeometryPool;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
+import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.util.conversion.ParseException;
 import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
 
@@ -113,8 +112,8 @@ public class ShowWKTFrame extends JFrame implements ActionListener {
     this.getContentPane().add(symbolPanel);
     this.getContentPane().add(Box.createVerticalGlue());
     this.getContentPane().add(btnPanel);
-    this.getContentPane().setLayout(
-        new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+    this.getContentPane()
+        .setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
     this.pack();
   }
 

@@ -31,9 +31,9 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import fr.ign.cogit.cartagen.software.GeneralisationSpecifications;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
-import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
+import fr.ign.cogit.cartagen.core.GeneralisationSpecifications;
+import fr.ign.cogit.cartagen.core.Legend;
+import fr.ign.cogit.cartagen.core.dataset.CartAGenDoc;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
 import fr.ign.cogit.geoxygene.style.Layer;
@@ -64,14 +64,14 @@ public class GeneralisationConfigurationFrame extends JFrame {
   // general
   public JPanel pGeneral = new JPanel(new GridBagLayout());
   public JLabel lDescription = new JLabel("Description:");
-  public JTextField tDescription = new JTextField(""
-      + GeneralisationSpecifications.getDESCRIPTION());
+  public JTextField tDescription = new JTextField(
+      "" + GeneralisationSpecifications.getDESCRIPTION());
   public JLabel lEchelleCible = new JLabel("Map scale   1:");
-  public JTextField tEchelleCible = new JTextField(""
-      + Legend.getSYMBOLISATI0N_SCALE());
+  public JTextField tEchelleCible = new JTextField(
+      "" + Legend.getSYMBOLISATI0N_SCALE());
   public JLabel lResolution = new JLabel("Resolution");
-  public JTextField tResolution = new JTextField(""
-      + GeneralisationSpecifications.getRESOLUTION());
+  public JTextField tResolution = new JTextField(
+      "" + GeneralisationSpecifications.getRESOLUTION());
 
   // boutons
   public JPanel panneauBoutons = new JPanel(new GridBagLayout());
@@ -131,10 +131,10 @@ public class GeneralisationConfigurationFrame extends JFrame {
     tResolution.setColumns(10);
     pGeneral.add(tResolution, c);
 
-    panneauOnglets.addTab("General", new ImageIcon(
-        GeneralisationConfigurationFrame.class.getResource("/images/co.gif")
-            .getPath().replaceAll("%20", " ")), pGeneral,
-        "General parameters of generalisation");
+    panneauOnglets.addTab("General",
+        new ImageIcon(GeneralisationConfigurationFrame.class
+            .getResource("/images/co.gif").getPath().replaceAll("%20", " ")),
+        pGeneral, "General parameters of generalisation");
 
     // panneau des boutons
 
@@ -194,8 +194,8 @@ public class GeneralisationConfigurationFrame extends JFrame {
     // general
     GeneralisationSpecifications.setDESCRIPTION(tDescription.getText());
     Legend.setSYMBOLISATI0N_SCALE(Double.parseDouble(tEchelleCible.getText()));
-    GeneralisationSpecifications.setRESOLUTION(Double.parseDouble(tResolution
-        .getText()));
+    GeneralisationSpecifications
+        .setRESOLUTION(Double.parseDouble(tResolution.getText()));
 
     // update the SLD width values with the new scale value
     double scaleRatio = Legend.getSYMBOLISATI0N_SCALE() / oldScale;
@@ -212,10 +212,9 @@ public class GeneralisationConfigurationFrame extends JFrame {
           for (Rule rule : ftStyle.getRules()) {
             for (Symbolizer symbolizer : rule.getSymbolizers()) {
               if (symbolizer.getStroke() != null)
-                symbolizer
-                    .getStroke()
-                    .setStrokeWidth(
-                        (float) (symbolizer.getStroke().getStrokeWidth() * scaleRatio));
+                symbolizer.getStroke().setStrokeWidth(
+                    (float) (symbolizer.getStroke().getStrokeWidth()
+                        * scaleRatio));
             }
           }
         }
@@ -270,19 +269,19 @@ public class GeneralisationConfigurationFrame extends JFrame {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      JFileChooser parcourir = new JFileChooser(new File(CartAGenPlugin
-          .getInstance().getCheminFichierConfigurationGene()));
+      JFileChooser parcourir = new JFileChooser(new File(
+          CartAGenPlugin.getInstance().getCheminFichierConfigurationGene()));
       parcourir.setDialogType(JFileChooser.SAVE_DIALOG);
       parcourir.setApproveButtonText("Save");
       parcourir.setDialogTitle("Save");
-      FileNameExtensionFilter filter = new FileNameExtensionFilter(
-          "XML MiraGe", "xml");
+      FileNameExtensionFilter filter = new FileNameExtensionFilter("XML MiraGe",
+          "xml");
       parcourir.setFileFilter(filter);
-      parcourir.setSelectedFile(new File(CartAGenPlugin.getInstance()
-          .getCheminFichierConfigurationGene()));
+      parcourir.setSelectedFile(new File(
+          CartAGenPlugin.getInstance().getCheminFichierConfigurationGene()));
       int res = parcourir.showOpenDialog(this.frame);
       if (res == JFileChooser.APPROVE_OPTION) {
-        GeneralisationSpecifications.enregistrer(parcourir.getSelectedFile());
+        GeneralisationSpecifications.saveToFile(parcourir.getSelectedFile());
       } else if (res == JFileChooser.ERROR_OPTION) {
         JOptionPane.showMessageDialog(this.frame, "Error", "Error",
             JOptionPane.ERROR_MESSAGE);
