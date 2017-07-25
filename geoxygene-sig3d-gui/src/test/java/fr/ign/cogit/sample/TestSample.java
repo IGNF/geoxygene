@@ -42,8 +42,7 @@ public class TestSample extends TestCase {
 		
 		log.info("Test for sample class AddMenu");
 
-		@SuppressWarnings("unused")
-		AddMenu am = new AddMenu();
+		new AddMenu();
 
 	}
 	
@@ -55,8 +54,7 @@ public class TestSample extends TestCase {
 		
 		log.info("Test for sample class Calcul3DArea");
 
-		@SuppressWarnings("unused")
-		Calcul3DArea c3da = new Calcul3DArea();
+	 new Calcul3DArea();
 
 	}
 	
@@ -67,9 +65,7 @@ public class TestSample extends TestCase {
 	public void testSample3() {
 		
 		log.info("Test for sample class DisplayData");
-
-		@SuppressWarnings("unused")
-		DisplayData dd = new DisplayData();
+		new DisplayData();
 
 	}
 	
@@ -106,9 +102,7 @@ public class TestSample extends TestCase {
 	public void testSample6() {
 		
 		log.info("Test for sample class RGE");
-
-		@SuppressWarnings("unused")
-		RGE rge = new RGE();
+		new RGE();
 
 	}
 	
@@ -120,8 +114,7 @@ public class TestSample extends TestCase {
 		
 		log.info("Test for sample class Symbology");
 
-		@SuppressWarnings("unused")
-		Symbology symb = new Symbology();
+		new Symbology();
 
 	}
 	
@@ -133,8 +126,7 @@ public class TestSample extends TestCase {
 		
 		log.info("Test for sample class Toponym");
 
-		@SuppressWarnings("unused")
-		Toponym topo = new Toponym();
+		new Toponym();
 
 	}
 

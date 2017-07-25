@@ -57,7 +57,7 @@ public abstract class CG_CityObject extends DefaultFeature {
 	private List<CG_AppearanceProperty> appearanceProperty = null;
 
 	public static int ID_COUNT = 0;
-	protected int id = 0;
+
 
 	public int getId() {
 		return id;

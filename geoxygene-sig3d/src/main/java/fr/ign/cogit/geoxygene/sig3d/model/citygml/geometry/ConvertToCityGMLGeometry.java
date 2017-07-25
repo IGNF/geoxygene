@@ -42,18 +42,17 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 
 public class ConvertToCityGMLGeometry {
 
-	@SuppressWarnings("unchecked")
-	public static GeometryProperty convertGeometryProperty(IGeometry iGeom) {
+	public static GeometryProperty<?> convertGeometryProperty(IGeometry iGeom) {
 
 		if (iGeom instanceof ISolid) {
 
-			return (GeometryProperty) convertSolidProperty((ISolid) iGeom);
+			return convertSolidProperty((ISolid) iGeom);
 		} else if (iGeom instanceof IMultiSurface<?>) {
-			return (GeometryProperty) convertMultiSurfaceProperty((IMultiSurface<IOrientableSurface>) iGeom);
+			return convertMultiSurfaceProperty((IMultiSurface<?>) iGeom);
 		} else if (iGeom instanceof IMultiCurve<?>) {
-			return (GeometryProperty) convertMultiCurveProperty((IMultiCurve<IOrientableCurve>) iGeom);
+			return convertMultiCurveProperty((IMultiCurve<?>) iGeom);
 		} else if (iGeom instanceof IOrientableCurve) {
-			return (GeometryProperty) convertCurveProperty((IOrientableCurve) iGeom);
+			return convertCurveProperty((IOrientableCurve) iGeom);
 		}
 
 		System.out.println("Classe non gérée : " + iGeom.getClass());
@@ -85,7 +84,7 @@ public class ConvertToCityGMLGeometry {
 
 	}
 
-	public static MultiSurfaceProperty convertMultiSurfaceProperty(IMultiSurface<IOrientableSurface> iMS) {
+	public static MultiSurfaceProperty convertMultiSurfaceProperty(IMultiSurface<?> iMS) {
 		MultiSurfaceProperty mSP = new MultiSurfaceProperty();
 
 		mSP.setMultiSurface(convertMultiSurface(iMS));
@@ -94,7 +93,7 @@ public class ConvertToCityGMLGeometry {
 
 	}
 
-	public static MultiSurface convertMultiSurface(IMultiSurface<IOrientableSurface> iMS) {
+	public static MultiSurface convertMultiSurface(IMultiSurface<?> iMS) {
 
 		MultiSurface mS = new MultiSurface();
 
@@ -118,7 +117,7 @@ public class ConvertToCityGMLGeometry {
 
 	}
 
-	public static MultiCurveProperty convertMultiCurveProperty(IMultiCurve<IOrientableCurve> iMC) {
+	public static MultiCurveProperty convertMultiCurveProperty(IMultiCurve<?> iMC) {
 
 		MultiCurveProperty mCP = new MultiCurveProperty();
 		mCP.setMultiCurve(convertMultiCurve(iMC));
@@ -127,7 +126,7 @@ public class ConvertToCityGMLGeometry {
 
 	}
 
-	public static MultiCurve convertMultiCurve(IMultiCurve<IOrientableCurve> iMC) {
+	public static MultiCurve convertMultiCurve(IMultiCurve<?> iMC) {
 
 		List<CurveProperty> lCP = convertRingCurve(iMC.getList());
 
@@ -251,7 +250,7 @@ public class ConvertToCityGMLGeometry {
 
 	}
 
-	private static List<CurveProperty> convertRingCurve(List<IOrientableCurve> lOC) {
+	private static List<CurveProperty> convertRingCurve(List<? extends IOrientableCurve> lOC) {
 
 		int nbCurve = lOC.size();
 

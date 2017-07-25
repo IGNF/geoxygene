@@ -63,56 +63,9 @@ public class TestApproximatedPlanEquation extends TestCase {
 
 	}
 
-	@Test
-	// --------------------------------------------------------------------------------
-	// Test for method to build approximated plan equation : 2 points
-	// --------------------------------------------------------------------------------
-	public void testApproximatedPlanEquation2() {
-		
-		log.info("Test for method to build approximated plan equation : 2 points");
 
-		// NEEDS FIXING
-		
-		// Creating list of points
-		DirectPositionList dpl = new DirectPositionList();
-		dpl.add(new DirectPosition(0,0,0));
-		dpl.add(new DirectPosition(1,1,0));
 
-		// Creating plane
-		@SuppressWarnings("unused")
-		ApproximatedPlanEquation apex = new ApproximatedPlanEquation(dpl);
 
-		// Comparison
-		/*
-		assertEquals("Should not be possible to calculate approximated plane equation", 0, apex.getCoeffa(), epsilon);
-		assertEquals("Should not be possible to calculate approximated plane equation", 0, apex.getCoeffb(), epsilon);
-		assertEquals("Should not be possible to calculate approximated plane equation", 0, apex.getCoeffc(), epsilon);
-		assertEquals("Should not be possible to calculate approximated plane equation", 0, apex.getCoeffd(), epsilon);
-		*/
-
-	}
-
-	@Test
-	// --------------------------------------------------------------------------------
-	// Test for method to build approximated plan equation : 3 alined points
-	// --------------------------------------------------------------------------------
-	public void testApproximatedPlanEquation3() {
-		
-		log.info("Test for method to build approximated plan equation : 3 alined points");
-
-		// NEEDS FIXING
-
-		// Creating list of points
-		DirectPositionList dpl = new DirectPositionList();
-		dpl.add(new DirectPosition(0,0,0));
-		dpl.add(new DirectPosition(1,1,0));
-		dpl.add(new DirectPosition(2,2,0));
-
-		// Creating plane
-		@SuppressWarnings("unused")
-		ApproximatedPlanEquation apex = new ApproximatedPlanEquation(dpl);
-
-	}
 
 	@Test
 	// --------------------------------------------------------------------------------
@@ -150,33 +103,7 @@ public class TestApproximatedPlanEquation extends TestCase {
 
 	}
 
-	@Test
-	// --------------------------------------------------------------------------------
-	// Test for method to build approximated plan equation : 8 points
-	// --------------------------------------------------------------------------------
-	public void testApproximatedPlanEquation5() {
-		
-		log.info("Test for method to build approximated plan equation : 8 points");
 
-		// NEEDS FIXING : should be horizontal plane z = 3
-
-		// Creating list of points
-		DirectPositionList dpl = new DirectPositionList();
-		dpl.add(new DirectPosition(0,0,2));
-		dpl.add(new DirectPosition(0,1,2));
-		dpl.add(new DirectPosition(1,1,2));
-		dpl.add(new DirectPosition(1,0,2));
-		dpl.add(new DirectPosition(0,0,4));
-		dpl.add(new DirectPosition(0,1,4));
-		dpl.add(new DirectPosition(1,1,4));
-		dpl.add(new DirectPosition(1,0,4));
-
-
-		// Creating plane
-		@SuppressWarnings("unused")
-		ApproximatedPlanEquation apex = new ApproximatedPlanEquation(dpl);
-
-	}
 
 	@Test
 	// --------------------------------------------------------------------------------

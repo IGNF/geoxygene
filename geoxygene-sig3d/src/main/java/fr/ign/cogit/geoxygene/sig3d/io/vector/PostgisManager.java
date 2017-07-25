@@ -248,7 +248,7 @@ public class PostgisManager {
       String requestSelect = "SELECT " + OP_ASEWKT + "(" + nomColonneGeom
           + ") as asewkt, * FROM " + table;
 
-      if (whereClause != "") {
+      if (! whereClause.isEmpty()) {
 
         requestSelect = requestSelect + " WHERE " + whereClause;
 
@@ -351,7 +351,7 @@ public class PostgisManager {
       }
 
       // Cas : présence d'une colonne géométrique dans la table
-      if (nomColonneGeom != "") {
+      if (! (nomColonneGeom.isEmpty() )){
         s.close();
         s1.close();
         conn.close();
@@ -419,7 +419,7 @@ public class PostgisManager {
 
       String requestSelect = "SELECT * FROM " + table;
 
-      if (whereClause != "") {
+      if (! (whereClause.equals("")) ){
 
         requestSelect = requestSelect + " WHERE " + whereClause;
 
@@ -435,7 +435,7 @@ public class PostgisManager {
         deF.setFeatureType(fType);
         deF.setAttributes(new Object[nbAttribut]);
 
-        int shift = 1;
+     
 
         if (nbAttribut == 1) {
 
@@ -451,7 +451,7 @@ public class PostgisManager {
 
               deF.setAttribute(i, r2.getString(i + shiftIni));
 
-              shift++;
+         
             }
 
           }
@@ -874,7 +874,7 @@ public class PostgisManager {
       String database, String user, String pw, String sqlRequest)
       throws Exception {
 
-    if (sqlRequest != null && sqlRequest != "") {
+    if (sqlRequest != null && sqlRequest.isEmpty()) {
 
       java.sql.Connection conn;
 

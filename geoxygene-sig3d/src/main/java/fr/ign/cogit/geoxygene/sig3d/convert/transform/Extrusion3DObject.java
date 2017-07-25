@@ -19,7 +19,6 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.sig3d.Messages;
 import fr.ign.cogit.geoxygene.sig3d.equation.ApproximatedPlanEquation;
-import fr.ign.cogit.geoxygene.sig3d.geometry.Box3D;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
@@ -428,7 +427,7 @@ public class Extrusion3DObject {
 	 */
 	public static IGeometry convertitFromPolygon(IPolygon polyIni, double heigth) {
 		// On recupere les points extremes du solides
-		Box3D b = new Box3D(polyIni);
+
 		ApproximatedPlanEquation eq = new ApproximatedPlanEquation(polyIni);
 		if (eq.getNormale().getZ() < 0) {
 
