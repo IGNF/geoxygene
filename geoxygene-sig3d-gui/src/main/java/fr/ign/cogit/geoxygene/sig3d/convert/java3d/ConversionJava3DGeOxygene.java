@@ -300,7 +300,7 @@ public class ConversionJava3DGeOxygene {
     for (int i = 0; i < nbFacet; i++) {
       IOrientableSurface os = lFacettes.get(i);
 
-      npoints = npoints + os.coord().size();
+      npoints = npoints + (os.coord().size()) - ((GM_Polygon) os).getInterior().size() -1;
       nStrip = nStrip + 1 + ((GM_Polygon) os).getInterior().size();
     }
 
@@ -353,7 +353,7 @@ public class ConversionJava3DGeOxygene {
         }
 
         // Nombres de points de la contribution
-        int n = lPoints.size();
+        int n = lPoints.size()-1;
 
         for (int j = 0; j < n; j++) {
           // On complète le tableau de points
@@ -388,6 +388,7 @@ public class ConversionJava3DGeOxygene {
 
     // On indique quels sont les points combien il y a de contours et de
     // polygons
+
 
     geometryInfo.setCoordinates(tabpoints);
     geometryInfo.setStripCounts(strip);

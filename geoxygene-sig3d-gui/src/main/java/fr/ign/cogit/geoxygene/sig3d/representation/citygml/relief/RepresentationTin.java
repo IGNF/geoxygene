@@ -13,6 +13,7 @@ import com.sun.j3d.utils.geometry.GeometryInfo;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ITriangulatedSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
@@ -122,7 +123,7 @@ public class RepresentationTin extends Default3DRep {
     for (int i = 0; i < nbFacet; i++) {
       IOrientableSurface os = this.tin.getPatch().get(i);
 
-      npoints = npoints + os.coord().size();
+      npoints = npoints + os.coord().size()-1-( (IPolygon)os).getInterior().size();
       nStrip = nStrip + 1 + ((GM_Polygon) os).getInterior().size();
     }
 
@@ -143,7 +144,7 @@ public class RepresentationTin extends Default3DRep {
 
     // Pour chaque face
     for (int i = 0; i < nbFacet; i++) {
-      GM_Polygon poly = (GM_Polygon) this.tin.getPatch().get(i);
+    	IPolygon poly = (IPolygon) this.tin.getPatch().get(i);
 
       ApproximatedPlanEquation eq = new ApproximatedPlanEquation(poly);
       Vecteur vect = eq.getNormale();

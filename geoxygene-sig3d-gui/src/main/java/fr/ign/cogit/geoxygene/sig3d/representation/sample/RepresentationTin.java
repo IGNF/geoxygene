@@ -135,7 +135,7 @@ public class RepresentationTin extends Default3DRep {
     for (int i = 0; i < nbFacet; i++) {
       IOrientableSurface os = this.tin.getPatch().get(i);
 
-      npoints = npoints + os.coord().size();
+      npoints = npoints + os.coord().size()-1;
       nStrip = nStrip + 1 + ((GM_Polygon) os).getInterior().size();
     }
 
@@ -189,7 +189,7 @@ public class RepresentationTin extends Default3DRep {
         }
 
         // Nombres de points de la contribution
-        int n = lPoints.size();
+        int n = lPoints.size()-1;
 
         for (int j = 0; j < n; j++) {
           // On complète le tableau de points
