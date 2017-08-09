@@ -347,6 +347,15 @@ public abstract class LayerViewPanel extends JComponent implements Printable, Sl
         this.repaint();
     }
 
+    /**
+     * Enable or disable the painting of map overlays (legend, North arrow, scale) 
+     * @TODO Currently works only for GL 
+     * @param selected
+     */
+	public void paintMapOverlays(boolean paintoverlays) {
+		//Only valid for GL panels.
+	}
+
     /** Paint listener management *********************************/
 
 }

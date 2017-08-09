@@ -48,7 +48,7 @@ public abstract class LayerViewGLCanvas extends AWTGLCanvas implements
     private static final long serialVersionUID = 1095977885262623231L; // Serializable UID
     private static final Color DEFAULT_BACKGROUND_COLOR= Color.WHITE; 
     protected LayerViewGLPanel parentPanel = null;
-    private final boolean doPaintOverlay = true;
+    private boolean doPaintOverlay = true;
     private Color activeBackgroundColor;
    
     protected BufferedImage offscreenRenderedImg;
@@ -196,6 +196,11 @@ public abstract class LayerViewGLCanvas extends AWTGLCanvas implements
     public BufferedImage getOffscreenImage() {
         return this.offscreenRenderedImg;
     }
+
+	public void setDoPaintOverlays(boolean paintoverlays) {
+		System.out.println("paintoverlays" + paintoverlays);
+		this.doPaintOverlay = paintoverlays;
+	}
 
 
     
