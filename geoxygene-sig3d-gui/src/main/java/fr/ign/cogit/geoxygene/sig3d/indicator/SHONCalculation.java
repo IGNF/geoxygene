@@ -55,8 +55,10 @@ public class SHONCalculation {
 
 		case SIMPLE:
 			aireBatie = SHONCalculation.assessSimpleAireBati(lB);
+			break;
 		case FLOOR_CUT:
 			aireBatie = SHONCalculation.assessAireBatieFromCut(lB);
+			break;
 		}
 
 		return aireBatie;

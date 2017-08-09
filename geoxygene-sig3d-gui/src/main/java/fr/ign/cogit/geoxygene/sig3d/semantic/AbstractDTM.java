@@ -1022,8 +1022,11 @@ public abstract class AbstractDTM {
       }
 
     }
+    
+    LineString[] tabLs = new LineString[lS.size()];
+    tabLs = lS.toArray(tabLs);
 
-    return fac.createMultiLineString((LineString[]) lS.toArray());
+    return fac.createMultiLineString(tabLs);
 
   }
 

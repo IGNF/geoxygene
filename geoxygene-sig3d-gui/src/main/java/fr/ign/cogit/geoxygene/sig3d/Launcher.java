@@ -108,22 +108,22 @@ public class Launcher {
         mw.setVisible(true);
         break;
       case 1:
-        RGE.main(null);
+        RGE.main(args);
         break;
       case 2:
-        DisplayData.main(null);
+        DisplayData.main(args);
         break;
       case 3:
-        DTMDisplay.main(null);
+        DTMDisplay.main(args);
         break;
       case 4:
-        Symbology.main(null);
+        Symbology.main(args);
         break;
       case 5:
-        Toponym.main(null);
+        Toponym.main(args);
         break;
       case 6:
-        AddMenu.main(null);
+        AddMenu.main(args);
         break;
         
       default:

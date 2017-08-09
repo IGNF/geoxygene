@@ -72,9 +72,10 @@ public class Grid3D {
 
     } else if (geom instanceof IMultiSurface<?>) {
 
-      IMultiSurface<IOrientableSurface> multiS = (IMultiSurface<IOrientableSurface>) geom;
+      IMultiSurface<?> geom2 = (IMultiSurface<? >) geom;
 
-      for (IOrientableSurface os : multiS.getList()) {
+
+      for (IOrientableSurface os : geom2.getList()) {
 
         if (os instanceof IPolygon) {
           lP.add((IPolygon) os);
@@ -119,7 +120,7 @@ public class Grid3D {
 
     double xAct;
 
-    if ((int) nbX == nbX) {
+    if (Math.abs(nbX - Math.floor(nbX)) < 0.001) {
       xAct = xmin;
     } else {
       xAct = (this.getPasX()) * (((int) nbX) + 1) + this.getOrigine().getX();
@@ -130,7 +131,7 @@ public class Grid3D {
 
     double yAct;
 
-    if ((int) nbY == nbY) {
+    if (Math.abs(nbY - Math.floor(nbY)) < 0.001)  {
       yAct = ymin;
     } else {
       yAct = (this.getPasY()) * (((int) nbY) + 1) + this.getOrigine().getY();
@@ -141,7 +142,7 @@ public class Grid3D {
 
     double zAct;
 
-    if ((int) nbZ == nbZ) {
+    if (Math.abs(nbZ - Math.floor(nbZ)) < 0.001)  {
       zAct = zmin;
     } else {
       zAct = (this.getPasZ()) * (((int) nbZ) + 1) + this.getOrigine().getZ();

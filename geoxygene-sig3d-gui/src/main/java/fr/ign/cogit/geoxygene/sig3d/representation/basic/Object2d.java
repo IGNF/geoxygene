@@ -180,7 +180,7 @@ public class Object2d extends BasicRep3D {
     for (int i = 0; i < nbFacet; i++) {
       GM_OrientableSurface os = (GM_OrientableSurface) lFacettes.get(i);
 
-      npoints = npoints + os.coord().size();
+      npoints = npoints + os.coord().size()-1 - ((GM_Polygon) os).getInterior().size();
       nStrip = nStrip + 1 + ((GM_Polygon) os).getInterior().size();
     }
 
@@ -234,7 +234,7 @@ public class Object2d extends BasicRep3D {
         // DirectPosition dpMin = lPoints.pointMin();
 
         // Nombres de points de la contribution
-        int n = lPoints.size();
+        int n = lPoints.size()-1;
 
         // Vectuer normal par défaut
         Vecteur vect = new Vecteur(0.0, 0.0, 1.0);

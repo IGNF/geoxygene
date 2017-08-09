@@ -46,7 +46,8 @@ public class ConvertPointToPolygon {
 
     // On prépare une liste de collection pour dispatcher les entités par id
     List<IDirectPositionList> lDPL = new ArrayList<IDirectPositionList>();
-    for (String s : lValAtt) {
+    int nb = lValAtt.size();
+    for (int i=0;i<nb;i++) {
       lDPL.add(new DirectPositionList());
     }
 

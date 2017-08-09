@@ -612,6 +612,8 @@ public class DTM extends AbstractDTMLayer {
 
       ligne = br.readLine();
 
+      
+      
       String[] result = ligne.split(" ");
 
       int ncols = Integer.parseInt(result[result.length - 1]);
