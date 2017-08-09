@@ -198,7 +198,6 @@ public abstract class LayerViewGLCanvas extends AWTGLCanvas implements
     }
 
 	public void setDoPaintOverlays(boolean paintoverlays) {
-		System.out.println("paintoverlays" + paintoverlays);
 		this.doPaintOverlay = paintoverlays;
 	}
 
