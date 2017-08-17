@@ -704,5 +704,15 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
         LayerViewGLPanel.screenQuad.setColor(Color.blue);
         LayerViewGLPanel.screenQuad.setOverallOpacity(0.5);
     }
+    
+    /**
+     * Enable or disable the painting of map overlays (legend, North arrow, scale) 
+     * @TODO Currently works only for GL 
+     * @param selected
+     */
+    @Override
+	public void paintMapOverlays(boolean paintoverlays) {
+		this.glCanvas.setDoPaintOverlays(paintoverlays);
+	}
 
 }

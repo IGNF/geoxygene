@@ -112,7 +112,7 @@ public class NormalCorrectionTriangulated {
 
     if (geom instanceof IMultiSurface<?>) {
 
-      IMultiSurface<IOrientableSurface> multiS = (IMultiSurface<IOrientableSurface>) geom;
+      IMultiSurface<?> multiS = (IMultiSurface<?>) geom;
       lOSFaces.addAll(multiS);
 
     }

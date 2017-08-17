@@ -223,7 +223,7 @@ public class Object4d extends Default3DRep {
 
     }
 
-    if (((this.tMax - tMinLayer) / (tMaxLayer - tMinLayer)) != 1) {
+    if (Math.abs(((this.tMax - tMinLayer) / (tMaxLayer - tMinLayer)) - 1) > 0.01) {
 
       dpl.add(dpl.size() - 1, dpl.get(dpl.size() - 1));
       time.add(time.size() - 1, tMaxLayer);

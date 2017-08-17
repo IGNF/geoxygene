@@ -140,6 +140,11 @@ public class SphericalProjection {
     for (int i = 0; i < nbPoly; i++) {
 
       IPolygon poly = this.calculAngle((GM_Polygon) polyVisible.get(i), 2.0);
+      
+      if(poly == null){
+    	  continue;
+      }
+      
 
       if (!poly.isValid()) {
 
@@ -164,14 +169,16 @@ public class SphericalProjection {
         System.out.println("C'est quoi ce bazar ?");
       }
 
+      
+   
       if (!poly.isValid()) {
         System.out.println("Polygon valide " + poly.isValid());
       }
 
-      if (poly != null) {
+     
 
         this.lFeatMapped.add(new DefaultFeature(poly));
-      }
+     
 
     }
 

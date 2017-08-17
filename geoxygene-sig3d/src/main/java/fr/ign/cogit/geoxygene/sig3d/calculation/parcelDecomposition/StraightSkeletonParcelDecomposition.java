@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.bcel.generic.ARRAYLENGTH;
+
 import org.apache.commons.math3.random.GaussianRandomGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.apache.log4j.Logger;
@@ -938,7 +938,7 @@ public class StraightSkeletonParcelDecomposition {
 
 				String newRoadName = a.getAttribute(ATT_ROAD).toString();
 
-				if (currentStripName == null || currentStripName != newRoadName) {
+				if (currentStripName == null ||  ! (currentStripName.equals(newRoadName))) {
 					currentStripName = newRoadName;
 					count++;
 					correspondanceMapID.add(new ArrayList<>());

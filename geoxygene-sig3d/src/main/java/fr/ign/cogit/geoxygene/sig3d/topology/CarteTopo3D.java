@@ -196,7 +196,7 @@ public class CarteTopo3D {
         Triangle triToTriTreat = lTriToTreat.remove(0);
 
         // On regarde si il est déjà dans la liste
-        int index = lTriTemp.indexOf(lTriTemp);
+        int index = lTriTemp.indexOf(triToTriTreat);
 
         // Il n'est pas dans la liste, on l'ajoute et on rajoute ses voisins
         if (index == -1) {
@@ -271,7 +271,7 @@ public class CarteTopo3D {
         Triangle triToTriTreat = lTriToTreat.remove(0);
 
         // On regarde si il est déjà dans la liste
-        int index = lTriTemp.indexOf(lTriTemp);
+        int index = lTriTemp.indexOf(triToTriTreat);
 
         Vecteur vTemp = (new PlanEquation(triToTriTreat)).getNormale();
         vTemp.normalise();

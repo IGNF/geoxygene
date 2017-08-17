@@ -426,7 +426,7 @@ public class Triangle extends GM_Triangle {
   @Deprecated
   public void cut(Triangle t) {
 
-    if (!this.box.intersect(t.getBox3D())) {
+    if (!this.getBox3D().intersect(t.getBox3D())) {
       return;
     }
 
@@ -594,32 +594,42 @@ public class Triangle extends GM_Triangle {
    * @return une boite englobant le triangle
    */
   public Box3D getBox3D() {
-    Vertex[] som = this.getLVertices();
+	  
+	  
+	  if(box != null)
+	  {
+		    Vertex[] som = this.getLVertices();
 
-    double xmin = Double.POSITIVE_INFINITY;
-    double ymin = Double.POSITIVE_INFINITY;
-    double zmin = Double.POSITIVE_INFINITY;
-    double xmax = Double.NEGATIVE_INFINITY;
-    double ymax = Double.NEGATIVE_INFINITY;
-    double zmax = Double.NEGATIVE_INFINITY;
+		    double xmin = Double.POSITIVE_INFINITY;
+		    double ymin = Double.POSITIVE_INFINITY;
+		    double zmin = Double.POSITIVE_INFINITY;
+		    double xmax = Double.NEGATIVE_INFINITY;
+		    double ymax = Double.NEGATIVE_INFINITY;
+		    double zmax = Double.NEGATIVE_INFINITY;
 
-    for (int i = 0; i < 3; i++) {
+		    for (int i = 0; i < 3; i++) {
 
-      DirectPosition dp = som[i];
-      xmin = Math.min(xmin, dp.getX());
-      ymin = Math.min(ymin, dp.getY());
-      zmin = Math.min(zmin, dp.getZ());
+		      DirectPosition dp = som[i];
+		      xmin = Math.min(xmin, dp.getX());
+		      ymin = Math.min(ymin, dp.getY());
+		      zmin = Math.min(zmin, dp.getZ());
 
-      xmax = Math.max(xmax, dp.getX());
-      ymax = Math.max(ymax, dp.getY());
-      zmax = Math.max(zmax, dp.getZ());
+		      xmax = Math.max(xmax, dp.getX());
+		      ymax = Math.max(ymax, dp.getY());
+		      zmax = Math.max(zmax, dp.getZ());
 
-    }
-    return new Box3D(
+		    }
+		    this.box =  new Box3D(
 
-    new DirectPosition(xmin, ymin, zmin),
+		    new DirectPosition(xmin, ymin, zmin),
 
-    new DirectPosition(xmax, ymax, zmax));
+		    new DirectPosition(xmax, ymax, zmax));
+	  }
+
+    
+    
+    return box;
+    
 
   }
 
@@ -653,6 +663,9 @@ public class Triangle extends GM_Triangle {
 
     return false;
   }
+  
+  
+
 
   /*
    * public boolean lieInsideRing(IDirectPosition dp) {

@@ -503,7 +503,14 @@
 </InterpolationPoint>
                             </Interpolate>
                         </ColorMap>
-                        <Animate>0</Animate>
+                        <Tide>
+<TideCycleLength>43200.0</TideCycleLength>
+<TidePhase>0.0</TidePhase>
+<TideRange>3.0</TideRange>
+<TimeAcceleration>4000.0</TimeAcceleration>
+<WaterHeightMean>0.0</WaterHeightMean>
+</Tide>
+                        <Animate>1</Animate>
                         <Opacity>1.0</Opacity>
                     </RasterSymbolizer>
                 </Rule>

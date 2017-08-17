@@ -6,6 +6,7 @@ import java.util.List;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ITriangle;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.sig3d.equation.PlanEquation;
 import fr.ign.cogit.geoxygene.sig3d.geometry.topology.Edge;
@@ -57,7 +58,7 @@ public class Checker {
 
       List<ITriangle> lI = new ArrayList<ITriangle>();
 
-      GM_MultiSurface<GM_OrientableSurface> gMSO = (GM_MultiSurface<GM_OrientableSurface>) feat
+      IMultiSurface<?> gMSO = (IMultiSurface<?>) feat
           .getGeom();
       int nbSurf = gMSO.size();
 

@@ -36,9 +36,6 @@
 							<complianceLevel>1.8</complianceLevel>
 							<target>1.8</target>
 							<encoding>${project.build.sourceEncoding}</encoding>
-							<excludes>
-								<exclude>**/cartagen/**/*.java</exclude>
-							</excludes>
 						</configuration>
 					</plugin>
 
@@ -60,9 +57,6 @@
 									<overWriteReleases>false</overWriteReleases>
 									<overWriteSnapshots>false</overWriteSnapshots>
 									<overWriteIfNewer>true</overWriteIfNewer>
-														<excludes>
-								<exclude>**/cartagen/*%</exclude>
-							</excludes>
 								</configuration>
 							</execution>
 						</executions>

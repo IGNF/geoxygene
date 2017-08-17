@@ -105,7 +105,7 @@ public class CG_StyleGenerator {
 		this.geometryInfo = new GeometryInfo(GeometryInfo.POLYGON_ARRAY);
 
 		// On compte le nombres de points
-		int npoints = poly.coord().size();
+		int npoints = poly.coord().size()-1 - poly.getInterior().size();
 
 		// On compte le nombre de polygones(trous inclus)
 		int nStrip = poly.getInterior().size() + 1;
@@ -157,7 +157,7 @@ public class CG_StyleGenerator {
 			CG_TextureCoordinates cTexture = CG_StyleGenerator.retrieveTextureCoordinate(rActu.getID(), cgTCL);
 
 			// Nombres de points de la contribution
-			int n = lPoints.size();
+			int n = lPoints.size()-1;
 
 			Vecteur axe = MathConstant.vectZ;
 			Vecteur vectProject = axe.prodVectoriel(vect);
@@ -327,7 +327,7 @@ public class CG_StyleGenerator {
 		int nbFacet = 1;
 
 		// On compte le nombres de points
-		int npoints = poly.coord().size();
+		int npoints = poly.coord().size()-1-poly.getInterior().size()-1;
 
 		// On compte le nombre de polygones(trous inclus)
 		int nStrip = poly.getInterior().size() + 1;
@@ -379,7 +379,7 @@ public class CG_StyleGenerator {
 			// DirectPosition dpMin = lPoints.pointMin();
 
 			// Nombres de points de la contribution
-			int n = lPoints.size();
+			int n = lPoints.size()-1;
 
 			// Vectuer normal par défaut
 			Vecteur vect = new Vecteur(0.0, 0.0, 1.0);

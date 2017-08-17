@@ -203,6 +203,19 @@ public class MainFrameMenuBar extends JMenuBar {
             }
         });
         viewMenu.add(mCoord);
+        
+        JMenuItem mOverlay = new JCheckBoxMenuItem(I18N.getString("MainFrame.TogglePaintOverlay")); //$NON-NLS-1$
+        mOverlay.setSelected(true);
+        mOverlay.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                LayerViewPanel lvp = MainFrameMenuBar.this.mainFrame.getSelectedProjectFrame().getLayerViewPanel();
+                lvp.paintMapOverlays(((JCheckBoxMenuItem) e.getSource()).isSelected());
+            }
+        });
+        viewMenu.add(mOverlay);
+
+        
 
         this.add(viewMenu);
     }

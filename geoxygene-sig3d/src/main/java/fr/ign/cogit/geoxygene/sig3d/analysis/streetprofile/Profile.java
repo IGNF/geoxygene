@@ -354,7 +354,6 @@ public class Profile {
 	/**
 	 * Méthode principale de calcul
 	 */
-	@SuppressWarnings("unchecked")
 	public void process() {
 
 		logger.info("-------------------------------------------");

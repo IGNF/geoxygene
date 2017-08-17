@@ -64,9 +64,9 @@ public class Proximity {
 
 	public void nearest(IDirectPosition P1, List<IOrientableSurface> lF) {
 
-		int nb = lF.size();
 
-		if (lF == null || nb == 0) {
+
+		if (lF == null || lF.isEmpty()) {
 
 			this.nearest = null;
 			this.nearest2 = null;
@@ -75,6 +75,9 @@ public class Proximity {
 			
 			return;
 		}
+		
+		
+		int nb = lF.size();
 
 		IOrientableSurface faceTemp = lF.get(0);
 
