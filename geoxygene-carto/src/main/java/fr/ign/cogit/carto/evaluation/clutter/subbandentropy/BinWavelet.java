@@ -16,8 +16,8 @@ import org.apache.log4j.Logger;
  */
 public class BinWavelet {
 
-  private static final Logger logger = Logger.getLogger(BinWavelet.class
-      .getName());
+  private static final Logger logger = Logger
+      .getLogger(BinWavelet.class.getName());
 
   public BinWavelet() {
   }
@@ -40,8 +40,8 @@ public class BinWavelet {
 
         histo[(int) pos][0]++;
 
-      }// for j
-    }// for i
+      } // for j
+    } // for i
 
     // System.out.println(histo[40][0]);
 
@@ -50,8 +50,8 @@ public class BinWavelet {
       for (int j = 0; j < imag.width; j++) {
         float pos = imag.cell[i][j][1];
         histo[(int) pos][1]++;
-      }// for j
-    }// for i
+      } // for j
+    } // for i
 
     // System.out.println(histo[40][1]);
 
@@ -60,8 +60,50 @@ public class BinWavelet {
       for (int j = 0; j < imag.width; j++) {
         float pos = imag.cell[i][j][2];
         histo[(int) pos][2]++;
-      }// for j
-    }// for i
+      } // for j
+    } // for i
+
+    // System.out.println(histo[40][2]);
+
+    logger.debug("histo ok");
+
+    return histo;
+  }// makeHisto
+
+  public int[][] makeHistoGray(ImageBis imag) {
+    logger.debug("calcul de l histo...");
+
+    int histo[][] = new int[256][3];
+
+    // canal rouge
+    for (int i = 0; i < imag.len; i++) {
+      for (int j = 0; j < imag.width; j++) {
+        float pos = imag.cell[i][j][0];
+
+        histo[(int) pos][0]++;
+
+      } // for j
+    } // for i
+
+    // System.out.println(histo[40][0]);
+
+    // canal vert
+    for (int i = 0; i < imag.len; i++) {
+      for (int j = 0; j < imag.width; j++) {
+        float pos = imag.cell[i][j][0];
+        histo[(int) pos][1]++;
+      } // for j
+    } // for i
+
+    // System.out.println(histo[40][1]);
+
+    // canal bleu
+    for (int i = 0; i < imag.len; i++) {
+      for (int j = 0; j < imag.width; j++) {
+        float pos = imag.cell[i][j][0];
+        histo[(int) pos][2]++;
+      } // for j
+    } // for i
 
     // System.out.println(histo[40][2]);
 
@@ -99,7 +141,7 @@ public class BinWavelet {
         logger.error("division par zero !!! ");
       }
 
-    }// for i
+    } // for i
 
     // pour le canal vert
     for (int i = 0; i < 255; i++) {
@@ -116,7 +158,7 @@ public class BinWavelet {
         logger.error("division par zero !!! ");
       }
 
-    }// for i
+    } // for i
 
     // pour le canal bleu
     for (int i = 0; i < 255; i++) {
@@ -132,7 +174,7 @@ public class BinWavelet {
         logger.error("division par zero !!! ");
       }
 
-    }// for i
+    } // for i
 
     shanon = Math.abs(shanonr + shanong + shanonb);
 

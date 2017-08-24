@@ -18,6 +18,7 @@ public class ImageBis {
 
   public int len = 0;
   public int width = 0;
+  public int nbColorCanal = 0;
   public float[][][] cell = {};
 
   public ImageBis() {
@@ -27,9 +28,15 @@ public class ImageBis {
 
     len = img.getHeight();
     width = img.getWidth();
+    nbColorCanal = 3;
     cell = new float[len][width][3];
-    if (img.getType() == 6)
+    if (img.getType() == 6) {
       cell = new float[len][width][4];
+      nbColorCanal = 4;
+    } else if (img.getType() == 10) {
+      cell = new float[len][width][1];
+      nbColorCanal = 1;
+    }
 
     // WritableRaster rast = img.getRaster();
 
@@ -52,9 +59,13 @@ public class ImageBis {
           cell[i][j][1] = pixel[1];
           cell[i][j][2] = pixel[2];
           cell[i][j][3] = pixel[3];
+        } else if (img.getType() == 10) {
+          // case for 1 byte gray images
+          pixel = img.getRaster().getPixel(j, i, new float[1]);
+          cell[i][j][0] = pixel[0];
         }
-      }// for j
-    }// for i
+      } // for j
+    } // for i
   }
 
 }

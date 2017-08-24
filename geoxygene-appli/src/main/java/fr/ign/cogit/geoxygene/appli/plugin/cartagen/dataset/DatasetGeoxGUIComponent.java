@@ -220,7 +220,6 @@ public class DatasetGeoxGUIComponent extends JMenu {
       CartAGenDoc doc = CartAGenDoc.getInstance();
       doc.setName(name);
       doc.setPostGisDb(PostgisDB.get(name, true));
-      CartAGenPlugin.getInstance().setDocument(doc);
     }
 
     public NewDocumentAction() {
@@ -260,7 +259,6 @@ public class DatasetGeoxGUIComponent extends JMenu {
       // create the project frames and apply the sld
       try {
         CartAGenDoc doc = CartAGenDoc.loadDocFromXml(file);
-        CartAGenPlugin.getInstance().setDocument(doc);
         for (String dbName : doc.getDatabases().keySet()) {
           DatabaseView view = doc.getDatabaseViews().get(dbName);
           ProjectFrame frame = CartAGenPlugin.getInstance().addDatabaseToFrame(

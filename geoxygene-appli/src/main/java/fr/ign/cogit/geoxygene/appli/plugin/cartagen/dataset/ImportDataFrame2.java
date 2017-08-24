@@ -309,7 +309,7 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
     database.setSystemPath(this.filePath);
     database.setGeneObjImpl(CartAGenPlugin.getInstance().getGeneObjImpl());
     CartAGenDataSet dataset = new CartAGenDataSet();
-    plugIn.getDocument().addDatabase(this.datasetName, database);
+    CartAGenDoc.getInstance().addDatabase(this.datasetName, database);
     LoadingFrame.cheminAbsolu = this.filePath;
     database.setDataSet(dataset);
     if (dlmSelected) {

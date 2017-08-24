@@ -20,8 +20,8 @@ import org.apache.log4j.Logger;
 
 public class SubbandClutter {
 
-  private static final Logger logger = Logger.getLogger(ClutterBywavelet.class
-      .getName());
+  private static final Logger logger = Logger
+      .getLogger(ClutterBywavelet.class.getName());
 
   public SubbandClutter() {
   }
@@ -30,6 +30,9 @@ public class SubbandClutter {
 
     // Creation de l image ImageBis
     ImageBis image1 = new ImageBis(image);
+    int nbColorCanal = 3;
+    if (image.getType() == 10)
+      nbColorCanal = 1;
 
     // tableaux de stockage
     ImageBis tab1[];
@@ -52,18 +55,19 @@ public class SubbandClutter {
     // Creation de l image f1 à partir de tab1[0]
     int nbLine = tab1[0].len;
     int nbColumn = tab1[0].width;
-    f1.cell = new float[nbLine][nbColumn][3];
+    f1.cell = new float[nbLine][nbColumn][nbColorCanal];
     f1.len = nbLine;
     f1.width = nbColumn;
+    f1.nbColorCanal = nbColorCanal;
 
-    for (int k = 0; k < 3; k++) {
+    for (int k = 0; k < f1.nbColorCanal; k++) {
       for (int i = 0; i < nbLine; i++) {
         for (int j = 0; j < nbColumn - 1; j++) {
           f1.cell[i][j][k] = tab1[0].cell[i][j][k];
 
-        }// for j
-      }// for i
-    }// for les trois canaux
+        } // for j
+      } // for i
+    } // for les trois canaux
 
     // ECRITURE
 
@@ -71,11 +75,17 @@ public class SubbandClutter {
     BufferedImage f1b = new BufferedImage(nbLine, nbColumn, 3);
     for (int i = 0; i < nbLine; i++) {
       for (int j = 0; j < nbColumn; j++) {
-
-        Color col = new Color(f1.cell[i][j][0] / 255, f1.cell[i][j][1] / 255,
-            f1.cell[i][j][2] / 255);
-        int rgb = col.getRGB();
-        f1b.setRGB(i, j, rgb);
+        if (f1.nbColorCanal == 3) {
+          Color col = new Color(f1.cell[i][j][0] / 255, f1.cell[i][j][1] / 255,
+              f1.cell[i][j][2] / 255);
+          int rgb = col.getRGB();
+          f1b.setRGB(i, j, rgb);
+        } else if (f1.nbColorCanal == 1) {
+          Color col = new Color(f1.cell[i][j][0] / 255, f1.cell[i][j][0] / 255,
+              f1.cell[i][j][0] / 255);
+          int rgb = col.getRGB();
+          f1b.setRGB(i, j, rgb);
+        }
       }
     }
     // il faut repasser de rgb à type arg rgb
@@ -100,16 +110,17 @@ public class SubbandClutter {
     fh.cell = new float[nbLine1][nbColumn1][3];
     fh.len = nbLine1;
     fh.width = nbColumn1;
+    fh.nbColorCanal = nbColorCanal;
 
-    for (int k = 0; k < 3; k++) {
+    for (int k = 0; k < fh.nbColorCanal; k++) {
       for (int i = 0; i < nbLine1; i++) {
         for (int j = 0; j < nbColumn1 - 1; j++) {
           fh.cell[i][j][k] = tab1[1].cell[i][j][k];
           // System.out.println(f1.cell[i][j][k]);
 
-        }// for j
-      }// for i
-    }// for les trois canaux
+        } // for j
+      } // for i
+    } // for les trois canaux
 
     // ECRITURE
 
@@ -150,15 +161,16 @@ public class SubbandClutter {
     f11.cell = new float[nbLine11][nbColumn11][3];
     f11.len = nbLine11;
     f11.width = nbColumn11;
+    f11.nbColorCanal = nbColorCanal;
 
-    for (int k = 0; k < 3; k++) {
+    for (int k = 0; k < f11.nbColorCanal; k++) {
       for (int i = 0; i < nbLine11; i++) {
         for (int j = 0; j < nbColumn11 - 1; j++) {
           f11.cell[i][j][k] = tab2[0].cell[i][j][k];
 
-        }// for j
-      }// for i
-    }// for les trois canaux
+        } // for j
+      } // for i
+    } // for les trois canaux
 
     // ECRITURE
 
@@ -194,15 +206,16 @@ public class SubbandClutter {
     f1h.cell = new float[nbLine1h][nbColumn1h][3];
     f1h.len = nbLine1h;
     f1h.width = nbColumn1h;
+    f1h.nbColorCanal = nbColorCanal;
 
-    for (int k = 0; k < 3; k++) {
+    for (int k = 0; k < f1h.nbColorCanal; k++) {
       for (int i = 0; i < nbLine1h; i++) {
         for (int j = 0; j < nbColumn1h - 1; j++) {
           f1h.cell[i][j][k] = tab2[1].cell[i][j][k];
 
-        }// for j
-      }// for i
-    }// for les trois canaux
+        } // for j
+      } // for i
+    } // for les trois canaux
 
     // ECRITURE
 
@@ -241,15 +254,16 @@ public class SubbandClutter {
     fh1.cell = new float[nbLineh1][nbColumnh1][3];
     fh1.len = nbLineh1;
     fh1.width = nbColumnh1;
+    fh1.nbColorCanal = nbColorCanal;
 
-    for (int k = 0; k < 3; k++) {
+    for (int k = 0; k < fh1.nbColorCanal; k++) {
       for (int i = 0; i < nbLineh1; i++) {
         for (int j = 0; j < nbColumnh1 - 1; j++) {
           fh1.cell[i][j][k] = tab3[0].cell[i][j][k];
 
-        }// for j
-      }// for i
-    }// for les trois canaux
+        } // for j
+      } // for i
+    } // for les trois canaux
 
     // ECRITURE
 
@@ -285,16 +299,17 @@ public class SubbandClutter {
     fhh.cell = new float[nbLinehh][nbColumnhh][3];
     fhh.len = nbLinehh;
     fhh.width = nbColumnhh;
+    fhh.nbColorCanal = nbColorCanal;
 
-    for (int k = 0; k < 3; k++) {
+    for (int k = 0; k < fhh.nbColorCanal; k++) {
       for (int i = 0; i < nbLinehh; i++) {
         for (int j = 0; j < nbColumnhh - 1; j++) {
           fhh.cell[i][j][k] = tab3[1].cell[i][j][k];
           // System.out.println(f1.cell[i][j][k]);
 
-        }// for j
-      }// for i
-    }// for les trois canaux
+        } // for j
+      } // for i
+    } // for les trois canaux
 
     // ECRITURE
 
@@ -326,46 +341,91 @@ public class SubbandClutter {
     // histogrammes
     BinWavelet wave = new BinWavelet();
 
-    int[][] histof1 = wave.makeHisto(f1);
-    int[][] histofh = wave.makeHisto(fh);
-    int[][] histof1h = wave.makeHisto(f1h);
-    int[][] histofh1 = wave.makeHisto(fh1);
-    int[][] histof11 = wave.makeHisto(f11);
-    int[][] histofhh = wave.makeHisto(fhh);
+    if (image.getType() == 10) {
+      // case with gray images stored in 1 byte
+      int[][] histof1 = wave.makeHistoGray(f1);
+      int[][] histofh = wave.makeHistoGray(fh);
+      int[][] histof1h = wave.makeHistoGray(f1h);
+      int[][] histofh1 = wave.makeHistoGray(fh1);
+      int[][] histof11 = wave.makeHistoGray(f11);
+      int[][] histofhh = wave.makeHistoGray(fhh);
 
-    // calcul des entropies de shannon
-    double[] rendu = new double[6];
+      // calcul des entropies de shannon
+      double[] rendu = new double[6];
 
-    double sha1 = wave.shanonEntro(f1, histof1);
-    rendu[0] = sha1;
-    logger.debug(rendu[0]);
+      double sha1 = wave.shanonEntro(f1, histof1);
+      rendu[0] = sha1;
+      logger.debug(rendu[0]);
 
-    double shah = wave.shanonEntro(fh, histofh);
-    rendu[1] = shah;
-    logger.debug(rendu[1]);
+      double shah = wave.shanonEntro(fh, histofh);
+      rendu[1] = shah;
+      logger.debug(rendu[1]);
 
-    double sha1h = wave.shanonEntro(f1h, histof1h);
-    rendu[2] = sha1h;
-    logger.debug(rendu[2]);
+      double sha1h = wave.shanonEntro(f1h, histof1h);
+      rendu[2] = sha1h;
+      logger.debug(rendu[2]);
 
-    double shah1 = wave.shanonEntro(fh1, histofh1);
-    rendu[3] = shah1;
-    logger.debug(rendu[3]);
+      double shah1 = wave.shanonEntro(fh1, histofh1);
+      rendu[3] = shah1;
+      logger.debug(rendu[3]);
 
-    double sha11 = wave.shanonEntro(f11, histof11);
-    rendu[4] = sha11;
-    logger.debug(rendu[4]);
+      double sha11 = wave.shanonEntro(f11, histof11);
+      rendu[4] = sha11;
+      logger.debug(rendu[4]);
 
-    double shahh = wave.shanonEntro(fhh, histofhh);
-    rendu[5] = shahh;
-    logger.debug(rendu[5]);
+      double shahh = wave.shanonEntro(fhh, histofhh);
+      rendu[5] = shahh;
+      logger.debug(rendu[5]);
 
-    double sum = rendu[0] + rendu[1] + rendu[2] + rendu[3] + rendu[4]
-        + rendu[5];
+      double sum = rendu[0] + rendu[1] + rendu[2] + rendu[3] + rendu[4]
+          + rendu[5];
 
-    logger.info("CLUTTER FINAL : " + sum);
-    return sum;
+      logger.info("CLUTTER FINAL : " + sum);
+      return sum;
+    }
 
+    else {
+      // case with colored images
+      int[][] histof1 = wave.makeHisto(f1);
+      int[][] histofh = wave.makeHisto(fh);
+      int[][] histof1h = wave.makeHisto(f1h);
+      int[][] histofh1 = wave.makeHisto(fh1);
+      int[][] histof11 = wave.makeHisto(f11);
+      int[][] histofhh = wave.makeHisto(fhh);
+
+      // calcul des entropies de shannon
+      double[] rendu = new double[6];
+
+      double sha1 = wave.shanonEntro(f1, histof1);
+      rendu[0] = sha1;
+      logger.debug(rendu[0]);
+
+      double shah = wave.shanonEntro(fh, histofh);
+      rendu[1] = shah;
+      logger.debug(rendu[1]);
+
+      double sha1h = wave.shanonEntro(f1h, histof1h);
+      rendu[2] = sha1h;
+      logger.debug(rendu[2]);
+
+      double shah1 = wave.shanonEntro(fh1, histofh1);
+      rendu[3] = shah1;
+      logger.debug(rendu[3]);
+
+      double sha11 = wave.shanonEntro(f11, histof11);
+      rendu[4] = sha11;
+      logger.debug(rendu[4]);
+
+      double shahh = wave.shanonEntro(fhh, histofhh);
+      rendu[5] = shahh;
+      logger.debug(rendu[5]);
+
+      double sum = rendu[0] + rendu[1] + rendu[2] + rendu[3] + rendu[4]
+          + rendu[5];
+
+      logger.info("CLUTTER FINAL : " + sum);
+      return sum;
+    }
   }
 
 }

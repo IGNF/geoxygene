@@ -13,8 +13,8 @@ import org.apache.log4j.Logger;
 
 public class ClutterBywavelet {
 
-  private static final Logger logger = Logger.getLogger(ClutterBywavelet.class
-      .getName());
+  private static final Logger logger = Logger
+      .getLogger(ClutterBywavelet.class.getName());
 
   public ClutterBywavelet() {
   }
@@ -29,29 +29,31 @@ public class ClutterBywavelet {
     ImageBis tab[] = {};
     int nbLine = img.len;
     int nbColumn = img.width;
+    int nbColorCanal = img.nbColorCanal;
 
     // creation des deux images
     ImageBis moyenne = new ImageBis();
     ImageBis erreur = new ImageBis();
 
-    moyenne.cell = new float[nbLine][nbColumn][3];
+    moyenne.cell = new float[nbLine][nbColumn][nbColorCanal];
     moyenne.len = nbLine;
     moyenne.width = nbColumn;
 
-    erreur.cell = new float[nbLine][nbColumn][3];
+    erreur.cell = new float[nbLine][nbColumn][nbColorCanal];
     erreur.len = nbLine;
     erreur.width = nbColumn;
 
-    for (int k = 0; k < 3; k++) {
+    for (int k = 0; k < nbColorCanal; k++) {
       for (int i = 0; i < nbLine; i++) {
         for (int j = 0; j < nbColumn - 1; j++) {
-          moyenne.cell[i][j][k] = (img.cell[i][j][k] + img.cell[i][j + 1][k]) / 2; // moyenne
+          moyenne.cell[i][j][k] = (img.cell[i][j][k] + img.cell[i][j + 1][k])
+              / 2; // moyenne
           erreur.cell[i][j][k] = Math
               .abs((img.cell[i][j][k] - img.cell[i][j + 1][k]) / 2); // erreur
 
-        }// for j
-      }// for i
-    }// for les trois canaux
+        } // for j
+      } // for i
+    } // for les trois canaux
 
     tab = new ImageBis[2];
     tab[0] = moyenne;
@@ -74,28 +76,30 @@ public class ClutterBywavelet {
     ImageBis tab[] = {};
     int nbLine = img.len;
     int nbColumn = img.width;
+    int nbColorCanal = img.nbColorCanal;
 
     // creation des deux images
     ImageBis moyenne = new ImageBis();
     ImageBis erreur = new ImageBis();
 
-    moyenne.cell = new float[nbLine][nbColumn][3];
+    moyenne.cell = new float[nbLine][nbColumn][nbColorCanal];
     moyenne.len = nbLine;
     moyenne.width = nbColumn;
 
-    erreur.cell = new float[nbLine][nbColumn][3];
+    erreur.cell = new float[nbLine][nbColumn][nbColorCanal];
     erreur.len = nbLine;
     erreur.width = nbColumn;
 
-    for (int k = 0; k < 3; k++) {
+    for (int k = 0; k < nbColorCanal; k++) {
       for (int i = 0; i < nbLine - 1; i++) {
         for (int j = 0; j < nbColumn; j++) {
-          moyenne.cell[i][j][k] = (img.cell[i][j][k] + img.cell[i + 1][j][k]) / 2; // moyenne
+          moyenne.cell[i][j][k] = (img.cell[i][j][k] + img.cell[i + 1][j][k])
+              / 2; // moyenne
           erreur.cell[i][j][k] = Math
               .abs((img.cell[i][j][k] - img.cell[i + 1][j][k])) / 2; // erreur
-        }// for j
-      }// for i
-    }// for les trois bandes
+        } // for j
+      } // for i
+    } // for les trois bandes
 
     tab = new ImageBis[2];
     tab[0] = moyenne;

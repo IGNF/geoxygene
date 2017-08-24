@@ -84,11 +84,6 @@ public class CartAGenPlugin
   private JCheckBoxMenuItem displayRightPanel = new JCheckBoxMenuItem(
       "Display cartaGen right panel");
 
-  /**
-   * The {@link CartAGenDoc} document related to {@code this} plugin.
-   */
-  private CartAGenDoc document;
-
   private HashMap<String, ProjectFrame> mapDbFrame = new HashMap<String, ProjectFrame>();
 
   /**
@@ -350,20 +345,12 @@ public class CartAGenPlugin
     return this.mapDbFrame.get(name);
   }
 
-  public CartAGenDoc getDocument() {
-    return document;
-  }
-
   public GeOxygeneApplication getApplication() {
     return application;
   }
 
   public void setApplication(GeOxygeneApplication application) {
     this.application = application;
-  }
-
-  public void setDocument(CartAGenDoc doc) {
-    this.document = doc;
   }
 
   public GeneObjImplementation getGeneObjImpl() {
@@ -419,7 +406,7 @@ public class CartAGenPlugin
    * document with the current configuration of the project frames.
    */
   public void saveWindows() {
-    for (String dbName : document.getDatabases().keySet()) {
+    for (String dbName : CartAGenDoc.getInstance().getDatabases().keySet()) {
       // get the project frame for the given database
       ProjectFrame frame = this.getProjectFrameFromDbName(dbName);
       Set<String> displayedLayers = new HashSet<String>();
@@ -435,9 +422,9 @@ public class CartAGenPlugin
       IEnvelope displayEnvelope = frame.getLayerViewPanel().getViewport()
           .getEnvelopeInModelCoordinates();
       IDirectPosition geoCenter = displayEnvelope.center();
-      DatabaseView dbView = new DatabaseView(document, geoCenter,
-          displayEnvelope, frame.getSld(), displayedLayers);
-      document.getDatabaseViews().put(dbName, dbView);
+      DatabaseView dbView = new DatabaseView(CartAGenDoc.getInstance(),
+          geoCenter, displayEnvelope, frame.getSld(), displayedLayers);
+      CartAGenDoc.getInstance().getDatabaseViews().put(dbName, dbView);
     }
   }
 }
