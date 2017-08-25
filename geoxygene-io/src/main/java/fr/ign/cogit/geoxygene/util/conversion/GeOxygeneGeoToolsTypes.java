@@ -190,6 +190,7 @@ public class GeOxygeneGeoToolsTypes {
 		}
 
 		SimpleFeatureType type = builder.buildFeatureType();
+		
 		// SimpleFeatureCollection collection =
 		// FeatureCollections.newCollection();
 		List<SimpleFeature> list = new ArrayList<SimpleFeature>();
