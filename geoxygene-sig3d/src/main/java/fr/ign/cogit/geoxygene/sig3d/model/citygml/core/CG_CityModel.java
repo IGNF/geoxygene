@@ -23,6 +23,10 @@ public class CG_CityModel extends FT_FeatureCollection<CG_CityObject> {
 	public void setDpUR(IDirectPosition dpUR) {
 		this.dpUR = dpUR;
 	}
+	
+	
+	
+	
 
 	private IDirectPosition dpLL;
 	private IDirectPosition dpUR;
@@ -119,6 +123,15 @@ public class CG_CityModel extends FT_FeatureCollection<CG_CityObject> {
 
 	public IDirectPosition getDpUR() {
 		return this.dpUR;
+	}
+	
+	public IDirectPosition getCenter(){
+		return new DirectPosition(this.dpLL.getX() * 0.5 + this.getDpUR().getX() * 0.5,
+				
+				this.dpLL.getY() * 0.5 + this.getDpUR().getY() * 0.5,
+				this.dpLL.getZ() * 0.5 + this.getDpUR().getZ() * 0.5
+				);
+		
 	}
 
 	/*

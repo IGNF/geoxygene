@@ -1245,6 +1245,11 @@ public class RayCasting {
     if (this.lastTypeResult != RayCasting.TYPE_CAST_SOLID_POINT) {
       return;
     }
+    
+    
+    if(this.getDpGenerated()==null || this.getDpGenerated().isEmpty()){
+    	return;
+    }
 
     int nbPoints = this.getDpGenerated().size();
 

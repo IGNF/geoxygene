@@ -131,7 +131,7 @@ public class SphericalProjection {
 
 		// Si on le souhaite, on peut découper les entité suivant l'angle 0
 		if (cut) {
-
+			
 			polyVisible = this.cut(polyVisible);
 
 		}
@@ -156,6 +156,7 @@ public class SphericalProjection {
 			}
 
 			if (!poly.isValid()) {
+				
 
 				poly = (IPolygon) poly.buffer(0.001);
 

@@ -1,6 +1,5 @@
 package fr.ign.cogit.geoxygene.sig3d.model.citygml.relief;
 
-
 import org.citygml4j.model.citygml.core.AbstractCityObject;
 import org.citygml4j.model.citygml.relief.TINRelief;
 import org.citygml4j.model.gml.geometry.primitives.Tin;
@@ -16,36 +15,48 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_TriangulatedSurface;
  */
 public class CG_TINRelief extends CG_AbstractReliefComponent {
 
-  private GM_TriangulatedSurface tin = null;
+	private GM_TriangulatedSurface tin = null;
 
-  public GM_TriangulatedSurface getTin() {
-    return tin;
-  }
+	public GM_TriangulatedSurface getTin() {
+		return tin;
+	}
+	
 
-  public CG_TINRelief(TINRelief rC) {
-    super(rC);
+	  private String ID = "";
 
-    if (rC.isSetTin()) {
+	  public String getID() {
+	    return this.ID;
+	  }
 
-      if (rC.getTin().getTriangulatedSurface() instanceof Tin) {
+	  public void setID(String iD) {
+	    this.ID = iD;
+	  }
 
-        tin = ConvertCityGMLtoGeometry.convertGMLTin((Tin) (rC.getTin()
-            .getTriangulatedSurface()));
 
-      } else if (rC.getTin().getTriangulatedSurface() instanceof TriangulatedSurface) {
-        tin = ConvertCityGMLtoGeometry
-            .convertGMLTriangulatedSurface((TriangulatedSurface) (rC.getTin()
-                .getTriangulatedSurface()));
+	public CG_TINRelief(TINRelief rC) {
+		super(rC);
 
-      }
+		this.setID(rC.getId());
+		
+		
+		if (rC.isSetTin()) {
 
-    }
+			if (rC.getTin().getTriangulatedSurface() instanceof Tin) {
 
-  }
+				tin = ConvertCityGMLtoGeometry.convertGMLTin((Tin) (rC.getTin().getTriangulatedSurface()));
 
-  @Override
-  public AbstractCityObject export() {
-    // TODO Auto-generated method stub
-    return null;
-  }
+			} else if (rC.getTin().getTriangulatedSurface() instanceof TriangulatedSurface) {
+				tin = ConvertCityGMLtoGeometry.convertGMLTriangulatedSurface((rC.getTin().getTriangulatedSurface()));
+
+			}
+
+		}
+
+	}
+
+	@Override
+	public AbstractCityObject export() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

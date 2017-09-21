@@ -18,6 +18,8 @@ import com.sun.j3d.utils.geometry.GeometryInfo;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ITriangulatedSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
 import fr.ign.cogit.geoxygene.sig3d.equation.ApproximatedPlanEquation;
 import fr.ign.cogit.geoxygene.sig3d.io.xml.citygmlv2.Context;
@@ -45,6 +47,13 @@ public class CG_StyleGenerator {
 
 	private boolean isAppearanceSet = false;
 
+	public CG_StyleGenerator(ITriangulatedSurface poly, List<Object> lStyles) {
+		
+	}
+	
+	
+	
+	
 	public CG_StyleGenerator(GML_Polygon poly, List<Object> lStyles) {
 
 		int nbStylesToApply = lStyles.size();
@@ -80,6 +89,8 @@ public class CG_StyleGenerator {
 					this.generateMaterial(new CG_X3DMaterial());
 				}
 				
+			}else{
+				System.out.println("Texturation mode not found : " + this.getClass().toString());
 			}
 
 		}
@@ -96,7 +107,16 @@ public class CG_StyleGenerator {
 
 		}
 
-		this.shape = new Shape3D(this.geometryInfo.getGeometryArray(), this.apparenceFinale);
+		
+		try{
+			this.shape = new Shape3D(this.geometryInfo.getGeometryArray(), this.apparenceFinale);
+		}catch(Exception e){
+			
+			
+			e.printStackTrace();
+		}
+	
+
 
 	}
 
@@ -105,8 +125,23 @@ public class CG_StyleGenerator {
 		this.geometryInfo = new GeometryInfo(GeometryInfo.POLYGON_ARRAY);
 
 		// On compte le nombres de points
-		int npoints = poly.coord().size()-1 - poly.getInterior().size();
-
+		int npoints = poly.coord().size();
+		
+		int nbInt = poly.getInterior().size();
+		for(int i=0; i < nbInt;i++){
+			IRing r = poly.getInterior(i);
+			
+			if(r.coord().size() < 3){
+				poly.getInterior().remove(i);
+				i--;
+				nbInt--;
+				
+				continue;
+			}
+			
+			npoints = npoints + r.coord().size();
+		}
+		
 		// On compte le nombre de polygones(trous inclus)
 		int nStrip = poly.getInterior().size() + 1;
 
@@ -153,18 +188,22 @@ public class CG_StyleGenerator {
 
 			GML_Ring rActu = lRing.get(k);
 			lPoints = rActu.coord();
+			
+			if(lPoints.size() < 3){
+				continue;
+			}
 
 			CG_TextureCoordinates cTexture = CG_StyleGenerator.retrieveTextureCoordinate(rActu.getID(), cgTCL);
 
 			// Nombres de points de la contribution
-			int n = lPoints.size()-1;
+			int n = lPoints.size();
 
 			Vecteur axe = MathConstant.vectZ;
 			Vecteur vectProject = axe.prodVectoriel(vect);
 
 			isTexturedOk = !(n != (cTexture.getValue().size() / 2));
-
-			if (!isTexturedOk) {
+			boolean isMissingOnePoint = !((n-1) != (cTexture.getValue().size() / 2));
+			if (!isTexturedOk && !isMissingOnePoint) {
 
 				System.out.println("Nombre points :" + n + "  points textures : " + cTexture.getValue().size() / 2);
 
@@ -184,9 +223,19 @@ public class CG_StyleGenerator {
 
 				}
 
-				if (isTexturedOk) {
-					texCoord[elementajoute] = new TexCoord2f(cTexture.getValue().get(2 * j).floatValue(),
-							cTexture.getValue().get(2 * j + 1).floatValue());
+				if (isTexturedOk || isMissingOnePoint) {
+					
+					if(isMissingOnePoint && (j==n-1)){
+						//S'il manque une seule coordonnée de texture, on l'affecte au dernier point
+						//Potentiellement cas où les géométries du CityGML sont (ou ont été) fermées et pas
+						//pour les coordonnées UV.
+						texCoord[elementajoute] = new TexCoord2f(cTexture.getValue().get(0).floatValue(),
+								cTexture.getValue().get(0).floatValue());
+					}else{
+						texCoord[elementajoute] = new TexCoord2f(cTexture.getValue().get(2 * j).floatValue(),
+								cTexture.getValue().get(2 * j + 1).floatValue());
+					}
+
 				}
 
 				if (vect == null) {
@@ -327,7 +376,14 @@ public class CG_StyleGenerator {
 		int nbFacet = 1;
 
 		// On compte le nombres de points
-		int npoints = poly.coord().size()-1-poly.getInterior().size()-1;
+		int npoints = poly.getExterior().coord().size()-1;
+		
+		
+		for(IRing r : poly.getInterior()){
+			npoints = npoints + r.coord().size()-1;
+		}
+		
+	
 
 		// On compte le nombre de polygones(trous inclus)
 		int nStrip = poly.getInterior().size() + 1;
@@ -405,7 +461,7 @@ public class CG_StyleGenerator {
 
 			// On indique le nombre de points relatif à la
 			// contribution
-			strip[nbStrip] = nbPointsFace;
+			strip[nbStrip] = n;
 			nbStrip++;
 		}
 
