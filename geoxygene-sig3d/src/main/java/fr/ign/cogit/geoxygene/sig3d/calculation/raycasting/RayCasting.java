@@ -1242,9 +1242,11 @@ public class RayCasting {
 
   private void generatePolygon() {
 
+	  
+	  /*
     if (this.lastTypeResult != RayCasting.TYPE_CAST_SOLID_POINT) {
       return;
-    }
+    }*/
     
     
     if(this.getDpGenerated()==null || this.getDpGenerated().isEmpty()){

@@ -16,6 +16,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.sig3d.equation.ApproximatedPlanEquation;
 import fr.ign.cogit.geoxygene.sig3d.geometry.Box3D;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
 
 /**
@@ -55,7 +56,7 @@ public class Visibility {
 
 		Box3D b = new Box3D(geom);
 		// On élimine par distance
-		if (centre.distance(b.getCenter()) > 1.2 * distMax) {
+		if (b.createGeometry().distance(new GM_Point(centre)) > distMax) {
 			return lPoly;
 		}
 

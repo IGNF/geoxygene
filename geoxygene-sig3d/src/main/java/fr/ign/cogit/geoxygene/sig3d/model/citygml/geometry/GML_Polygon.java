@@ -73,5 +73,10 @@ public class GML_Polygon extends GM_Polygon {
 	public void setID(String iD) {
 		this.ID = iD;
 	}
+	
+	
+	public String toString(){
+		return "ID " + this.getID() +"  " + super.toString();
+	}
 
 }

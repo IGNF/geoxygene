@@ -714,11 +714,19 @@ public class ConvertCityGMLtoGeometry {
 			} else if (as instanceof Polygon) {
 
 				GML_Polygon pol = ConvertCityGMLtoGeometry.convertGMLPolygon((Polygon) as);
+				
+				
+				
+				if(pol == null){
+					System.out.println("Polygon ignored due to errors : " + as.getId());
+				}
+	
+				
+				
 				if(pol != null){
 					lOS.add(pol);
 				}
 				
-
 				/*
 				 * } else if (as instanceof MultiSurface) {
 				 * 

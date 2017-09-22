@@ -157,8 +157,12 @@ public class SphericalProjection {
 
 			if (!poly.isValid()) {
 				
-
-				poly = (IPolygon) poly.buffer(0.001);
+				try{
+					poly = (IPolygon) poly.buffer(0.001);
+				}catch(Exception e){
+					System.out.println( "Polygon invalid : " + poly);
+				}
+				
 
 			}
 
