@@ -184,7 +184,13 @@ public class SphericalProjection {
 			}
 
 			if (!poly.isValid()) {
-				logger.error(SphericalProjection.class.getName()+ " Polygon is invalid");
+				logger.error(SphericalProjection.class.getName()+ " Polygon is invalid and removed");
+				
+				 this.featsToProject.remove(i);
+				 i--;
+				 nbPoly--;
+				continue;
+				
 			}
 
 			this.lFeatMapped.add(new DefaultFeature(poly));
