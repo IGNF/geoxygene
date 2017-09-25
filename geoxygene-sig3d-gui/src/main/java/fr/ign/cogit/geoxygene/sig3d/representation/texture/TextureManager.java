@@ -225,7 +225,7 @@ public class TextureManager {
 
     return formatsDisponibles;
   }
-
+  
   /**
    * Renvoie un composent à partir d'une texture
    * 
@@ -278,6 +278,12 @@ public class TextureManager {
       jb.setHorizontalAlignment(SwingConstants.HORIZONTAL);
       return jb;
     }
+  }
+  
+  public static void clear()
+  {
+	  lPathTextures.clear();
+	  lPathTextures.clear();
   }
 
 }

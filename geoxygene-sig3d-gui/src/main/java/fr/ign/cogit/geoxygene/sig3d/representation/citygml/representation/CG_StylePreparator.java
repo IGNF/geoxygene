@@ -6,6 +6,7 @@ import java.util.List;
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Shape3D;
 
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.appearance.CG_AbstractSurfaceData;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.appearance.CG_GeoreferencedTexture;
@@ -73,18 +74,26 @@ public class CG_StylePreparator {
   }
 
   public static BranchGroup generateRepresentation(
+	      List<? extends IOrientableSurface> multi,
+	      List<CG_AbstractSurfaceData> lCGA) {
+	    BranchGroup bg = new BranchGroup();
+	    int nbSurf = multi.size();
+
+	    for (int i = 0; i < nbSurf; i++) {
+
+	      bg.addChild(CG_StylePreparator.generateRepresentation(multi.get(i), lCGA));
+
+	    }
+
+	    return bg;
+	  }
+
+
+  public static BranchGroup generateRepresentation(
       GM_MultiSurface<GM_OrientableSurface> multi,
       List<CG_AbstractSurfaceData> lCGA) {
-    BranchGroup bg = new BranchGroup();
-    int nbSurf = multi.size();
-
-    for (int i = 0; i < nbSurf; i++) {
-
-      bg.addChild(CG_StylePreparator.generateRepresentation(multi.get(i), lCGA));
-
-    }
-
-    return bg;
+	  
+	  return generateRepresentation(multi.getList(), lCGA);
   }
 
   public static Shape3D generateRepresentation(GM_OrientableSurface oS,

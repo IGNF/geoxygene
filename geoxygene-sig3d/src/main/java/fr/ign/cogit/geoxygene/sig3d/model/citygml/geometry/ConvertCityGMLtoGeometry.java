@@ -277,8 +277,12 @@ public class ConvertCityGMLtoGeometry {
 			maxL = geom.getMaxLength().getValue();
 		}
 
-		// TODO Auto-generated method stub
-		return new GM_Tin(iDPL, lSSL, lSBL, (float) maxL);
+		
+		
+		GM_Tin tin = new GM_Tin(iDPL, lSSL, lSBL, (float) maxL);
+		
+		
+		return tin;
 	}
 
 	/**
@@ -427,6 +431,14 @@ public class ConvertCityGMLtoGeometry {
 			dplExt = ConvertCityGMLtoGeometry
 					.convertPosOrPointPropertyOrPointRep(linearRing.getPosOrPointPropertyOrPointRep());
 		}
+		
+		
+		if(! dplExt.get(0).equals(dplExt.get(dplExt.size()-1))){
+			dplExt.add(dplExt.get(0));
+		}
+		
+		
+
 
 		GML_Polygon poly = new GML_Polygon();
 		GML_Ring ring = new GML_Ring(new GM_LineString(dplExt));
@@ -448,10 +460,6 @@ public class ConvertCityGMLtoGeometry {
 		List<AbstractRingProperty> lRing = pol.getInterior();
 		int nbInterior = lRing.size();
 
-		if (poly.getID().equals("PolyID46_93_731494_37481")) {
-			System.out.println();
-		}
-
 		for (int i = 0; i < nbInterior; i++) {
 
 			linearRing = (LinearRing) lRing.get(i).getRing();
@@ -466,6 +474,16 @@ public class ConvertCityGMLtoGeometry {
 						.convertPosOrPointPropertyOrPointRep(linearRing.getPosOrPointPropertyOrPointRep());
 			}
 
+			
+			if(! dplExt.get(0).equals(dplExt.get(dplExt.size()-1))){
+				dplExt.add(dplExt.get(0));
+			}
+			
+			if(dplExt.size() < 4){
+				//IGNORE RING WITHOUT ENOUG POINTS
+				continue;
+			}
+			
 			GML_Ring ringInt = new GML_Ring(new GM_LineString(dplExt));
 			if (lRing.get(i).getRing().isSetId()) {
 				ringInt.setID(lRing.get(i).getRing().getId());
@@ -487,13 +505,13 @@ public class ConvertCityGMLtoGeometry {
 	 */
 	public static List<IOrientableSurface> convertGMLOrientableSurface(OrientableSurface os) {
 		AbstractSurface as = os.getBaseSurface().getSurface();
-		return ConvertCityGMLtoGeometry.convertGMLOrientableSurface(as);
+		return ConvertCityGMLtoGeometry.convertGMLOrientableSurface(as).getList();
 
 	}
 
-	public static List<IOrientableSurface> convertGMLOrientableSurface(AbstractSurface as) {
+	public static IMultiSurface<IOrientableSurface> convertGMLOrientableSurface(AbstractSurface as) {
 
-		List<IOrientableSurface> lOS = new ArrayList<IOrientableSurface>();
+		 IMultiSurface<IOrientableSurface> lOS = new GM_MultiSurface<>();
 
 		if (as instanceof OrientableSurface) {
 
@@ -525,9 +543,7 @@ public class ConvertCityGMLtoGeometry {
 			System.out.println("OS non reconnu" + as.getClass());
 		}
 
-		if (lOS.size() == 0) {
-			return null;
-		}
+
 
 		return lOS;
 
@@ -698,11 +714,19 @@ public class ConvertCityGMLtoGeometry {
 			} else if (as instanceof Polygon) {
 
 				GML_Polygon pol = ConvertCityGMLtoGeometry.convertGMLPolygon((Polygon) as);
+				
+				
+				
+				if(pol == null){
+					System.out.println("Polygon ignored due to errors : " + as.getId());
+				}
+	
+				
+				
 				if(pol != null){
 					lOS.add(pol);
 				}
 				
-
 				/*
 				 * } else if (as instanceof MultiSurface) {
 				 * 

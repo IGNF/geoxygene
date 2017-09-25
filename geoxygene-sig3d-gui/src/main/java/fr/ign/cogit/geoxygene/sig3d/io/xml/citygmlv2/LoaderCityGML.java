@@ -13,19 +13,24 @@ import org.citygml4j.xml.io.reader.CityGMLReadException;
 import org.citygml4j.xml.io.reader.CityGMLReader;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.feature.DefaultFeature;
+import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_CityModel;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_CityObject;
 import fr.ign.cogit.geoxygene.sig3d.representation.citygml.CG_VectorLayer;
 import fr.ign.cogit.geoxygene.sig3d.representation.citygml.core.RP_CityObject;
-
+import fr.ign.cogit.geoxygene.sig3d.semantic.VectorLayer;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
 /**
  * 
- *        This software is released under the licence CeCILL
+ * This software is released under the licence CeCILL
  * 
- *        see LICENSE.TXT
+ * see LICENSE.TXT
  * 
- *        see <http://www.cecill.info/ http://www.cecill.info/
+ * see <http://www.cecill.info/ http://www.cecill.info/
  * 
  * 
  * 
@@ -35,74 +40,105 @@ import fr.ign.cogit.geoxygene.sig3d.representation.citygml.core.RP_CityObject;
  * 
  * @version 1.7
  * 
- * Class to load CityGML data in full schema (schema package) with it representation (representation.citygml package)
+ *          Class to load CityGML data in full schema (schema package) with it
+ *          representation (representation.citygml package)
  */
 public class LoaderCityGML {
 
-  public static CG_VectorLayer read(File f, String context, String layerName)
-      throws CityGMLReadException, JAXBException {
+	public static boolean CLEAN_GEOX_GEOM = false;
 
-    Context.CITY_GML_CONTEXT = context;
+	public static VectorLayer read(File f, String context, String layerName)
+			throws CityGMLReadException, JAXBException {
 
-    CityGMLReader reader = LoaderCityGML.getCityGMLInputFactory()
-        .createCityGMLReader(f);
-    
-    
-    System.out.println(reader.hasNext());
+		Context.CITY_GML_CONTEXT = context;
 
-    CityGML citygml = reader.nextFeature();
+		CityGMLReader reader = LoaderCityGML.getCityGMLInputFactory().createCityGMLReader(f);
 
-    CG_CityModel cityModel = new CG_CityModel((CityModel) citygml);
+		System.out.println(reader.hasNext());
 
-    int nbElem = cityModel.size();
+		CityGML citygml = reader.nextFeature();
 
-    for (CG_CityObject cGO : cityModel.getElements()) {
+		CG_CityModel cityModel = new CG_CityModel((CityModel) citygml);
 
+		if (CLEAN_GEOX_GEOM) {
+			return cleanGeomGeox(cityModel);
+		}
 
-        if (cGO != null) {
-          RP_CityObject.generateCityObjectRepresentation(cGO,
-              cityModel.getlCGA());
-        }
+		int nbElem = cityModel.size();
 
+		for (CG_CityObject cGO : cityModel.getElements()) {
 
-      
-      System.out.println("Représentation generated");
-    }
+			if (cGO != null) {
+				RP_CityObject.generateCityObjectRepresentation(cGO, cityModel.getlCGA());
+			}
 
-    for (int i = 0; i < nbElem; i++) {
+			System.out.println("Représentation generated");
+		}
 
-      IFeature feat = cityModel.get(i);
+		for (int i = 0; i < nbElem; i++) {
 
-      if (feat.getRepresentation() == null) {
+			IFeature feat = cityModel.get(i);
 
-        cityModel.remove(i);
-        i--;
-        nbElem--;
+			if (feat.getRepresentation() == null) {
 
-      }
+				cityModel.remove(i);
+				i--;
+				nbElem--;
 
-    }
-    
-    
+			}
 
-    return new CG_VectorLayer(cityModel, layerName);
+		}
 
-  }
+		return new CG_VectorLayer(cityModel, layerName);
 
-  private static CityGMLInputFactory in = null;
+	}
 
-  private static CityGMLInputFactory getCityGMLInputFactory()
-      throws JAXBException, CityGMLReadException {
+	private static VectorLayer cleanGeomGeox(CG_CityModel cityModel) {
+		int nbElem = cityModel.size();
 
-    if (LoaderCityGML.in == null) {
+		IFeatureCollection<IFeature> featC = new FT_FeatureCollection<>();
 
-      CityGMLContext ctx = new CityGMLContext();
-      JAXBBuilder builder = ctx.createJAXBBuilder();
+		IPoint p = new GM_Point(cityModel.getCenter());
 
-      LoaderCityGML.in = builder.createCityGMLInputFactory();
+		for (int i = 0; i < nbElem; i++) {
 
-    }
-    return LoaderCityGML.in;
+			CG_CityObject cGO = cityModel.get(0);
+			cityModel.remove(0);
+			if (cGO == null) {
+				continue;
+			}
+			RP_CityObject.generateCityObjectRepresentation(cGO, cityModel.getlCGA());
 
-  }
+			if (cGO.getRepresentation() == null) {
+				continue;
+			}
+			
+			
+
+			IFeature feat = new DefaultFeature(p);
+			feat.setRepresentation(cGO.getRepresentation());
+
+			cGO.setRepresentation(null);
+			featC.add(feat);
+		}
+
+		return new VectorLayer(featC, "NoGeom");
+
+	}
+
+	private static CityGMLInputFactory in = null;
+
+	private static CityGMLInputFactory getCityGMLInputFactory() throws JAXBException, CityGMLReadException {
+
+		if (LoaderCityGML.in == null) {
+
+			CityGMLContext ctx = new CityGMLContext();
+			JAXBBuilder builder = ctx.createJAXBBuilder();
+
+			LoaderCityGML.in = builder.createCityGMLInputFactory();
+
+		}
+		return LoaderCityGML.in;
+
+	}
 }

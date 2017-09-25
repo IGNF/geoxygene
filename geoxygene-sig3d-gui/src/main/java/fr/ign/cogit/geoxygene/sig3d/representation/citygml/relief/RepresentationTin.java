@@ -16,6 +16,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ITriangulatedSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
 import fr.ign.cogit.geoxygene.sig3d.equation.ApproximatedPlanEquation;
 import fr.ign.cogit.geoxygene.sig3d.geometry.Box3D;
@@ -123,7 +124,13 @@ public class RepresentationTin extends Default3DRep {
     for (int i = 0; i < nbFacet; i++) {
       IOrientableSurface os = this.tin.getPatch().get(i);
 
-      npoints = npoints + os.coord().size()-1-( (IPolygon)os).getInterior().size();
+      npoints = npoints + os.coord().size()-1;
+      
+      for(IRing r : ((IPolygon)os).getInterior()){
+    	  npoints = npoints + r.coord().size() -1;
+      }
+      
+    
       nStrip = nStrip + 1 + ((GM_Polygon) os).getInterior().size();
     }
 
@@ -177,7 +184,7 @@ public class RepresentationTin extends Default3DRep {
         }
 
         // Nombres de points de la contribution
-        int n = lPoints.size();
+        int n = lPoints.size()-1;
 
         for (int j = 0; j < n; j++) {
           // On complète le tableau de points

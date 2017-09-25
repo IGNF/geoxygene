@@ -5,6 +5,7 @@ import org.citygml4j.model.citygml.waterbody.WaterClosureSurface;
 import org.citygml4j.model.citygml.waterbody.WaterGroundSurface;
 import org.citygml4j.model.citygml.waterbody.WaterSurface;
 
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_CityObject;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertCityGMLtoGeometry;
@@ -12,26 +13,26 @@ import net.opengis.gml.SurfacePropertyType;
 
 public abstract class CG_WaterBoundarySurface extends CG_CityObject {
 
-  protected IOrientableSurface lod2Surface;
-  protected IOrientableSurface lod3Surface;
-  protected IOrientableSurface lod4Surface;
+  protected IMultiSurface<IOrientableSurface> lod2Surface;
+  protected IMultiSurface<IOrientableSurface>  lod3Surface;
+  protected IMultiSurface<IOrientableSurface>  lod4Surface;
 
   public CG_WaterBoundarySurface(AbstractWaterBoundarySurface wBS) {
     super(wBS);
 
     if (wBS.isSetLod2Surface()) {
       this.setLod2Surface(ConvertCityGMLtoGeometry.convertGMLOrientableSurface(
-          wBS.getLod2Surface().getSurface()).get(0));
+          wBS.getLod2Surface().getSurface()));
     }
 
     if (wBS.isSetLod3Surface()) {
       this.setLod3Surface(ConvertCityGMLtoGeometry.convertGMLOrientableSurface(
-          wBS.getLod3Surface().getSurface()).get(0));
+          wBS.getLod3Surface().getSurface()));
     }
 
     if (wBS.isSetLod4Surface()) {
       this.setLod4Surface(ConvertCityGMLtoGeometry.convertGMLOrientableSurface(
-          wBS.getLod4Surface().getSurface()).get(0));
+          wBS.getLod4Surface().getSurface()));
     }
   }
 
@@ -66,7 +67,7 @@ public abstract class CG_WaterBoundarySurface extends CG_CityObject {
    * @return possible object is {@link SurfacePropertyType }
    * 
    */
-  public IOrientableSurface getLod2Surface() {
+  public IMultiSurface<IOrientableSurface>  getLod2Surface() {
     return this.lod2Surface;
   }
 
@@ -76,7 +77,7 @@ public abstract class CG_WaterBoundarySurface extends CG_CityObject {
    * @param value allowed object is {@link SurfacePropertyType }
    * 
    */
-  public void setLod2Surface(IOrientableSurface value) {
+  public void setLod2Surface(IMultiSurface<IOrientableSurface>  value) {
     this.lod2Surface = value;
   }
 
@@ -90,7 +91,7 @@ public abstract class CG_WaterBoundarySurface extends CG_CityObject {
    * @return possible object is {@link SurfacePropertyType }
    * 
    */
-  public IOrientableSurface getLod3Surface() {
+  public IMultiSurface<IOrientableSurface>  getLod3Surface() {
     return this.lod3Surface;
   }
 
@@ -100,7 +101,7 @@ public abstract class CG_WaterBoundarySurface extends CG_CityObject {
    * @param value allowed object is {@link SurfacePropertyType }
    * 
    */
-  public void setLod3Surface(IOrientableSurface value) {
+  public void setLod3Surface(IMultiSurface<IOrientableSurface>  value) {
     this.lod3Surface = value;
   }
 
@@ -114,7 +115,7 @@ public abstract class CG_WaterBoundarySurface extends CG_CityObject {
    * @return possible object is {@link SurfacePropertyType }
    * 
    */
-  public IOrientableSurface getLod4Surface() {
+  public IMultiSurface<IOrientableSurface>  getLod4Surface() {
     return this.lod4Surface;
   }
 
@@ -124,7 +125,7 @@ public abstract class CG_WaterBoundarySurface extends CG_CityObject {
    * @param value allowed object is {@link SurfacePropertyType }
    * 
    */
-  public void setLod4Surface(IOrientableSurface value) {
+  public void setLod4Surface(IMultiSurface<IOrientableSurface>  value) {
     this.lod4Surface = value;
   }
 

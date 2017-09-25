@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.index.SpatialIndex;
@@ -48,6 +50,10 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * @version 1.7
  */
 public class RayCasting {
+	
+	
+	
+	  private final static Logger logger = Logger.getLogger(RayCasting.class);
   /**
    * Epsilon pour arrondir les zéro
    */
@@ -1236,8 +1242,15 @@ public class RayCasting {
 
   private void generatePolygon() {
 
+	  
+	  /*
     if (this.lastTypeResult != RayCasting.TYPE_CAST_SOLID_POINT) {
       return;
+    }*/
+    
+    
+    if(this.getDpGenerated()==null || this.getDpGenerated().isEmpty()){
+    	return;
     }
 
     int nbPoints = this.getDpGenerated().size();
@@ -1385,8 +1398,7 @@ public class RayCasting {
 
       // On a besoin de refaire un cast avec le bon type
       if (this.solGenerated == null) {
-        System.out
-            .println("On effectue un lancer de rayon du type TYPE_FIRST_POINT_AND_SPHERE");
+    	  logger.info("We proceed of a raycasting from type : " +  TYPE_FIRST_POINT_AND_SPHERE);
         this.cast(this.getCentre(), this.getlFeat(), this.nbPointsCouronnes,
             this.rayon, RayCasting.TYPE_FIRST_POINT_AND_SPHERE, this.isSphere);
 

@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -32,13 +34,12 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
-
 /**
- *         This software is released under the licence CeCILL
+ * This software is released under the licence CeCILL
  * 
- *        see LICENSE.TXT
+ * see LICENSE.TXT
  * 
- *        see <http://www.cecill.info/ http://www.cecill.info/
+ * see <http://www.cecill.info/ http://www.cecill.info/
  * 
  * 
  * 
@@ -48,1055 +49,1037 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * 
  * @version 1.7
  *
- * Cette classe permet d'effectuer des projections sphériques des entités se
- * trouvant autour d'un point de vue
+ *          Cette classe permet d'effectuer des projections sphériques des
+ *          entités se trouvant autour d'un point de vue
  * 
  * 
  * 
  */
 public class SphericalProjection {
 
-  /**
-   * EPSILON pour arrondir les zéro
-   */
-  public static double EPSILON = 0.001;
+	private final static Logger logger = Logger.getLogger(SphericalProjection.class);
+
+	/**
+	 * EPSILON pour arrondir les zéro
+	 */
+	public static double EPSILON = 0.001;
+
+	/**
+	 * Vecteur désignant le nord (origine pour calculer l'angle alpha
+	 */
+	public static Vecteur NORTH = new Vecteur(0, 1, 0);
+
+	/**
+	 * Centre de vue
+	 */
+	private IDirectPosition centre;
+
+	/**
+	 * Distance de sélection des entités
+	 */
+	public double distance = 1500;
+
+	/**
+	 * Entités plaquées sur la sphère de centre centre et de rayon distance
+	 * Cette liste est utilisée pour générer les autres types de projection
+	 */
+	private IFeatureCollection<IFeature> lFeatMapped = new FT_FeatureCollection<IFeature>();
 
-  /**
-   * Vecteur désignant le nord (origine pour calculer l'angle alpha
-   */
-  public static Vecteur NORTH = new Vecteur(0, 1, 0);
+	/**
+	 * Les entités utilisées pour effectuer la projection
+	 */
+	private IFeatureCollection<IFeature> featsToProject = new FT_FeatureCollection<IFeature>();
+
+	public SphericalProjection(IDirectPosition centre) {
+		this.centre = centre;
+
+	}
+
+	/**
+	 * Permet d'initialiser la projection sphérique d'entité
+	 * 
+	 * @param lFeat
+	 *            les entités que l'on souhaite projeter (doit contenir des
+	 *            objets polygonaux)
+	 * @param centre
+	 *            le centre de la sphère
+	 * @param distance
+	 *            la distance de sélection des entités
+	 */
+	public SphericalProjection(IFeatureCollection<IFeature> lFeat, IDirectPosition centre, double distance,
+			boolean cut) {
+
+		this(Visibility.returnVisible(lFeat, centre, distance), centre, distance, cut);
+
+	}
 
-  /**
-   * Centre de vue
-   */
-  private IDirectPosition centre;
+	/**
+	 * Permet d'initialiser la projection sphérique d'entité
+	 * 
+	 * @param polyVisible
+	 *            listes de polygones visibles depuis le centre
+	 * @param centre
+	 *            le centre
+	 * @param distance
+	 *            la distance à laquelle doivent se trouver les objets
+	 */
+	public SphericalProjection(List<IOrientableSurface> polyVisible, IDirectPosition centre, double distance,
+			boolean cut) {
+		this.centre = centre;
+		this.distance = distance;
+		int nbPoly = polyVisible.size();
 
-  /**
-   * Distance de sélection des entités
-   */
-  public double distance = 1500;
+		// Si on le souhaite, on peut découper les entité suivant l'angle 0
+		if (cut) {
+			
+			polyVisible = this.cut(polyVisible);
 
-  /**
-   * Entités plaquées sur la sphère de centre centre et de rayon distance Cette
-   * liste est utilisée pour générer les autres types de projection
-   */
-  private IFeatureCollection<IFeature> lFeatMapped = new FT_FeatureCollection<IFeature>();
+		}
 
-  /**
-   * Les entités utilisées pour effectuer la projection
-   */
-  private IFeatureCollection<IFeature> featsToProject = new FT_FeatureCollection<IFeature>();
+		int nbEl = polyVisible.size();
 
-  public SphericalProjection(IDirectPosition centre) {
-    this.centre = centre;
+		for (int i = 0; i < nbEl; i++) {
 
-  }
+			IFeature feat = new DefaultFeature(polyVisible.get(i));
 
-  /**
-   * Permet d'initialiser la projection sphérique d'entité
-   * @param lFeat les entités que l'on souhaite projeter (doit contenir des
-   *          objets polygonaux)
-   * @param centre le centre de la sphère
-   * @param distance la distance de sélection des entités
-   */
-  public SphericalProjection(IFeatureCollection<IFeature> lFeat,
-      IDirectPosition centre, double distance, boolean cut) {
+			this.featsToProject.add(feat);
+		}
 
-    this(Visibility.returnVisible(lFeat, centre, distance), centre, distance,
-        cut);
+		nbPoly = this.featsToProject.size();
 
-  }
+		for (int i = 0; i < nbPoly; i++) {
 
-  /**
-   * Permet d'initialiser la projection sphérique d'entité
-   * @param polyVisible listes de polygones visibles depuis le centre
-   * @param centre le centre
-   * @param distance la distance à laquelle doivent se trouver les objets
-   */
-  public SphericalProjection(List<IOrientableSurface> polyVisible,
-      IDirectPosition centre, double distance, boolean cut) {
-    this.centre = centre;
-    this.distance = distance;
-    int nbPoly = polyVisible.size();
+			IPolygon poly = this.calculAngle((GM_Polygon) polyVisible.get(i), 2.0);
 
-    // Si on le souhaite, on peut découper les entité suivant l'angle 0
-    if (cut) {
+			if (poly == null) {
+				continue;
+			}
 
-      polyVisible = this.cut(polyVisible);
+			if (!poly.isValid()) {
+				
+				try{
+					poly = (IPolygon) poly.buffer(0.001);
+				}catch(Exception e){
+					System.out.println( "Polygon invalid : " + poly);
+				}
+				
 
-    }
+			}
 
-    int nbEl = polyVisible.size();
+			ApproximatedPlanEquation eQ = new ApproximatedPlanEquation(poly);
 
-    for (int i = 0; i < nbEl; i++) {
+			double z = eQ.getNormale().getZ();
 
-      IFeature feat = new DefaultFeature(polyVisible.get(i));
+			if (z < 0) {
 
-      this.featsToProject.add(feat);
-    }
+				poly = (IPolygon) poly.reverse();
 
-    nbPoly = this.featsToProject.size();
+			}
+			eQ = new ApproximatedPlanEquation(poly);
 
-    for (int i = 0; i < nbPoly; i++) {
+			z = eQ.getNormale().getZ();
 
-      IPolygon poly = this.calculAngle((GM_Polygon) polyVisible.get(i), 2.0);
-      
-      if(poly == null){
-    	  continue;
-      }
-      
+			if (z < 0) {
+				logger.error(SphericalProjection.class.getName() + " Intersection is out of semi-line");
+			}
 
-      if (!poly.isValid()) {
+			if (!poly.isValid()) {
+				logger.error(SphericalProjection.class.getName()+ " Polygon is invalid and removed");
+				
+				 this.featsToProject.remove(i);
+				 i--;
+				 nbPoly--;
+				continue;
+				
+			}
 
-        poly = (IPolygon) poly.buffer(0.001);
+			this.lFeatMapped.add(new DefaultFeature(poly));
 
-      }
+		}
 
-      ApproximatedPlanEquation eQ = new ApproximatedPlanEquation(poly);
+	}
 
-      double z = eQ.getNormale().getZ();
+	/**
+	 * Permet de découper des polygones suivant l'angle 0
+	 * 
+	 * @param polyVisible
+	 * @return
+	 */
+	public List<IOrientableSurface> cut(List<IOrientableSurface> polyVisible) {
 
-      if (z < 0) {
+		int nbPoly = polyVisible.size();
 
-        poly = (IPolygon) poly.reverse();
+		List<IOrientableSurface> lOS = new ArrayList<IOrientableSurface>();
 
-      }
-      eQ = new ApproximatedPlanEquation(poly);
+		for (int i = 0; i < nbPoly; i++) {
 
-      z = eQ.getNormale().getZ();
+			lOS.addAll(this.cut((GM_Polygon) polyVisible.get(i)));
 
-      if (z < 0) {
-        System.out.println("C'est quoi ce bazar ?");
-      }
+		}
 
-      
-   
-      if (!poly.isValid()) {
-        System.out.println("Polygon valide " + poly.isValid());
-      }
+		return lOS;
+	}
 
-     
+	/**
+	 * Permet de découper un polygone en 2 suivant l'axe 0
+	 * 
+	 * @param poly
+	 * @return
+	 */
+	public List<GM_Polygon> cut(GM_Polygon poly) {
+		// On traite les points de l'extérieur
+		IDirectPositionList dplExteriori = poly.getExterior().coord();
+		Box3D b = new Box3D(dplExteriori);
 
-        this.lFeatMapped.add(new DefaultFeature(poly));
-     
+		List<GM_Polygon> lP = new ArrayList<GM_Polygon>(1);
 
-    }
+		if (b.getLLDP().getX() > this.centre.getX() || b.getURDP().getX() < this.centre.getX()
+				|| b.getURDP().getY() < this.centre.getY()) {
 
-  }
+			lP.add(poly);
+			return lP;
+		}
 
-  /**
-   * Permet de découper des polygones suivant l'angle 0
-   * @param polyVisible
-   * @return
-   */
-  public List<IOrientableSurface> cut(List<IOrientableSurface> polyVisible) {
+		// Il devrait y avoir une instersection avec l'axe des Y négatif
 
-    int nbPoly = polyVisible.size();
+		DirectPositionList exteriorLeft = new DirectPositionList();
+		DirectPositionList exteriorRight = new DirectPositionList();
 
-    List<IOrientableSurface> lOS = new ArrayList<IOrientableSurface>();
+		int nbEx = dplExteriori.size();
+		boolean isOnRight = dplExteriori.get(0).getX() > this.centre.getX();
 
-    for (int i = 0; i < nbPoly; i++) {
+		// Pour chaque point on calcule l'extérieur
+		for (int i = 0; i < nbEx; i++) {
 
-      lOS.addAll(this.cut((GM_Polygon) polyVisible.get(i)));
+			IDirectPosition dp = dplExteriori.get(i);
 
-    }
+			boolean isOnRightTemp = (dp.getX() > this.centre.getX());
 
-    return lOS;
-  }
+			// Toujours du même côté de la frontière
+			if (isOnRight == isOnRightTemp) {
 
-  /**
-   * Permet de découper un polygone en 2 suivant l'axe 0
-   * @param poly
-   * @return
-   */
-  public List<GM_Polygon> cut(GM_Polygon poly) {
-    // On traite les points de l'extérieur
-    IDirectPositionList dplExteriori = poly.getExterior().coord();
-    Box3D b = new Box3D(dplExteriori);
+				if (isOnRight) {
 
-    List<GM_Polygon> lP = new ArrayList<GM_Polygon>(1);
+					exteriorRight.add(dp);
 
-    if (b.getLLDP().getX() > this.centre.getX()
-        || b.getURDP().getX() < this.centre.getX()
-        || b.getURDP().getY() < this.centre.getY()) {
+				} else {
+					exteriorLeft.add(dp);
 
-      lP.add(poly);
-      return lP;
-    }
+				}
+				continue;
+			}
 
-    // Il devrait y avoir une instersection avec l'axe des Y négatif
+			// Changement de sens
+			// On cherche le point de coordonnées x,y,z se situant sur la ligne
+			// entre le point actuel et le point précédent
+			// tel que Vpred . Vcherché (avec x = xcentre) = lambda * VSuiv
 
-    DirectPositionList exteriorLeft = new DirectPositionList();
-    DirectPositionList exteriorRight = new DirectPositionList();
+			IDirectPosition dpPred;
 
-    int nbEx = dplExteriori.size();
-    boolean isOnRight = dplExteriori.get(0).getX() > this.centre.getX();
+			if (i == 0) {
 
-    // Pour chaque point on calcule l'extérieur
-    for (int i = 0; i < nbEx; i++) {
+				dpPred = dplExteriori.get(dplExteriori.size() - 2);
 
-      IDirectPosition dp = dplExteriori.get(i);
+			} else {
 
-      boolean isOnRightTemp = (dp.getX() > this.centre.getX());
+				dpPred = dplExteriori.get(i - 1);
+			}
 
-      // Toujours du même côté de la frontière
-      if (isOnRight == isOnRightTemp) {
+			double lambda = (dpPred.getX() - this.centre.getX()) / (dp.getX() - this.centre.getX());
+			double y = (dpPred.getY() - lambda * dp.getY()) / (1 - lambda);
+			double z = (dpPred.getZ() - lambda * dp.getZ()) / (1 - lambda);
 
-        if (isOnRight) {
+			DirectPosition dpInterG = new DirectPosition(this.centre.getX() - SphericalProjection.EPSILON, y, z);
+			DirectPosition dpInterD = new DirectPosition(this.centre.getX() + SphericalProjection.EPSILON, y, z);
 
-          exteriorRight.add(dp);
+			if (isOnRightTemp) {
+				exteriorRight.add(dpInterD);
+				exteriorRight.add(dp);
+				exteriorLeft.add(dpInterG);
+			} else {
+				exteriorRight.add(dpInterD);
+				exteriorLeft.add(dpInterG);
+				exteriorLeft.add(dp);
 
-        } else {
-          exteriorLeft.add(dp);
+			}
+			isOnRight = isOnRightTemp;
 
-        }
-        continue;
-      }
+		}
 
-      // Changement de sens
-      // On cherche le point de coordonnées x,y,z se situant sur la ligne
-      // entre le point actuel et le point précédent
-      // tel que Vpred . Vcherché (avec x = xcentre) = lambda * VSuiv
+		if (exteriorLeft.size() > 2) {
 
-      IDirectPosition dpPred;
+			if (!exteriorLeft.get(0).equals(exteriorLeft.get(exteriorLeft.size() - 1))) {
+				exteriorLeft.add(exteriorLeft.get(0));
 
-      if (i == 0) {
-        System.out.println("J'y passe");
+			}
 
-        dpPred = dplExteriori.get(dplExteriori.size() - 2);
+			lP.add(new GM_Polygon(new GM_LineString(exteriorLeft)));
 
-      } else {
+		}
 
-        dpPred = dplExteriori.get(i - 1);
-      }
+		if (exteriorRight.size() > 2) {
 
-      double lambda = (dpPred.getX() - this.centre.getX())
-          / (dp.getX() - this.centre.getX());
-      double y = (dpPred.getY() - lambda * dp.getY()) / (1 - lambda);
-      double z = (dpPred.getZ() - lambda * dp.getZ()) / (1 - lambda);
+			if (!exteriorRight.get(0).equals(exteriorRight.get(exteriorRight.size() - 1))) {
+				exteriorRight.add(exteriorRight.get(0));
 
-      if (Double.isNaN(y)) {
-        System.out.println("hum");
-      }
+			}
 
-      DirectPosition dpInterG = new DirectPosition(this.centre.getX()
-          - SphericalProjection.EPSILON, y, z);
-      DirectPosition dpInterD = new DirectPosition(this.centre.getX()
-          + SphericalProjection.EPSILON, y, z);
+			lP.add(new GM_Polygon(new GM_LineString(exteriorRight)));
 
-      if (isOnRightTemp) {
-        exteriorRight.add(dpInterD);
-        exteriorRight.add(dp);
-        exteriorLeft.add(dpInterG);
-      } else {
-        exteriorRight.add(dpInterD);
-        exteriorLeft.add(dpInterG);
-        exteriorLeft.add(dp);
+		}
 
-      }
-      isOnRight = isOnRightTemp;
+		return lP;
 
-    }
+	}
 
-    if (exteriorLeft.size() > 2) {
+	/**
+	 * Renvoie les entités dont l'angle a été calculé sous la forme d'un disque
+	 * centré en zéro de rayon rayon
+	 * 
+	 * @param rayon
+	 *            le rayon du disque
+	 * @return
+	 */
+	public IFeatureCollection<IFeature> getEquidistantProjection(double rayon) {
 
-      if (!exteriorLeft.get(0)
-          .equals(exteriorLeft.get(exteriorLeft.size() - 1))) {
-        exteriorLeft.add(exteriorLeft.get(0));
+		int nbFeat = this.lFeatMapped.size();
+		FT_FeatureCollection<IFeature> featCollOut = new FT_FeatureCollection<IFeature>();
+		for (int i = 0; i < nbFeat; i++) {
 
-      }
+			featCollOut.add(new DefaultFeature(
+					this.getEquidistantProjection((GM_Polygon) this.lFeatMapped.get(i).getGeom(), rayon)));
 
-      lP.add(new GM_Polygon(new GM_LineString(exteriorLeft)));
+		}
 
-    }
+		return featCollOut;
 
-    if (exteriorRight.size() > 2) {
+	}
 
-      if (!exteriorRight.get(0).equals(
-          exteriorRight.get(exteriorRight.size() - 1))) {
-        exteriorRight.add(exteriorRight.get(0));
+	/**
+	 * Transforme un polygone avec des coordonnées 2D sphérique en polygone
+	 * projetée dans un disque de rayon rayon
+	 * 
+	 * @param poly
+	 *            polygone 2D sphérique que l'on souhaite projeter
+	 * @param rayon
+	 *            le rayon de représentation en sortie
+	 * @return un poilygone projetée dans le disque de rayon, rayon
+	 */
+	private IPolygon getEquidistantProjection(IPolygon poly, double rayon) {
+		// On traite chaque point
+		// On transforme chaque point suivant ses coordonnées angulaires
+		IDirectPositionList dplExteriori = poly.getExterior().coord();
+		int nbEx = dplExteriori.size();
 
-      }
+		DirectPositionList dplExtAngle = new DirectPositionList();
 
-      lP.add(new GM_Polygon(new GM_LineString(exteriorRight)));
+		for (int i = 0; i < nbEx; i++) {
 
-    }
+			IDirectPosition dp = dplExteriori.get(i);
 
-    return lP;
+			double x = rayon * (1 - dp.getY() / (Math.PI / 2)) * Math.sin(dp.getX());
+			double y = rayon * (1 - dp.getY() / (Math.PI / 2)) * Math.cos(dp.getX());
 
-  }
+			dplExtAngle.add(new DirectPosition(x, y));
 
-  /**
-   * Renvoie les entités dont l'angle a été calculé sous la forme d'un disque
-   * centré en zéro de rayon rayon
-   * @param rayon le rayon du disque
-   * @return
-   */
-  public IFeatureCollection<IFeature> getEquidistantProjection(double rayon) {
+		}
 
-    int nbFeat = this.lFeatMapped.size();
-    FT_FeatureCollection<IFeature> featCollOut = new FT_FeatureCollection<IFeature>();
-    for (int i = 0; i < nbFeat; i++) {
+		GM_Polygon polyOut = new GM_Polygon(new GM_LineString(dplExtAngle));
 
-      featCollOut.add(new DefaultFeature(this.getEquidistantProjection(
-          (GM_Polygon) this.lFeatMapped.get(i).getGeom(), rayon)));
+		List<IRing> lRings = poly.getInterior();
 
-    }
+		int nbInterior = lRings.size();
 
-    return featCollOut;
+		for (int j = 0; j < nbInterior; j++) {
 
-  }
+			IDirectPositionList dplInterior = lRings.get(j).coord();
+			int nbPIn = dplInterior.size();
 
-  /**
-   * Transforme un polygone avec des coordonnées 2D sphérique en polygone
-   * projetée dans un disque de rayon rayon
-   * @param poly polygone 2D sphérique que l'on souhaite projeter
-   * @param rayon le rayon de représentation en sortie
-   * @return un poilygone projetée dans le disque de rayon, rayon
-   */
-  private IPolygon getEquidistantProjection(IPolygon poly, double rayon) {
-    // On traite chaque point
-    // On transforme chaque point suivant ses coordonnées angulaires
-    IDirectPositionList dplExteriori = poly.getExterior().coord();
-    int nbEx = dplExteriori.size();
+			DirectPositionList dplInteriorAngle = new DirectPositionList();
 
-    DirectPositionList dplExtAngle = new DirectPositionList();
+			for (int i = 0; i < nbPIn; i++) {
 
-    for (int i = 0; i < nbEx; i++) {
+				IDirectPosition dp = dplInterior.get(i);
 
-      IDirectPosition dp = dplExteriori.get(i);
+				double x = rayon * (1 - dp.getY() / (Math.PI / 2)) * Math.sin(dp.getX());
+				double y = rayon * (1 - dp.getY() / (Math.PI / 2)) * Math.cos(dp.getX());
 
-      double x = rayon * (1 - dp.getY() / (Math.PI / 2)) * Math.sin(dp.getX());
-      double y = rayon * (1 - dp.getY() / (Math.PI / 2)) * Math.cos(dp.getX());
+				dplInteriorAngle.add(new DirectPosition(x, y));
 
-      dplExtAngle.add(new DirectPosition(x, y));
+			}
 
-    }
+			polyOut.addInterior(new GM_Ring(new GM_LineString(dplInteriorAngle)));
 
-    GM_Polygon polyOut = new GM_Polygon(new GM_LineString(dplExtAngle));
+		}
 
-    List<IRing> lRings = poly.getInterior();
+		return polyOut;
 
-    int nbInterior = lRings.size();
+	}
 
-    for (int j = 0; j < nbInterior; j++) {
+	public IPolygon calculAngle(IPolygon poly) {
 
-      IDirectPositionList dplInterior = lRings.get(j).coord();
-      int nbPIn = dplInterior.size();
+		return this.calculAngle(poly, 0.0);
+	}
 
-      DirectPositionList dplInteriorAngle = new DirectPositionList();
+	/**
+	 * Créer un polygone 2D dont les coordonnées sont l'orientation et
+	 * l'élévation
+	 * 
+	 * @param poly
+	 *            un polygone
+	 * @return polygone 2D
+	 */
+	public IPolygon calculAngle(IPolygon poly, double threshold) {
 
-      for (int i = 0; i < nbPIn; i++) {
+		// On traite les points de l'extérieur
+		IDirectPositionList dplExteriori = poly.getExterior().coord();
+		int nbEx = dplExteriori.size();
 
-        IDirectPosition dp = dplInterior.get(i);
+		if (!dplExteriori.get(0).equals(dplExteriori.get(nbEx - 1))) {
 
-        double x = rayon * (1 - dp.getY() / (Math.PI / 2))
-            * Math.sin(dp.getX());
-        double y = rayon * (1 - dp.getY() / (Math.PI / 2))
-            * Math.cos(dp.getX());
+			dplExteriori.add(dplExteriori.get(0));
+			nbEx++;
+		}
 
-        dplInteriorAngle.add(new DirectPosition(x, y));
+		DirectPositionList dplExtAngle = new DirectPositionList();
 
-      }
+		// Pour chaque point on calcule l'extérieur
+		for (int i = 0; i < nbEx; i++) {
 
-      polyOut.addInterior(new GM_Ring(new GM_LineString(dplInteriorAngle)));
+			IDirectPosition dp = dplExteriori.get(i);
+			Orientation or = this.calculAngle(dp);
 
-    }
+			dplExtAngle.add(new DirectPosition(or.getAlpha(), or.getBeta(), this.centre.distance2D(dp)));
 
-    return polyOut;
+			if (threshold == 0) {
 
-  }
+				continue;
+			} else {
 
-  public IPolygon calculAngle(IPolygon poly) {
+				if (i == nbEx - 1) {
 
-    return this.calculAngle(poly, 0.0);
-  }
+					break;
 
-  /**
-   * Créer un polygone 2D dont les coordonnées sont l'orientation et l'élévation
-   * @param poly un polygone
-   * @return polygone 2D
-   */
-  public IPolygon calculAngle(IPolygon poly, double threshold) {
+				}
 
-    // On traite les points de l'extérieur
-    IDirectPositionList dplExteriori = poly.getExterior().coord();
-    int nbEx = dplExteriori.size();
+				IDirectPosition dpSuiv = dplExteriori.get(i + 1);
 
-    if (!dplExteriori.get(0).equals(dplExteriori.get(nbEx - 1))) {
+				Vecteur v = new Vecteur(dp, dpSuiv);
 
-      dplExteriori.add(dplExteriori.get(0));
-      nbEx++;
-    }
+				int nbAdd = (int) (v.norme() / threshold);
+				v.normalise();
 
-    DirectPositionList dplExtAngle = new DirectPositionList();
+				for (int j = 0; j < nbAdd; j++) {
 
-    // Pour chaque point on calcule l'extérieur
-    for (int i = 0; i < nbEx; i++) {
+					DirectPosition dpTemp = new DirectPosition(dp.getX() + (1 + j) * v.getX() * threshold,
+							dp.getY() + (1 + j) * v.getY() * threshold, dp.getZ() + +(1 + j) * v.getZ() * threshold);
 
-      IDirectPosition dp = dplExteriori.get(i);
-      Orientation or = this.calculAngle(dp);
+					Orientation orT = this.calculAngle(dpTemp);
+					dplExtAngle.add(new DirectPosition(orT.getAlpha(), orT.getBeta(), this.centre.distance2D(dpTemp)));
 
-      dplExtAngle.add(new DirectPosition(or.getAlpha(), or.getBeta(),
-          this.centre.distance2D(dp)));
+				}
 
-      if (threshold == 0) {
+			}
 
-        continue;
-      } else {
+		}
 
-        if (i == nbEx - 1) {
+		// On initialise le polygone de sorite
+		GM_Polygon polyOut = new GM_Polygon(new GM_LineString(dplExtAngle));
 
-          break;
+		List<IRing> lRings = poly.getInterior();
 
-        }
+		int nbInterior = lRings.size();
 
-        IDirectPosition dpSuiv = dplExteriori.get(i + 1);
+		// On traite de la même manière chaque intérieur
+		for (int j = 0; j < nbInterior; j++) {
 
-        Vecteur v = new Vecteur(dp, dpSuiv);
+			IDirectPositionList dplInterior = lRings.get(j).coord();
+			int nbPIn = dplInterior.size();
 
-        int nbAdd = (int) (v.norme() / threshold);
-        v.normalise();
+			DirectPositionList dplInteriorAngle = new DirectPositionList();
 
-        for (int j = 0; j < nbAdd; j++) {
+			if (!dplInterior.get(0).equals(dplInterior.get(nbPIn - 1))) {
 
-          DirectPosition dpTemp = new DirectPosition(dp.getX() + (1 + j)
-              * v.getX() * threshold, dp.getY() + (1 + j) * v.getY()
-              * threshold, dp.getZ() + +(1 + j) * v.getZ() * threshold);
+				dplInterior.add(dplExteriori.get(0));
+			}
 
-          Orientation orT = this.calculAngle(dpTemp);
-          dplExtAngle.add(new DirectPosition(orT.getAlpha(), orT.getBeta(),
-              this.centre.distance2D(dpTemp)));
+			for (int i = 0; i < nbPIn; i++) {
 
-        }
+				IDirectPosition dp = dplInterior.get(i);
+				Orientation or = this.calculAngle(dp);
 
-      }
+				dplInteriorAngle.add(new DirectPosition(or.getAlpha(), or.getBeta(), this.centre.distance2D(dp)));
 
-    }
+				if (threshold == 0) {
 
-    // On initialise le polygone de sorite
-    GM_Polygon polyOut = new GM_Polygon(new GM_LineString(dplExtAngle));
+					continue;
+				} else {
 
-    List<IRing> lRings = poly.getInterior();
+					if (i == nbPIn - 1) {
 
-    int nbInterior = lRings.size();
+						break;
 
-    // On traite de la même manière chaque intérieur
-    for (int j = 0; j < nbInterior; j++) {
+					}
 
-      IDirectPositionList dplInterior = lRings.get(j).coord();
-      int nbPIn = dplInterior.size();
+					IDirectPosition dpSuiv = dplInterior.get(i + 1);
 
-      DirectPositionList dplInteriorAngle = new DirectPositionList();
+					Vecteur v = new Vecteur(dp, dpSuiv);
 
-      if (!dplInterior.get(0).equals(dplInterior.get(nbPIn - 1))) {
+					int nbAdd = (int) (v.norme() / threshold);
+					v.normalise();
 
-        dplInterior.add(dplExteriori.get(0));
-      }
+					for (int k = 0; k < nbAdd; k++) {
 
-      for (int i = 0; i < nbPIn; i++) {
+						DirectPosition dpTemp = new DirectPosition(dp.getX() + (1 + k) * v.getX() * threshold,
+								dp.getY() + (1 + k) * v.getY() * threshold,
+								dp.getZ() + +(1 + k) * v.getZ() * threshold);
 
-        IDirectPosition dp = dplInterior.get(i);
-        Orientation or = this.calculAngle(dp);
+						Orientation orT = this.calculAngle(dpTemp);
+						dplInteriorAngle
+								.add(new DirectPosition(orT.getAlpha(), orT.getBeta(), this.centre.distance2D(dpTemp)));
 
-        dplInteriorAngle.add(new DirectPosition(or.getAlpha(), or.getBeta(),
-            this.centre.distance2D(dp)));
+					}
 
-        if (threshold == 0) {
+				}
 
-          continue;
-        } else {
+			}
+			// On ajoute les intérieur
+			polyOut.addInterior(new GM_Ring(new GM_LineString(dplInteriorAngle)));
 
-          if (i == nbPIn - 1) {
+		}
 
-            break;
+		return polyOut;
 
-          }
+	}
 
-          IDirectPosition dpSuiv = dplInterior.get(i + 1);
+	/**
+	 * Calcul l'orientation d'un point par rapport au centre L'angle horizontal
+	 * vaut zéro si le point se trouve en dessous du centre
+	 * 
+	 * @param dp
+	 *            le point dont on calcul l'orientation
+	 * @return
+	 */
+	public Orientation calculAngle(IDirectPosition dp) {
+		// On récupère la distance et la différence de hauteur
+		double distance = dp.distance(this.centre);
+		double hauteur = dp.getZ() - this.centre.getZ();
 
-          Vecteur v = new Vecteur(dp, dpSuiv);
+		// L'angle vertical est obtenu gâce à l'ArcSinus
+		double beta = Math.asin(hauteur / distance);
 
-          int nbAdd = (int) (v.norme() / threshold);
-          v.normalise();
+		Vecteur v = new Vecteur(this.centre, dp);
+		v.setZ(0);
 
-          for (int k = 0; k < nbAdd; k++) {
+		v.normalise();
 
-            DirectPosition dpTemp = new DirectPosition(dp.getX() + (1 + k)
-                * v.getX() * threshold, dp.getY() + (1 + k) * v.getY()
-                * threshold, dp.getZ() + +(1 + k) * v.getZ() * threshold);
+		// L'angle horizontal grâce à l'arsinus avec le nord
+		double alpha = Math.abs(Math.acos(SphericalProjection.NORTH.prodScalaire(v)));
 
-            Orientation orT = this.calculAngle(dpTemp);
-            dplInteriorAngle.add(new DirectPosition(orT.getAlpha(), orT
-                .getBeta(), this.centre.distance2D(dpTemp)));
+		// L'angle alpha est mis entre 0 et 2 * PI
+		if (v.getX() < 0) {
 
-          }
+			alpha = 2 * Math.PI - alpha;
 
-        }
+		}
 
-      }
-      // On ajoute les intérieur
-      polyOut.addInterior(new GM_Ring(new GM_LineString(dplInteriorAngle)));
+		return new Orientation(alpha, beta);
 
-    }
+	}
 
-    return polyOut;
+	public IFeatureCollection<IFeature> raffinedOrthoProjection() {
+		IFeatureCollection<IFeature> featOut = new FT_FeatureCollection<>();
 
-  }
+		this.getLFeatMapped().initSpatialIndex(Tiling.class, false);
 
-  /**
-   * Calcul l'orientation d'un point par rapport au centre L'angle horizontal
-   * vaut zéro si le point se trouve en dessous du centre
-   * @param dp le point dont on calcul l'orientation
-   * @return
-   */
-  public Orientation calculAngle(IDirectPosition dp) {
-    // On récupère la distance et la différence de hauteur
-    double distance = dp.distance(this.centre);
-    double hauteur = dp.getZ() - this.centre.getZ();
+		for (IFeature feat : this.getLFeatMapped()) {
 
-    // L'angle vertical est obtenu gâce à l'ArcSinus
-    double beta = Math.asin(hauteur / distance);
+			Collection<IFeature> featSelect = this.getLFeatMapped().select(feat.getGeom());
 
-    if (Double.isNaN(beta)) {
+			while (featSelect.contains(feat)) {
+				featSelect.remove(feat);
+			}
 
-      System.out.println("SphericalProjection : Isnan");
-    }
+			List<IOrientableSurface> lPolOut = solveZBuffer(feat, featSelect);
 
-    Vecteur v = new Vecteur(this.centre, dp);
-    v.setZ(0);
+			for (IOrientableSurface poly : lPolOut) {
+				featOut.add(new DefaultFeature(poly));
+			}
 
-    v.normalise();
+		}
 
-    // L'angle horizontal grâce à l'arsinus avec le nord
-    double alpha = Math
-        .abs(Math.acos(SphericalProjection.NORTH.prodScalaire(v)));
+		return featOut;
+	}
 
-    // L'angle alpha est mis entre 0 et 2 * PI
-    if (v.getX() < 0) {
+	private List<IOrientableSurface> solveZBuffer(IFeature feat, Collection<IFeature> featSelect) {
 
-      alpha = 2 * Math.PI - alpha;
+		List<IOrientableSurface> lPolOut = new ArrayList<>();
 
-    }
+		IGeometry geom = (IGeometry) feat.getGeom().clone();
 
-    return new Orientation(alpha, beta);
+		OrientedBoundingBox oBB = new OrientedBoundingBox(geom);
 
-  }
-  
+		for (IFeature featToTreat : featSelect) {
 
-  public IFeatureCollection<IFeature> raffinedOrthoProjection() {
-    IFeatureCollection<IFeature> featOut = new FT_FeatureCollection<>();
+			OrientedBoundingBox oBBToTest = new OrientedBoundingBox(featToTreat.getGeom());
 
-    this.getLFeatMapped().initSpatialIndex(Tiling.class, false);
+			if (oBBToTest.getzMax() - oBBToTest.getzMin() >= oBB.getzMax() - oBB.getzMin()) {
+				continue;
 
-    for (IFeature feat : this.getLFeatMapped()) {
+			}
 
-      Collection<IFeature> featSelect = this.getLFeatMapped().select(
-          feat.getGeom());
+			// On considère qu'il est devant
 
-      while (featSelect.contains(feat)) {
-        featSelect.remove(feat);
-      }
+			IGeometry geomTemp = geom.intersection(featToTreat.getGeom());
 
-      List<IOrientableSurface> lPolOut = solveZBuffer(feat, featSelect);
+			if (geomTemp.area() < 0.001) {
+				continue;
+			}
 
-      for (IOrientableSurface poly : lPolOut) {
-        featOut.add(new DefaultFeature(poly));
-      }
+			geom = geom.difference(featToTreat.getGeom());
 
-    }
+			if (geom == null) {
+				return lPolOut;
+			}
 
-    return featOut;
-  }
+			List<IOrientableSurface> lOS = FromGeomToSurface.convertGeom(geom);
 
+			if (lOS == null || lOS.isEmpty()) {
+				return lPolOut;
+			}
 
-  private List<IOrientableSurface> solveZBuffer(IFeature feat,
-      Collection<IFeature> featSelect) {
+			geom = new GM_MultiSurface<>(FromGeomToSurface.convertGeom(geom));
 
-    List<IOrientableSurface> lPolOut = new ArrayList<>();
+		}
 
-    IGeometry geom = (IGeometry) feat.getGeom().clone();
+		lPolOut.addAll(FromGeomToSurface.convertGeom(geom));
 
-    OrientedBoundingBox oBB = new OrientedBoundingBox(geom);
+		int nbPol = lPolOut.size();
 
-    for (IFeature featToTreat : featSelect) {
+		for (int i = 0; i < nbPol; i++) {
+			IPolygon polyI = (IPolygon) lPolOut.get(i);
 
-      OrientedBoundingBox oBBToTest = new OrientedBoundingBox(
-          featToTreat.getGeom());
+			if (polyI.isEmpty()) {
+				lPolOut.remove(i);
+				i--;
+				nbPol--;
+				continue;
 
-      if (   oBBToTest.getzMax() -  oBBToTest.getzMin() >=  oBB.getzMax() -  oBB.getzMin()) {
-        continue;
+			}
 
-      }
+			List<IRing> lR = new ArrayList<>();
+			lR.add(polyI.getExterior());
 
-      // On considère qu'il est devant
+			if (polyI.getInterior() != null) {
+				lR.addAll(polyI.getInterior());
 
-      IGeometry geomTemp = geom.intersection(featToTreat.getGeom());
+			}
 
-      if (geomTemp.area() < 0.001) {
-        continue;
-      }
+			for (IRing r : lR) {
 
-      geom = geom.difference(featToTreat.getGeom());
+				if (!r.isEmpty() && r.coord().size() < 4) {
 
-      if (geom == null) {
-        return lPolOut;
-      }
+					lPolOut.remove(i);
+					i--;
+					nbPol--;
 
-      List<IOrientableSurface> lOS = FromGeomToSurface.convertGeom(geom);
+					break;
+				}
 
-      if (lOS == null || lOS.isEmpty()) {
-        return lPolOut;
-      }
-      
+			}
 
-      geom = new GM_MultiSurface<>(FromGeomToSurface.convertGeom(geom));
+		}
 
-    }
+		return lPolOut;
+	}
 
-    lPolOut.addAll(FromGeomToSurface.convertGeom(geom));
+	/**
+	 * 
+	 * @return les entités plaquées en 2D en coordonnées angulaires
+	 */
+	public IFeatureCollection<IFeature> getLFeatMapped() {
+		return this.lFeatMapped;
+	}
 
-    int nbPol = lPolOut.size();
+	public FT_FeatureCollection<IFeature> getStereoProjection(double hautPlan, boolean inverse) {
+		FT_FeatureCollection<IFeature> featCollOut = new FT_FeatureCollection<IFeature>();
 
-    for (int i = 0; i < nbPol; i++) {
-      IPolygon polyI = (IPolygon) lPolOut.get(i);
+		int nbElem = this.featsToProject.size();
 
-      if (polyI.isEmpty()) {
-        lPolOut.remove(i);
-        i--;
-        nbPol--;
-        continue;
+		IDirectPositionList dplPlan = new DirectPositionList();
+		IDirectPosition poleSud;
 
-      }
+		if (inverse) {
+			dplPlan.add(new DirectPosition(this.centre.getX(), this.centre.getY(), this.centre.getZ() + hautPlan));
+			dplPlan.add(
+					new DirectPosition(this.centre.getX() + 100, this.centre.getY(), this.centre.getZ() + hautPlan));
+			dplPlan.add(
+					new DirectPosition(this.centre.getX(), this.centre.getY() + 100, this.centre.getZ() + hautPlan));
+			dplPlan.add(new DirectPosition(this.centre.getX(), this.centre.getY(), this.centre.getZ() + hautPlan));
 
-      List<IRing> lR = new ArrayList<>();
-      lR.add(polyI.getExterior());
+			poleSud = new DirectPosition(this.centre.getX(), this.centre.getY(), this.centre.getZ() - hautPlan);
 
-      if (polyI.getInterior() != null) {
-        lR.addAll(polyI.getInterior());
+		} else {
 
-      }
+			dplPlan.add(new DirectPosition(this.centre.getX(), this.centre.getY(), this.centre.getZ() - hautPlan));
+			dplPlan.add(
+					new DirectPosition(this.centre.getX() + 100, this.centre.getY(), this.centre.getZ() - hautPlan));
+			dplPlan.add(
+					new DirectPosition(this.centre.getX(), this.centre.getY() + 100, this.centre.getZ() - hautPlan));
+			dplPlan.add(new DirectPosition(this.centre.getX(), this.centre.getY(), this.centre.getZ() - hautPlan));
 
-      for (IRing r : lR) {
+			poleSud = new DirectPosition(this.centre.getX(), this.centre.getY(), this.centre.getZ() + hautPlan);
+		}
 
-        if (!r.isEmpty() && r.coord().size() < 4) {
+		ApproximatedPlanEquation pl = new ApproximatedPlanEquation(dplPlan);
 
-          lPolOut.remove(i);
-          i--;
-          nbPol--;
+		for (int i = 0; i < nbElem; i++) {
 
-          break;
-        }
+			IGeometry geom = this.featsToProject.get(i).getGeom();
 
-      }
+			List<IOrientableSurface> lOS = FromGeomToSurface.convertGeom(geom);
 
-    }
+			for (IOrientableSurface geomTemp : lOS) {
 
+				if (geomTemp instanceof GM_Polygon) {
+					GM_Polygon poly = (GM_Polygon) geomTemp;
 
-    return lPolOut;
-  }
-  /**
-   * 
-   * @return les entités plaquées en 2D en coordonnées angulaires
-   */
-  public IFeatureCollection<IFeature> getLFeatMapped() {
-    return this.lFeatMapped;
-  }
+					IDirectPositionList dplExt = poly.getExterior().coord();
+					int nbEx = dplExt.size();
 
-  public FT_FeatureCollection<IFeature> getStereoProjection(double hautPlan,
-      boolean inverse) {
-    FT_FeatureCollection<IFeature> featCollOut = new FT_FeatureCollection<IFeature>();
+					IDirectPositionList dplExtOut = new DirectPositionList();
 
-    int nbElem = this.featsToProject.size();
+					// Pour chaque point on calcule l'extérieur
+					for (int j = 0; j < nbEx; j++) {
 
-    IDirectPositionList dplPlan = new DirectPositionList();
-    IDirectPosition poleSud;
+						IDirectPosition dp = dplExt.get(j);
 
-    if (inverse) {
-      dplPlan.add(new DirectPosition(this.centre.getX(), this.centre.getY(),
-          this.centre.getZ() + hautPlan));
-      dplPlan.add(new DirectPosition(this.centre.getX() + 100, this.centre
-          .getY(), this.centre.getZ() + hautPlan));
-      dplPlan.add(new DirectPosition(this.centre.getX(),
-          this.centre.getY() + 100, this.centre.getZ() + hautPlan));
-      dplPlan.add(new DirectPosition(this.centre.getX(), this.centre.getY(),
-          this.centre.getZ() + hautPlan));
+						LineEquation lE = new LineEquation(poleSud, dp);
 
-      poleSud = new DirectPosition(this.centre.getX(), this.centre.getY(),
-          this.centre.getZ() - hautPlan);
+						IDirectPosition dpInter = lE.intersectionLinePlan(pl);
+						dplExtOut.add(dpInter);
 
-    } else {
+					}
 
-      dplPlan.add(new DirectPosition(this.centre.getX(), this.centre.getY(),
-          this.centre.getZ() - hautPlan));
-      dplPlan.add(new DirectPosition(this.centre.getX() + 100, this.centre
-          .getY(), this.centre.getZ() - hautPlan));
-      dplPlan.add(new DirectPosition(this.centre.getX(),
-          this.centre.getY() + 100, this.centre.getZ() - hautPlan));
-      dplPlan.add(new DirectPosition(this.centre.getX(), this.centre.getY(),
-          this.centre.getZ() - hautPlan));
+					// On initialise le polygone de sorite
+					GM_Polygon polyOut = new GM_Polygon(new GM_LineString(dplExtOut));
 
-      poleSud = new DirectPosition(this.centre.getX(), this.centre.getY(),
-          this.centre.getZ() + hautPlan);
-    }
+					List<IRing> lRings = poly.getInterior();
 
-    ApproximatedPlanEquation pl = new ApproximatedPlanEquation(dplPlan);
+					int nbInterior = lRings.size();
 
-    for (int i = 0; i < nbElem; i++) {
+					// On traite de la même manière chaque intérieur
+					for (int j = 0; j < nbInterior; j++) {
 
-      IGeometry geom = this.featsToProject.get(i).getGeom();
+						IDirectPositionList dplInterior = lRings.get(j).coord();
+						int nbPIn = dplInterior.size();
 
-      if (geom instanceof GM_Polygon) {
-        GM_Polygon poly = (GM_Polygon) geom;
+						DirectPositionList dplInteriorOut = new DirectPositionList();
 
-        IDirectPositionList dplExt = poly.getExterior().coord();
-        int nbEx = dplExt.size();
+						for (int k = 0; k < nbPIn; k++) {
 
-        IDirectPositionList dplExtOut = new DirectPositionList();
+							IDirectPosition dp = dplInterior.get(k);
 
-        // Pour chaque point on calcule l'extérieur
-        for (int j = 0; j < nbEx; j++) {
+							LineEquation lE = new LineEquation(poleSud, dp);
 
-          IDirectPosition dp = dplExt.get(j);
+							IDirectPosition dpInter = lE.intersectionLinePlan(pl);
+							dplInteriorOut.add(dpInter);
 
-          LineEquation lE = new LineEquation(poleSud, dp);
+						}
+						// On ajoute les intérieur
+						polyOut.addInterior(new GM_Ring(new GM_LineString(dplInteriorOut)));
 
-          IDirectPosition dpInter = lE.intersectionLinePlan(pl);
-          dplExtOut.add(dpInter);
+						featCollOut.add(new DefaultFeature(polyOut));
 
-        }
+					}
 
-        // On initialise le polygone de sorite
-        GM_Polygon polyOut = new GM_Polygon(new GM_LineString(dplExtOut));
+				} else {
 
-        List<IRing> lRings = poly.getInterior();
+					logger.error(SphericalProjection.class.getName() + " : Current class : " + geom.getClass().toString()
+							+ " GM_Polygon expected");
+				}
+			}
 
-        int nbInterior = lRings.size();
+		}
 
-        // On traite de la même manière chaque intérieur
-        for (int j = 0; j < nbInterior; j++) {
+		return featCollOut;
+	}
 
-          IDirectPositionList dplInterior = lRings.get(j).coord();
-          int nbPIn = dplInterior.size();
+	public FT_FeatureCollection<IFeature> getGnomoniqueProjection(double hautPlan) {
+		FT_FeatureCollection<IFeature> featCollOut = new FT_FeatureCollection<IFeature>();
 
-          DirectPositionList dplInteriorOut = new DirectPositionList();
+		int nbElem = this.featsToProject.size();
 
-          for (int k = 0; k < nbPIn; k++) {
+		IDirectPositionList dplPlan = new DirectPositionList();
+		dplPlan.add(new DirectPosition(this.centre.getX(), this.centre.getY(), this.centre.getZ() + hautPlan));
+		dplPlan.add(new DirectPosition(this.centre.getX() + 100, this.centre.getY(), this.centre.getZ() + hautPlan));
+		dplPlan.add(new DirectPosition(this.centre.getX(), this.centre.getY() + 100, this.centre.getZ() + hautPlan));
+		dplPlan.add(new DirectPosition(this.centre.getX(), this.centre.getY(), this.centre.getZ() + hautPlan));
 
-            IDirectPosition dp = dplInterior.get(k);
+		ApproximatedPlanEquation pl = new ApproximatedPlanEquation(dplPlan);
 
-            LineEquation lE = new LineEquation(poleSud, dp);
+		for (int i = 0; i < nbElem; i++) {
 
-            IDirectPosition dpInter = lE.intersectionLinePlan(pl);
-            dplInteriorOut.add(dpInter);
+			IGeometry geom = this.featsToProject.get(i).getGeom();
 
-          }
-          // On ajoute les intérieur
-          polyOut.addInterior(new GM_Ring(new GM_LineString(dplInteriorOut)));
+			if (geom instanceof GM_Polygon) {
+				GM_Polygon poly = (GM_Polygon) geom;
 
-        }
+				IDirectPositionList dplExt = poly.getExterior().coord();
+				int nbEx = dplExt.size();
 
-        // if(polyOut.isValid()){
-        // System.out.println("Polygon valid : " + polyOut);
-        featCollOut.add(new DefaultFeature(polyOut));
-        // }else{
-        // System.out.println("Non valid");
-        // }
+				DirectPositionList dplExtOut = new DirectPositionList();
 
-      } else {
-        System.out.println("Autre classe " + geom.getClass().toString()
-            + " GM_Polygon attendu");
-      }
+				// Pour chaque point on calcule l'extérieur
+				for (int j = 0; j < nbEx; j++) {
 
-    }
+					IDirectPosition dp = dplExt.get(j);
 
-    return featCollOut;
-  }
+					if (dp.getZ() <= this.centre.getZ()) {
+						logger.error(
+								SphericalProjection.class.getName() + " : Error projection gnomonique ne supporte pas z < centre");
+						return null;
+					}
 
-  public FT_FeatureCollection<IFeature> getGnomoniqueProjection(double hautPlan) {
-    FT_FeatureCollection<IFeature> featCollOut = new FT_FeatureCollection<IFeature>();
+					LineEquation lE = new LineEquation(this.centre, dp);
 
-    int nbElem = this.featsToProject.size();
+					IDirectPosition dpInter = lE.intersectionLinePlan(pl);
+					dplExtOut.add(dpInter);
 
-    IDirectPositionList dplPlan = new DirectPositionList();
-    dplPlan.add(new DirectPosition(this.centre.getX(), this.centre.getY(),
-        this.centre.getZ() + hautPlan));
-    dplPlan.add(new DirectPosition(this.centre.getX() + 100,
-        this.centre.getY(), this.centre.getZ() + hautPlan));
-    dplPlan.add(new DirectPosition(this.centre.getX(),
-        this.centre.getY() + 100, this.centre.getZ() + hautPlan));
-    dplPlan.add(new DirectPosition(this.centre.getX(), this.centre.getY(),
-        this.centre.getZ() + hautPlan));
+				}
 
-    ApproximatedPlanEquation pl = new ApproximatedPlanEquation(dplPlan);
+				// On initialise le polygone de sorite
+				GM_Polygon polyOut = new GM_Polygon(new GM_LineString(dplExtOut));
 
-    for (int i = 0; i < nbElem; i++) {
+				List<IRing> lRings = poly.getInterior();
 
-      IGeometry geom = this.featsToProject.get(i).getGeom();
+				int nbInterior = lRings.size();
 
-      if (geom instanceof GM_Polygon) {
-        GM_Polygon poly = (GM_Polygon) geom;
+				// On traite de la même manière chaque intérieur
+				for (int j = 0; j < nbInterior; j++) {
 
-        IDirectPositionList dplExt = poly.getExterior().coord();
-        int nbEx = dplExt.size();
+					IDirectPositionList dplInterior = lRings.get(j).coord();
+					int nbPIn = dplInterior.size();
 
-        DirectPositionList dplExtOut = new DirectPositionList();
+					DirectPositionList dplInteriorOut = new DirectPositionList();
 
-        // Pour chaque point on calcule l'extérieur
-        for (int j = 0; j < nbEx; j++) {
+					for (int k = 0; k < nbPIn; k++) {
 
-          IDirectPosition dp = dplExt.get(j);
+						IDirectPosition dp = dplInterior.get(k);
 
-          if (dp.getZ() <= this.centre.getZ()) {
-            System.out
-                .println("Error projection gnomonique ne supporte pas z < centre");
-            return null;
-          }
+						if (dp.getZ() <= this.centre.getZ()) {
+							logger.error(SphericalProjection.class.getName()
+									+ " : Error projection gnomonique ne supporte pas z < centre");
+							return null;
+						}
 
-          LineEquation lE = new LineEquation(this.centre, dp);
+						LineEquation lE = new LineEquation(this.centre, dp);
 
-          IDirectPosition dpInter = lE.intersectionLinePlan(pl);
-          dplExtOut.add(dpInter);
+						IDirectPosition dpInter = lE.intersectionLinePlan(pl);
+						dplInteriorOut.add(dpInter);
 
-        }
+					}
+					// On ajoute les intérieur
+					polyOut.addInterior(new GM_Ring(new GM_LineString(dplInteriorOut)));
 
-        // On initialise le polygone de sorite
-        GM_Polygon polyOut = new GM_Polygon(new GM_LineString(dplExtOut));
+				}
 
-        List<IRing> lRings = poly.getInterior();
+				if (polyOut.isValid()) {
 
-        int nbInterior = lRings.size();
+					featCollOut.add(new DefaultFeature(polyOut));
+				} else {
+					logger.error(SphericalProjection.class.getName() + " : Non valid output");
+				}
 
-        // On traite de la même manière chaque intérieur
-        for (int j = 0; j < nbInterior; j++) {
+			} else {
+				logger.error(SphericalProjection.class + " : Current class " + geom.getClass().toString()
+						+ " GM_Polygon expected");
+			}
 
-          IDirectPositionList dplInterior = lRings.get(j).coord();
-          int nbPIn = dplInterior.size();
+		}
 
-          DirectPositionList dplInteriorOut = new DirectPositionList();
+		return featCollOut;
 
-          for (int k = 0; k < nbPIn; k++) {
+	}
 
-            IDirectPosition dp = dplInterior.get(k);
+	/**
+	 * Renvoie les entités dont l'angle a été calculé sous la forme d'un disque
+	 * centré en zéro de rayon rayon
+	 * 
+	 * @param rayon
+	 *            le rayon du disque
+	 * @return
+	 */
+	public IFeatureCollection<IFeature> getOrthographicProjection(double rayon) {
 
-            if (dp.getZ() <= this.centre.getZ()) {
-              System.out
-                  .println("Error projection gnomonique ne supporte pas z < centre");
-              return null;
-            }
+		int nbFeat = this.lFeatMapped.size();
+		FT_FeatureCollection<IFeature> featCollOut = new FT_FeatureCollection<IFeature>();
+		for (int i = 0; i < nbFeat; i++) {
 
-            LineEquation lE = new LineEquation(this.centre, dp);
+			featCollOut.add(new DefaultFeature(
+					this.getOrthographicProjection((GM_Polygon) this.lFeatMapped.get(i).getGeom(), rayon)));
 
-            IDirectPosition dpInter = lE.intersectionLinePlan(pl);
-            dplInteriorOut.add(dpInter);
+		}
 
-          }
-          // On ajoute les intérieur
-          polyOut.addInterior(new GM_Ring(new GM_LineString(dplInteriorOut)));
+		return featCollOut;
 
-        }
+	}
 
-        if (polyOut.isValid()) {
+	private IPolygon getOrthographicProjection(IPolygon poly, double rayon) {
+		// On traite chaque point
+		// On transforme chaque point suivant ses coordonnées angulaires
+		IDirectPositionList dplExteriori = poly.getExterior().coord();
+		int nbEx = dplExteriori.size();
 
-          featCollOut.add(new DefaultFeature(polyOut));
-        } else {
-          System.out.println("Non valid");
-        }
+		DirectPositionList dplExtAngle = new DirectPositionList();
 
-      } else {
-        System.out.println("Autre classe " + geom.getClass().toString()
-            + " GM_Polygon attendu");
-      }
+		for (int i = 0; i < nbEx; i++) {
 
-    }
+			IDirectPosition dp = dplExteriori.get(i);
 
-    return featCollOut;
+			double x = rayon * (1 - Math.sin(dp.getY())) * Math.sin(dp.getX());
+			double y = rayon * (1 - Math.sin(dp.getY())) * Math.cos(dp.getX());
 
-  }
+			dplExtAngle.add(new DirectPosition(x, y));
 
-  /**
-   * Renvoie les entités dont l'angle a été calculé sous la forme d'un disque
-   * centré en zéro de rayon rayon
-   * @param rayon le rayon du disque
-   * @return
-   */
-  public IFeatureCollection<IFeature> getOrthographicProjection(double rayon) {
+		}
 
-    int nbFeat = this.lFeatMapped.size();
-    FT_FeatureCollection<IFeature> featCollOut = new FT_FeatureCollection<IFeature>();
-    for (int i = 0; i < nbFeat; i++) {
+		GM_Polygon polyOut = new GM_Polygon(new GM_LineString(dplExtAngle));
 
-      featCollOut.add(new DefaultFeature(this.getOrthographicProjection(
-          (GM_Polygon) this.lFeatMapped.get(i).getGeom(), rayon)));
+		List<IRing> lRings = poly.getInterior();
 
-    }
+		int nbInterior = lRings.size();
 
-    return featCollOut;
+		for (int j = 0; j < nbInterior; j++) {
 
-  }
+			IDirectPositionList dplInterior = lRings.get(j).coord();
+			int nbPIn = dplInterior.size();
 
-  private IPolygon getOrthographicProjection(IPolygon poly, double rayon) {
-    // On traite chaque point
-    // On transforme chaque point suivant ses coordonnées angulaires
-    IDirectPositionList dplExteriori = poly.getExterior().coord();
-    int nbEx = dplExteriori.size();
+			DirectPositionList dplInteriorAngle = new DirectPositionList();
 
-    DirectPositionList dplExtAngle = new DirectPositionList();
+			for (int i = 0; i < nbPIn; i++) {
 
-    for (int i = 0; i < nbEx; i++) {
+				IDirectPosition dp = dplInterior.get(i);
 
-      IDirectPosition dp = dplExteriori.get(i);
+				double x = rayon * (1 - Math.sin(dp.getY())) * Math.sin(dp.getX());
+				double y = rayon * (1 - Math.sin(dp.getY())) * Math.cos(dp.getX());
 
-      double x = rayon * (1 - Math.sin(dp.getY())) * Math.sin(dp.getX());
-      double y = rayon * (1 - Math.sin(dp.getY())) * Math.cos(dp.getX());
+				dplInteriorAngle.add(new DirectPosition(x, y));
 
-      dplExtAngle.add(new DirectPosition(x, y));
+			}
 
-    }
+			polyOut.addInterior(new GM_Ring(new GM_LineString(dplInteriorAngle)));
 
-    GM_Polygon polyOut = new GM_Polygon(new GM_LineString(dplExtAngle));
+		}
 
-    List<IRing> lRings = poly.getInterior();
+		return polyOut;
 
-    int nbInterior = lRings.size();
+	}
 
-    for (int j = 0; j < nbInterior; j++) {
+	/**
+	 * Renvoie les entités dont l'angle a été calculé sous la forme d'un disque
+	 * centré en zéro de rayon rayon
+	 * 
+	 * @param rayon
+	 *            le rayon du disque
+	 * @return
+	 */
+	public IFeatureCollection<IFeature> getLambertProjection(double rayon, double phiO, double lambdaO) {
 
-      IDirectPositionList dplInterior = lRings.get(j).coord();
-      int nbPIn = dplInterior.size();
+		int nbFeat = this.lFeatMapped.size();
+		FT_FeatureCollection<IFeature> featCollOut = new FT_FeatureCollection<IFeature>();
+		for (int i = 0; i < nbFeat; i++) {
 
-      DirectPositionList dplInteriorAngle = new DirectPositionList();
+			featCollOut.add(new DefaultFeature(
+					this.getLambertProjection((GM_Polygon) this.lFeatMapped.get(i).getGeom(), rayon, phiO, lambdaO)));
 
-      for (int i = 0; i < nbPIn; i++) {
+		}
 
-        IDirectPosition dp = dplInterior.get(i);
+		return featCollOut;
 
-        double x = rayon * (1 - Math.sin(dp.getY())) * Math.sin(dp.getX());
-        double y = rayon * (1 - Math.sin(dp.getY())) * Math.cos(dp.getX());
+	}
 
-        dplInteriorAngle.add(new DirectPosition(x, y));
+	private IPolygon getLambertProjection(IPolygon poly, double rayon, double phiO, double lambdaO) {
+		// On traite chaque point
+		// On transforme chaque point suivant ses coordonnées angulaires
+		IDirectPositionList dplExteriori = poly.getExterior().coord();
+		int nbEx = dplExteriori.size();
 
-      }
+		DirectPositionList dplExtAngle = new DirectPositionList();
 
-      polyOut.addInterior(new GM_Ring(new GM_LineString(dplInteriorAngle)));
+		for (int i = 0; i < nbEx; i++) {
 
-    }
+			IDirectPosition dp = dplExteriori.get(i);
 
-    return polyOut;
+			double phi = dp.getY();
+			double lambda = dp.getX();
 
-  }
+			double cosPhi = Math.cos(phi);
 
-  /**
-   * Renvoie les entités dont l'angle a été calculé sous la forme d'un disque
-   * centré en zéro de rayon rayon
-   * @param rayon le rayon du disque
-   * @return
-   */
-  public IFeatureCollection<IFeature> getLambertProjection(double rayon,
-      double phiO, double lambdaO) {
+			double cosPhiO = Math.cos(phiO);
+			double sinPhiO = Math.sin(phiO);
 
-    int nbFeat = this.lFeatMapped.size();
-    FT_FeatureCollection<IFeature> featCollOut = new FT_FeatureCollection<IFeature>();
-    for (int i = 0; i < nbFeat; i++) {
+			double alphaPrime = Math
+					.sqrt(2 / (1 + Math.cos(phi - phiO) + cosPhi * cosPhiO * (Math.cos(lambda - lambdaO) - 1)));
 
-      featCollOut
-          .add(new DefaultFeature(this.getLambertProjection(
-              (GM_Polygon) this.lFeatMapped.get(i).getGeom(), rayon, phiO,
-              lambdaO)));
+			double x = rayon * alphaPrime * cosPhi * Math.sin(lambda - lambdaO);
+			double y = rayon * alphaPrime
+					* (Math.sin(phi - phiO) - sinPhiO * cosPhi * (Math.cos(lambda - lambdaO) - 1));
 
-    }
+			dplExtAngle.add(new DirectPosition(x, y));
 
-    return featCollOut;
+		}
 
-  }
+		GM_Polygon polyOut = new GM_Polygon(new GM_LineString(dplExtAngle));
 
+		List<IRing> lRings = poly.getInterior();
 
-  private IPolygon getLambertProjection(IPolygon poly, double rayon,
-      double phiO, double lambdaO) {
-    // On traite chaque point
-    // On transforme chaque point suivant ses coordonnées angulaires
-    IDirectPositionList dplExteriori = poly.getExterior().coord();
-    int nbEx = dplExteriori.size();
+		int nbInterior = lRings.size();
 
-    DirectPositionList dplExtAngle = new DirectPositionList();
+		for (int j = 0; j < nbInterior; j++) {
 
-    for (int i = 0; i < nbEx; i++) {
+			IDirectPositionList dplInterior = lRings.get(j).coord();
+			int nbPIn = dplInterior.size();
 
-      IDirectPosition dp = dplExteriori.get(i);
+			DirectPositionList dplInteriorAngle = new DirectPositionList();
 
-      double phi = dp.getY();
-      double lambda = dp.getX();
+			for (int i = 0; i < nbPIn; i++) {
 
-      double cosPhi = Math.cos(phi);
+				IDirectPosition dp = dplInterior.get(i);
 
-      double cosPhiO = Math.cos(phiO);
-      double sinPhiO = Math.sin(phiO);
+				double phi = dp.getY();
+				double lambda = dp.getX();
 
-      double alphaPrime = Math.sqrt(2 / (1 + Math.cos(phi - phiO) + cosPhi
-          * cosPhiO * (Math.cos(lambda - lambdaO) - 1)));
+				double cosPhi = Math.cos(phi);
+				double cosPhiO = Math.cos(phiO);
 
-      double x = rayon * alphaPrime * cosPhi * Math.sin(lambda - lambdaO);
-      double y = rayon
-          * alphaPrime
-          * (Math.sin(phi - phiO) - sinPhiO * cosPhi
-              * (Math.cos(lambda - lambdaO) - 1));
+				double sinPhiO = Math.sin(phiO);
 
-      dplExtAngle.add(new DirectPosition(x, y));
+				double alphaPrime = Math
+						.sqrt(2 / (1 + Math.cos(phi - phiO) + cosPhi * cosPhiO * (Math.cos(lambda - lambdaO) - 1)));
 
-    }
+				double x = rayon * alphaPrime * cosPhi * Math.sin(phi - phiO);
+				double y = rayon * alphaPrime
+						* (Math.sin(phi - phiO) - sinPhiO * cosPhi * (Math.cos(lambda - lambdaO) - 1));
 
-    GM_Polygon polyOut = new GM_Polygon(new GM_LineString(dplExtAngle));
+				dplInteriorAngle.add(new DirectPosition(x, y));
 
-    List<IRing> lRings = poly.getInterior();
+			}
 
-    int nbInterior = lRings.size();
+			polyOut.addInterior(new GM_Ring(new GM_LineString(dplInteriorAngle)));
 
-    for (int j = 0; j < nbInterior; j++) {
+		}
 
-      IDirectPositionList dplInterior = lRings.get(j).coord();
-      int nbPIn = dplInterior.size();
+		return polyOut;
 
-      DirectPositionList dplInteriorAngle = new DirectPositionList();
+	}
 
-      for (int i = 0; i < nbPIn; i++) {
-
-        IDirectPosition dp = dplInterior.get(i);
-
-        double phi = dp.getY();
-        double lambda = dp.getX();
-
-        double cosPhi = Math.cos(phi);
-        double cosPhiO = Math.cos(phiO);
-
-        double sinPhiO = Math.sin(phiO);
-
-        double alphaPrime = Math.sqrt(2 / (1 + Math.cos(phi - phiO) + cosPhi
-            * cosPhiO * (Math.cos(lambda - lambdaO) - 1)));
-
-        double x = rayon * alphaPrime * cosPhi * Math.sin(phi - phiO);
-        double y = rayon
-            * alphaPrime
-            * (Math.sin(phi - phiO) - sinPhiO * cosPhi
-                * (Math.cos(lambda - lambdaO) - 1));
-
-        dplInteriorAngle.add(new DirectPosition(x, y));
-
-      }
-
-      polyOut.addInterior(new GM_Ring(new GM_LineString(dplInteriorAngle)));
-
-    }
-
-    return polyOut;
-
-  }
-
-  /**
-   * 
-   * @return the lFeatCut les entités découpées si un découpage est effectué
-   */
-  public IFeatureCollection<IFeature> getFeatToProject() {
-    return this.featsToProject;
-  }
+	/**
+	 * 
+	 * @return the lFeatCut les entités découpées si un découpage est effectué
+	 */
+	public IFeatureCollection<IFeature> getFeatToProject() {
+		return this.featsToProject;
+	}
 
 }

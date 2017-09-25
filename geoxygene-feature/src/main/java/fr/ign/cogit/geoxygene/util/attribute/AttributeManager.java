@@ -69,6 +69,7 @@ public class AttributeManager {
       feat.setFeatureType(new FeatureType());
 
       ft = (FeatureType) feat.getFeatureType();
+      ft.setGeometryType(feat.getGeom().getClass());
     }
 
     GF_AttributeType attType = (feat.getFeatureType())
