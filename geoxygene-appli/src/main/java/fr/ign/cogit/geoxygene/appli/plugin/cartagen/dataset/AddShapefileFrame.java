@@ -22,6 +22,7 @@ import fr.ign.cogit.cartagen.core.dataset.shapefile.ShapeFileClass;
 import fr.ign.cogit.cartagen.core.dataset.shapefile.ShapeFileDB;
 import fr.ign.cogit.cartagen.core.dataset.shapefile.ShapeFileLoader;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
+import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildPoint;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
@@ -57,6 +58,9 @@ public class AddShapefileFrame extends JFrame implements ActionListener {
     ShapeFileToLayerPanel buildingPtTab = new ShapeFileToLayerPanel(
         CartAGenDataSet.BUILD_PT_POP, null);
     tabs.addTab(buildingPtTab.getLayerName(), buildingPtTab);
+    ShapeFileToLayerPanel roadsTab = new ShapeFileToLayerPanel(
+        CartAGenDataSet.ROADS_POP, null);
+    tabs.addTab(roadsTab.getLayerName(), roadsTab);
     tabs.setSelectedIndex(0);
 
     // a panel for OK and Cancel buttons
@@ -137,6 +141,17 @@ public class AddShapefileFrame extends JFrame implements ActionListener {
         try {
           ShapeFileLoader.loadBuildingPointsFromSHP(panel.getFile().getPath(),
               currentDb.getDataSet());
+        } catch (IOException e1) {
+          e1.printStackTrace();
+        }
+      } else if (panel.getLayerName().equals(CartAGenDataSet.ROADS_POP)) {
+        // load railway lines from the shapefile
+        currentDb
+            .addClass(new ShapeFileClass(currentDb, panel.getFile().getParent(),
+                IRoadLine.FEAT_TYPE_NAME, ILineString.class));
+        try {
+          ShapeFileLoader.loadRoadLinesShapeFile(panel.getFile().getPath(),
+              SourceDLM.SPECIAL_CARTAGEN, currentDb.getDataSet());
         } catch (IOException e1) {
           e1.printStackTrace();
         }
