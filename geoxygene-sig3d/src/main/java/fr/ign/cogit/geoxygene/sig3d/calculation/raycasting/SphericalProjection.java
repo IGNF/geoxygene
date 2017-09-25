@@ -155,7 +155,7 @@ public class SphericalProjection {
 				continue;
 			}
 
-			if (!poly.isValid()) {
+			if (poly!= null && !poly.isValid()) {
 				
 				try{
 					poly = (IPolygon) poly.buffer(0.001);
@@ -166,6 +166,17 @@ public class SphericalProjection {
 
 			}
 
+
+			if (poly== null || !poly.isValid()) {
+			//	logger.(SphericalProjection.class.getName()+ " Polygon is invalid and removed");
+				
+				 this.featsToProject.remove(i);
+				 i--;
+				 nbPoly--;
+				continue;
+				
+			}
+			
 			ApproximatedPlanEquation eQ = new ApproximatedPlanEquation(poly);
 
 			double z = eQ.getNormale().getZ();
@@ -183,15 +194,6 @@ public class SphericalProjection {
 				logger.error(SphericalProjection.class.getName() + " Intersection is out of semi-line");
 			}
 
-			if (!poly.isValid()) {
-				logger.error(SphericalProjection.class.getName()+ " Polygon is invalid and removed");
-				
-				 this.featsToProject.remove(i);
-				 i--;
-				 nbPoly--;
-				continue;
-				
-			}
 
 			this.lFeatMapped.add(new DefaultFeature(poly));
 

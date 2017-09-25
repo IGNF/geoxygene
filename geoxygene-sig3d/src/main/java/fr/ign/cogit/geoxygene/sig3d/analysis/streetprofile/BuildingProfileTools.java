@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.sig3d.analysis.streetprofile;
 
 import java.awt.Color;
+import java.util.Collection;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -12,13 +13,14 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISurface;
 import fr.ign.cogit.geoxygene.convert.FromGeomToSurface;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
+import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
-import fr.ign.cogit.geoxygene.sig3d.analysis.roof.RoofDetection;
 import fr.ign.cogit.geoxygene.sig3d.equation.Grid3D;
 import fr.ign.cogit.geoxygene.sig3d.equation.LineEquation;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.util.attribute.AttributeManager;
+import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 /**
  * Classe d'utilitaires en lien avec le calcul de profil à partir de bâtiments
@@ -44,22 +46,30 @@ public class BuildingProfileTools {
 	 */
 	@SuppressWarnings("unchecked")
 	public static IFeatureCollection<IFeature> batimentPProche(IFeatureCollection<IFeature> collParcelle,
-			ILineString ls, IFeatureCollection<IFeature> collBati, IDirectPosition dpActu) {
-		IFeatureCollection<IFeature> toits = new FT_FeatureCollection<IFeature>();
-
-		boolean facesOrientation = true;
-		double seuil = 0.2;
-		IFeatureCollection<IFeature> toits_de_bati = RoofDetection.detectRoof(collBati, seuil, facesOrientation);
+			ILineString ls, IFeatureCollection<IFeature> collBati, IDirectPosition dpActu, IFeatureCollection<IFeature> toits) {
+	
 		double distMin = Double.POSITIVE_INFINITY;
 		IFeature featparce = null;
+		
+		
+		if(! collParcelle.hasSpatialIndex()){
+			collParcelle.initSpatialIndex(Tiling.class, false);
+		}
+		
+		if(! toits.hasSpatialIndex()){
+			toits.initSpatialIndex(Tiling.class, false);
+		}
+		
+		Collection<IFeature> feats = collParcelle.select(ls);
+		
 
-		for (int i = 0; i < collParcelle.size(); i++) {
-			IFeature parce = collParcelle.get(i);
+		for (IFeature parce:feats) {
+			
 
 			List<IOrientableSurface> lSurf = FromGeomToSurface.convertGeom(parce.getGeom());
 
-			for (IOrientableSurface line : lSurf) {
-				if (line.intersects(ls)) {
+			for (IOrientableSurface parceSurface : lSurf) {
+				if (parceSurface.intersects(ls)) {
 					double dist = parce.getGeom().distance(new GM_Point(dpActu));
 					if (dist < distMin) {
 						distMin = dist;
@@ -74,10 +84,14 @@ public class BuildingProfileTools {
 			return null;
 		}
 
-		for (int j = 0; j < toits_de_bati.size(); j++) {
-			IFeature toit = toits_de_bati.get(j);
-			boucleToit: for (IOrientableSurface surf : ((GM_MultiSurface<IOrientableSurface>) toit.getGeom())
-					.getList()) {
+		
+		 IFeatureCollection<IFeature> roofOut = new FT_FeatureCollection<>();
+		 
+		 
+		for (int j = 0; j < toits.size(); j++) {
+			IFeature toit = toits.get(j);
+			boucleToit: for (IOrientableSurface surf : FromGeomToSurface.convertGeom(toit.getGeom())
+					) {
 
 				List<IOrientableSurface> lSurf = FromGeomToSurface.convertGeom(featparce.getGeom());
 
@@ -87,14 +101,58 @@ public class BuildingProfileTools {
 						// On sait que le toit est dans la parcelle
 						// featparce = collBati.get(j);
 						// on ajoute dans la liste
-						toits.add(collBati.get(j));
+						roofOut.add(collBati.get(j));
 						// on passe à l'entité suivante
 						break boucleToit;
 					}
 				}
 			}
 		}
-		return toits;
+		return roofOut;
+	}
+	
+	
+	/**
+	 * Fonction récupérant le bâtiment le plus proche (de collBati) sur une des
+	 * parcelles (de collParcelle) dans sur la ligne définie par ls à partir du
+	 * point dpActu
+	 * 
+	 * @param collParcelle
+	 * @param ls
+	 * @param collBati
+	 * @param dpActu
+	 * @return le bâtiment le plus proche
+	 */
+	@SuppressWarnings("unchecked")
+	public static IFeatureCollection<IFeature> batimentPProcheNoParcel(
+			ILineString ls, IFeatureCollection<IFeature> collBati, IDirectPosition dpActu, IFeatureCollection<IFeature> toits) {
+
+		
+		if(! toits.hasSpatialIndex()){
+			toits.initSpatialIndex(Tiling.class, false);
+		}
+		
+		Collection<IFeature> feats = toits.select(ls.buffer(0.1));
+		
+
+		IFeatureCollection<IFeature> resultsOut = new FT_FeatureCollection<>();
+		
+		
+		for(IFeature featTemp : feats){
+			int index = toits.getElements().indexOf(featTemp);
+		
+			
+			resultsOut.add(collBati.get(index));
+			
+		}
+		
+		 
+		 
+	
+		return resultsOut;
+		
+		
+		
 	}
 
 	/**
