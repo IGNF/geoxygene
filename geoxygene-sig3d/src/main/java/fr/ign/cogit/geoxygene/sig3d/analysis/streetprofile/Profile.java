@@ -3,6 +3,7 @@ package fr.ign.cogit.geoxygene.sig3d.analysis.streetprofile;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -16,8 +17,10 @@ import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
 import fr.ign.cogit.geoxygene.convert.FromGeomToLineString;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
+import fr.ign.cogit.geoxygene.sig3d.analysis.roof.RoofDetection;
 import fr.ign.cogit.geoxygene.sig3d.convert.transform.Extrusion2DObject;
 import fr.ign.cogit.geoxygene.sig3d.equation.LineEquation;
+import fr.ign.cogit.geoxygene.sig3d.geometry.Box3D;
 import fr.ign.cogit.geoxygene.sig3d.util.correction.NormalCorrectionNonTriangulated;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
@@ -32,9 +35,7 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
  * 
  * 
  * Stage de Marina Fund : USAGE D'INDICATEUR 3D ET AMENAGEMENT URBAIN
- * 
- * @TODO : ajouter une petite méthode pour déterminer automatiquement altZmin et
- *       altZmax
+
  * 
  * @author MFund
  * @author MBrasebin
@@ -58,12 +59,12 @@ public class Profile {
 	/**
 	 * Altitude minimale prise en compte par le profile
 	 */
-	private double altZMin = 38;
+	private double altZMin = -1;
 
 	/**
 	 * Altitude maximale prise en compte par le profile
 	 */
-	private double altZMax = 74;
+	private double altZMax = -1;
 
 	/**
 	 * Pas le long de la voirie
@@ -79,6 +80,10 @@ public class Profile {
 	 * Profondeur jusqu'à laquelle les bâtiments sont pris en compte
 	 */
 	private double longCut = 40;
+
+	public void setLongCut(double longCut) {
+		this.longCut = longCut;
+	}
 
 	/**
 	 * Paramètre diminuant l'écart, dans le profil, entre les deux côtés de la
@@ -208,6 +213,63 @@ public class Profile {
 	 * Ensemble des points projetés
 	 */
 	private IFeatureCollection<IFeature> pproj = null;
+	
+	/**
+	 * Toits des bâtiments
+	 */
+	private IFeatureCollection<IFeature> buildingRoofs = null; 
+	
+	
+	
+	
+
+	public static Logger getLogger() {
+		return logger;
+	}
+
+	public double getAltZMin() {
+		return altZMin;
+	}
+
+	public double getAltZMax() {
+		return altZMax;
+	}
+
+	public double getPas() {
+		return pas;
+	}
+
+	public double getPasZ() {
+		return pasZ;
+	}
+
+	public double getLongCut() {
+		return longCut;
+	}
+
+	public double getDiff2DRep() {
+		return diff2DRep;
+	}
+
+	public boolean isDisplayInit() {
+		return displayInit;
+	}
+
+	public IFeatureCollection<IFeature> getBati() {
+		return bati;
+	}
+
+	public IFeatureCollection<IFeature> getParcelle() {
+		return parcelle;
+	}
+
+	public double getCounterX() {
+		return counterX;
+	}
+
+	public IFeatureCollection<IFeature> getBuildingRoofs() {
+		return buildingRoofs;
+	}
 
 	/**
 	 * 
@@ -234,6 +296,7 @@ public class Profile {
 	 */
 	public Profile(IFeatureCollection<? extends IFeature> roadsProfiled,
 			IFeatureCollection<? extends IFeature> buildings, IFeatureCollection<? extends IFeature> parcels) {
+		logger.setLevel(Level.ALL);
 		this.roadsProfiled = new FT_FeatureCollection<>();
 		this.roadsProfiled.addAll(roadsProfiled);
 		this.setBuildings(buildings);
@@ -307,19 +370,15 @@ public class Profile {
 	public void loadData(boolean toCorrect) {
 
 		logger.info("-------------------------------------------");
-		logger.info("Lancement de la fonction de tracé de profil");
-		logger.info("-------------------------------------------");
-		logger.info("Pas horizontal : " + pas);
-		logger.info("Pas vertical : " + pasZ);
-		logger.info("Altitude minimale : " + altZMin);
-		logger.info("Altitude maximale : " + altZMax);
-		logger.info("Seuil de coupure de rayon : " + longCut);
+		logger.info("Launching of profile estimation");
 		logger.info("-------------------------------------------");
 
+		
+	
 		// Chargement des données
 
 		logger.info("-------------------------------------------");
-		logger.info("Correction de triangulation du bâti");
+		logger.info("Correction of 3D buildings triangulation");
 
 		try {
 
@@ -330,6 +389,38 @@ public class Profile {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		
+		
+		if(altZMax == -1){
+			logger.info("Autodetermining max height");
+			altZMin = Double.POSITIVE_INFINITY;
+			for(IFeature feat:bati){
+				Box3D b= new Box3D(feat.getGeom());
+				
+				altZMin = Math.min(altZMin, b.getLLDP().getZ());
+				altZMax = Math.max(altZMax, b.getURDP().getZ());
+				
+			}
+			
+			diff2DRep = altZMin - 5;
+		}
+		
+		logger.info("Horizontal step : " + pas);
+		logger.info("Vertical step : " + pasZ);
+		logger.info("Maximal height : " + altZMin);
+		logger.info("Minimal height : " + altZMax);
+		logger.info("Maximal distance: " + longCut);
+		logger.info("-------------------------------------------");
+
+		
+		buildingRoofs = RoofDetection.detectRoof(bati,  0.1, false);
+		for(IFeature feat : buildingRoofs){
+			feat.setGeom(feat.getGeom().buffer(0.01));
+		}
+		
+	
+		
 
 		// -------------------------------------------------------------------------------------
 
@@ -357,10 +448,10 @@ public class Profile {
 	public void process() {
 
 		logger.info("-------------------------------------------");
-		logger.info("Lancement du calcul");
+		logger.info("Running ...");
 		logger.info("-------------------------------------------");
 
-		logger.info("Nombre de tronçons de rue : " + roadsProfiled.size());
+		logger.info("Number of roads : " + roadsProfiled.size());
 
 		IFeatureCollection<IFeature> coll_points = new FT_FeatureCollection<IFeature>();
 
@@ -471,8 +562,21 @@ public class Profile {
 			int stat1 = 0;
 			int stat2 = 0;
 
-			IFeatureCollection<IFeature> batiPP = BuildingProfileTools.batimentPProche(parcelle, ls, bati, dpPred);
-			IFeatureCollection<IFeature> batiPP1 = BuildingProfileTools.batimentPProche(parcelle, ls1, bati, dpPred);
+			IFeatureCollection<IFeature> batiPP = null; 
+			IFeatureCollection<IFeature> batiPP1 = null;
+			
+			if(parcelle == null || parcelle.isEmpty()){
+				batiPP = BuildingProfileTools.batimentPProcheNoParcel( ls, bati, dpPred, buildingRoofs);
+				batiPP1 = BuildingProfileTools.batimentPProcheNoParcel(ls1, bati, dpPred, buildingRoofs);
+			}else{
+				batiPP =  BuildingProfileTools.batimentPProche(parcelle, ls, bati, dpPred, buildingRoofs);
+				batiPP1=  BuildingProfileTools.batimentPProche(parcelle, ls1, bati, dpPred, buildingRoofs);
+			}
+			
+			
+
+			
+			
 
 			if (batiPP == null) {
 				stat1 = 2;
@@ -596,7 +700,7 @@ public class Profile {
 
 		if (!displayInit) {
 			logger.info("-------------------------------------------");
-			logger.info("Fin de la procédure de calcul");
+			logger.info("End of calculation");
 			return;
 
 		}
@@ -616,9 +720,9 @@ public class Profile {
 	public void exportPoints(String output) {
 
 		logger.info("-------------------------------------------");
-		logger.info("Sauvegarde des résultats de points");
-
-		logger.info("Fichiers brut : " + output);
+		logger.info("Results export");
+		logger.info("Number of points : " + pproj.size());
+		logger.info("File location : " + output);
 
 		ShapefileWriter.write(pproj, output);
 

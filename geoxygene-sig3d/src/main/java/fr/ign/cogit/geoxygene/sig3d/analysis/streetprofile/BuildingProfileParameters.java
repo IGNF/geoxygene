@@ -12,7 +12,7 @@ package fr.ign.cogit.geoxygene.sig3d.analysis.streetprofile;
 public class BuildingProfileParameters {
 
   //Nom de l'identifiant des bâtiments
-   public final static String ID = "FID";
+   public  static String ID = "FID";
    
    
    //Attributes stored in profile points
