@@ -44,6 +44,8 @@ import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.SelectionUtil;
 import fr.ign.cogit.geoxygene.generalisation.Filtering;
+import fr.ign.cogit.geoxygene.generalisation.GaussianFilter;
+import fr.ign.cogit.geoxygene.spatial.geomengine.GeometryEngine;
 import fr.ign.cogit.geoxygene.style.Layer;
 
 /**
@@ -128,6 +130,34 @@ public class AlgorithmsMenu extends JMenu {
       }
     });
     mLineSimplif.add(mRaposo);
+    JMenuItem mSmoothing = new JMenuItem("Gaussian Smoothing");
+    mSmoothing.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent arg0) {
+        GeOxygeneApplication appli = CartAGenPlugin.getInstance()
+            .getApplication();
+        double seuil = Double
+            .valueOf(JOptionPane.showInputDialog("Gaussian sigma threshold"));
+        double step = Double
+            .valueOf(JOptionPane.showInputDialog("line subsampling step"));
+        for (IFeature feat : SelectionUtil.getSelectedObjects(appli)) {
+          IGeometry geom = feat.getGeom();
+          if (geom instanceof ILineString) {
+            IGeometry generalised = GaussianFilter
+                .gaussianFilter((ILineString) geom, seuil, step);
+            if (generalised != null)
+              feat.setGeom(generalised);
+          } else if (geom instanceof IPolygon) {
+            ILineString generalised = GaussianFilter.gaussianFilter(
+                ((IPolygon) geom).exteriorLineString(), seuil, step);
+            if (generalised != null)
+              feat.setGeom(
+                  GeometryEngine.getFactory().createIPolygon(generalised));
+          }
+        }
+      }
+    });
+    mLineSimplif.add(mSmoothing);
 
     // displacement menu
     JMenu mDisplacement = new JMenu("Displacement");

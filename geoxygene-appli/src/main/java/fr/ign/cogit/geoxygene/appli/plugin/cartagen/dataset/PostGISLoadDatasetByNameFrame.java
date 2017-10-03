@@ -46,7 +46,7 @@ import fr.ign.cogit.cartagen.core.dataset.GeneObjImplementation;
 import fr.ign.cogit.cartagen.core.dataset.postgis.PostGISCartAGenDB;
 import fr.ign.cogit.cartagen.core.dataset.postgis.PostGISClass;
 import fr.ign.cogit.cartagen.core.dataset.postgis.PostGISLoader;
-import fr.ign.cogit.cartagen.core.dataset.postgis.PostGISMappingXMLParser;
+import fr.ign.cogit.cartagen.core.dataset.postgis.MappingXMLParser;
 import fr.ign.cogit.cartagen.core.dataset.postgis.PostGISToLayerMapping;
 import fr.ign.cogit.cartagen.core.dataset.postgis.PostgisDB;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -413,7 +413,7 @@ public class PostGISLoadDatasetByNameFrame extends JFrame
       }
 
       // Creates the mapping by reading the xml file
-      PostGISMappingXMLParser calacMappingXMLParser = new PostGISMappingXMLParser(
+      MappingXMLParser calacMappingXMLParser = new MappingXMLParser(
           xmlFile);
       PostGISToLayerMapping mapping = null;
       try {

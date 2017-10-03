@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.appli.plugin.cartagen.dataset;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 import org.apache.log4j.Logger;
 
@@ -9,6 +10,9 @@ import fr.ign.cogit.cartagen.core.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.core.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.core.dataset.shapefile.ShapeFileDB;
 import fr.ign.cogit.cartagen.core.dataset.shapefile.ShapeFileLoader;
+import fr.ign.cogit.cartagen.core.dataset.shapefile.ShapeToLayerMapping;
+import fr.ign.cogit.cartagen.core.dataset.shapefile.ShapeToLayerMapping.ShapeToLayerMatching;
+import fr.ign.cogit.cartagen.core.genericschema.AbstractCreationFactory;
 import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
@@ -40,6 +44,60 @@ public class CartAGenLoader {
     super();
   }
 
+  /**
+   * Load Shapefile data with a progress bar.
+   * @param absolutePath
+   * @param sourceDlm
+   * @param scale
+   * @param dataset
+   * @param shapeMapping
+   */
+  public void loadData(String absolutePath, SourceDLM sourceDlm, int scale,
+      CartAGenDataSet dataset, ShapeToLayerMapping shapeMapping) {
+
+    ProgressFrame progressFrame = new ProgressFrame(
+        "Data loading in progress...", true);
+    progressFrame.setTextAndValue("Loading shapefiles", 0);
+    progressFrame.setVisible(true);
+
+    AbstractCreationFactory factory = shapeMapping.getGeneObjImplementation()
+        .getCreationFactory();
+    try {
+      double progressStep = 100.0 / shapeMapping.getSize();
+      double progress = 0;
+      for (ShapeToLayerMatching matching : shapeMapping.getMatchings()) {
+        progress += progressStep;
+        progressFrame.setTextAndValue("Loading shapefiles",
+            Math.round((float) progress));
+        String path = absolutePath + "/" + matching.getShapeLayer() + ".shp";
+        ShapeFileLoader.genericShapefileLoader(path, dataset,
+            matching.getShapeLayer(), matching.getCreationMethod(), factory,
+            matching.getListAttr(), true);
+      }
+
+      if (logger.isInfoEnabled()) {
+        logger.info("end data loading");
+      }
+
+    } catch (NoSuchFieldException e) {
+      e.printStackTrace();
+    } catch (SecurityException e) {
+      e.printStackTrace();
+    } catch (InvocationTargetException e) {
+      e.printStackTrace();
+    } finally {
+      progressFrame.setVisible(false);
+
+      progressFrame = null;
+    }
+
+    if (logger.isInfoEnabled()) {
+      logger.info("end data loading");
+    }
+
+  }
+
+  @Deprecated
   public void loadData(String absolutePath, SourceDLM bdsource, int scale,
       CartAGenDataSet dataset) {
 
@@ -60,6 +118,7 @@ public class CartAGenLoader {
 
   }
 
+  @Deprecated
   public void loadData_Special_Cartagen(String absolutePath,
       SourceDLM sourceDlm, int scale) {
 
@@ -245,6 +304,7 @@ public class CartAGenLoader {
 
   }
 
+  @Deprecated
   public void loadData_BDCarto(String absolutePath, int scale,
       CartAGenDataSet dataSet) {
 
@@ -266,6 +326,7 @@ public class CartAGenLoader {
 
   }
 
+  @Deprecated
   public void loadData_BDTopoV2(String absolutePath, int scale,
       CartAGenDataSet dataSet) {
 
