@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.NoninvertibleTransformException;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -35,6 +36,9 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 import javax.swing.text.SimpleAttributeSet;
 import javax.xml.bind.JAXBException;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
 
 import fr.ign.cogit.cartagen.core.dataset.CartAGenDataSet;
 import fr.ign.cogit.cartagen.core.dataset.CartAGenDoc;
@@ -42,7 +46,10 @@ import fr.ign.cogit.cartagen.core.dataset.DataSetZone;
 import fr.ign.cogit.cartagen.core.dataset.DigitalCartographicModel;
 import fr.ign.cogit.cartagen.core.dataset.DigitalLandscapeModel;
 import fr.ign.cogit.cartagen.core.dataset.SourceDLM;
+import fr.ign.cogit.cartagen.core.dataset.postgis.MappingXMLParser;
 import fr.ign.cogit.cartagen.core.dataset.shapefile.ShapeFileDB;
+import fr.ign.cogit.cartagen.core.dataset.shapefile.ShapeToLayerMapping;
+import fr.ign.cogit.geoxygene.appli.panel.XMLFileFilter;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 
 public class ImportDataFrame2 extends JFrame implements ActionListener {
@@ -63,8 +70,7 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
     if (ImportDataFrame2.importDataFrame == null) {
       synchronized (EnrichFrame.class) {
         if (ImportDataFrame2.importDataFrame == null) {
-          ImportDataFrame2.importDataFrame = new ImportDataFrame2(isInitial,
-              plugIn);
+          ImportDataFrame2.importDataFrame = new ImportDataFrame2(plugIn);
         }
       }
     }
@@ -78,22 +84,21 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
   private String datasetName;
   private String filePath;
 
-  private boolean isInitial = false;
+  private File xmlFile;
   public static String extentClass = null;
   public static boolean extentFile = false;
 
+  private JPanel pMapping;
   private final JComboBox<SourceDLM> cbSourceDlm;
   private final JComboBox<String> cbType;
-  private final JTextField txtZone, txtDataset, txtScale, txtPath, txtExtent;
-  private final JButton btnBrowse;
+  private final JTextField txtZone, txtDataset, txtScale, txtPath, txtExtent,
+      txtXML;
+  private final JButton btnBrowse, btnXML;
   private final JRadioButton rbComputed, rbFile;
 
-  public ImportDataFrame2(boolean isInitial, CartAGenPlugin plugIn) {
-    super("Import Shapefile data into a new dataset "
-        + (isInitial ? "initial" : ""));
-    System.out.println(
-        "Import Shapefile data into a new dataset -- initial " + isInitial);
-    this.isInitial = isInitial;
+  public ImportDataFrame2(CartAGenPlugin plugIn) {
+    super("Import Shapefile data into a new dataset");
+    System.out.println("Import Shapefile data into a new dataset");
     this.plugIn = plugIn;
     this.setSize(600, 300);
     this.setAlwaysOnTop(true);
@@ -121,12 +126,27 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
     this.txtExtent.setMaximumSize(new Dimension(70, 20));
     this.txtExtent.setMinimumSize(new Dimension(70, 20));
     Border blackLine = BorderFactory.createLineBorder(Color.BLACK);
+
+    // a panel for the mapping XML file
+    pMapping = new JPanel();
+    txtXML = new JTextField("xml/mapping_test_data.xml");
+    txtXML.setMaximumSize(new Dimension(150, 20));
+    txtXML.setMinimumSize(new Dimension(150, 20));
+    txtXML.setPreferredSize(new Dimension(150, 20));
+    btnXML = new JButton(new ImageIcon(
+        this.getClass().getClassLoader().getResource("images/browse.jpeg")));
+    btnXML.addActionListener(this);
+    btnXML.setActionCommand("browseXML");
+    pMapping.add(new JLabel("mapping xml file: "));
+    pMapping.add(txtXML);
+    pMapping.add(btnXML);
+    pMapping.setLayout(new BoxLayout(pMapping, BoxLayout.X_AXIS));
+
     JPanel zonePanel1 = new JPanel();
     zonePanel1.add(new JLabel("Zone name : "));
     zonePanel1.add(this.txtZone);
     zonePanel1.add(Box.createHorizontalGlue());
-    zonePanel1.add(new JLabel("Source DLM : "));
-    zonePanel1.add(this.cbSourceDlm);
+    zonePanel1.add(pMapping);
     zonePanel1.setLayout(new BoxLayout(zonePanel1, BoxLayout.X_AXIS));
     JPanel zonePanel2 = new JPanel();
     zonePanel2.add(new JLabel("Zone extent : "));
@@ -254,26 +274,44 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
       File file = fc.getSelectedFile();
       this.txtPath.setText(file.getPath());
 
+    } else if (e.getActionCommand().equals("browseXML")) {
+      JFileChooser fc = new JFileChooser();
+      fc.setFileFilter(new XMLFileFilter());
+      int returnVal = fc.showOpenDialog(this);
+      if (returnVal == JFileChooser.APPROVE_OPTION) {
+        xmlFile = fc.getSelectedFile();
+        txtXML.setText(xmlFile.getPath());
+      }
     } else if (e.getActionCommand().equals("OK")) {
 
-      if (!this.isInitial) {
-        // originally this is void
-        this.importInitialDataSet(
-            (SourceDLM) this.cbSourceDlm.getSelectedItem(),
-            Integer.parseInt(this.txtScale.getText()), this.txtZone.getText(),
-            this.txtDataset.getText(), this.txtPath.getText(),
-            this.txtExtent.getText(), this.rbFile.isSelected(),
-            this.cbType.getSelectedItem().equals("DLM"), true);
-      } // end of if(!isInitial
-      else {
-        this.importInitialDataSet(
-            (SourceDLM) this.cbSourceDlm.getSelectedItem(),
-            Integer.parseInt(this.txtScale.getText()), this.txtZone.getText(),
-            this.txtDataset.getText(), this.txtPath.getText(),
-            this.txtExtent.getText(), this.rbFile.isSelected(),
-            this.cbType.getSelectedItem().equals("DLM"), false);
-
+      // check if xmlFile is not nul
+      if (txtXML.getText().equals("")) {
+        txtXML.setText("xml/mapping_test_data.xml");
       }
+      if (xmlFile == null) {
+        txtXML.setText("xml/mapping_test_data.xml");
+        xmlFile = new File(this.getClass().getClassLoader()
+            .getResource(txtXML.getText()).getPath());
+      }
+
+      // Creates the mapping by reading the xml file
+      MappingXMLParser mappingXMLParser = new MappingXMLParser(xmlFile);
+      ShapeToLayerMapping mapping = null;
+      try {
+        mapping = mappingXMLParser.parseShapeMapping();
+      } catch (ParserConfigurationException e1) {
+        e1.printStackTrace();
+      } catch (SAXException e1) {
+        e1.printStackTrace();
+      } catch (IOException e1) {
+        e1.printStackTrace();
+      }
+
+      this.importDataSet((SourceDLM) this.cbSourceDlm.getSelectedItem(),
+          Integer.parseInt(this.txtScale.getText()), this.txtZone.getText(),
+          this.txtDataset.getText(), this.txtPath.getText(),
+          this.txtExtent.getText(), this.rbFile.isSelected(),
+          this.cbType.getSelectedItem().equals("DLM"), true, mapping);
 
       try {
         plugIn.getProjectFrameFromDbName(this.txtDataset.getText())
@@ -286,9 +324,10 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
 
   }
 
-  public void importInitialDataSet(SourceDLM source, int scale, String txtZone,
+  public void importDataSet(SourceDLM source, int scale, String txtZone,
       String txtDataset, String filePath, String txtExtent,
-      boolean rbFileSelected, boolean dlmSelected, boolean withEnrichment) {
+      boolean rbFileSelected, boolean dlmSelected, boolean withEnrichment,
+      ShapeToLayerMapping shapefileMapping) {
     plugIn.setCheminDonneesInitial(this.filePath);
     this.setVisible(false);
     this.sourceDlm = source;
@@ -320,8 +359,8 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
 
     CartAGenDoc.getInstance().setInitialDataset(dataset);
     CartAGenDoc.getInstance().setCurrentDataset(dataset);
-    new CartAGenLoader().loadData(this.filePath, this.sourceDlm, scale,
-        dataset);
+    new CartAGenLoader().loadData(this.filePath, this.sourceDlm, scale, dataset,
+        shapefileMapping);
 
     // CartagenApplication.getInstance().loadDat(sourceDlm, scale);
 

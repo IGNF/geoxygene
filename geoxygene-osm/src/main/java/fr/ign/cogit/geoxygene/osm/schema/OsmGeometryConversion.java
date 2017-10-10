@@ -24,6 +24,14 @@ public class OsmGeometryConversion {
    */
   private String epsg = "2154";
 
+  public String getEpsg() {
+    return epsg;
+  }
+
+  public void setEpsg(String epsg) {
+    this.epsg = epsg;
+  }
+
   public OsmGeometryConversion(String epsg) {
     if (epsg != null && !epsg.equals(""))
       this.epsg = epsg;
@@ -53,7 +61,7 @@ public class OsmGeometryConversion {
       if (vertex != null) {
         IDirectPosition pt = CRSConversion
             .changeCRS(new GM_Point(vertex.getPosition()), "4326", epsg, false,
-                false)
+                true)
             .coord().get(0);
         coord.add(pt);
       }
@@ -150,7 +158,7 @@ public class OsmGeometryConversion {
       if (vertex != null) {
         IDirectPosition pt = CRSConversion
             .changeCRS(new GM_Point(vertex.getPosition()), "4326", epsg, false,
-                false)
+                true)
             .coord().get(0);
         coord.add(pt);
       }
@@ -168,7 +176,7 @@ public class OsmGeometryConversion {
 
   public IPoint convertOsmPoint(OSMNode node) throws Exception {
     IDirectPosition pt = CRSConversion
-        .changeCRS(new GM_Point(node.getPosition()), "4326", epsg, false, false)
+        .changeCRS(new GM_Point(node.getPosition()), "4326", epsg, false, true)
         .coord().get(0);
     return pt.toGM_Point();
   }

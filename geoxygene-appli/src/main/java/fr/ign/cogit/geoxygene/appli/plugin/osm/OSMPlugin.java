@@ -444,7 +444,7 @@ public class OSMPlugin
         usedBtn.setActionCommand("used");
         add(usedBtn, cc.xy(6, 3));
         usedCombo = new JComboBox<String>(
-            (String[]) currentProjections.keySet().toArray());
+            (String[]) currentProjections.keySet().toArray(new String[0]));
         usedCombo.setPreferredSize(new Dimension(130, 20));
         usedCombo.setMaximumSize(new Dimension(130, 20));
         usedCombo.setMinimumSize(new Dimension(130, 20));

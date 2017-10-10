@@ -149,7 +149,7 @@ public class GeneralisationMenus {
     parent.add(menuDataset, getMenuLocation(isBar, parent));
     parent.add(this.dataThemesMenu, getMenuLocation(isBar, parent));
 
-    String configFilePath = "/ConfigGUIComponents.xml";
+    String configFilePath = "/xml/CartAGenGUIComponents.xml";
     // parse the Components config file
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     DocumentBuilder db = null;
