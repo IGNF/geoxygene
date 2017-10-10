@@ -21,11 +21,11 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
 
 /**
  * 
- *        This software is released under the licence CeCILL
+ * This software is released under the licence CeCILL
  * 
- *        see LICENSE.TXT
+ * see LICENSE.TXT
  * 
- *        see <http://www.cecill.info/ http://www.cecill.info/
+ * see <http://www.cecill.info/ http://www.cecill.info/
  * 
  * 
  * 
@@ -36,127 +36,125 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
  * @version 1.7
  * 
  * 
- **/ 
+ **/
 public class NormalCorrectionNonTriangulated {
 
-  public static IFeatureCollection<? extends IFeature> correct(
-      IFeatureCollection<IFeature> featColl) throws Exception {
+	public static IFeatureCollection<? extends IFeature> correct(IFeatureCollection<IFeature> featColl)
+			throws Exception {
 
-    IFeatureCollection<IFeature> featC = new FT_FeatureCollection<IFeature>();
-    int nbElem = featColl.size();
+		IFeatureCollection<IFeature> featC = new FT_FeatureCollection<IFeature>();
+		int nbElem = featColl.size();
 
-    for (int i = 0; i < nbElem; i++) {
+		for (int i = 0; i < nbElem; i++) {
+	
+			try {
+				IFeature feat = (IFeature) featColl.get(i);
 
-      try {
-        IFeature feat = (IFeature) featColl.get(i).cloneGeom();
+				correct(feat.getGeom());
 
-        correct(feat.getGeom());
+				featC.add(feat);
 
-        featC.add(feat);
+			} catch (CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
-      } catch (CloneNotSupportedException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-    }
+		return featC;
+	}
 
-    return featC;
-  }
+	public static void correct(IGeometry geom) throws Exception {
 
-  public static void correct(IGeometry geom) throws Exception {
+		IMultiSurface<IOrientableSurface> iMS = FromGeomToSurface.convertMSGeom(geom);
 
-    IMultiSurface<IOrientableSurface> iMS = FromGeomToSurface
-        .convertMSGeom(geom);
+		IMultiSurface<IOrientableSurface> iMSHor = Util.detectRoof(iMS.getList(), 0.2);
 
-    IMultiSurface<IOrientableSurface> iMSHor = Util.detectRoof(iMS.getList(),
-        0.2);
+		// On inverse si le le z de la normale est négative (pour les toits)
 
-    // On inverse si le le z de la normale est négative (pour les toits)
+		if (iMSHor != null) {
+			for (IOrientableSurface os : iMSHor) {
 
-    for (IOrientableSurface os : iMSHor) {
+				IPolygon p = (IPolygon) os;
+				ApproximatedPlanEquation ap = new ApproximatedPlanEquation(p);
 
-      IPolygon p = (IPolygon) os;
-      ApproximatedPlanEquation ap = new ApproximatedPlanEquation(p);
+				Vecteur v = ap.getNormale();
+				v.normalise();
 
-      Vecteur v = ap.getNormale();
-      v.normalise();
+				if (v.getZ() < 0) {
 
-      if (v.getZ() < 0) {
+					reverse(p);
 
-        reverse(p);
+				}
 
-      }
+			}
+		}
 
-    }
+		IMultiSurface<IOrientableSurface> iMSVert = Util.detectVertical(iMS.getList(), 0.2);
 
-    IMultiSurface<IOrientableSurface> iMSVert = Util.detectVertical(iMS.getList(), 0.2);
+		if (iMSHor != null && iMSVert != null) {
+			for (IOrientableSurface os : iMSVert) {
 
-    for (IOrientableSurface os : iMSVert) {
+				IPolygon p = (IPolygon) os;
+				ApproximatedPlanEquation ap = new ApproximatedPlanEquation(p);
 
-      IPolygon p = (IPolygon) os;
-      ApproximatedPlanEquation ap = new ApproximatedPlanEquation(p);
+				IDirectPosition dp = Util.centerOf(p.coord());
 
-      IDirectPosition dp = Util.centerOf(p.coord());
+				Vecteur v = ap.getNormale();
+				v.normalise();
+				v = v.multConstante(0.1);
 
-      Vecteur v = ap.getNormale();
-      v.normalise();
-      v = v.multConstante(0.1);
+				boolean intersectsRoof = intersectRoof(iMSHor, dp, v);
 
-      boolean intersectsRoof = intersectRoof(iMSHor, dp, v);
+				if (intersectsRoof) {
 
-      if (intersectsRoof) {
+					reverse(p);
+				}
+			}
+		}
 
-        reverse(p);
-      }
+	}
 
-    }
-     
+	private static boolean intersectRoof(IMultiSurface<IOrientableSurface> iMSHor, IDirectPosition dp, Vecteur v) {
 
-  }
+		IDirectPositionList dpl = new DirectPositionList();
+		dpl.add(dp);
+		dpl.add(v.translate(dp));
 
-  private static boolean intersectRoof(
-      IMultiSurface<IOrientableSurface> iMSHor, IDirectPosition dp, Vecteur v) {
+		ILineString ls = new GM_LineString(dpl);
+		IGeometry buffer = ls.buffer(0.1);
 
-    IDirectPositionList dpl = new DirectPositionList();
-    dpl.add(dp);
-    dpl.add(v.translate(dp));
+		for (IOrientableSurface os : iMSHor) {
 
-    ILineString ls = new GM_LineString(dpl);
+			if (buffer.intersects(os)) {//.buffer(0.1)
+				return true;
+			}
 
-    for (IOrientableSurface os : iMSHor) {
+		}
 
-      if (ls.intersects(os.buffer(0.1))) {
-        return true;
-      }
+		return false;
+	}
 
-    }
-    
-    
+	private static void reverse(IPolygon p) throws Exception {
 
-    return false;
-  }
+		IRing r = p.getExterior();
+		p.setExterior(reverse(r));
 
-  private static void reverse(IPolygon p) throws Exception {
+		int nbInt = p.getInterior().size();
 
-    IRing r = p.getExterior();
-    p.setExterior(reverse(r));
+		for (int i = 0; i < nbInt; i++) {
 
-    int nbInt = p.getInterior().size();
+			p.setInterior(i, reverse(p.getInterior(i)));
+		}
 
-    for (int i = 0; i < nbInt; i++) {
+	}
 
-      p.setInterior(i, reverse(p.getInterior(i)));
-    }
+	private static IRing reverse(IRing r) throws Exception {
 
-  }
+		IDirectPositionList dpl = r.coord();
+		dpl = dpl.reverse();
 
-  private static IRing reverse(IRing r) throws Exception {
+		return new GM_Ring(new GM_LineString(dpl), 0);
 
-    IDirectPositionList dpl = r.coord();
-    dpl = dpl.reverse();
-
-    return new GM_Ring(new GM_LineString(dpl), 0);
-
-  }
+	}
 
 }

@@ -85,7 +85,7 @@ public class RoofDetection {
     }
 
     if (lOSOut == null) {
-      return null;
+      return new GM_MultiSurface<>();
     }
 
     Box3D b = new Box3D(geom);

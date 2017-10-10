@@ -33,7 +33,8 @@ public class LineEquation {
    * Equation de la forme : x = a1 * t + a0 y = b1 * t + b0 z = c1 * t + c0
    */
   private double a0, a1, b0, b1, c0, c1;
-  public static double EPSILON = 0.01;
+  public static double EPSILON = 0.1;
+
 
   /**
    * Permet de générer une équation sous la forme

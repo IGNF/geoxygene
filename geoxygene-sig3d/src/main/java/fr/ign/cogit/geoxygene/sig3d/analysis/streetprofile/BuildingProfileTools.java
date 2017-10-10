@@ -10,14 +10,11 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
-import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISurface;
 import fr.ign.cogit.geoxygene.convert.FromGeomToSurface;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.sig3d.equation.Grid3D;
 import fr.ign.cogit.geoxygene.sig3d.equation.LineEquation;
-import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.util.attribute.AttributeManager;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
@@ -46,25 +43,23 @@ public class BuildingProfileTools {
 	 */
 	@SuppressWarnings("unchecked")
 	public static IFeatureCollection<IFeature> batimentPProche(IFeatureCollection<IFeature> collParcelle,
-			ILineString ls, IFeatureCollection<IFeature> collBati, IDirectPosition dpActu, IFeatureCollection<IFeature> toits) {
-	
+			ILineString ls, IFeatureCollection<IFeature> collBati, IDirectPosition dpActu,
+			IFeatureCollection<IFeature> toits) {
+
 		double distMin = Double.POSITIVE_INFINITY;
 		IFeature featparce = null;
-		
-		
-		if(! collParcelle.hasSpatialIndex()){
+
+		if (!collParcelle.hasSpatialIndex()) {
 			collParcelle.initSpatialIndex(Tiling.class, false);
 		}
-		
-		if(! toits.hasSpatialIndex()){
+
+		if (!toits.hasSpatialIndex()) {
 			toits.initSpatialIndex(Tiling.class, false);
 		}
-		
-		Collection<IFeature> feats = collParcelle.select(ls);
-		
 
-		for (IFeature parce:feats) {
-			
+		Collection<IFeature> feats = collParcelle.select(ls);
+
+		for (IFeature parce : feats) {
 
 			List<IOrientableSurface> lSurf = FromGeomToSurface.convertGeom(parce.getGeom());
 
@@ -84,14 +79,11 @@ public class BuildingProfileTools {
 			return null;
 		}
 
-		
-		 IFeatureCollection<IFeature> roofOut = new FT_FeatureCollection<>();
-		 
-		 
+		IFeatureCollection<IFeature> roofOut = new FT_FeatureCollection<>();
+
 		for (int j = 0; j < toits.size(); j++) {
 			IFeature toit = toits.get(j);
-			boucleToit: for (IOrientableSurface surf : FromGeomToSurface.convertGeom(toit.getGeom())
-					) {
+			boucleToit: for (IOrientableSurface surf : FromGeomToSurface.convertGeom(toit.getGeom())) {
 
 				List<IOrientableSurface> lSurf = FromGeomToSurface.convertGeom(featparce.getGeom());
 
@@ -110,8 +102,7 @@ public class BuildingProfileTools {
 		}
 		return roofOut;
 	}
-	
-	
+
 	/**
 	 * Fonction récupérant le bâtiment le plus proche (de collBati) sur une des
 	 * parcelles (de collParcelle) dans sur la ligne définie par ls à partir du
@@ -124,35 +115,26 @@ public class BuildingProfileTools {
 	 * @return le bâtiment le plus proche
 	 */
 	@SuppressWarnings("unchecked")
-	public static IFeatureCollection<IFeature> batimentPProcheNoParcel(
-			ILineString ls, IFeatureCollection<IFeature> collBati, IDirectPosition dpActu, IFeatureCollection<IFeature> toits) {
+	public static IFeatureCollection<IFeature> batimentPProcheNoParcel(ILineString ls,
+			IFeatureCollection<IFeature> collBati, IDirectPosition dpActu, IFeatureCollection<IFeature> toits) {
 
-		
-		if(! toits.hasSpatialIndex()){
+		if (!toits.hasSpatialIndex()) {
 			toits.initSpatialIndex(Tiling.class, false);
 		}
-		
-		Collection<IFeature> feats = toits.select(ls.buffer(0.1));
-		
+
+		Collection<IFeature> feats = toits.select(ls);
 
 		IFeatureCollection<IFeature> resultsOut = new FT_FeatureCollection<>();
-		
-		
-		for(IFeature featTemp : feats){
+
+		for (IFeature featTemp : feats) {
 			int index = toits.getElements().indexOf(featTemp);
-		
-			
+
 			resultsOut.add(collBati.get(index));
-			
+
 		}
-		
-		 
-		 
-	
+
 		return resultsOut;
-		
-		
-		
+
 	}
 
 	/**
@@ -176,9 +158,9 @@ public class BuildingProfileTools {
 			// transformer la géométrie en une liste polygone
 			List<IOrientableSurface> lOS = FromGeomToSurface.convertGeom(b1.getGeom());
 			// On va parcourir les surfaces
-			for (int j = 0; j < lOS.size(); j++) {
+			for (IOrientableSurface surf : lOS) {
 				// On traite une surface surf
-				ISurface surf = (ISurface) lOS.get(j);
+
 				// On caste la surface en polygone
 				IPolygon p = (IPolygon) surf;
 				IDirectPosition pointP = Grid3D.intersectionLP(ligneequa, p);

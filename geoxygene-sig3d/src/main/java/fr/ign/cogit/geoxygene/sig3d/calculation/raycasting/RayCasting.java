@@ -35,11 +35,11 @@ import fr.ign.cogit.geoxygene.util.attribute.AttributeManager;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 /**
- *         This software is released under the licence CeCILL
+ * This software is released under the licence CeCILL
  * 
- *        see LICENSE.TXT
+ * see LICENSE.TXT
  * 
- *        see <http://www.cecill.info/ http://www.cecill.info/
+ * see <http://www.cecill.info/ http://www.cecill.info/
  * 
  * 
  * 
@@ -50,922 +50,908 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * @version 1.7
  */
 public class RayCasting {
-	
-	
-	
-	  private final static Logger logger = Logger.getLogger(RayCasting.class);
-  /**
-   * Epsilon pour arrondir les zéro
-   */
-  public static double EPSILON = 0.001;
-
-  public static int TYPE_FIRST_POINT_INTERSECTED = 0;
-  public static int TYPE_POINT_ALL_INTERSECTION = 1;
-  public static int TYPE_FIRST_POINT_AND_SPHERE = 2;
-  public static int TYPE_CAST_SOLID_POINT = 3;
-  public static int TYPE_CAST_SOLID_POINT_GAUSS = 4;
-
-  public static int TYPE_FIRST_AND_SPHERE_OPTIMIZED = 98;
-  public static int TYPE_FIRST_POINT_INTERSECTED_OPTIMIZED = 99;
-
-  // Rajoute une vérification supplémentaire
-  // Permet de considérer comme intersection des points qui
-  // Touchent presque les arrêtes (distance < EPSILON)
-  public static boolean CHECK_IS_ON_EDGE = false;
-
-  private GM_Solid solGenerated = null;
-  private GM_Polygon polGenerated = null;
-
-  private IDirectPosition centre;
-  private IFeatureCollection<IFeature> lFeat;
-  private int nbPointsCouronnes;
-  private double rayon;
-  private IDirectPositionList dpGenerated;
-  private int lastTypeResult;
-  private boolean isSphere;
-  private int resultType;
-
-  /**
-   * 
-   * 
-   * Permet d'instancier et d'effectuer un lancer de rayon sur la demi-sphère
-   * positive
-   * 
-   * @param centre le centre du lancer de rayon
-   * @param lFeat les entités (qui doivent pour l'instant être surfaciques) sur
-   *          lesquels on effectue le lancer
-   * @param nbPointsCouronnes le nombre de point sur une couronne
-   * @param rayon le rayon dans lequel on effectule lancer
-   * @param resultType le type de résultat que l'on souhaite
-   * @param aims les points que l'on souhaite viser (cas de :
-   *          TYPE_CAST_SOLID_POINT)
-   * @param sphere indique si le lancer de rayon se fait sur une sphère ou une
-   *          demi-sphère. Ne vaut pas pour le cas TYPE_CAST_SOLID_POINT
-   * 
-   */
-  public RayCasting(IDirectPosition centre, IFeatureCollection<IFeature> lFeat,
-      int nbPointsCouronnes, double rayon, int resultType, boolean isSphere) {
-    this.centre = centre;
-    this.lFeat = lFeat;
-    this.nbPointsCouronnes = nbPointsCouronnes;
-    this.rayon = rayon;
-    this.lastTypeResult = resultType;
-    this.isSphere = isSphere;
-
-    this.resultType = resultType;
-
-  }
-
-  public void cast() {
-    if (resultType == RayCasting.TYPE_CAST_SOLID_POINT) {
-
-      this.dpGenerated = this.castOnSolidPosition(centre, lFeat,
-          nbPointsCouronnes, rayon, resultType);
-    } else if (resultType == RayCasting.TYPE_FIRST_AND_SPHERE_OPTIMIZED) {
-
-      this.dpGenerated = this.castOptimized(centre, lFeat, nbPointsCouronnes,
-          rayon, isSphere);
-
-    } else {
-      this.dpGenerated = this.cast(centre, lFeat, nbPointsCouronnes, rayon,
-          resultType, isSphere);
-    }
-
-  }
-
-  /**
-   * Methode permettant de créer un lancer de rayon positive
-   * 
-   * @param centre le centre du lancer de rayon
-   * @param lFeat les entités (qui doivent pour l'instant être surfaciques) sur
-   *          lesquels on effectue le lancer
-   * @param nbPointsCouronnes le nombre de point sur une couronne
-   * @param rayon le rayon dans lequel on effectule lancer
-   * @param optimized optimisation en termes de temps de calcul qui ne donne pas
-   *          toujours des résultats exacts
-   * @return une liste de point correspondant aux intersections entre les rayons
-   *         et les faces des géométries
-   */
-  private IDirectPositionList cast(IDirectPosition centre,
-      IFeatureCollection<IFeature> lFeat, int nbPointsCouronnes, double rayon,
-      int resultType, boolean isSphere) {
-
-    // Pas angulaire (on ne fait que la demis sphère z > 0
-    double pasAlpha = 2 * Math.PI / nbPointsCouronnes;
 
-    double pasBeta= 2 * Math.PI / (nbPointsCouronnes);
+	private final static Logger logger = Logger.getLogger(RayCasting.class);
+	/**
+	 * Epsilon pour arrondir les zéro
+	 */
+	public static double EPSILON = 0.1;
+
+	public static int TYPE_FIRST_POINT_INTERSECTED = 0;
+	public static int TYPE_POINT_ALL_INTERSECTION = 1;
+	public static int TYPE_FIRST_POINT_AND_SPHERE = 2;
+	public static int TYPE_CAST_SOLID_POINT = 3;
+	public static int TYPE_CAST_SOLID_POINT_GAUSS = 4;
+
+	public static int TYPE_FIRST_AND_SPHERE_OPTIMIZED = 98;
+	public static int TYPE_FIRST_POINT_INTERSECTED_OPTIMIZED = 99;
+
+	// Rajoute une vérification supplémentaire
+	// Permet de considérer comme intersection des points qui
+	// Touchent presque les arrêtes (distance < EPSILON)
+	public static boolean CHECK_IS_ON_EDGE = false;
+
+	private GM_Solid solGenerated = null;
+	private GM_Polygon polGenerated = null;
+
+	private IDirectPosition centre;
+	private IFeatureCollection<IFeature> lFeat;
+	private int nbPointsCouronnes;
+	private double rayon;
+	private IDirectPositionList dpGenerated;
+	private int lastTypeResult;
+	private boolean isSphere;
+	private int resultType;
+
+	/**
+	 * 
+	 * 
+	 * Permet d'instancier et d'effectuer un lancer de rayon sur la demi-sphère
+	 * positive
+	 * 
+	 * @param centre
+	 *            le centre du lancer de rayon
+	 * @param lFeat
+	 *            les entités (qui doivent pour l'instant être surfaciques) sur
+	 *            lesquels on effectue le lancer
+	 * @param nbPointsCouronnes
+	 *            le nombre de point sur une couronne
+	 * @param rayon
+	 *            le rayon dans lequel on effectule lancer
+	 * @param resultType
+	 *            le type de résultat que l'on souhaite
+	 * @param aims
+	 *            les points que l'on souhaite viser (cas de :
+	 *            TYPE_CAST_SOLID_POINT)
+	 * @param sphere
+	 *            indique si le lancer de rayon se fait sur une sphère ou une
+	 *            demi-sphère. Ne vaut pas pour le cas TYPE_CAST_SOLID_POINT
+	 * 
+	 */
+	public RayCasting(IDirectPosition centre, IFeatureCollection<IFeature> lFeat, int nbPointsCouronnes, double rayon,
+			int resultType, boolean isSphere) {
+		this.centre = centre;
+		this.lFeat = lFeat;
+		this.nbPointsCouronnes = nbPointsCouronnes;
+		this.rayon = rayon;
+		this.lastTypeResult = resultType;
+		this.isSphere = isSphere;
+
+		this.resultType = resultType;
+
+	}
+
+	public void cast() {
+		if (resultType == RayCasting.TYPE_CAST_SOLID_POINT) {
+
+			this.dpGenerated = this.castOnSolidPosition(centre, lFeat, nbPointsCouronnes, rayon, resultType);
+		} else if (resultType == RayCasting.TYPE_FIRST_AND_SPHERE_OPTIMIZED) {
+
+			this.dpGenerated = this.castOptimized(centre, lFeat, nbPointsCouronnes, rayon, isSphere);
+
+		} else {
+			this.dpGenerated = this.cast(centre, lFeat, nbPointsCouronnes, rayon, resultType, isSphere);
+		}
+
+	}
+
+	/**
+	 * Methode permettant de créer un lancer de rayon positive
+	 * 
+	 * @param centre
+	 *            le centre du lancer de rayon
+	 * @param lFeat
+	 *            les entités (qui doivent pour l'instant être surfaciques) sur
+	 *            lesquels on effectue le lancer
+	 * @param nbPointsCouronnes
+	 *            le nombre de point sur une couronne
+	 * @param rayon
+	 *            le rayon dans lequel on effectule lancer
+	 * @param optimized
+	 *            optimisation en termes de temps de calcul qui ne donne pas
+	 *            toujours des résultats exacts
+	 * @return une liste de point correspondant aux intersections entre les
+	 *         rayons et les faces des géométries
+	 */
+	private IDirectPositionList cast(IDirectPosition centre, IFeatureCollection<IFeature> lFeat, int nbPointsCouronnes,
+			double rayon, int resultType, boolean isSphere) {
 
+		// Pas angulaire (on ne fait que la demis sphère z > 0
+		double pasAlpha = 2 * Math.PI / nbPointsCouronnes;
 
-    // Les points intersectés
-    DirectPositionList dplOut = new DirectPositionList();
+		double pasBeta = 2 * Math.PI / (nbPointsCouronnes);
 
-    // On créer une projection sphérique
-    // Elle permettra de trouver les entités potentiellement intersectées
-    // par le
-    // lancer grâce aux coordonnées angulaires
-    SphericalProjection sp = new SphericalProjection(lFeat, centre, rayon, true);
-    this.sphericalProjection = sp;
+		// Les points intersectés
+		DirectPositionList dplOut = new DirectPositionList();
 
-    IFeatureCollection<IFeature> featC = sp.getLFeatMapped();
+		// On créer une projection sphérique
+		// Elle permettra de trouver les entités potentiellement intersectées
+		// par le
+		// lancer grâce aux coordonnées angulaires
+		SphericalProjection sp = new SphericalProjection(lFeat, centre, rayon, true);
+		this.sphericalProjection = sp;
 
-    IFeatureCollection<IFeature> featCut = sp.getFeatToProject();
+		IFeatureCollection<IFeature> featC = sp.getLFeatMapped();
 
-    int nbElemT = featC.size();
+		IFeatureCollection<IFeature> featCut = sp.getFeatToProject();
 
-    // On supprimer les géométries non valides
-    // Géométries plates ou sous la demisphère
-    for (int i = 0; i < nbElemT; i++) {
+		int nbElemT = featC.size();
 
-      if (!featC.get(i).getGeom().isValid()) {
-        featC.remove(i);
-        featCut.remove(i);
-        i--;
-        nbElemT--;
-        continue;
-      }
-      AttributeManager.addAttribute(featC.get(i), "ind", i, "Integer");
+		// On supprimer les géométries non valides
+		// Géométries plates ou sous la demisphère
+		for (int i = 0; i < nbElemT; i++) {
 
-    }
+			if (!featC.get(i).getGeom().isValid()) {
+				featC.remove(i);
+				featCut.remove(i);
+				i--;
+				nbElemT--;
+				continue;
+			}
+			AttributeManager.addAttribute(featC.get(i), "ind", i, "Integer");
 
-    // L'index spatiale permettra de retrouver en coordonnées angulaires
-    // les faces concernées par l'intersection
-    featC.initSpatialIndex(Tiling.class, false);
+		}
 
-    Tiling<IFeature> sI = (Tiling<IFeature>) featC.getSpatialIndex();
-    
-    int nbPCouronnesP = nbPointsCouronnes;
-    int nbPCouronnesA = nbPointsCouronnes/4;
-    
-    if(isSphere){
-      nbPCouronnesA = nbPCouronnesA  * 2;
-      
-    }
-        
-    
-    // On effectue un rayonnement angulaire
-    // de pas angulaire constant
-    // On effectue un rayonnement angulaire
-    // de pas angulaire constant
-    for (int i = 0; i < nbPCouronnesP; i++) {
+		// L'index spatiale permettra de retrouver en coordonnées angulaires
+		// les faces concernées par l'intersection
+		featC.initSpatialIndex(Tiling.class, false);
 
-      for (int j = 0; j < nbPCouronnesA; j++) {
+		Tiling<IFeature> sI = (Tiling<IFeature>) featC.getSpatialIndex();
 
+		int nbPCouronnesP = nbPointsCouronnes;
+		int nbPCouronnesA = nbPointsCouronnes / 4;
 
+		if (isSphere) {
+			nbPCouronnesA = nbPCouronnesA * 2;
 
-        // Alpha : angle horizontale par rapport au Nord
-        double alpha = i * pasAlpha;
+		}
 
-        // Beta : angle vertical par rapport à l'horizontale
-        double beta;
+		// On effectue un rayonnement angulaire
+		// de pas angulaire constant
+		// On effectue un rayonnement angulaire
+		// de pas angulaire constant
+		for (int i = 0; i < nbPCouronnesP; i++) {
 
-        if (isSphere) {
-          beta = j * pasBeta - Math.PI / 2;
-        } else {
-          beta = j * pasBeta;
+			for (int j = 0; j < nbPCouronnesA; j++) {
 
-        }
-        // On précalcule leur cosinus et sinus
-        double cosI = Math.cos(alpha);
-        double sinI = Math.sin(alpha);
+				// Alpha : angle horizontale par rapport au Nord
+				double alpha = i * pasAlpha;
 
-        double cosJ = Math.cos(beta);
-        double sinJ = Math.sin(beta);
+				// Beta : angle vertical par rapport à l'horizontale
+				double beta;
 
-        // Grâce à l'index, on récupère les faces concernées
-        Collection<IFeature> cf = sI.select(new DirectPosition(alpha, beta),
-            RayCasting.EPSILON);
+				if (isSphere) {
+					beta = j * pasBeta - Math.PI / 2;
+				} else {
+					beta = j * pasBeta;
 
-        // Cette direction n'a pas de face, on continue
+				}
+				// On précalcule leur cosinus et sinus
+				double cosI = Math.cos(alpha);
+				double sinI = Math.sin(alpha);
 
-        int nbPol2 = cf.size();
+				double cosJ = Math.cos(beta);
+				double sinJ = Math.sin(beta);
 
-        DirectPosition dpAim = new DirectPosition(centre.getX() + rayon * sinI
-            * cosJ, centre.getY() + rayon * cosI * cosJ, centre.getZ() + rayon
-            * sinJ);
+				// Grâce à l'index, on récupère les faces concernées
+				Collection<IFeature> cf = sI.select(new DirectPosition(alpha, beta), RayCasting.EPSILON);
 
-        // System.out.println("Alpha SP" +
-        // sp.calculAngle(dpAim).getAlpha().getValeur() +
-        // "  angle alpha "+alpha
-        // );
+				// Cette direction n'a pas de face, on continue
 
-        // System.out.println((new Vecteur(centre,dpAim)).getCoord() +
-        // " angle "+alpha+" cosAl "+cosI);
-        // Cette direction n'a pas de face, on continue
-        if (0 == nbPol2) {
+				int nbPol2 = cf.size();
 
-          if (resultType == RayCasting.TYPE_FIRST_POINT_AND_SPHERE) {
+				DirectPosition dpAim = new DirectPosition(centre.getX() + rayon * sinI * cosJ,
+						centre.getY() + rayon * cosI * cosJ, centre.getZ() + rayon * sinJ);
 
-            dplOut.add(dpAim);
+				// System.out.println("Alpha SP" +
+				// sp.calculAngle(dpAim).getAlpha().getValeur() +
+				// " angle alpha "+alpha
+				// );
 
-          }
+				// System.out.println((new Vecteur(centre,dpAim)).getCoord() +
+				// " angle "+alpha+" cosAl "+cosI);
+				// Cette direction n'a pas de face, on continue
+				if (0 == nbPol2) {
 
-          continue;
-        }
+					if (resultType == RayCasting.TYPE_FIRST_POINT_AND_SPHERE) {
 
-        // On créer une équation linéaire
-        LineEquation lE = new LineEquation(centre, dpAim);
+						dplOut.add(dpAim);
 
-        IDirectPosition dpTempOk = null;
+					}
 
-        // On calcule les lancers de rayon
-        Iterator<IFeature> itFeat = cf.iterator();
+					continue;
+				}
 
-        if (resultType == RayCasting.TYPE_FIRST_POINT_INTERSECTED_OPTIMIZED) {
+				// On créer une équation linéaire
+				LineEquation lE = new LineEquation(centre, dpAim);
 
-          IFeature featOutTemp = this.getOptimized(itFeat);
-          int ind = featC.getElements().indexOf(featOutTemp);
+				IDirectPosition dpTempOk = null;
 
-          dpTempOk = RayCasting.intersectionPolygonLine(lE,
-              (GM_Polygon) featCut.get(ind).getGeom());
+				// On calcule les lancers de rayon
+				Iterator<IFeature> itFeat = cf.iterator();
 
-        } else {
+				if (resultType == RayCasting.TYPE_FIRST_POINT_INTERSECTED_OPTIMIZED) {
 
-          // Cas autre : TYPE_POINT_ALL_INTERSECTION &&
-          // TYPE_FIRST_POINT_INTERSECTED
-          // TYPE_FIRST_POINT_AND_SPHERE
+					IFeature featOutTemp = this.getOptimized(itFeat);
+					int ind = featC.getElements().indexOf(featOutTemp);
 
-          double dMin = Double.POSITIVE_INFINITY;
+					dpTempOk = RayCasting.intersectionPolygonLine(lE, (GM_Polygon) featCut.get(ind).getGeom());
 
-          for (int k = 0; k < nbPol2; k++) {
+				} else {
 
-            IFeature featInter = itFeat.next();
-            
-            //int ind = featC.getElements().indexOf(featInter);
-            int ind = Integer.parseInt(featInter.getAttribute("ind").toString());
-            
-           // if( ! featInter.getAttribute("ind").toString().equalsIgnoreCase(ind +"") ){
-            //  System.out.println("indice" + ind + "  featC"+featInter.getAttribute("ind") );
-           // }
-            
-          //  featInter.getAttribute("ind") 
-            
-            
-         //   System.out.println("indice" + ind + "  featC"+featInter.getAttribute("ind") );
+					// Cas autre : TYPE_POINT_ALL_INTERSECTION &&
+					// TYPE_FIRST_POINT_INTERSECTED
+					// TYPE_FIRST_POINT_AND_SPHERE
 
-            // On calcule le point d'intersection
-            IDirectPosition dpTemp = RayCasting.intersectionPolygonLine(lE,
-                (GM_Polygon) featCut.get(ind).getGeom());
+					double dMin = Double.POSITIVE_INFINITY;
 
-            if (dpTemp == null) {
+					for (int k = 0; k < nbPol2; k++) {
 
-              continue;
-            }
+						IFeature featInter = itFeat.next();
 
-            double dTemp = centre.distance(dpTemp);
+						// int ind = featC.getElements().indexOf(featInter);
+						int ind = Integer.parseInt(featInter.getAttribute("ind").toString());
 
-            if (resultType == RayCasting.TYPE_POINT_ALL_INTERSECTION) {
+						// if( !
+						// featInter.getAttribute("ind").toString().equalsIgnoreCase(ind
+						// +"") ){
+						// System.out.println("indice" + ind + "
+						// featC"+featInter.getAttribute("ind") );
+						// }
 
-              dplOut.add(dpTemp);
-              continue;
-            }
+						// featInter.getAttribute("ind")
 
-            // On effectue un tri par distance
-            if (dMin > dTemp && dTemp <= this.rayon) {
-              dpTempOk = dpTemp;
-              dMin = dTemp;
+						// System.out.println("indice" + ind + "
+						// featC"+featInter.getAttribute("ind") );
 
-            }
+						// On calcule le point d'intersection
+						IDirectPosition dpTemp = RayCasting.intersectionPolygonLine(lE,
+								(GM_Polygon) featCut.get(ind).getGeom());
 
-          }// Boucle k
+						if (dpTemp == null) {
 
-        }
-        // dpTempOK == null normalement si resultType ==
-        // TYPE_POINT_ALL_INTERSECTION
-        // Ca éviter d'avoir plusieurs fois le même point dans ce type
-        // de
-        // résultat
-        if (dpTempOk != null) {
-          // On garde le plus proche (si il existe)
-          dplOut.add(dpTempOk);
+							continue;
+						}
 
-        } else {
-          if (resultType == RayCasting.TYPE_FIRST_POINT_AND_SPHERE) {
+						double dTemp = centre.distance(dpTemp);
 
-            dplOut.add(dpAim);
+						if (resultType == RayCasting.TYPE_POINT_ALL_INTERSECTION) {
 
-          }
-        }
-      } // Fin boucle j
-    }// Fin boucle i
-     // On renvoie les points crées
+							dplOut.add(dpTemp);
+							continue;
+						}
 
-    return dplOut;
+						// On effectue un tri par distance
+						if (dMin > dTemp && dTemp <= this.rayon) {
+							dpTempOk = dpTemp;
+							dMin = dTemp;
 
-  }
+						}
 
-  /**
-   * Methode permettant de créer un lancer de rayon positive
-   * 
-   * @param centre le centre du lancer de rayon
-   * @param lFeat les entités (qui doivent pour l'instant être surfaciques) sur
-   *          lesquels on effectue le lancer
-   * @param nbPointsCouronnes le nombre de point sur une couronne
-   * @param rayon le rayon dans lequel on effectule lancer
-   * @param optimized optimisation en termes de temps de calcul qui ne donne pas
-   *          toujours des résultats exacts
-   * @return une liste de point correspondant aux intersections entre les rayons
-   *         et les faces des géométries
-   */
-  private DirectPositionList castOptimized(IDirectPosition centre,
-      IFeatureCollection<IFeature> lFeat, int nbPointsCouronnes, double rayon,
-      boolean isSphere) {
+					} // Boucle k
 
-    // Pas angulaire (on ne fait que la demis sphère z > 0
-    double pasAlpha = 2 * Math.PI / nbPointsCouronnes;
+				}
+				// dpTempOK == null normalement si resultType ==
+				// TYPE_POINT_ALL_INTERSECTION
+				// Ca éviter d'avoir plusieurs fois le même point dans ce type
+				// de
+				// résultat
+				if (dpTempOk != null) {
+					// On garde le plus proche (si il existe)
+					dplOut.add(dpTempOk);
 
-    double pasBeta;
-    if (isSphere) {
+				} else {
+					if (resultType == RayCasting.TYPE_FIRST_POINT_AND_SPHERE) {
 
-      pasBeta = Math.PI / (nbPointsCouronnes);
-    } else {
-      pasBeta = Math.PI / (nbPointsCouronnes * 2);
-    }
+						dplOut.add(dpAim);
 
-    // Les points intersectés
-    DirectPositionList dplOut = new DirectPositionList();
+					}
+				}
+			} // Fin boucle j
+		} // Fin boucle i
+			// On renvoie les points crées
 
-    // On créer une projection sphérique
-    // Elle permettra de trouver les entités potentiellement intersectées
-    // par le
-    // lancer grâce aux coordonnées angulaires
-    SphericalProjection sp = new SphericalProjection(lFeat, centre, rayon, true);
-    this.sphericalProjection = sp;
+		return dplOut;
 
-    IFeatureCollection<IFeature> featC = sp.getLFeatMapped();
+	}
 
-    IFeatureCollection<IFeature> featCut = sp.getFeatToProject();
+	/**
+	 * Methode permettant de créer un lancer de rayon positive
+	 * 
+	 * @param centre
+	 *            le centre du lancer de rayon
+	 * @param lFeat
+	 *            les entités (qui doivent pour l'instant être surfaciques) sur
+	 *            lesquels on effectue le lancer
+	 * @param nbPointsCouronnes
+	 *            le nombre de point sur une couronne
+	 * @param rayon
+	 *            le rayon dans lequel on effectule lancer
+	 * @param optimized
+	 *            optimisation en termes de temps de calcul qui ne donne pas
+	 *            toujours des résultats exacts
+	 * @return une liste de point correspondant aux intersections entre les
+	 *         rayons et les faces des géométries
+	 */
+	private DirectPositionList castOptimized(IDirectPosition centre, IFeatureCollection<IFeature> lFeat,
+			int nbPointsCouronnes, double rayon, boolean isSphere) {
 
-    int nbElemT = featC.size();
+		// Pas angulaire (on ne fait que la demis sphère z > 0
+		double pasAlpha = 2 * Math.PI / nbPointsCouronnes;
 
-    // On supprimer les géométries non valides
-    // Géométries plates ou sous la demisphère
-    for (int i = 0; i < nbElemT; i++) {
+		double pasBeta;
+		if (isSphere) {
 
-      if (!featC.get(i).getGeom().isValid()) {
-        featC.remove(i);
-        featCut.remove(i);
-        i--;
-        nbElemT--;
+			pasBeta = Math.PI / (nbPointsCouronnes);
+		} else {
+			pasBeta = Math.PI / (nbPointsCouronnes * 2);
+		}
 
-      }
+		// Les points intersectés
+		DirectPositionList dplOut = new DirectPositionList();
 
-    }
+		// On créer une projection sphérique
+		// Elle permettra de trouver les entités potentiellement intersectées
+		// par le
+		// lancer grâce aux coordonnées angulaires
+		SphericalProjection sp = new SphericalProjection(lFeat, centre, rayon, true);
+		this.sphericalProjection = sp;
 
-    // L'index spatiale permettra de retrouver en coordonnées angulaires
-    // les faces concernées par l'intersection
-    featC.initSpatialIndex(Tiling.class, false);
+		IFeatureCollection<IFeature> featC = sp.getLFeatMapped();
 
-    SpatialIndex<IFeature> sI = featC.getSpatialIndex();
-    // On effectue un rayonnement angulaire
-    // de pas angulaire constant
-    for (int j = 0; j < nbPointsCouronnes; j++) {
+		IFeatureCollection<IFeature> featCut = sp.getFeatToProject();
 
-      boolean finished = false;
+		int nbElemT = featC.size();
 
-      for (int i = 0; i < nbPointsCouronnes; i++) {
+		// On supprimer les géométries non valides
+		// Géométries plates ou sous la demisphère
+		for (int i = 0; i < nbElemT; i++) {
 
-        // Alpha : angle horizontale par rapport au Nord
-        double alpha = i * pasAlpha;
+			if (!featC.get(i).getGeom().isValid()) {
+				featC.remove(i);
+				featCut.remove(i);
+				i--;
+				nbElemT--;
 
-        // Beta : angle vertical par rapport à l'horizontale
-        double beta;
+			}
 
-        if (isSphere) {
-          beta = j * pasBeta - Math.PI / 2;
-        } else {
-          beta = j * pasBeta;
+		}
 
-        }
+		// L'index spatiale permettra de retrouver en coordonnées angulaires
+		// les faces concernées par l'intersection
+		featC.initSpatialIndex(Tiling.class, false);
 
-        // On précalcule leur cosinus et sinus
-        double cosI = Math.cos(alpha);
-        double sinI = Math.sin(alpha);
+		SpatialIndex<IFeature> sI = featC.getSpatialIndex();
+		// On effectue un rayonnement angulaire
+		// de pas angulaire constant
+		for (int j = 0; j < nbPointsCouronnes; j++) {
 
-        double cosJ = Math.cos(beta);
-        double sinJ = Math.sin(beta);
+			boolean finished = false;
 
-        DirectPosition dpAim = new DirectPosition(centre.getX() + rayon * sinI
-            * cosJ, centre.getY() + rayon * cosI * cosJ, centre.getZ() + rayon
-            * sinJ);
-        if (finished) {
-          dplOut.add(dpAim);
-          continue;
+			for (int i = 0; i < nbPointsCouronnes; i++) {
 
-        }
+				// Alpha : angle horizontale par rapport au Nord
+				double alpha = i * pasAlpha;
 
-        // Grâce à l'index, on récupère les faces concernées
-        Collection<IFeature> cf = sI.select(new DirectPosition(alpha, beta),
-            RayCasting.EPSILON);
+				// Beta : angle vertical par rapport à l'horizontale
+				double beta;
 
-        // Cette direction n'a pas de face, on continue
+				if (isSphere) {
+					beta = j * pasBeta - Math.PI / 2;
+				} else {
+					beta = j * pasBeta;
 
-        int nbPol2 = cf.size();
+				}
 
-        // Cette direction n'a pas de face, on continue
-        if (0 == nbPol2) {
+				// On précalcule leur cosinus et sinus
+				double cosI = Math.cos(alpha);
+				double sinI = Math.sin(alpha);
 
-          dplOut.add(dpAim);
-          finished = true;
+				double cosJ = Math.cos(beta);
+				double sinJ = Math.sin(beta);
 
-          continue;
-        }
+				DirectPosition dpAim = new DirectPosition(centre.getX() + rayon * sinI * cosJ,
+						centre.getY() + rayon * cosI * cosJ, centre.getZ() + rayon * sinJ);
+				if (finished) {
+					dplOut.add(dpAim);
+					continue;
 
-        // On créer une équation linéaire
-        LineEquation lE = new LineEquation(centre, dpAim);
+				}
 
-        IDirectPosition dpTempOk = null;
+				// Grâce à l'index, on récupère les faces concernées
+				Collection<IFeature> cf = sI.select(new DirectPosition(alpha, beta), RayCasting.EPSILON);
 
-        // On calcule les lancers de rayon
-        Iterator<IFeature> itFeat = cf.iterator();
+				// Cette direction n'a pas de face, on continue
 
-        // Cas autre : TYPE_POINT_ALL_INTERSECTION &&
-        // TYPE_FIRST_POINT_INTERSECTED
-        // TYPE_FIRST_POINT_AND_SPHERE
+				int nbPol2 = cf.size();
 
-        double dMin = Double.POSITIVE_INFINITY;
+				// Cette direction n'a pas de face, on continue
+				if (0 == nbPol2) {
 
-        for (int k = 0; k < nbPol2; k++) {
+					dplOut.add(dpAim);
+					finished = true;
 
-          int ind = featC.getElements().indexOf(itFeat.next());
+					continue;
+				}
 
-          // On calcule le point d'intersection
-          IDirectPosition dpTemp = RayCasting.intersectionPolygonLine(lE,
-              (GM_Polygon) featCut.get(ind).getGeom());
+				// On créer une équation linéaire
+				LineEquation lE = new LineEquation(centre, dpAim);
 
-          if (dpTemp == null) {
+				IDirectPosition dpTempOk = null;
 
-            continue;
-          }
+				// On calcule les lancers de rayon
+				Iterator<IFeature> itFeat = cf.iterator();
 
-          double dTemp = centre.distance(dpTemp);
+				// Cas autre : TYPE_POINT_ALL_INTERSECTION &&
+				// TYPE_FIRST_POINT_INTERSECTED
+				// TYPE_FIRST_POINT_AND_SPHERE
 
-          // On effectue un tri par distance
-          if (dMin > dTemp && dTemp <= this.rayon) {
-            dpTempOk = dpTemp;
-            dMin = dTemp;
+				double dMin = Double.POSITIVE_INFINITY;
 
-          }
+				for (int k = 0; k < nbPol2; k++) {
 
-        }// Boucle k
+					int ind = featC.getElements().indexOf(itFeat.next());
 
-        // dpTempOK == null normalement si resultType ==
-        // TYPE_POINT_ALL_INTERSECTION
-        // Ca éviter d'avoir plusieurs fois le même point dans ce type
-        // de
-        // résultat
-        if (dpTempOk != null) {
-          // On garde le plus proche (si il existe)
-          dplOut.add(dpTempOk);
+					// On calcule le point d'intersection
+					IDirectPosition dpTemp = RayCasting.intersectionPolygonLine(lE,
+							(GM_Polygon) featCut.get(ind).getGeom());
 
-        } else {
+					if (dpTemp == null) {
 
-          dplOut.add(dpAim);
-          finished = true;
+						continue;
+					}
 
-        }
-      } // Fin boucle i
-    }// Fin boucle j
-     // On renvoie les points crées
+					double dTemp = centre.distance(dpTemp);
 
-    return dplOut;
+					// On effectue un tri par distance
+					if (dMin > dTemp && dTemp <= this.rayon) {
+						dpTempOk = dpTemp;
+						dMin = dTemp;
 
-  }
+					}
 
-  public IFeatureCollection<IFeature> castOnSolidPositionGauss(int nbLancers,
-      double ecartTypeP, double ecartTypeA) {
+				} // Boucle k
 
-    // Pas angulaire (on ne fait que la demis sphère z > 0
-    double pasAlpha = 2 * Math.PI / nbPointsCouronnes;
+				// dpTempOK == null normalement si resultType ==
+				// TYPE_POINT_ALL_INTERSECTION
+				// Ca éviter d'avoir plusieurs fois le même point dans ce type
+				// de
+				// résultat
+				if (dpTempOk != null) {
+					// On garde le plus proche (si il existe)
+					dplOut.add(dpTempOk);
 
-    IFeatureCollection<IFeature> featCOut = new FT_FeatureCollection<IFeature>();
+				} else {
 
-    double 
-      pasBeta =2* Math.PI / (nbPointsCouronnes );
-    
+					dplOut.add(dpAim);
+					finished = true;
 
-    
-    
-    for (int p = 0; p < nbLancers; p++) {
-      
-  //    System.out.println(p);
+				}
+			} // Fin boucle i
+		} // Fin boucle j
+			// On renvoie les points crées
 
-      
-   //   IDirectPosition   centreBis = centre;
-      IDirectPosition centreBis = SensibilitePosition.generateCoordinate(
-          centre, ecartTypeP, ecartTypeA);
-   
-    // On créer une projection sphérique
-    // Elle permettra de trouver les entités potentiellement intersectées
-    // par le
-    // lancer grâce aux coordonnées angulaires
-    SphericalProjection sp = new SphericalProjection(lFeat, centreBis, rayon, true);
-    this.sphericalProjection = sp;
+		return dplOut;
 
-    IFeatureCollection<IFeature> featC = sp.getLFeatMapped();
+	}
 
-    IFeatureCollection<IFeature> featCut = sp.getFeatToProject();
+	public IFeatureCollection<IFeature> castOnSolidPositionGauss(int nbLancers, double ecartTypeP, double ecartTypeA) {
 
-    int nbElemT = featC.size();
+		// Pas angulaire (on ne fait que la demis sphère z > 0
+		double pasAlpha = 2 * Math.PI / nbPointsCouronnes;
 
-    // On supprimer les géométries non valides
-    // Géométries plates ou sous la demisphère
-    for (int i = 0; i < nbElemT; i++) {
+		IFeatureCollection<IFeature> featCOut = new FT_FeatureCollection<IFeature>();
 
-      if (!featC.get(i).getGeom().isValid()) {
-        featC.remove(i);
-        featCut.remove(i);
-        i--;
-        nbElemT--;
+		double pasBeta = 2 * Math.PI / (nbPointsCouronnes);
 
-      }
+		for (int p = 0; p < nbLancers; p++) {
 
-    }
+			// System.out.println(p);
 
-    // L'index spatiale permettra de retrouver en coordonnées angulaires
-    // les faces concernées par l'intersection
-    featC.initSpatialIndex(Tiling.class, false);
+			// IDirectPosition centreBis = centre;
+			IDirectPosition centreBis = SensibilitePosition.generateCoordinate(centre, ecartTypeP, ecartTypeA);
 
-    Tiling<IFeature> sI = (Tiling<IFeature>) featC.getSpatialIndex();
+			// On créer une projection sphérique
+			// Elle permettra de trouver les entités potentiellement
+			// intersectées
+			// par le
+			// lancer grâce aux coordonnées angulaires
+			SphericalProjection sp = new SphericalProjection(lFeat, centreBis, rayon, true);
+			this.sphericalProjection = sp;
 
+			IFeatureCollection<IFeature> featC = sp.getLFeatMapped();
 
+			IFeatureCollection<IFeature> featCut = sp.getFeatToProject();
 
-      int nbInter = 0;
-      int nbLancerTotaux = 0;
-      
-      int nbPCouronnesP = nbPointsCouronnes;
-      int nbPCouronnesA = nbPointsCouronnes/4;
-      
-      if(isSphere){
-        nbPCouronnesA = nbPCouronnesA  * 2;
-        
-      }
-                   
+			int nbElemT = featC.size();
 
-      // On effectue un rayonnement angulaire
-      // de pas angulaire constant
-      for (int i = 0; i < nbPCouronnesP; i++) {
+			// On supprimer les géométries non valides
+			// Géométries plates ou sous la demisphère
+			for (int i = 0; i < nbElemT; i++) {
 
-        for (int j = 0; j < nbPCouronnesA; j++) {
+				if (!featC.get(i).getGeom().isValid()) {
+					featC.remove(i);
+					featCut.remove(i);
+					i--;
+					nbElemT--;
 
-          nbLancerTotaux++;
+				}
 
-          // Alpha : angle horizontale par rapport au Nord
-          double alpha = i * pasAlpha;
+			}
 
-          // Beta : angle vertical par rapport à l'horizontale
-          double beta;
+			// L'index spatiale permettra de retrouver en coordonnées angulaires
+			// les faces concernées par l'intersection
+			featC.initSpatialIndex(Tiling.class, false);
 
-          if (isSphere) {
-            beta = j * pasBeta - Math.PI / 2;
-          } else {
-            beta = j * pasBeta;
+			Tiling<IFeature> sI = (Tiling<IFeature>) featC.getSpatialIndex();
 
-          }
+			int nbInter = 0;
+			int nbLancerTotaux = 0;
 
-          // On précalcule leur cosinus et sinus
-  
+			int nbPCouronnesP = nbPointsCouronnes;
+			int nbPCouronnesA = nbPointsCouronnes / 4;
 
-          // Grâce à l'index, on récupère les faces concernées
-          Collection<IFeature> cf = sI.select(new DirectPosition(alpha, beta),
-              RayCasting.EPSILON);
+			if (isSphere) {
+				nbPCouronnesA = nbPCouronnesA * 2;
 
+			}
 
-          // Cette direction n'a pas de face, on continue
+			// On effectue un rayonnement angulaire
+			// de pas angulaire constant
+			for (int i = 0; i < nbPCouronnesP; i++) {
 
+				for (int j = 0; j < nbPCouronnesA; j++) {
 
-                    
-          if(cf != null && cf.size() != 0){
-            nbInter ++;
-            continue;
-            
-          }
-          
-          
-          /*
-          
-          
-           
-          double cosI = Math.cos(alpha);
-          double sinI = Math.sin(alpha);
+					nbLancerTotaux++;
 
-          double cosJ = Math.cos(beta);
-          double sinJ = Math.sin(beta);
-           
-          int nbPol2 = cf.size();
+					// Alpha : angle horizontale par rapport au Nord
+					double alpha = i * pasAlpha;
 
-          DirectPosition dpAim = new DirectPosition(centreBis.getX() + rayon
-              * sinI * cosJ, centreBis.getY() + rayon * cosI * cosJ,
-              centreBis.getZ() + rayon * sinJ);
+					// Beta : angle vertical par rapport à l'horizontale
+					double beta;
 
-          // System.out.println("Alpha SP" +
-          // sp.calculAngle(dpAim).getAlpha().getValeur() +
-          // "  angle alpha "+alpha
-          // );
+					if (isSphere) {
+						beta = j * pasBeta - Math.PI / 2;
+					} else {
+						beta = j * pasBeta;
 
-          // System.out.println((new Vecteur(centre,dpAim)).getCoord() +
-          // " angle "+alpha+" cosAl "+cosI);
-          // Cette direction n'a pas de face, on continue
+					}
 
-          // On créer une équation linéaire
-          LineEquation lE = new LineEquation(centreBis, dpAim);
+					// On précalcule leur cosinus et sinus
 
+					// Grâce à l'index, on récupère les faces concernées
+					Collection<IFeature> cf = sI.select(new DirectPosition(alpha, beta), RayCasting.EPSILON);
 
-          // On calcule les lancers de rayon
-          Iterator<IFeature> itFeat = cf.iterator();
+					// Cette direction n'a pas de face, on continue
 
-          double dMin = Double.POSITIVE_INFINITY;
+					if (cf != null && cf.size() != 0) {
+						nbInter++;
+						continue;
 
-          for (int k = 0; k < nbPol2; k++) {
+					}
 
-            int ind = featC.getElements().indexOf(itFeat.next());
+					/*
+					 * 
+					 * 
+					 * 
+					 * double cosI = Math.cos(alpha); double sinI =
+					 * Math.sin(alpha);
+					 * 
+					 * double cosJ = Math.cos(beta); double sinJ =
+					 * Math.sin(beta);
+					 * 
+					 * int nbPol2 = cf.size();
+					 * 
+					 * DirectPosition dpAim = new
+					 * DirectPosition(centreBis.getX() + rayon sinI * cosJ,
+					 * centreBis.getY() + rayon * cosI * cosJ, centreBis.getZ()
+					 * + rayon * sinJ);
+					 * 
+					 * // System.out.println("Alpha SP" + //
+					 * sp.calculAngle(dpAim).getAlpha().getValeur() + //
+					 * "  angle alpha "+alpha // );
+					 * 
+					 * // System.out.println((new
+					 * Vecteur(centre,dpAim)).getCoord() + //
+					 * " angle "+alpha+" cosAl "+cosI); // Cette direction n'a
+					 * pas de face, on continue
+					 * 
+					 * // On créer une équation linéaire LineEquation lE = new
+					 * LineEquation(centreBis, dpAim);
+					 * 
+					 * 
+					 * // On calcule les lancers de rayon Iterator<IFeature>
+					 * itFeat = cf.iterator();
+					 * 
+					 * double dMin = Double.POSITIVE_INFINITY;
+					 * 
+					 * for (int k = 0; k < nbPol2; k++) {
+					 * 
+					 * int ind = featC.getElements().indexOf(itFeat.next());
+					 * 
+					 * // On calcule le point d'intersection IDirectPosition
+					 * dpTemp = RayCasting.intersectionPolygonLine(lE,
+					 * (GM_Polygon) featCut.get(ind).getGeom());
+					 * 
+					 * if (dpTemp == null) {
+					 * 
+					 * continue; }
+					 * 
+					 * double dTemp = centre.distance(dpTemp);
+					 * 
+					 * // On effectue un tri par distance if (dMin > dTemp &&
+					 * dTemp <= this.rayon) {
+					 * 
+					 * nbInter++; break; }// Boucle k
+					 * 
+					 * }
+					 */
+					// dpTempOK == null normalement si resultType ==
+					// TYPE_POINT_ALL_INTERSECTION
+					// Ca éviter d'avoir plusieurs fois le même point dans ce
+					// type
+					// de
+					// résultat
 
-            // On calcule le point d'intersection
-            IDirectPosition dpTemp = RayCasting.intersectionPolygonLine(lE,
-                (GM_Polygon) featCut.get(ind).getGeom());
+				} // Fin boucle j
+			} // Fin boucle i
+				// On renvoie les points crées
+			IFeature feat = new DefaultFeature(new GM_Point(centreBis));
+			AttributeManager.addAttribute(feat, "Rayon", rayon, "Double");
+			AttributeManager.addAttribute(feat, "PasA", pasAlpha, "Double");
+			AttributeManager.addAttribute(feat, "PasB", pasBeta, "Double");
 
-            if (dpTemp == null) {
+			double ouverture = 1 - (double) nbInter / (double) nbLancerTotaux;
+			// System.out.println(ouverture);
+			AttributeManager.addAttribute(feat, "Ouverture", ouverture, "Double");
+			featCOut.add(feat);
 
-              continue;
-            }
+		} // Fin boucle p
 
-            double dTemp = centre.distance(dpTemp);
+		return featCOut;
 
-            // On effectue un tri par distance
-            if (dMin > dTemp && dTemp <= this.rayon) {
+	}
 
-              nbInter++;
-              break;
-            }// Boucle k
+	/**
+	 * 
+	 * @param centre
+	 * @param lFeat
+	 * @param nbPointsCouronnes
+	 * @param rayon
+	 * @param resultType
+	 * @return
+	 */
+	public IDirectPositionList castOnSolidPosition(IDirectPosition centre, IFeatureCollection<IFeature> lFeat,
+			int nbPointsCouronnes, double rayon, int resultType) {
 
-          }*/
-          // dpTempOK == null normalement si resultType ==
-          // TYPE_POINT_ALL_INTERSECTION
-          // Ca éviter d'avoir plusieurs fois le même point dans ce type
-          // de
-          // résultat
+		// Les points intersectés
+		DirectPositionList dplOut = new DirectPositionList();
 
-        } // Fin boucle j
-      }// Fin boucle i
-       // On renvoie les points crées
-      IFeature feat = new DefaultFeature(new GM_Point(centreBis));
-      AttributeManager.addAttribute(feat, "Rayon", rayon, "Double");
-      AttributeManager.addAttribute(feat, "PasA", pasAlpha, "Double");
-      AttributeManager.addAttribute(feat, "PasB", pasBeta, "Double");
+		// On créer une projection sphérique
+		// Elle permettra de trouver les entités potentiellement intersectées
+		// par le
+		// lancer grâce aux coordonnées angulaires
+		SphericalProjection sp = new SphericalProjection(lFeat, centre, rayon, true);
+		this.sphericalProjection = sp;
 
-      double ouverture = 1 - (double)nbInter / (double)nbLancerTotaux;
-    //  System.out.println(ouverture);
-      AttributeManager.addAttribute(feat, "Ouverture",
-          ouverture  , "Double");
-      featCOut.add(feat);
+		IFeatureCollection<IFeature> featC = sp.getLFeatMapped();
 
-    }// Fin boucle p
+		IFeatureCollection<IFeature> featCut = sp.getFeatToProject();
 
-    return featCOut;
+		int nbElemT = featC.size();
 
-  }
+		for (int i = 0; i < nbElemT; i++) {
 
-  /**
-   * 
-   * @param centre
-   * @param lFeat
-   * @param nbPointsCouronnes
-   * @param rayon
-   * @param resultType
-   * @return
-   */
-  public IDirectPositionList castOnSolidPosition(IDirectPosition centre,
-      IFeatureCollection<IFeature> lFeat, int nbPointsCouronnes, double rayon,
-      int resultType) {
+			if (!featC.get(i).getGeom().isValid()) {
+				featC.remove(i);
+				featCut.remove(i);
+				i--;
+				nbElemT--;
 
-    // Les points intersectés
-    DirectPositionList dplOut = new DirectPositionList();
+			}
 
-    // On créer une projection sphérique
-    // Elle permettra de trouver les entités potentiellement intersectées
-    // par le
-    // lancer grâce aux coordonnées angulaires
-    SphericalProjection sp = new SphericalProjection(lFeat, centre, rayon, true);
-    this.sphericalProjection = sp;
+		}
 
-    IFeatureCollection<IFeature> featC = sp.getLFeatMapped();
+		DirectPositionList aims = new DirectPositionList();
 
-    IFeatureCollection<IFeature> featCut = sp.getFeatToProject();
+		for (int i = 0; i < nbElemT; i++) {
+			GM_Polygon polyTemp = (GM_Polygon) featCut.get(i).getGeom();
 
-    int nbElemT = featC.size();
+			aims.addAll(polyTemp.coord());
 
-    for (int i = 0; i < nbElemT; i++) {
+		}
 
-      if (!featC.get(i).getGeom().isValid()) {
-        featC.remove(i);
-        featCut.remove(i);
-        i--;
-        nbElemT--;
+		// L'index spatiale permettra de retrouver en coordonnées angulaires
+		// les faces concernées par l'intersection
+		featC.initSpatialIndex(Tiling.class, false);
 
-      }
+		SpatialIndex<IFeature> sI = featC.getSpatialIndex();
 
-    }
+		int nbAims = aims.size();
 
-    DirectPositionList aims = new DirectPositionList();
+		for (int i = 0; i < nbAims; i++) {
+			IDirectPosition dpAim = aims.get(i);
 
-    for (int i = 0; i < nbElemT; i++) {
-      GM_Polygon polyTemp = (GM_Polygon) featCut.get(i).getGeom();
+			// On récupère dans le système de coordonnées sphérique
+			// les coordonnées du rayon que l'on souhaite lancer
+			Orientation or = this.sphericalProjection.calculAngle(dpAim);
+			double x = or.getAlpha();
+			double y = or.getBeta();
 
-      aims.addAll(polyTemp.coord());
+			// Grâce à l'index, on récupère les faces concernées
+			Collection<IFeature> cf = sI.select(new DirectPosition(x, y), RayCasting.EPSILON);
 
-    }
+			// Cette direction n'a pas de face, on continue
 
-    // L'index spatiale permettra de retrouver en coordonnées angulaires
-    // les faces concernées par l'intersection
-    featC.initSpatialIndex(Tiling.class, false);
+			int nbPol2 = cf.size();
 
-    SpatialIndex<IFeature> sI = featC.getSpatialIndex();
+			// Cette direction n'a pas de face, on continue
+			if (0 == nbPol2) {
 
-    int nbAims = aims.size();
+				continue;
+			}
 
-    for (int i = 0; i < nbAims; i++) {
-      IDirectPosition dpAim = aims.get(i);
+			// On créer une équation linéaire
+			LineEquation lE = new LineEquation(centre, dpAim);
 
-      // On récupère dans le système de coordonnées sphérique
-      // les coordonnées du rayon que l'on souhaite lancer
-      Orientation or = this.sphericalProjection.calculAngle(dpAim);
-      double x = or.getAlpha();
-      double y = or.getBeta();
+			IDirectPosition dpTempOk = null;
 
-      // Grâce à l'index, on récupère les faces concernées
-      Collection<IFeature> cf = sI.select(new DirectPosition(x, y),
-          RayCasting.EPSILON);
+			// On calcule les lancers de rayon
+			Iterator<IFeature> itFeat = cf.iterator();
 
-      // Cette direction n'a pas de face, on continue
+			double dMin = Double.POSITIVE_INFINITY;
 
-      int nbPol2 = cf.size();
+			for (int k = 0; k < nbPol2; k++) {
 
-      // Cette direction n'a pas de face, on continue
-      if (0 == nbPol2) {
+				int ind = featC.getElements().indexOf(itFeat.next());
 
-        continue;
-      }
+				// On calcule le point d'intersection
+				IDirectPosition dpTemp = RayCasting.intersectionPolygonLine(lE,
+						(GM_Polygon) featCut.get(ind).getGeom());
 
-      // On créer une équation linéaire
-      LineEquation lE = new LineEquation(centre, dpAim);
+				if (dpTemp == null) {
 
-      IDirectPosition dpTempOk = null;
+					continue;
+				}
 
-      // On calcule les lancers de rayon
-      Iterator<IFeature> itFeat = cf.iterator();
+				double dTemp = centre.distance(dpTemp);
 
-      double dMin = Double.POSITIVE_INFINITY;
+				// On effectue un tri par distance
+				if (dMin > dTemp && dTemp <= this.rayon) {
 
-      for (int k = 0; k < nbPol2; k++) {
+					dpTempOk = dpTemp;
+					dMin = dTemp;
 
-        int ind = featC.getElements().indexOf(itFeat.next());
+				} // Boucle k
 
-        // On calcule le point d'intersection
-        IDirectPosition dpTemp = RayCasting.intersectionPolygonLine(lE,
-            (GM_Polygon) featCut.get(ind).getGeom());
+			}
+			// dpTempOK == null normalement si resultType ==
+			// TYPE_POINT_ALL_INTERSECTION
+			// Ca éviter d'avoir plusieurs fois le même point dans ce type de
+			// résultat
+			if (dpTempOk != null) {
+				// On garde le plus proche (si il existe)
 
-        if (dpTemp == null) {
+				dplOut.add(dpTempOk);
 
-          continue;
-        }
+			}
+		}
 
-        double dTemp = centre.distance(dpTemp);
+		return dplOut;
 
-        // On effectue un tri par distance
-        if (dMin > dTemp && dTemp <= this.rayon) {
+	}
 
-          dpTempOk = dpTemp;
-          dMin = dTemp;
+	private IFeature getOptimized(Iterator<IFeature> itFeat) {
 
-        }// Boucle k
+		double dMin = Double.POSITIVE_INFINITY;
+		IFeature featOut = null;
 
-      }
-      // dpTempOK == null normalement si resultType ==
-      // TYPE_POINT_ALL_INTERSECTION
-      // Ca éviter d'avoir plusieurs fois le même point dans ce type de
-      // résultat
-      if (dpTempOk != null) {
-        // On garde le plus proche (si il existe)
+		while (true) {
 
-        dplOut.add(dpTempOk);
+			IFeature feat = itFeat.next();
 
-      }
-    }
+			GM_Polygon polyTemp = (GM_Polygon) feat.getGeom();
 
-    return dplOut;
+			double distTemp = fr.ign.cogit.geoxygene.sig3d.calculation.Util.centerOf(polyTemp.coord())
+					.distance(this.centre);
 
-  }
+			if (distTemp < dMin) {
 
-  private IFeature getOptimized(Iterator<IFeature> itFeat) {
+				dMin = distTemp;
+				featOut = feat;
 
-    double dMin = Double.POSITIVE_INFINITY;
-    IFeature featOut = null;
+			}
 
-    while (true) {
+			if (!itFeat.hasNext()) {
 
-      IFeature feat = itFeat.next();
+				break;
+			}
 
-      GM_Polygon polyTemp = (GM_Polygon) feat.getGeom();
+		}
 
-      double distTemp = fr.ign.cogit.geoxygene.sig3d.calculation.Util.centerOf(
-          polyTemp.coord()).distance(this.centre);
+		return featOut;
 
-      if (distTemp < dMin) {
+	}
 
-        dMin = distTemp;
-        featOut = feat;
+	/**
+	 * Renvoie l'intersection entre un polygone et une ligne en 3D.
+	 * 
+	 * Renvoie null si coplanaire ou si pas d'intersection
+	 * 
+	 * @param lE
+	 * @param p
+	 * @return
+	 */
+	public static IDirectPosition intersectionPolygonLine(LineEquation lE, IPolygon p) {
 
-      }
+		// On calcule l'intersection entre le plan et le polygone
+		ApproximatedPlanEquation aPE = new ApproximatedPlanEquation(p);
+		IDirectPosition dp = lE.intersectionLinePlan(aPE);
 
-      if (!itFeat.hasNext()) {
+		if (dp == null) {
+			return dp;
+		}
 
-        break;
-      }
+		if (!RayCasting.lieInsidePolygon(dp, p)) {
 
-    }
+			return null;
+		}
 
-    return featOut;
+		return dp;
 
-  }
+	}
 
-  /**
-   * Renvoie l'intersection entre un polygone et une ligne en 3D.
-   * 
-   * Renvoie null si coplanaire ou si pas d'intersection
-   * 
-   * @param lE
-   * @param p
-   * @return
-   */
-  public static IDirectPosition intersectionPolygonLine(LineEquation lE,
-      IPolygon p) {
+	/**
+	 * Indique si un point est dans un polygone
+	 * 
+	 * @param dp
+	 *            le point
+	 * @param poly
+	 *            le polygone
+	 * @param normal
+	 *            une normale (nécessaire pour optimiser les calculs)
+	 * @return
+	 */
+	public static boolean lieInsidePolygon(IDirectPosition dp, IPolygon poly, Vecteur normal) {
 
-    // On calcule l'intersection entre le plan et le polygone
-    ApproximatedPlanEquation aPE = new ApproximatedPlanEquation(p);
-    IDirectPosition dp = lE.intersectionLinePlan(aPE);
+		boolean isInside = RayCasting.lieInsideRing(dp, poly.getExterior().coord(),
+				(new ApproximatedPlanEquation(poly).getNormale()));
 
-    if (dp == null) {
-      return dp;
-    }
+		if (!isInside) {
+			return false;
+		}
 
-    if (!RayCasting.lieInsidePolygon(dp, p)) {
+		// Dans le polygone mais peut être dans un trou
+		List<IRing> lInt = poly.getInterior();
+		int nbTrou = lInt.size();
 
-      return null;
-    }
+		for (int i = 0; i < nbTrou; i++) {
+			isInside = RayCasting.lieInsideRing(dp, lInt.get(i).coord(),
+					(new ApproximatedPlanEquation(poly).getNormale()));
 
-    return dp;
+			if (isInside) {
 
-  }
+				return false;
+			}
+		}
 
-  /**
-   * Indique si un point est dans un polygone
-   * 
-   * @param dp le point
-   * @param poly le polygone
-   * @param normal une normale (nécessaire pour optimiser les calculs)
-   * @return
-   */
-  public static boolean lieInsidePolygon(IDirectPosition dp, IPolygon poly,
-      Vecteur normal) {
+		return isInside;
+	}
 
-    boolean isInside = RayCasting.lieInsideRing(dp, poly.getExterior().coord(),
-        (new ApproximatedPlanEquation(poly).getNormale()));
+	/**
+	 * Indique si un point se trouve dans un polygone en 3D
+	 * 
+	 * @param dp
+	 * @param poly
+	 * @return
+	 */
+	public static boolean lieInsidePolygon(IDirectPosition dp, IPolygon poly) {
 
-    if (!isInside) {
-      return false;
-    }
+		return RayCasting.lieInsidePolygon(dp, poly, (new ApproximatedPlanEquation(poly).getNormale()));
 
-    // Dans le polygone mais peut être dans un trou
-    List<IRing> lInt = poly.getInterior();
-    int nbTrou = lInt.size();
+	}
 
-    for (int i = 0; i < nbTrou; i++) {
-      isInside = RayCasting.lieInsideRing(dp, lInt.get(i).coord(),
-          (new ApproximatedPlanEquation(poly).getNormale()));
-
-      if (isInside) {
-
-        return false;
-      }
-    }
-
-    return isInside;
-  }
-
-  /**
-   * Indique si un point se trouve dans un polygone en 3D
-   * 
-   * @param dp
-   * @param poly
-   * @return
-   */
-  public static boolean lieInsidePolygon(IDirectPosition dp, IPolygon poly) {
-
-    return RayCasting.lieInsidePolygon(dp, poly, (new ApproximatedPlanEquation(
-        poly).getNormale()));
-
-  }
-
-  /**
+	/**
    * Indique en 3D si un point est dans un GM_Ring
    * 
    * @param dp
@@ -984,7 +970,7 @@ public class RayCasting {
     // Porduit mixte pour calculer tout cela
     int nbP = dpl.size();
 
-    if (dpl.get(0).distance(dpl.get(nbP - 1)) != 0) {
+    if (dpl.get(0).distance(dpl.get(nbP - 1)) > 0.001) {
       dpl.add(dpl.get(0));
     }
 
@@ -1014,8 +1000,13 @@ public class RayCasting {
 
       vPred = vActu;
     }
-
-    boolean inside = (Math.abs(angleTotal) > RayCasting.EPSILON);
+    
+ 
+  
+    
+    boolean inside = (Math.abs(angleTotal)  > RayCasting.EPSILON);// && ((Math.abs(angleTotal) - Math.PI*2)> RayCasting.EPSILON)  ;// && (Math.abs(angleTotal) < (2 * Math.PI - RayCasting.EPSILON)) ;
+    
+    
 
     if (!inside && RayCasting.CHECK_IS_ON_EDGE) {
 
@@ -1026,411 +1017,396 @@ public class RayCasting {
 
   }
 
-  private static boolean checkOnEdge(IDirectPositionList dpl, IDirectPosition dp) {
+	private static boolean checkOnEdge(IDirectPositionList dpl, IDirectPosition dp) {
 
-    Proximity p = new Proximity();
-    IDirectPosition dpTemp = p.nearest(dp, dpl);
+		Proximity p = new Proximity();
+		IDirectPosition dpTemp = p.nearest(dp, dpl);
 
-    if (dpTemp.distance(dp) < RayCasting.EPSILON) {
-      return true;
-    }
+		if (dpTemp.distance(dp) < RayCasting.EPSILON) {
+			return true;
+		}
 
-    int nbP = dpl.size();
+		int nbP = dpl.size();
 
-    for (int i = 0; i < nbP - 1; i++) {
+		for (int i = 0; i < nbP - 1; i++) {
 
-      Vecteur v1 = new Vecteur(dp, dpl.get(i));
-      Vecteur v2 = new Vecteur(dp, dpl.get(i + 1));
+			Vecteur v1 = new Vecteur(dp, dpl.get(i));
+			Vecteur v2 = new Vecteur(dp, dpl.get(i + 1));
 
-      v1.normalise();
-      v2.normalise();
+			v1.normalise();
+			v2.normalise();
 
-      if ((v1.prodScalaire(v2) <= -1 + RayCasting.EPSILON)
-          || (Math.abs(v1.prodScalaire(v2)) < RayCasting.EPSILON)) {
+			if ((v1.prodScalaire(v2) <= -1 + RayCasting.EPSILON)
+					|| (Math.abs(v1.prodScalaire(v2)) < RayCasting.EPSILON)) {
 
-        return true;
-      }
+				return true;
+			}
 
-    }
+		}
 
-    return false;
+		return false;
 
-  }
+	}
 
-  /**
-   * Renvoie les rayons ayant une intersection
-   * 
-   * @return
-   */
-  public List<IOrientableCurve> generateLineString() {
-    int nbPoints = this.dpGenerated.size();
+	/**
+	 * Renvoie les rayons ayant une intersection
+	 * 
+	 * @return
+	 */
+	public List<IOrientableCurve> generateLineString() {
+		int nbPoints = this.dpGenerated.size();
 
-    List<IOrientableCurve> lOut = new ArrayList<IOrientableCurve>(nbPoints);
+		List<IOrientableCurve> lOut = new ArrayList<IOrientableCurve>(nbPoints);
 
-    for (int i = 0; i < nbPoints; i++) {
+		for (int i = 0; i < nbPoints; i++) {
 
-      DirectPositionList dpTemp = new DirectPositionList();
-      dpTemp.add(this.getCentre());
-      dpTemp.add(this.getDpGenerated().get(i));
+			DirectPositionList dpTemp = new DirectPositionList();
+			dpTemp.add(this.getCentre());
+			dpTemp.add(this.getDpGenerated().get(i));
 
-      lOut.add(new GM_LineString(dpTemp));
-    }
-    return lOut;
+			lOut.add(new GM_LineString(dpTemp));
+		}
+		return lOut;
 
-  }
+	}
 
-  /**
-   * Ne peut être actuellement utilisé que dans le cas qu'après un résultat du
-   * type : TYPE_FIRST_POINT_AND_SPHERE
-   * 
-   * @return le solide correspondant aux rayons générés
-   */
-  private void generateSolid() {
+	/**
+	 * Ne peut être actuellement utilisé que dans le cas qu'après un résultat du
+	 * type : TYPE_FIRST_POINT_AND_SPHERE
+	 * 
+	 * @return le solide correspondant aux rayons générés
+	 */
+	private void generateSolid() {
 
-    if (this.lastTypeResult != RayCasting.TYPE_FIRST_POINT_AND_SPHERE) {
-      return;
-    }
+		if (this.lastTypeResult != RayCasting.TYPE_FIRST_POINT_AND_SPHERE) {
+			return;
+		}
 
-    // Le pole de la demi sphère
-    DirectPosition pole = new DirectPosition(this.centre.getX(),
-        this.centre.getY(), this.centre.getZ() + this.rayon);
+		// Le pole de la demi sphère
+		DirectPosition pole = new DirectPosition(this.centre.getX(), this.centre.getY(),
+				this.centre.getZ() + this.rayon);
 
-    // les surfaces que l'on souhaite générer
-    List<IOrientableSurface> lOS = new ArrayList<IOrientableSurface>();
+		// les surfaces que l'on souhaite générer
+		List<IOrientableSurface> lOS = new ArrayList<IOrientableSurface>();
 
-    // L'indice du point que l'on souhaite chercher
-    int elemInd = 0;
+		// L'indice du point que l'on souhaite chercher
+		int elemInd = 0;
 
-    // Les points de la ligne précédente
-    DirectPositionList dplPred = new DirectPositionList();
+		// Les points de la ligne précédente
+		DirectPositionList dplPred = new DirectPositionList();
 
-    
-    int nbVertiCouronnes = this.nbPointsCouronnes/4;
-    
-    if(this.isSphere){
-      nbVertiCouronnes = 2 * nbVertiCouronnes;
-    }
-    
-    
-    // On initialise la première colonne
-    for (int j = 0; j < nbVertiCouronnes; j++) {
-      dplPred.add(this.getDpGenerated().get(j));
-      elemInd++;
+		int nbVertiCouronnes = this.nbPointsCouronnes / 4;
 
-    }
+		if (this.isSphere) {
+			nbVertiCouronnes = 2 * nbVertiCouronnes;
+		}
 
-    // On passe au second point de la première ligne
-    elemInd++;
-    
-    
-    
+		// On initialise la première colonne
+		for (int j = 0; j < nbVertiCouronnes; j++) {
+			dplPred.add(this.getDpGenerated().get(j));
+			elemInd++;
 
+		}
 
-    for (int i = 1; i < this.nbPointsCouronnes; i++) {
+		// On passe au second point de la première ligne
+		elemInd++;
 
-      // Liste de points de la couronnes actuelles
-      DirectPositionList dplActu = new DirectPositionList();
+		for (int i = 1; i < this.nbPointsCouronnes; i++) {
 
-      // On prend le point précédent
-      IDirectPosition dpPred = this.getDpGenerated().get(elemInd - 1);
-      IDirectPosition dpSuiv = null;
+			// Liste de points de la couronnes actuelles
+			DirectPositionList dplActu = new DirectPositionList();
 
-      for (int j = 1; j < nbVertiCouronnes; j++) {
-        // On ajoute le point précédent aux points que l'on souhaite
-        // traiter
-        dplActu.add(dpPred);
-        dpSuiv = this.getDpGenerated().get(elemInd);
+			// On prend le point précédent
+			IDirectPosition dpPred = this.getDpGenerated().get(elemInd - 1);
+			IDirectPosition dpSuiv = null;
 
-        GM_Triangle triPred = new GM_Triangle(dplPred.get(j - 1),
-            dplPred.get(j), dpPred);
-        GM_Triangle triAct = new GM_Triangle(dplPred.get(j), dpSuiv, dpPred);
+			for (int j = 1; j < nbVertiCouronnes; j++) {
+				// On ajoute le point précédent aux points que l'on souhaite
+				// traiter
+				dplActu.add(dpPred);
+				dpSuiv = this.getDpGenerated().get(elemInd);
 
-        Box3D bPred = new Box3D(triPred);
-        if (bPred.getLLDP().getZ() < this.centre.getZ()) {
+				GM_Triangle triPred = new GM_Triangle(dplPred.get(j - 1), dplPred.get(j), dpPred);
+				GM_Triangle triAct = new GM_Triangle(dplPred.get(j), dpSuiv, dpPred);
 
-          triPred = (GM_Triangle) triPred.reverse();
+				Box3D bPred = new Box3D(triPred);
+				if (bPred.getLLDP().getZ() < this.centre.getZ()) {
 
-        }
+					triPred = (GM_Triangle) triPred.reverse();
 
-        Box3D bAct = new Box3D(triAct);
+				}
 
-        if (bAct.getLLDP().getZ() < this.centre.getZ()) {
+				Box3D bAct = new Box3D(triAct);
 
-          triAct = (GM_Triangle) triAct.reverse();
+				if (bAct.getLLDP().getZ() < this.centre.getZ()) {
 
-        }
+					triAct = (GM_Triangle) triAct.reverse();
 
-        lOS.add(triPred);
-        lOS.add(triAct);
+				}
 
-        elemInd++;
-        dpPred = dpSuiv;
-      }
+				lOS.add(triPred);
+				lOS.add(triAct);
 
-      GM_Triangle triAct = new GM_Triangle(dplPred.get(dplPred.size() - 1),
-          dpSuiv, pole);
+				elemInd++;
+				dpPred = dpSuiv;
+			}
 
-      Box3D b = new Box3D(triAct);
+			GM_Triangle triAct = new GM_Triangle(dplPred.get(dplPred.size() - 1), dpSuiv, pole);
 
-      if (b.getLLDP().getZ() < this.centre.getZ()) {
+			Box3D b = new Box3D(triAct);
 
-        triAct.reverse();
+			if (b.getLLDP().getZ() < this.centre.getZ()) {
 
-      }
+				triAct.reverse();
 
-      lOS.add(triAct);
+			}
 
-      // On ajoute le point actuel aux points que l'on souhaite traiter
-      // (fin de
-      // boucle oblige)
-      dplActu.add(dpSuiv);
+			lOS.add(triAct);
 
-      elemInd++;
+			// On ajoute le point actuel aux points que l'on souhaite traiter
+			// (fin de
+			// boucle oblige)
+			dplActu.add(dpSuiv);
 
-      dplPred = dplActu;
+			elemInd++;
 
-    }
+			dplPred = dplActu;
 
-    // On ferme la dernière boucle
+		}
 
-    IDirectPosition dpSuiv = null;
-    for (int j = 1; j < nbVertiCouronnes; j++) {
+		// On ferme la dernière boucle
 
-      // On récupère le point actuel qui est en fait sur la première ligne
-      // traitée
-      IDirectPosition dpPred = this.getDpGenerated().get(j - 1);
-      dpSuiv = this.getDpGenerated().get(j);
+		IDirectPosition dpSuiv = null;
+		for (int j = 1; j < nbVertiCouronnes; j++) {
 
-      GM_Triangle triPred = new GM_Triangle(dplPred.get(j - 1), dplPred.get(j),
-          dpPred);
-      GM_Triangle triAct = new GM_Triangle(dplPred.get(j), dpSuiv, dpPred);
+			// On récupère le point actuel qui est en fait sur la première ligne
+			// traitée
+			IDirectPosition dpPred = this.getDpGenerated().get(j - 1);
+			dpSuiv = this.getDpGenerated().get(j);
 
-      Box3D bPred = new Box3D(triPred);
-      if (bPred.getLLDP().getZ() < this.centre.getZ()) {
+			GM_Triangle triPred = new GM_Triangle(dplPred.get(j - 1), dplPred.get(j), dpPred);
+			GM_Triangle triAct = new GM_Triangle(dplPred.get(j), dpSuiv, dpPred);
 
-        triPred = (GM_Triangle) triPred.reverse();
+			Box3D bPred = new Box3D(triPred);
+			if (bPred.getLLDP().getZ() < this.centre.getZ()) {
 
-      }
+				triPred = (GM_Triangle) triPred.reverse();
 
-      Box3D bAct = new Box3D(triAct);
+			}
 
-      if (bAct.getLLDP().getZ() < this.centre.getZ()) {
+			Box3D bAct = new Box3D(triAct);
 
-        triAct = (GM_Triangle) triAct.reverse();
+			if (bAct.getLLDP().getZ() < this.centre.getZ()) {
 
-      }
+				triAct = (GM_Triangle) triAct.reverse();
 
-      lOS.add(triPred);
-      lOS.add(triAct);
-    }
+			}
 
-    GM_Triangle triAct = new GM_Triangle(dplPred.get(dplPred.size() - 1),
-        dpSuiv, pole);
+			lOS.add(triPred);
+			lOS.add(triAct);
+		}
 
-    Box3D b = new Box3D(triAct);
+		GM_Triangle triAct = new GM_Triangle(dplPred.get(dplPred.size() - 1), dpSuiv, pole);
 
-    if (b.getLLDP().getZ() < this.centre.getZ()) {
+		Box3D b = new Box3D(triAct);
 
-      triAct.reverse();
+		if (b.getLLDP().getZ() < this.centre.getZ()) {
 
-    }
+			triAct.reverse();
 
-    lOS.add(triAct);
+		}
 
-    this.solGenerated = new GM_Solid(lOS);
-  }
+		lOS.add(triAct);
 
-  private void generatePolygon() {
+		this.solGenerated = new GM_Solid(lOS);
+	}
 
-	  
-	  /*
-    if (this.lastTypeResult != RayCasting.TYPE_CAST_SOLID_POINT) {
-      return;
-    }*/
-    
-    
-    if(this.getDpGenerated()==null || this.getDpGenerated().isEmpty()){
-    	return;
-    }
+	private void generatePolygon() {
 
-    int nbPoints = this.getDpGenerated().size();
+		/*
+		 * if (this.lastTypeResult != RayCasting.TYPE_CAST_SOLID_POINT) {
+		 * return; }
+		 */
 
-    DirectPositionList dpl = new DirectPositionList();
-    List<Orientation> lOrient = new ArrayList<Orientation>();
+		if (this.getDpGenerated() == null || this.getDpGenerated().isEmpty()) {
+			return;
+		}
 
-    SphericalProjection sp = new SphericalProjection(this.centre);
+		int nbPoints = this.getDpGenerated().size();
 
-    bouclei: for (int i = 0; i < nbPoints; i++) {
+		DirectPositionList dpl = new DirectPositionList();
+		List<Orientation> lOrient = new ArrayList<Orientation>();
 
-      IDirectPosition dp = this.getDpGenerated().get(i);
-      Orientation or = sp.calculAngle(dp);
-      double alpha = or.getAlpha();
-      double beta = or.getBeta();
+		SphericalProjection sp = new SphericalProjection(this.centre);
 
-      if (Math.abs(beta) > 0.04) {
-        continue;
-      }
+		bouclei: for (int i = 0; i < nbPoints; i++) {
 
-      int nbElem = lOrient.size();
-      int j = 0;
-      for (j = 0; j < nbElem; j++) {
+			IDirectPosition dp = this.getDpGenerated().get(i);
+			Orientation or = sp.calculAngle(dp);
+			double alpha = or.getAlpha();
+			double beta = or.getBeta();
 
-        double alphaBis = lOrient.get(j).getAlpha();
+			if (Math.abs(beta) > 0.04) {
+				continue;
+			}
 
-        if (Math.abs(alpha - lOrient.get(j).getAlpha()) < RayCasting.EPSILON) {
+			int nbElem = lOrient.size();
+			int j = 0;
+			for (j = 0; j < nbElem; j++) {
 
-          IDirectPosition dpCandidate2 = dpl.get(j);
+				double alphaBis = lOrient.get(j).getAlpha();
 
-          if (dp.distance(this.centre) < dpCandidate2.distance(this.centre)
-              && Math.abs(beta) < Math.abs(lOrient.get(j).getBeta())) {
+				if (Math.abs(alpha - lOrient.get(j).getAlpha()) < RayCasting.EPSILON) {
 
-            DirectPosition dpToAdd = (DirectPosition) dp.clone();
-            dpToAdd.setZ(this.centre.getZ());
+					IDirectPosition dpCandidate2 = dpl.get(j);
 
-            dpl.set(j, dpToAdd);
-            lOrient.set(j, or);
+					if (dp.distance(this.centre) < dpCandidate2.distance(this.centre)
+							&& Math.abs(beta) < Math.abs(lOrient.get(j).getBeta())) {
 
-            continue bouclei;
+						DirectPosition dpToAdd = (DirectPosition) dp.clone();
+						dpToAdd.setZ(this.centre.getZ());
 
-          } else {
-            continue bouclei;
-          }
+						dpl.set(j, dpToAdd);
+						lOrient.set(j, or);
 
-        }
+						continue bouclei;
 
-        if (alphaBis < alpha) {
+					} else {
+						continue bouclei;
+					}
 
-          DirectPosition dpToAdd = (DirectPosition) dp.clone();
-          dpToAdd.setZ(this.centre.getZ());
+				}
 
-          dpl.add(j, dpToAdd);
-          lOrient.add(j, or);
+				if (alphaBis < alpha) {
 
-          continue bouclei;
-        }
+					DirectPosition dpToAdd = (DirectPosition) dp.clone();
+					dpToAdd.setZ(this.centre.getZ());
 
-      }
+					dpl.add(j, dpToAdd);
+					lOrient.add(j, or);
 
-      DirectPosition dpToAdd = (DirectPosition) dp.clone();
-      dpToAdd.setZ(this.centre.getZ());
+					continue bouclei;
+				}
 
-      dpl.add(dpToAdd);
+			}
 
-      lOrient.add(or);
+			DirectPosition dpToAdd = (DirectPosition) dp.clone();
+			dpToAdd.setZ(this.centre.getZ());
 
-    }
+			dpl.add(dpToAdd);
 
-    dpl.add(dpl.get(0));
+			lOrient.add(or);
 
-    this.polGenerated = new GM_Polygon(new GM_LineString(dpl));
+		}
 
-  }
+		dpl.add(dpl.get(0));
 
-  /**
-   * Indique si un point se trouve dans un polygone
-   * 
-   * @param dp
-   * @param r
-   * @return
-   */
-  public static boolean lieInsideRing(IDirectPosition dp, IRing r) {
-    return RayCasting.lieInsideRing(dp, r.coord(),
-        (new ApproximatedPlanEquation(r.coord())).getNormale());
+		this.polGenerated = new GM_Polygon(new GM_LineString(dpl));
 
-  }
+	}
 
-  /**
-   * @return the centre
-   */
-  public IDirectPosition getCentre() {
-    return this.centre;
-  }
+	/**
+	 * Indique si un point se trouve dans un polygone
+	 * 
+	 * @param dp
+	 * @param r
+	 * @return
+	 */
+	public static boolean lieInsideRing(IDirectPosition dp, IRing r) {
+		return RayCasting.lieInsideRing(dp, r.coord(), (new ApproximatedPlanEquation(r.coord())).getNormale());
 
-  /**
-   * @return the lFeat
-   */
-  public IFeatureCollection<IFeature> getlFeat() {
-    return this.lFeat;
-  }
+	}
 
-  /**
-   * @return the nbPointsCouronnes
-   */
-  public int getNbPointsCouronnes() {
-    return this.nbPointsCouronnes;
-  }
+	/**
+	 * @return the centre
+	 */
+	public IDirectPosition getCentre() {
+		return this.centre;
+	}
 
-  /**
-   * @return the rayon
-   */
-  public double getRayon() {
-    return this.rayon;
-  }
+	/**
+	 * @return the lFeat
+	 */
+	public IFeatureCollection<IFeature> getlFeat() {
+		return this.lFeat;
+	}
 
-  /**
-   * @return the dpGenerated
-   */
-  public IDirectPositionList getDpGenerated() {
-    return this.dpGenerated;
-  }
+	/**
+	 * @return the nbPointsCouronnes
+	 */
+	public int getNbPointsCouronnes() {
+		return this.nbPointsCouronnes;
+	}
 
-  /**
-   * @return the lastTypeResult
-   */
-  public int getLastTypeResult() {
-    return this.lastTypeResult;
-  }
+	/**
+	 * @return the rayon
+	 */
+	public double getRayon() {
+		return this.rayon;
+	}
 
-  public boolean isSphere() {
-    return this.isSphere;
-  }
+	/**
+	 * @return the dpGenerated
+	 */
+	public IDirectPositionList getDpGenerated() {
+		return this.dpGenerated;
+	}
 
-  /**
-   * Ne peut être actuellement utilisé que dans le cas qu'après un résultat du
-   * type : TYPE_FIRST_POINT_AND_SPHERE
-   * 
-   * @return le solide correspondant aux rayons générés
-   */
-  public GM_Solid getGeneratedSolid() {
+	/**
+	 * @return the lastTypeResult
+	 */
+	public int getLastTypeResult() {
+		return this.lastTypeResult;
+	}
 
-    if (this.solGenerated == null) {
-      this.generateSolid();
+	public boolean isSphere() {
+		return this.isSphere;
+	}
 
-      // On a besoin de refaire un cast avec le bon type
-      if (this.solGenerated == null) {
-    	  logger.info("We proceed of a raycasting from type : " +  TYPE_FIRST_POINT_AND_SPHERE);
-        this.cast(this.getCentre(), this.getlFeat(), this.nbPointsCouronnes,
-            this.rayon, RayCasting.TYPE_FIRST_POINT_AND_SPHERE, this.isSphere);
+	/**
+	 * Ne peut être actuellement utilisé que dans le cas qu'après un résultat du
+	 * type : TYPE_FIRST_POINT_AND_SPHERE
+	 * 
+	 * @return le solide correspondant aux rayons générés
+	 */
+	public GM_Solid getGeneratedSolid() {
 
-      }
-    }
-    return this.solGenerated;
-  }
+		if (this.solGenerated == null) {
+			this.generateSolid();
 
-  public GM_Polygon getGeneratedPolygon() {
-    if (this.polGenerated == null) {
-      this.generatePolygon();
+			// On a besoin de refaire un cast avec le bon type
+			if (this.solGenerated == null) {
+				logger.info("We proceed of a raycasting from type : " + TYPE_FIRST_POINT_AND_SPHERE);
+				this.cast(this.getCentre(), this.getlFeat(), this.nbPointsCouronnes, this.rayon,
+						RayCasting.TYPE_FIRST_POINT_AND_SPHERE, this.isSphere);
 
-      // On a besoin de refaire un cast avec le bon type
-      if (this.polGenerated == null) {
-        System.out
-            .println("On effectue un lancer de rayon du type TYPE_CAST_SOLID_POINT");
+			}
+		}
+		return this.solGenerated;
+	}
 
-        this.castOnSolidPosition(this.centre, this.lFeat,
-            this.nbPointsCouronnes, this.rayon,
-            RayCasting.TYPE_CAST_SOLID_POINT);
+	public GM_Polygon getGeneratedPolygon() {
+		if (this.polGenerated == null) {
+			this.generatePolygon();
 
-        this.generatePolygon();
+			// On a besoin de refaire un cast avec le bon type
+			if (this.polGenerated == null) {
+				System.out.println("On effectue un lancer de rayon du type TYPE_CAST_SOLID_POINT");
 
-      }
-    }
-    return this.polGenerated;
+				this.castOnSolidPosition(this.centre, this.lFeat, this.nbPointsCouronnes, this.rayon,
+						RayCasting.TYPE_CAST_SOLID_POINT);
 
-  }
+				this.generatePolygon();
 
-  SphericalProjection sphericalProjection;
+			}
+		}
+		return this.polGenerated;
 
-  public SphericalProjection getSphericalProjection() {
-    return this.sphericalProjection;
-  }
+	}
+
+	SphericalProjection sphericalProjection;
+
+	public SphericalProjection getSphericalProjection() {
+		return this.sphericalProjection;
+	}
 }

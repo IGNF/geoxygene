@@ -25,6 +25,7 @@ import fr.ign.cogit.geoxygene.sig3d.util.correction.NormalCorrectionNonTriangula
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.util.attribute.AttributeManager;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
@@ -255,6 +256,10 @@ public class Profile {
 		return displayInit;
 	}
 
+	public void setDisplayInit(boolean displayInit) {
+		this.displayInit = displayInit;
+	}
+
 	public IFeatureCollection<IFeature> getBati() {
 		return bati;
 	}
@@ -416,7 +421,19 @@ public class Profile {
 		
 		buildingRoofs = RoofDetection.detectRoof(bati,  0.1, false);
 		for(IFeature feat : buildingRoofs){
-			feat.setGeom(feat.getGeom().buffer(0.01));
+		//	feat.setGeom(feat.getGeom().buffer(0.01));
+			if(feat.getGeom() == null || feat.getGeom().isEmpty()){
+				
+				feat.setGeom(new GM_Polygon());
+				
+			}else{
+				//feat.setGeom(feat.getGeom().getEnvelope().getGeom());
+				
+				feat.setGeom(feat.getGeom().convexHull());
+				
+			}
+			
+		
 		}
 		
 	
