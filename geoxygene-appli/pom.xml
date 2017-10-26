@@ -272,11 +272,6 @@
 		</dependency>
 		<dependency>
 			<groupId>fr.ign.cogit</groupId>
-			<artifactId>geoxygene-carto</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>fr.ign.cogit</groupId>
 			<artifactId>cartagen-core</artifactId>
 			<version>0.1-SNAPSHOT</version>
 		</dependency>
