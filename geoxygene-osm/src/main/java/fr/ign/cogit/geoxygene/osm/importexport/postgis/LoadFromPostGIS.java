@@ -20,7 +20,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import fr.ign.cogit.geoxygene.osm.importexport.OSMNode;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMRelation;
@@ -39,7 +41,7 @@ public class LoadFromPostGIS {
 	public String dbName;
 	public String dbUser;
 	public String dbPwd;
-	public List<OSMResource> myJavaObjects;
+	public Set<OSMResource> myJavaObjects;
 	// public HashMap<Long, OSMContributor> myContributors;
 	public List<OsmRelationMember> OsmRelMbList;
 	public Long idRelPrev;
@@ -66,7 +68,7 @@ public class LoadFromPostGIS {
 		this.dbName = dbName;
 		this.dbUser = dbUser;
 		this.dbPwd = dbPwd;
-		this.myJavaObjects = new ArrayList<OSMResource>();
+		this.myJavaObjects = new HashSet<OSMResource>();
 		// this.myOSMObjects = new HashMap<Long, OSMObject>();
 		// this.myContributors = new HashMap<Long, OSMContributor>();
 		this.OsmRelMbList = new ArrayList<OsmRelationMember>();
