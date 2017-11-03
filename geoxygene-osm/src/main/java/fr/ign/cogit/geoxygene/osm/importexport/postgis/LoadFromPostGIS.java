@@ -116,7 +116,7 @@ public class LoadFromPostGIS {
 				+ bbox.get(3).toString() + ", 4326) AND datemodif > \'" + timespan.get(0).toString()
 				+ "\' AND datemodif <= \'" + timespan.get(1).toString() + "\';";
 
-		System.out.println(query);
+//		System.out.println(query);
 		try {
 			selectFromDB(query, "node");
 		} catch (Exception e) {
@@ -131,7 +131,7 @@ public class LoadFromPostGIS {
 				+ bbox.get(0).toString() + " AND lat_min >=" + bbox.get(1).toString() + " AND lon_max <="
 				+ bbox.get(2).toString() + "AND lat_max <=" + bbox.get(3).toString()
 				+ " ORDER BY id, datemodif DESC) AS way_selected;";
-		System.out.println(query);
+//		System.out.println(query);
 		try {
 			selectFromDB(query, "way");
 		} catch (Exception e) {
@@ -172,8 +172,8 @@ public class LoadFromPostGIS {
 	public void selectRelInit(List<Double> bbox, String beginDate) {
 		// Initially existing node-composed relations : query on RELATION
 		// MEMBERS
-		System.out.println(
-				"******************* node-composed relations : query on RELATION MEMBERS  *******************");
+//		System.out.println(
+//				"******************* node-composed relations : query on RELATION MEMBERS  *******************");
 		String subquery = "SELECT DISTINCT ON (id) id FROM node WHERE " + "datemodif <= \'" + beginDate
 				+ "\' AND node.geom && ST_MakeEnvelope(" + bbox.get(0).toString() + "," + bbox.get(1).toString() + ","
 				+ bbox.get(2).toString() + "," + bbox.get(3).toString() + ")" + "ORDER BY id, vnode DESC";
@@ -197,8 +197,8 @@ public class LoadFromPostGIS {
 		}
 
 		// Initially existing way-composed relations
-		System.out
-				.println("******************* way-composed relations : query on RELATION MEMBERS  *******************");
+//		System.out
+//				.println("******************* way-composed relations : query on RELATION MEMBERS  *******************");
 		subquery = "SELECT DISTINCT ON (id) id FROM node WHERE " + "datemodif <= \'" + beginDate
 				+ "\' AND node.geom && ST_MakeEnvelope(" + bbox.get(0).toString() + "," + bbox.get(1).toString() + ","
 				+ bbox.get(2).toString() + "," + bbox.get(3).toString() + ")" + "ORDER BY id, vnode DESC";
@@ -251,7 +251,7 @@ public class LoadFromPostGIS {
 			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
 			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			ResultSet r = s.executeQuery(query);
-			System.out.println("------- Query Executed -------");
+//			System.out.println("------- Query Executed -------");
 			writeOSMResource(r, osmDataType);
 			s.close();
 			conn.close();
@@ -263,18 +263,18 @@ public class LoadFromPostGIS {
 	public void writeOSMResource(ResultSet r, String osmDataType) throws Exception {
 
 		while (r.next()) {
-			System.out.println("writeOSMResource");
+//			System.out.println("writeOSMResource");
 			if (osmDataType.equalsIgnoreCase("node")) {
-				System.out.println("Writing resource with type node...");
-				System.out.println("r.next is a node");
+//				System.out.println("Writing resource with type node...");
+//				System.out.println("r.next is a node");
 				writeNode(r);
 			}
 			if (osmDataType.equalsIgnoreCase("way")) {
-				System.out.println("Writing resource with type way...");
+//				System.out.println("Writing resource with type way...");
 				writeWay(r);
 			}
 			if (osmDataType.equalsIgnoreCase("relation")) {
-				System.out.println("Writing resource with type relation...");
+//				System.out.println("Writing resource with type relation...");
 				writeRelation(r);
 			}
 			if (osmDataType.equalsIgnoreCase("relationmember")) {
@@ -286,8 +286,8 @@ public class LoadFromPostGIS {
 				// Adds a new relation member in the list
 				this.OsmRelMbList.add(writeRelationMember(r));
 				idRelPrev = r.getLong("idrel");
-				System.out.println("idrel =" + idRelPrev);
-				System.out.println("OSMRelationMember added in OsmRelMbList.");
+//				System.out.println("idrel =" + idRelPrev);
+//				System.out.println("OSMRelationMember added in OsmRelMbList.");
 
 			}
 		}
@@ -298,23 +298,23 @@ public class LoadFromPostGIS {
 		long idmb = r.getLong("idmb");
 		if (r.getString("rolemb").toLowerCase().equalsIgnoreCase("outer")) {
 			OsmRelationMember osmRelMb = new OsmRelationMember(RoleMembre.OUTER, isNode, idmb);
-			System.out.println("writeRelationMember(r)");
+//			System.out.println("writeRelationMember(r)");
 			return osmRelMb;
 
 		} else if (r.getString("rolemb").toLowerCase().equalsIgnoreCase("inner")) {
 			OsmRelationMember osmRelMb = new OsmRelationMember(RoleMembre.INNER, isNode, idmb);
-			System.out.println("writeRelationMember(r)");
+//			System.out.println("writeRelationMember(r)");
 			return osmRelMb;
 
 		} else {
 			OsmRelationMember osmRelMb = new OsmRelationMember(RoleMembre.NON_DEF, isNode, idmb);
-			System.out.println("writeRelationMember(r)");
+//			System.out.println("writeRelationMember(r)");
 			return osmRelMb;
 		}
 	}
 
 	public void writeRelation(ResultSet r) throws Exception {
-		System.out.println("Writing Relation...");
+//		System.out.println("Writing Relation...");
 
 		// Get date
 		DateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssX");
@@ -355,7 +355,7 @@ public class LoadFromPostGIS {
 				for (int i = 0; i < obj.names().length(); i++) {
 					String key = obj.names().getString(i);
 					String value = obj.getString(key);
-					System.out.println(" Ajout du tag {" + key + ", " + value + "}");
+//					System.out.println(" Ajout du tag {" + key + ", " + value + "}");
 					myOsmResource.addTag(key, value);
 				}
 			} catch (JSONException e) {
@@ -364,26 +364,26 @@ public class LoadFromPostGIS {
 			}
 		}
 		this.myJavaObjects.add(myOsmResource);
-		System.out.println("Java object created ! " + "\nid = " + myOsmResource.getId() + "\nusername = "
-				+ myOsmResource.getContributeur() + "     uid = " + myOsmResource.getUid() + "\nvway = "
-				+ myOsmResource.getVersion() + "\ndate = " + myOsmResource.getDate() + "   Changeset = "
-				+ myOsmResource.getChangeSet());
-		System.out.println("-------------------------------------------");
+//		System.out.println("Java object created ! " + "\nid = " + myOsmResource.getId() + "\nusername = "
+//				+ myOsmResource.getContributeur() + "     uid = " + myOsmResource.getUid() + "\nvway = "
+//				+ myOsmResource.getVersion() + "\ndate = " + myOsmResource.getDate() + "   Changeset = "
+//				+ myOsmResource.getChangeSet());
+//		System.out.println("-------------------------------------------");
 
 		// Test if relation is also a relation member
 		String relIsRelMb = "SELECT DISTINCT ON (idrel) * FROM relationmember WHERE idmb=" + myOsmResource.getId()
 				+ " ORDER BY idrel";
-		System.out.println("			Test : relation is a relation member...");
+//		System.out.println("			Test : relation is a relation member...");
 		selectFromDB(relIsRelMb, "relationmember");
-		System.out.println("										... effectué");
+//		System.out.println("										... effectué");
 	}
 
 	public void writeWay(ResultSet r) throws SQLException {
-		System.out.println("Writing way...");
+//		System.out.println("Writing way...");
 		Long[] nodeWay = (Long[]) r.getArray("composedof").getArray();
-		for (long i : nodeWay) {
-			System.out.println("nodeWay[i] = " + i);
-		}
+//		for (long i : nodeWay) {
+//			System.out.println("nodeWay[i] = " + i);
+//		}
 		List<Long> composedof = Arrays.asList(nodeWay);
 
 		DateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssX");
@@ -402,7 +402,7 @@ public class LoadFromPostGIS {
 				for (int i = 0; i < obj.names().length(); i++) {
 					String key = obj.names().getString(i);
 					String value = obj.getString(key);
-					System.out.println(" Ajout du tag {" + key + ", " + value + "}");
+//					System.out.println(" Ajout du tag {" + key + ", " + value + "}");
 					myOsmResource.addTag(key, value);
 				}
 			} catch (JSONException e) {
@@ -411,15 +411,15 @@ public class LoadFromPostGIS {
 			}
 		}
 		this.myJavaObjects.add(myOsmResource);
-		System.out.println("Java object created ! " + "\nid = " + myOsmResource.getId() + "\nusername = "
-				+ myOsmResource.getContributeur() + "     uid = " + myOsmResource.getUid() + "\nvway = "
-				+ myOsmResource.getVersion() + "\ndate = " + myOsmResource.getDate() + "   Changeset = "
-				+ myOsmResource.getChangeSet());
-		System.out.println("-------------------------------------------");
+//		System.out.println("Java object created ! " + "\nid = " + myOsmResource.getId() + "\nusername = "
+//				+ myOsmResource.getContributeur() + "     uid = " + myOsmResource.getUid() + "\nvway = "
+//				+ myOsmResource.getVersion() + "\ndate = " + myOsmResource.getDate() + "   Changeset = "
+//				+ myOsmResource.getChangeSet());
+//		System.out.println("-------------------------------------------");
 	}
 
 	public void writeNode(ResultSet r) throws SQLException {
-		System.out.println("Writing node...");
+//		System.out.println("Writing node...");
 		DateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssX");
 		Date date = null;
 		try {
@@ -439,7 +439,7 @@ public class LoadFromPostGIS {
 				for (int i = 0; i < obj.names().length(); i++) {
 					String key = obj.names().getString(i);
 					String value = obj.getString(key);
-					System.out.println(" Ajout du tag {" + key + ", " + value + "}");
+//					System.out.println(" Ajout du tag {" + key + ", " + value + "}");
 					myOsmResource.addTag(key, value);
 					if (key.equalsIgnoreCase("source")) {
 						myOsmResource.setSource(value);
@@ -451,10 +451,10 @@ public class LoadFromPostGIS {
 			}
 		}
 		this.myJavaObjects.add(myOsmResource);
-		System.out.println("Java object created ! " + "\nid = " + myOsmResource.getId() + "\nusername = "
-				+ myOsmResource.getContributeur() + "     uid = " + myOsmResource.getUid() + "\nvnode = "
-				+ myOsmResource.getVersion() + "\ndate = " + myOsmResource.getDate() + "   Changeset = "
-				+ myOsmResource.getChangeSet());
-		System.out.println("-------------------------------------------");
+//		System.out.println("Java object created ! " + "\nid = " + myOsmResource.getId() + "\nusername = "
+//				+ myOsmResource.getContributeur() + "     uid = " + myOsmResource.getUid() + "\nvnode = "
+//				+ myOsmResource.getVersion() + "\ndate = " + myOsmResource.getDate() + "   Changeset = "
+//				+ myOsmResource.getChangeSet());
+//		System.out.println("-------------------------------------------");
 	}
 }

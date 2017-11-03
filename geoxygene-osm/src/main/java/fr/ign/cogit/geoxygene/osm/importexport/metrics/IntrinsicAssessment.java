@@ -15,6 +15,7 @@ import java.util.Set;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.osm.contributor.OSMContributor;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMNode;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMObject;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMResource;
@@ -26,34 +27,30 @@ public class IntrinsicAssessment {
 
 	public static void main(String[] args) throws Exception {
 		List<Double> bbox = new ArrayList<Double>();
-		// bbox.add(2.3312);
-		// bbox.add(48.8479);
-		// bbox.add(2.3644);
-		// bbox.add(48.8637);
-		// List<String> timespan = new ArrayList<String>();
-		// timespan.add("2011-01-01");
-		// timespan.add("2011-03-01");
+		 bbox.add(2.3398);
+		 bbox.add(48.8522);
+		 bbox.add(2.3527);
+		 bbox.add(48.8576);
+		 List<String> timespan = new ArrayList<String>();
+		 timespan.add("2010-01-01");
+		 timespan.add("2014-01-01");
 
-		LoadFromPostGIS loader = new LoadFromPostGIS("localhost", "5432", "paris", "postgres", "postgres");
-		bbox.add(2.3322);
-		bbox.add(48.8489);
-		bbox.add(2.3634);
-		bbox.add(48.8627);
-		// bbox.add(2.3322);
-		// bbox.add(48.8509);
-		// bbox.add(2.3614);
-		// bbox.add(48.8607);
-		List<String> timespan = new ArrayList<String>();
-		// timespan.add("2010-01-01");
-		// timespan.add("2010-01-15");
-		timespan.add("2010-01-01");
-		timespan.add("2010-02-01");
-		loader.selectNodes(bbox, timespan);
-		// loader.selectWays(bbox, timespan);
-		myJavaObjects = loader.myJavaObjects;
+		LoadFromPostGIS loader = new LoadFromPostGIS("localhost", "5432", "iledelacite1", "postgres", "postgres");
 
-		HashMap<Long, OSMObject> myOSMNodeObjects = nodeContributionSummary(myJavaObjects);
-		writeContributionSummary(myOSMNodeObjects, new File("contributionSummary_paris_20100101_20100201.csv"));
+        loader.selectNodes(bbox, timespan);
+        loader.selectWays(bbox,timespan);
+        myJavaObjects = loader.myJavaObjects;
+        
+       HashMap<Long, OSMObject> myOSMNodesObjects = nodeContributionSummary(myJavaObjects);
+       writeContributionSummary(myOSMNodesObjects, new File("data/contributionSummary_idc_2010-2013.csv"));
+       
+       HashMap<Long, OSMObject> myOSMWaysObjects = wayContributionSummary(myJavaObjects);
+       writeContributionSummary(myOSMWaysObjects, new File("data/contributionSummary-ways_idc_2010-2013.csv"));
+              
+       // indicateurs contributeurs
+       HashMap<Long, OSMContributor> myOSMContributor = ContributorAssessment.contributorSummary(myJavaObjects);
+       ContributorAssessment.writeContributorSummary(myOSMContributor, new File("data/contributeurs_idc_2010_2013.csv"));
+       
 	}
 
 	public static void sortJavaObjects(List<OSMResource> myJavaObjects) {
