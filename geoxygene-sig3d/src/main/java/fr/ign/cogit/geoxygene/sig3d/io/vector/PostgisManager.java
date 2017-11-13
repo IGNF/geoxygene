@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -78,6 +79,10 @@ public class PostgisManager {
 
   public static String SRID = "-1";
 
+  public static void setLoggerLevel(Level level) {
+      PostgisManager.logger.setLevel(level);
+  }
+  
   /**
    * Cette fonction permet de récupérer la liste des tables possédant de la
    * géométrie
@@ -604,7 +609,8 @@ public class PostgisManager {
 
         }
         sql_insert = sql_insert + ")";
-        System.out.println(sql_insert);
+        //System.out.println(sql_insert);
+        PostgisManager.logger.debug(Messages.getString(sql_insert));
         s.execute(sql_insert);
         PostgisManager.logger.debug(Messages.getString("Sauvegarde.AddColum")
             + " : " + sql_insert);
