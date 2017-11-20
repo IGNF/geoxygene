@@ -26,34 +26,25 @@ public class IntrinsicAssessment {
 
 	public static void main(String[] args) throws Exception {
 		List<Double> bbox = new ArrayList<Double>();
-		// bbox.add(2.3312);
-		// bbox.add(48.8479);
-		// bbox.add(2.3644);
-		// bbox.add(48.8637);
-		// List<String> timespan = new ArrayList<String>();
-		// timespan.add("2011-01-01");
-		// timespan.add("2011-03-01");
+		bbox.add(2.3312);
+		bbox.add(48.8479);
+		bbox.add(2.3644);
+		bbox.add(48.8637);
+		List<String> timespan = new ArrayList<String>();
+		timespan.add("2014-01-01");
+		timespan.add("2014-03-01");
 
 		LoadFromPostGIS loader = new LoadFromPostGIS("localhost", "5432", "paris", "postgres", "postgres");
-		bbox.add(2.3322);
-		bbox.add(48.8489);
-		bbox.add(2.3634);
-		bbox.add(48.8627);
-		// bbox.add(2.3322);
-		// bbox.add(48.8509);
-		// bbox.add(2.3614);
-		// bbox.add(48.8607);
-		List<String> timespan = new ArrayList<String>();
-		// timespan.add("2010-01-01");
-		// timespan.add("2010-01-15");
-		timespan.add("2010-01-01");
-		timespan.add("2010-02-01");
-		loader.selectNodes(bbox, timespan);
-		// loader.selectWays(bbox, timespan);
+		loader.selectWays(bbox, timespan);
 		myJavaObjects = loader.myJavaObjects;
 
-		HashMap<Long, OSMObject> myOSMNodeObjects = nodeContributionSummary(myJavaObjects);
-		writeContributionSummary(myOSMNodeObjects, new File("contributionSummary_paris_20100101_20100201.csv"));
+		// HashMap<Long, OSMObject> myOSMNodeObjects =
+		// nodeContributionSummary(myJavaObjects);
+		// writeContributionSummary(myOSMNodeObjects, new
+		// File("contributionSummary-nodes_qlatin_janv_fev_2014.csv"));
+
+		HashMap<Long, OSMObject> myOSMWayObjects = wayContributionSummary(myJavaObjects);
+		writeContributionSummary(myOSMWayObjects, new File("contributionSummary-ways_qlatin_janv_fev_2014.csv"));
 	}
 
 	public static void sortJavaObjects(List<OSMResource> myJavaObjects) {

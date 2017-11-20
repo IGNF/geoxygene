@@ -29,6 +29,13 @@ public class GeoxSink implements Sink {
 	public StringBuffer relmbValues;
 	public String name;
 
+	String host = "localhost";
+	String port = "5432";
+	String dbName = "iledelacite";
+	String dbUser = "postgres";
+	String dbPwd = "postgres";
+	String url = "jdbc:postgresql://" + host + ":" + port + "/" + dbName;
+
 	@Override
 	public void initialize(Map<String, Object> arg0) {
 		this.myQueries = new StringBuffer();
@@ -89,12 +96,12 @@ public class GeoxSink implements Sink {
 	}
 
 	public void executeQuery() {
-		String host = "localhost";
-		String port = "5432";
-		String dbName = "nepal1";
-		String dbUser = "postgres";
-		String dbPwd = "postgres";
-		String url = "jdbc:postgresql://" + host + ":" + port + "/" + dbName;
+		// String host = "localhost";
+		// String port = "5432";
+		// String dbName = "iledelacite";
+		// String dbUser = "postgres";
+		// String dbPwd = "postgres";
+		// String url = "jdbc:postgresql://" + host + ":" + port + "/" + dbName;
 		long t3 = System.currentTimeMillis();
 
 		try {
