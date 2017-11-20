@@ -1005,8 +1005,6 @@ public class SocialGraph<V, E> {
 				DefaultWeightedEdge.class);
 		// Remplit pour chaque OSMContributor l'attribut ActivityAreas
 		assignActivityAreas(myOSMContributors, bbox, timespan, threshold);
-		// OSMContributor[] myContributorList = (OSMContributor[])
-		// myOSMContributors.values().toArray();
 		List<OSMContributor> myContributorList = new ArrayList<OSMContributor>();
 		for (OSMContributor contributor : myOSMContributors.values()) {
 			myContributorList.add(contributor);
