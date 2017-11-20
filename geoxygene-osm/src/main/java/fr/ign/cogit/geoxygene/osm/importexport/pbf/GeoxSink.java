@@ -96,12 +96,13 @@ public class GeoxSink implements Sink {
 	}
 
 	public void executeQuery() {
-		// String host = "localhost";
-		// String port = "5432";
-		// String dbName = "iledelacite";
-		// String dbUser = "postgres";
-		// String dbPwd = "postgres";
-		// String url = "jdbc:postgresql://" + host + ":" + port + "/" + dbName;
+		String host = "localhost";
+		String port = "5432";
+		String dbName = "iledelacite1";
+		String dbUser = "postgres";
+		String dbPwd = "postgres";
+		String url = "jdbc:postgresql://" + host + ":" + port + "/" + dbName;
+
 		long t3 = System.currentTimeMillis();
 
 		try {
@@ -113,15 +114,16 @@ public class GeoxSink implements Sink {
 				stat.executeQuery(myQueries.toString());
 			} catch (SQLException e) {
 				LOGGER.error(e.getMessage());
-				e.printStackTrace();
+				// e.printStackTrace();
 			}
 			connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 
-		System.out.println("              ************* Exécution faite en " + (System.currentTimeMillis() - t3)
-				+ " ms *************");
+		// System.out.println(" ************* Exécution faite en " +
+		// (System.currentTimeMillis() - t3)
+		// + " ms *************");
 		this.nbElem = 0;
 		/* Clearing the query container */
 		myQueries.setLength(0);
@@ -204,14 +206,16 @@ public class GeoxSink implements Sink {
 					+ myRelation.getId() + myRelation.getVersion() + mb.getMemberId() + "'," + "\'"
 					+ escapeSQL(mb.getMemberType().toString()) + "\'" + "," + "\'"
 					+ escapeSQL(mb.getMemberRole().toString()) + "\'" + "),");
-			System.out.println("Relmb: " + escapeSQL(mb.getMemberType().toString()) + ","
-					+ escapeSQL(mb.getMemberRole().toString()));
+			// System.out.println("Relmb: " +
+			// escapeSQL(mb.getMemberType().toString()) + ","
+			// + escapeSQL(mb.getMemberRole().toString()));
 			this.nbElem++;
-			System.out.println(" Fait en " + (System.nanoTime() - t1) + " ns");
+			// System.out.println(" Fait en " + (System.nanoTime() - t1) + "
+			// ns");
 		}
 
 		/* Process relation */
-		System.out.println("Ecriture d'une relation...");
+		// System.out.println("Ecriture d'une relation...");
 		for (Tag tag : myRelation.getTags()) {
 			String[] decoup = tag.toString().split("'");
 			hstore.append("\"" + escapeSQL(decoup[1]) + "\"=>\"" + escapeSQL(decoup[3]) + "\",");
@@ -225,8 +229,10 @@ public class GeoxSink implements Sink {
 				+ myRelation.getUser().getId() + "," + myRelation.getVersion() + "," + (int) myRelation.getChangesetId()
 				+ "," + "\'" + escapeSQL(myRelation.getUser().getName()) + "\'" + "," + "\'" + myRelation.getTimestamp()
 				+ "\'," + "\'" + hstore + "\'" + "),");
-		System.out.println("Relation" + escapeSQL(myRelation.getUser().getName()) + hstore);
-		System.out.println(" Faite en : " + (System.nanoTime() - t2) + " ns");
+		// System.out.println("Relation" +
+		// escapeSQL(myRelation.getUser().getName()) + hstore);
+		// System.out.println(" Faite en : " + (System.nanoTime() - t2) + "
+		// ns");
 		this.nbElem++;
 		if (nbElem > 10000) {
 			relmbValues.deleteCharAt(relmbValues.length() - 1);

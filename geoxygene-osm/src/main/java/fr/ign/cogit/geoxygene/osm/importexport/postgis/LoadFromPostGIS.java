@@ -59,6 +59,9 @@ public class LoadFromPostGIS {
 		timespan.add("2010-01-01");
 		timespan.add("2013-01-01");
 
+		// loader.relationEvolution(bbox, timespan);
+		// loader.selectRelations(bbox, timespan);
+
 		loader.getDataFrombbox(bbox, timespan);
 
 	}

@@ -18,7 +18,8 @@ public class GeoxPbfReader {
 	public static GeoxSink mySink = new GeoxSink();
 
 	public static void main(String[] args) {
-		pbf2postgis("D:/ttruong_Linux/osm-data/iledelacite_osmconvert.osm.pbf");
+		pbf2postgis("data/iledelacite_osmconvert.osm.pbf");
+
 	}
 
 	public static void pbf2postgis(String pbfFilePath) {
