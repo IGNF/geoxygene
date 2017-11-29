@@ -644,14 +644,20 @@ public class DTM extends AbstractDTMLayer {
       ligne = br.readLine();
       result = ligne.split("\\s");
 
-      double cellsize = Double.parseDouble(result[result.length - 1]);
+       stepX = Double.parseDouble(result[result.length - 1]);
 
       // 2 lignes à ne pas lire
       ligne = br.readLine();
+      result = ligne.split("\\s");
+       stepY = Double.parseDouble(result[result.length - 1]);
+
+      ligne = br.readLine();
+      result = ligne.split("\\s");
+      this.noDataValue = Double.parseDouble(result[result.length - 1]);
 
       ligne = br.readLine();
 
-      double maxy = ((nrows - 1) * cellsize + shiftY);
+      double maxy = ((nrows - 1) *  stepY + shiftY);
 
       // On prépare le nombre de lignes
       nrows = nrows / this.echantillonage;
@@ -688,13 +694,29 @@ public class DTM extends AbstractDTMLayer {
       double[] lignePred = new double[ncols];
 
       result = ligne.split("\\s");
+      
+	  
+	  String s = result[0];
+	  int shift = 0;
+	 if(s.isEmpty()){
+		 shift = 1;
+	 }
 
       // On remplit la premiere ligne : initialisation
-      for (int i = 0; i < ncols; i++) {
+      for (int i = 0 + shift; i < ncols+shift; i++) {
 
-        lignePred[i] = Double.parseDouble(result[i * this.echantillonage]);
-        this.zMin = Math.min(lignePred[i], this.zMin);
-        this.zMax = Math.max(lignePred[i], this.zMax);
+    	  
+    	  
+        lignePred[i-shift] = Double.parseDouble(result[i* this.echantillonage]);
+        
+        
+        if(lignePred[i-shift] == noDataValue){
+        	continue;
+        }
+        
+        
+        this.zMin = Math.min(lignePred[i-shift], this.zMin);
+        this.zMax = Math.max(lignePred[i-shift], this.zMax);
       }
 
       // On passe des lignes pour sous échantillonner
@@ -717,39 +739,43 @@ public class DTM extends AbstractDTMLayer {
         result = ligne.split("\\s");
 
         // Pour chaque colonne que l'on souhaite récupèrer
-        for (int i = 0; i < ncols; i++) {
+        for (int i = 0+shift; i < ncols+shift; i++) {
 
         //	System.out.println("row : " + j + " col : " + i  );
           // On récupère le Z du point que l'on traite actuellement
           // Le Z du point en dessous
           double nouvZ = Double.parseDouble(result[i * this.echantillonage]);
-          double oldZ = lignePred[i];
+          double oldZ = lignePred[i-shift];
 
-          this.zMin = Math.min(nouvZ, this.zMin);
-          this.zMax = Math.max(nouvZ, this.zMax);
+          if(nouvZ != noDataValue){
+              this.zMin = Math.min(nouvZ, this.zMin);
+              this.zMax = Math.max(nouvZ, this.zMax);
+          }
+          
+ 
 
           // On crée le nouveau point
           Point3d pointAncien = null;
           if (oldZ == this.noDataValue) {
 
-            pointAncien = new Point3d((cellsize * numcol + shiftX),
-                (maxy - cellsize * numligne), this.noDataValue * exager);
+            pointAncien = new Point3d(( stepX * numcol + shiftX),
+                (maxy -  stepY * numligne), this.noDataValue * exager);
           } else {
 
-            pointAncien = new Point3d((cellsize * numcol + shiftX),
-                (maxy - cellsize * numligne), oldZ * exager);
+            pointAncien = new Point3d(( stepX * numcol + shiftX),
+                (maxy -  stepY * numligne), oldZ * exager);
           }
 
           Point3d nouvePoint = null;
 
           if (nouvZ == this.noDataValue) {
-            nouvePoint = new Point3d((cellsize * numcol + shiftX),
-                (maxy - cellsize * (numligne + this.echantillonage)),
+            nouvePoint = new Point3d(( stepX * numcol + shiftX),
+                (maxy -  stepY * (numligne + this.echantillonage)),
                 this.noDataValue * exager);
 
           } else {
-            nouvePoint = new Point3d((cellsize * numcol + shiftX),
-                (maxy - cellsize * (numligne + this.echantillonage)), nouvZ
+            nouvePoint = new Point3d(( stepX * numcol + shiftX),
+                (maxy -  stepY * (numligne + this.echantillonage)), nouvZ
                     * exager);
 
           }
@@ -761,7 +787,7 @@ public class DTM extends AbstractDTMLayer {
           strp.setCoordinate(nbpoints, nouvePoint);
 
           nbpoints++;
-          lignePred[i] = nouvZ;
+          lignePred[i-shift] = nouvZ;
 
           numcol = numcol + this.echantillonage;
 
@@ -785,8 +811,8 @@ public class DTM extends AbstractDTMLayer {
 
       br.close();
 
-      this.stepX = this.echantillonage * cellsize;
-      this.stepY = this.echantillonage * cellsize;
+      this.stepX = this.echantillonage *  stepX;
+      this.stepY = this.echantillonage *  stepY;
       this.nX = ncols;
       this.nY = nrows;
       this.sampling = this.echantillonage;
@@ -894,7 +920,7 @@ public class DTM extends AbstractDTMLayer {
 
     if (z == this.noDataValue) {
 
-      return new Color4f(1, 0, 0, 0.95f);
+      return new Color4f(0, 0, 0, 1.0f);
     }
     // Il s'agit du nombre de couleur que l'on va interprêter comme un
     // nombre de classes
