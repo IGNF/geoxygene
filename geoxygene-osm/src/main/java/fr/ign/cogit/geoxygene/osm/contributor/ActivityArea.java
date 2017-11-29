@@ -48,18 +48,30 @@ public class ActivityArea {
 		bbox.add(48.8800);
 
 		List<String> timespan = new ArrayList<String>();
-		timespan.add("2010-01-01");
+		timespan.add("2013-01-01");
 		timespan.add("2015-01-01");
 		List<OSMResource> osmNodeList1556219 = selectNodesByUid((long) 1556219, bbox, timespan);
-		List<OSMResource> osmNodeList17286 = selectNodesByUid((long) 17286, bbox, timespan);
-		IGeometry aggregatedAreas1556219 = getActivityAreas(osmNodeList1556219);
-		IGeometry aggregatedAreas17286 = getActivityAreas(osmNodeList17286);
+		List<OSMResource> osmNodeList17286 = selectNodesByUid((long) 138059, bbox, timespan);
+		IGeometry aggregatedAreas1556219 = getActivityAreas(osmNodeList1556219, 1000);
+		IGeometry aggregatedAreas17286 = getActivityAreas(osmNodeList17286, 1000);
 		IFeatureCollection<DefaultFeature> denseActivityAreas17286 = getDenseActivityAreas(aggregatedAreas17286,
 				osmNodeList17286, 4);
 		IFeatureCollection<DefaultFeature> denseActivityAreas1556219 = getDenseActivityAreas(aggregatedAreas1556219,
 				osmNodeList1556219, 4);
 		System.out.println("intersection ? "
 				+ denseActivityAreas17286.get(0).getGeom().intersects(denseActivityAreas1556219.get(0).getGeom()));
+		System.out.println("aire intersectée ? " + denseActivityAreas17286.get(0).getGeom()
+				.intersection(denseActivityAreas1556219.get(0).getGeom()).area());
+		double intersection = denseActivityAreas17286.get(0).getGeom()
+				.intersection(denseActivityAreas1556219.get(0).getGeom()).area();
+		double union = denseActivityAreas17286.get(0).getGeom().union(denseActivityAreas1556219.get(0).getGeom())
+				.area();
+		System.out.println("aire 1 =" + denseActivityAreas17286.get(0).getGeom().area());
+		System.out.println("aire 2 =" + denseActivityAreas1556219.get(0).getGeom().area());
+		System.out.println("union =" + union);
+		System.out.println("intersection =" + intersection);
+		double distSurfacique = 1 - intersection / union;
+		System.out.println("distance surfacique ? " + distSurfacique);
 	}
 
 	/**
@@ -67,7 +79,7 @@ public class ActivityArea {
 	 *            corresponds to the list of nodes contributed by a contributor
 	 * @return hull is a multipolygon of the contributor's activity areas
 	 **/
-	public static IGeometry getActivityAreas(List<OSMResource> nodeList) throws Exception {
+	public static IGeometry getActivityAreas(List<OSMResource> nodeList, double threshold) throws Exception {
 		IFeatureCollection<IFeature> ftcolPoints = new FT_FeatureCollection<IFeature>();
 		// On parcourt la liste des nodes (d'un contributeur donné) et on
 		// l'ajoute à la collection de IFeature
@@ -92,7 +104,7 @@ public class ActivityArea {
 
 		System.out.println("triangule.getListeFaces().size() = " + triangule.getListeFaces().size());
 
-		// On récupère les arcs qui ont une longueur < 1000 m
+		// On récupère les arcs qui ont une longueur < threshold
 		IPopulation<Face> popTriangles = triangule.getPopFaces();
 		System.out.println("nb Triangles = " + popTriangles.size());
 		IGeometry hull = null;
@@ -100,7 +112,7 @@ public class ActivityArea {
 			boolean remove = false;
 			for (Arc arc : face.arcs()) {
 				System.out.println("arc.longueur() :" + arc.longueur() + " m");
-				if (arc.longueur() > 1000) {
+				if (arc.longueur() > threshold) {
 					remove = true;
 					System.out.println("arc.longueur() :" + arc.longueur() + " m" + " remove = " + remove);
 					break;
@@ -114,7 +126,7 @@ public class ActivityArea {
 					hull = hull.union(face.getGeom());
 			}
 		}
-		System.out.println(hull.area());
+		// System.out.println(hull.area());
 		return hull;
 	}
 

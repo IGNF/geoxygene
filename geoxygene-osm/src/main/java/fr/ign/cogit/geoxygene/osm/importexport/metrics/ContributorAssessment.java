@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
@@ -20,34 +22,45 @@ import fr.ign.cogit.geoxygene.osm.schema.OSMFeature;
 import fr.ign.cogit.geoxygene.osm.schema.OsmGeometryConversion;
 
 public class ContributorAssessment {
-	public static HashMap<Long, OSMContributor> contributorSummary(List<OSMResource> myJavaObjects) throws Exception {
+	public static HashMap<Long, OSMContributor> contributorSummary(Set<OSMResource> myJavaObjects) throws Exception {
 		// Fills only the keys of myContributors hashmap
-		HashMap<Long, OSMContributor> myContributors = osmContributorsInit(myJavaObjects);
-		// Fills only the keys of myContributors hashmap
-		// for (OSMResource resource : myJavaObjects) {
-		// Long uid = (long) resource.getUid();
-		// String username = resource.getContributeur();
-		// if (myContributors.isEmpty() || !myContributors.containsKey(uid))
-		// myContributors.put(uid,
-		// new OSMContributor(new FT_FeatureCollection<OSMFeature>(), username,
-		// uid.intValue()));
-		// }
+		// HashMap<Long, OSMContributor> myContributors =
+		// osmContributorsInit(myJavaObjects);
+		HashMap<Long, OSMContributor> myContributors = new HashMap<Long, OSMContributor>();
+		// Parcourt myJavaObjects et associe à chaque contributeur ses
+		// contributions
+		Iterator<OSMResource> it = myJavaObjects.iterator();
+		while (it.hasNext()) {
+			OSMResource contribution = it.next();
+			// Pour l'instant: remplit on ne considère que les contributions de
+			// type node
+			if (contribution.getGeom().getClass().getSimpleName().equals("OSMNode")) {
+				Long uid = (long) contribution.getUid();
+				String username = contribution.getContributeur();
+				if (!myContributors.containsKey(uid)) {
+					// Ajout d'un nouveau contributeur dans la liste et
+					// initialise
+					// avec l'objet parcouru
+					myContributors.put(uid,
+							new OSMContributor(new FT_FeatureCollection<OSMFeature>(), username, uid.intValue()));
+				} else {
+					// Ajoute l'objet parcouru dans les contributions du
+					// contributeur existant
+					OSMFeature feature = OSMResource2OSMFeature(contribution, myJavaObjects);
+					myContributors.get(uid).addContribution(feature);
+
+				}
+			}
+
+		}
 
 		Iterator<Long> contributorsIDs = myContributors.keySet().iterator();
 		while (contributorsIDs.hasNext()) {
 			long currentUID = contributorsIDs.next();
-			List<OSMFeature> contributionList = fillcontributionList(currentUID, myJavaObjects);
-			for (OSMFeature contribution : contributionList)
-				myContributors.get(currentUID).addContribution(contribution);
-
-			// long currentID = objectIDs.next();
-			// List<OSMResource> contributionList =
-			// fillcontributionList("OSMNode", currentID, myOSMNodeObjects);
-			// intrinsicIndicators(currentID, contributionList,
-			// myOSMNodeObjects);
-			// List<String> contributorList = contributorList("OSMNode",
-			// currentID);
-			// myOSMNodeObjects.get(currentID).setNbContributors(contributorList.size());
+			// List<OSMFeature> contributionList =
+			// fillcontributionList(currentUID, myJavaObjects);
+			// for (OSMFeature contribution : contributionList)
+			// myContributors.get(currentUID).addContribution(contribution);
 
 			/** Calcul des indicateurs **/
 			int nbOfContributions = myContributors.get(currentUID).getContributions().size();
@@ -61,54 +74,26 @@ public class ContributorAssessment {
 			myContributors.get(currentUID).setNbOfweekContributions(nbOfweekContributions);
 			myContributors.get(currentUID).setNbOfweekendContributions(nbOfweekendContributions);
 		}
-
-		// for (Long uid : myContributors.keySet()) {
-		// for (OSMResource resource : myJavaObjects) {
-		// if (resource.getUid() == uid) {
-		// OSMFeature feature = OSMResource2OSMFeature(resource, myJavaObjects);
-		// myContributors.get(uid).addContribution(feature);
-		// }
-		// }
-		// /** Calcul des indicateurs **/
-		// int nbOfContributions =
-		// myContributors.get(uid).getContributions().size();
-		// int nbOfDayTimeContributions =
-		// myContributors.get(uid).getDaytimeContributions().size();
-		// int nbOfNightTimeContributions =
-		// myContributors.get(uid).getNighttimeContributions().size();
-		// int nbOfweekContributions =
-		// myContributors.get(uid).getWeekContributions().size();
-		// int nbOfweekendContributions =
-		// myContributors.get(uid).getWeekEndContributions().size();
-		// myContributors.get(uid).setNbOfContributions(nbOfContributions);
-		// myContributors.get(uid).setNbOfDayTimeContributions(nbOfDayTimeContributions);
-		// myContributors.get(uid).setNbOfNightTimeContributions(nbOfNightTimeContributions);
-		// myContributors.get(uid).setNbOfweekContributions(nbOfweekContributions);
-		// myContributors.get(uid).setNbOfweekendContributions(nbOfweekendContributions);
-		// }
 		return myContributors;
 	}
 
-	public static List<OSMFeature> fillcontributionList(Long currentUID, List<OSMResource> myJavaObjects)
+	public static List<OSMFeature> fillcontributionList(Long currentUID, Set<OSMResource> myJavaObjects)
 			throws Exception {
 		// Select all the java objects that contain currentID
 		List<OSMFeature> contributionList = new ArrayList<OSMFeature>();
-		// System.out.println("taille de myJavaObjetcs : " +
-		// myJavaObjects.size());
-		// System.out.println("myJavaObjects.get(0).getContributeur() : " +
-		// myJavaObjects.get(0).getContributeur());
-		for (int i = 0; i < myJavaObjects.size(); i++) {
-			if (currentUID == myJavaObjects.get(i).getUid()) {
-				OSMFeature feature = OSMResource2OSMFeature(myJavaObjects.get(i), myJavaObjects);
+		for (OSMResource resource : myJavaObjects) {
+			if (currentUID == resource.getUid()) {
+				OSMFeature feature = OSMResource2OSMFeature(resource, myJavaObjects);
 				contributionList.add(feature);
 			}
 		}
+		Collections.sort(contributionList);
 		return contributionList;
 	}
 
-	public static HashMap<Long, OSMContributor> osmContributorsInit(List<OSMResource> myJavaObjects) {
+	public static HashMap<Long, OSMContributor> osmContributorsInit(Set<OSMResource> myJavaObjects) {
 		// Sorting OSMResource list in the chronological order
-		IntrinsicAssessment.sortJavaObjects(myJavaObjects);
+		// IntrinsicAssessment.sortJavaObjects(myJavaObjects);
 		HashMap<Long, OSMContributor> myContributors = new HashMap<Long, OSMContributor>();
 		/** Parsing myJavaObjects to create indicators inside of OSMObjects **/
 		Iterator<OSMResource> it = myJavaObjects.iterator();
@@ -125,7 +110,7 @@ public class ContributorAssessment {
 		return myContributors;
 	}
 
-	public static OSMFeature OSMResource2OSMFeature(OSMResource resource, List<OSMResource> myJavaObjects)
+	public static OSMFeature OSMResource2OSMFeature(OSMResource resource, Set<OSMResource> myJavaObjects)
 			throws Exception {
 		OsmGeometryConversion convertor = new OsmGeometryConversion("4326");
 		IGeometry igeom = null;

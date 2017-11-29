@@ -34,6 +34,9 @@
       <resource>
         <directory>src/main/resources</directory>
       </resource>
+      <resource>
+        <directory>data</directory>
+      </resource>
     </resources>
     <testResources>
       <testResource>

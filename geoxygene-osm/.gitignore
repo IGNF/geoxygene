@@ -3,3 +3,7 @@
 .classpath
 .project
 /bin/
+/geoxygene.log
+/geoxygene.log.1
+
+*.csv
