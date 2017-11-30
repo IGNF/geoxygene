@@ -21,6 +21,7 @@ public class OSMResource {
 	private HashMap<String, String> tags;
 	private Date date;
 	private int nbTags;
+	private boolean visible;
 
 	public static final String TAG_SOURCE = "source";
 	public static final String TAG_OUTIL = "created_by";
@@ -187,6 +188,14 @@ public class OSMResource {
 			// do nothing
 			// e.printStackTrace();
 		}
+	}
+
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
 	}
 
 }
