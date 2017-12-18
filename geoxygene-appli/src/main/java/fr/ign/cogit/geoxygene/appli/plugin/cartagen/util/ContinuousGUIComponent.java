@@ -10,29 +10,50 @@
 package fr.ign.cogit.geoxygene.appli.plugin.cartagen.util;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.geotools.data.shapefile.dbf.DbaseFileReader;
+import org.geotools.data.shapefile.files.ShpFiles;
+import org.geotools.data.shapefile.shp.ShapefileReader;
+import org.geotools.data.shapefile.shp.ShapefileReader.Record;
 import org.xml.sax.SAXException;
+
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
 
 import fr.ign.cogit.cartagen.algorithms.polygon.VisvalingamWhyatt;
 import fr.ign.cogit.cartagen.continuous.BasicMorphing;
@@ -49,9 +70,12 @@ import fr.ign.cogit.cartagen.continuous.optcor.OptCorMorphing;
 import fr.ign.cogit.cartagen.core.dataset.CartAGenDataSet;
 import fr.ign.cogit.cartagen.core.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.core.dataset.geompool.GeometryPool;
+import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
+import fr.ign.cogit.cartagen.spatialanalysis.measures.section.SinuousSection;
 import fr.ign.cogit.geoxygene.api.feature.IDataSet;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
@@ -60,6 +84,8 @@ import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
+import fr.ign.cogit.geoxygene.appli.I18N;
+import fr.ign.cogit.geoxygene.appli.panel.ShapeFileFilter;
 import fr.ign.cogit.geoxygene.appli.panel.XMLFileFilter;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.LoadSelectionFrame;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.ObjectSelection;
@@ -70,9 +96,12 @@ import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.SchemaDefaultFeature;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
+import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.Reseau;
+import fr.ign.cogit.geoxygene.schemageo.impl.routier.TronconDeRouteImpl;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineSegment;
 import fr.ign.cogit.geoxygene.spatial.geomengine.GeometryEngine;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
+import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
 
 /**
@@ -89,9 +118,13 @@ public class ContinuousGUIComponent extends JMenu {
    */
   private static final long serialVersionUID = 1L;
 
+  private static Set<SinuousSection> sinuousSections = new HashSet<>();
+
   public ContinuousGUIComponent(GeOxygeneApplication appli, String title) {
     super(title);
     this.appli = appli;
+    JMenu loadingMenu = new JMenu("Loading");
+    loadingMenu.add(new JMenuItem(new LoadBendSeriesAction()));
     JMenu morphingMenu = new JMenu("Morphing");
     this.add(morphingMenu);
     morphingMenu.add(new JMenuItem(new BasicMorphingAction()));
@@ -110,6 +143,10 @@ public class ContinuousGUIComponent extends JMenu {
     // piecewise continuity menu
     JMenu piecewiseMenu = new JMenu("Piecewise continuity");
     this.add(piecewiseMenu);
+  }
+
+  public static Set<SinuousSection> getSinuousSections() {
+    return sinuousSections;
   }
 
   /**
@@ -811,5 +848,276 @@ public class ContinuousGUIComponent extends JMenu {
           "Measure discontinuities with OptCor morphing for file selection");
       putValue(Action.NAME, "Measure discontinuities for file selection");
     }
+  }
+
+  class LoadBendSeriesAction extends AbstractAction {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      CartAGenDataSet dataset = CartAGenDoc.getInstance().getCurrentDataset();
+
+      LoadBendSeriesFrame frame = new LoadBendSeriesFrame(dataset);
+      frame.setVisible(true);
+    }
+
+    public LoadBendSeriesAction() {
+      putValue(Action.NAME, "Load pre-decomposed bend series shapefiles");
+    }
+  }
+
+  class LoadBendSeriesFrame extends JFrame implements ActionListener {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    private CartAGenDataSet dataset;
+    private JButton okBtn, cancelBtn, browseParts, browseSeries, browseHeads,
+        browseRoads;
+    private JTextField txtParts, txtSeries, txtHeads, txtRoads;
+    private File roadsFile, partsFile, seriesFile, headsFile;
+
+    // internationalisation values
+    private String okLbl, cancelLbl;
+
+    public LoadBendSeriesFrame(CartAGenDataSet dataset)
+        throws HeadlessException {
+      super("Load pre-decomposed bend series shapefiles");
+      this.dataset = dataset;
+      internationalisation();
+
+      JPanel roadsPanel = new JPanel();
+      txtRoads = new JTextField();
+      txtRoads.setMaximumSize(new Dimension(140, 20));
+      txtRoads.setMinimumSize(new Dimension(140, 20));
+      txtRoads.setPreferredSize(new Dimension(140, 20));
+      txtRoads.setEditable(false);
+      browseRoads = new JButton(new ImageIcon("images/icons/16x16/browse.png"));
+      browseRoads.addActionListener(this);
+      browseRoads.setActionCommand("roads");
+      roadsPanel.add(txtRoads);
+      roadsPanel.add(browseRoads);
+      roadsPanel.setLayout(new BoxLayout(roadsPanel, BoxLayout.X_AXIS));
+
+      JPanel partsPanel = new JPanel();
+      txtParts = new JTextField();
+      txtParts.setMaximumSize(new Dimension(140, 20));
+      txtParts.setMinimumSize(new Dimension(140, 20));
+      txtParts.setPreferredSize(new Dimension(140, 20));
+      txtParts.setEditable(false);
+      browseParts = new JButton(new ImageIcon("images/icons/16x16/browse.png"));
+      browseParts.addActionListener(this);
+      browseParts.setActionCommand("roadParts");
+      partsPanel.add(txtParts);
+      partsPanel.add(browseParts);
+      partsPanel.setLayout(new BoxLayout(partsPanel, BoxLayout.X_AXIS));
+
+      JPanel seriesPanel = new JPanel();
+      txtSeries = new JTextField();
+      txtSeries.setMaximumSize(new Dimension(140, 20));
+      txtSeries.setMinimumSize(new Dimension(140, 20));
+      txtSeries.setPreferredSize(new Dimension(140, 20));
+      txtSeries.setEditable(false);
+      browseSeries = new JButton(
+          new ImageIcon("images/icons/16x16/browse.png"));
+      browseSeries.addActionListener(this);
+      browseSeries.setActionCommand("bendSeries");
+      seriesPanel.add(txtSeries);
+      seriesPanel.add(browseSeries);
+      seriesPanel.setLayout(new BoxLayout(seriesPanel, BoxLayout.X_AXIS));
+
+      JPanel headsPanel = new JPanel();
+      txtHeads = new JTextField();
+      txtHeads.setMaximumSize(new Dimension(140, 20));
+      txtHeads.setMinimumSize(new Dimension(140, 20));
+      txtHeads.setPreferredSize(new Dimension(140, 20));
+      txtHeads.setEditable(false);
+      browseHeads = new JButton(new ImageIcon("images/icons/16x16/browse.png"));
+      browseHeads.addActionListener(this);
+      browseHeads.setActionCommand("bendHeads");
+      headsPanel.add(txtHeads);
+      headsPanel.add(browseHeads);
+      headsPanel.setLayout(new BoxLayout(headsPanel, BoxLayout.X_AXIS));
+
+      // define a panel with the OK and Cancel buttons
+      JPanel btnPanel = new JPanel();
+      okBtn = new JButton(okLbl);
+      okBtn.addActionListener(this);
+      okBtn.setActionCommand("ok");
+      cancelBtn = new JButton(cancelLbl);
+      cancelBtn.addActionListener(this);
+      cancelBtn.setActionCommand("cancel");
+      btnPanel.add(okBtn);
+      btnPanel.add(cancelBtn);
+      btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.X_AXIS));
+
+      this.getContentPane().add(roadsPanel);
+      this.getContentPane().add(Box.createVerticalGlue());
+      this.getContentPane().add(partsPanel);
+      this.getContentPane().add(Box.createVerticalGlue());
+      this.getContentPane().add(seriesPanel);
+      this.getContentPane().add(Box.createVerticalGlue());
+      this.getContentPane().add(headsPanel);
+      this.getContentPane().add(Box.createVerticalGlue());
+      this.getContentPane().add(btnPanel);
+      this.getContentPane()
+          .setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+      this.pack();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      if (e.getActionCommand().equals("roads")) {
+        JFileChooser fc = new JFileChooser();
+        fc.setFileFilter(new ShapeFileFilter());
+        int returnVal = fc.showOpenDialog(null);
+        if (returnVal != JFileChooser.APPROVE_OPTION) {
+          return;
+        }
+        roadsFile = fc.getSelectedFile();
+        txtRoads.setEditable(true);
+        txtRoads.setText(roadsFile.getPath());
+        txtRoads.setEditable(false);
+      } else if (e.getActionCommand().equals("roadParts")) {
+        JFileChooser fc = new JFileChooser();
+        fc.setFileFilter(new ShapeFileFilter());
+        int returnVal = fc.showOpenDialog(null);
+        if (returnVal != JFileChooser.APPROVE_OPTION) {
+          return;
+        }
+        partsFile = fc.getSelectedFile();
+        txtParts.setEditable(true);
+        txtParts.setText(partsFile.getPath());
+        txtParts.setEditable(false);
+      } else if (e.getActionCommand().equals("bendSeries")) {
+        JFileChooser fc = new JFileChooser();
+        fc.setFileFilter(new ShapeFileFilter());
+        int returnVal = fc.showOpenDialog(null);
+        if (returnVal != JFileChooser.APPROVE_OPTION) {
+          return;
+        }
+        seriesFile = fc.getSelectedFile();
+        txtSeries.setEditable(true);
+        txtSeries.setText(seriesFile.getPath());
+        txtSeries.setEditable(false);
+      }
+      if (e.getActionCommand().equals("bendHeads")) {
+        JFileChooser fc = new JFileChooser();
+        fc.setFileFilter(new ShapeFileFilter());
+        int returnVal = fc.showOpenDialog(null);
+        if (returnVal != JFileChooser.APPROVE_OPTION) {
+          return;
+        }
+        headsFile = fc.getSelectedFile();
+        txtHeads.setEditable(true);
+        txtHeads.setText(headsFile.getPath());
+        txtHeads.setEditable(false);
+      } else if (e.getActionCommand().equals("ok")) {
+        try {
+          this.loadData();
+        } catch (IOException e1) {
+          e1.printStackTrace();
+        }
+        setVisible(false);
+      } else if (e.getActionCommand().equals("cancel")) {
+        setVisible(false);
+      }
+    }
+
+    private void loadData() throws IOException {
+      // first load roads
+      Map<ILineString, Map<String, Object>> roads = loadRoadLinesFromSHP(
+          txtRoads.getText(), dataset);
+      Map<Integer, SinuousSection> ids = new HashMap<>();
+      IPopulation<IRoadLine> pop = dataset.getRoads();
+      for (ILineString line : roads.keySet()) {
+        Map<String, Object> fields = roads.get(line);
+        IRoadLine tr = dataset.getCartAGenDB().getGeneObjImpl()
+            .getCreationFactory()
+            .createRoadLine(new TronconDeRouteImpl(
+                (Reseau) dataset.getRoadNetwork().getGeoxObj(), false, line),
+                1);
+        if (fields.containsKey("id"))
+          tr.setId((Integer) fields.get("id"));
+        pop.add(tr);
+        dataset.getRoadNetwork().addSection(tr);
+        ids.put((Integer) fields.get("id"), new SinuousSection(tr));
+      }
+
+      // then, load road parts
+      Map<ILineString, Map<String, Object>> roadParts = loadRoadLinesFromSHP(
+          txtParts.getText(), dataset);
+
+      // then, load bend series parts
+      Map<ILineString, Map<String, Object>> roadSeries = loadRoadLinesFromSHP(
+          txtSeries.getText(), dataset);
+
+      // finally load bend heads
+      Map<ILineString, Map<String, Object>> roadHeads = loadRoadLinesFromSHP(
+          txtHeads.getText(), dataset);
+    }
+
+    private Map<ILineString, Map<String, Object>> loadRoadLinesFromSHP(
+        String path, CartAGenDataSet dataset) throws IOException {
+      ShapefileReader shr = null;
+      DbaseFileReader dbr = null;
+      try {
+        ShpFiles shpf = new ShpFiles(path);
+        shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
+        dbr = new DbaseFileReader(shpf, true, Charset.defaultCharset());
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+        return null;
+      }
+
+      Map<ILineString, Map<String, Object>> outputMap = new HashMap<>();
+      while (shr.hasNext() && dbr.hasNext()) {
+        Record objet = shr.nextRecord();
+        // compute the symbol from the fields according to source DLM
+        Object[] champs = dbr.readEntry();
+        Map<String, Object> fields = new HashMap<String, Object>();
+        for (int i = 0; i < dbr.getHeader().getNumFields(); i++) {
+          fields.put(dbr.getHeader().getFieldName(i), champs[i]);
+        }
+
+        // recupere la geometrie
+        IGeometry geom = null;
+        try {
+          geom = AdapterFactory.toGM_Object((Geometry) objet.shape());
+        } catch (Exception e) {
+          e.printStackTrace();
+          return null;
+        }
+        if (geom == null) {
+          continue;
+        }
+        if (geom instanceof ILineString) {
+          outputMap.put((ILineString) geom, fields);
+
+        } else if (geom instanceof IMultiCurve<?>) {
+          for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
+            outputMap.put((ILineString) ((IMultiCurve<?>) geom).get(i), fields);
+          }
+        }
+      }
+      shr.close();
+      dbr.close();
+
+      return outputMap;
+    }
+
+    /**
+     * Fix the values of Frame labels according to Language Locale.
+     */
+    private void internationalisation() {
+      okLbl = I18N.getString("MainLabels.lblOk");
+      cancelLbl = I18N.getString("MainLabels.lblCancel");
+    }
+
   }
 }

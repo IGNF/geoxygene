@@ -35,6 +35,7 @@ public class FlickRPhotoParser extends DefaultHandler {
   private Map<String, Boolean> elements = new HashMap<String, Boolean>();
   private FlickRPhoto currentPhoto = null;
   private Set<FlickRPhoto> photos = new HashSet<>();
+  private boolean isThereNextPage = false;
 
   @Override
   public void startElement(String uri, String localName, String qName,
@@ -52,6 +53,14 @@ public class FlickRPhotoParser extends DefaultHandler {
       String isfamily = attributes.getValue("isfamily");
       this.currentPhoto = new FlickRPhoto(id, owner, secret, server, farm,
           title, ispublic, isfriend, isfamily);
+    } else if (qName.equals("photos")) {
+      String nbAsString = attributes.getValue("page");
+      int currentPageNb = new Integer(nbAsString);
+      int maxNb = new Integer(attributes.getValue("pages"));
+      if (maxNb > currentPageNb)
+        isThereNextPage = true;
+      else
+        isThereNextPage = false;
     } else {
       // do nothing for other names
     }
@@ -112,5 +121,13 @@ public class FlickRPhotoParser extends DefaultHandler {
         accuracy);
 
     return location;
+  }
+
+  public boolean isThereNextPage() {
+    return isThereNextPage;
+  }
+
+  public void setThereNextPage(boolean isThereNextPage) {
+    this.isThereNextPage = isThereNextPage;
   }
 }

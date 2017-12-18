@@ -21,6 +21,7 @@ import fr.ign.cogit.cartagen.core.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.core.dataset.shapefile.ShapeFileClass;
 import fr.ign.cogit.cartagen.core.dataset.shapefile.ShapeFileDB;
 import fr.ign.cogit.cartagen.core.dataset.shapefile.ShapeFileLoader;
+import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildPoint;
@@ -61,6 +62,9 @@ public class AddShapefileFrame extends JFrame implements ActionListener {
     ShapeFileToLayerPanel roadsTab = new ShapeFileToLayerPanel(
         CartAGenDataSet.ROADS_POP, null);
     tabs.addTab(roadsTab.getLayerName(), roadsTab);
+    ShapeFileToLayerPanel vegetTab = new ShapeFileToLayerPanel(
+        CartAGenDataSet.LANDUSE_AREAS_POP, null);
+    tabs.addTab(vegetTab.getLayerName(), vegetTab);
     tabs.setSelectedIndex(0);
 
     // a panel for OK and Cancel buttons
@@ -152,6 +156,17 @@ public class AddShapefileFrame extends JFrame implements ActionListener {
         try {
           ShapeFileLoader.loadRoadLinesShapeFile(panel.getFile().getPath(),
               SourceDLM.SPECIAL_CARTAGEN, currentDb.getDataSet());
+        } catch (IOException e1) {
+          e1.printStackTrace();
+        }
+      } else if (panel.getLayerName()
+          .equals(CartAGenDataSet.LANDUSE_AREAS_POP)) {
+        currentDb
+            .addClass(new ShapeFileClass(currentDb, panel.getFile().getParent(),
+                ISimpleLandUseArea.FEAT_TYPE_NAME, IPolygon.class));
+        try {
+          ShapeFileLoader.loadLandUseAreasFromSHP(panel.getFile().getPath(),
+              0.1, 0, currentDb.getDataSet());
         } catch (IOException e1) {
           e1.printStackTrace();
         }
