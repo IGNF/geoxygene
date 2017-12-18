@@ -296,6 +296,7 @@ public abstract class CG_AbstractBuilding extends CG_AbstractSite {
   public CG_AbstractBuilding(AbstractBuilding build) {
 
     super(build);
+    this.setIdentifiant(build.getId());
     this.clazz = build.getClazz();
     this.function = build.getFunction();
     this.usage = build.getUsage();
@@ -521,8 +522,63 @@ public abstract class CG_AbstractBuilding extends CG_AbstractSite {
   protected List<CG_BuildingPart> consistsOfBuildingPart;
   protected List<CG_Address> address;
   protected List<Object> genericApplicationPropertyOfAbstractBuilding;
+  protected String identifiant;
+  
+  
 
-  /**
+  public List<Object> getGenericApplicationPropertyOfAbstractBuilding() {
+	return genericApplicationPropertyOfAbstractBuilding;
+}
+
+public void setGenericApplicationPropertyOfAbstractBuilding(List<Object> genericApplicationPropertyOfAbstractBuilding) {
+	this.genericApplicationPropertyOfAbstractBuilding = genericApplicationPropertyOfAbstractBuilding;
+}
+
+public String getIdentifiant() {
+	return identifiant;
+}
+
+public void setIdentifiant(String identifiant) {
+	this.identifiant = identifiant;
+}
+
+public void setFunction(List<Code> function) {
+	this.function = function;
+}
+
+public void setUsage(List<Code> usage) {
+	this.usage = usage;
+}
+
+public void setMeasuredHeight(Double measuredHeight) {
+	this.measuredHeight = measuredHeight;
+}
+
+public void setOuterBuildingInstallation(List<CG_BuildingInstallation> outerBuildingInstallation) {
+	this.outerBuildingInstallation = outerBuildingInstallation;
+}
+
+public void setInteriorBuildingInstallation(List<CG_IntBuildingInstallation> interiorBuildingInstallation) {
+	this.interiorBuildingInstallation = interiorBuildingInstallation;
+}
+
+public void setBoundedBySurfaces(List<CG_AbstractBoundarySurface> boundedBySurfaces) {
+	this.boundedBySurfaces = boundedBySurfaces;
+}
+
+public void setInteriorRoom(List<CG_Room> interiorRoom) {
+	this.interiorRoom = interiorRoom;
+}
+
+public void setConsistsOfBuildingPart(List<CG_BuildingPart> consistsOfBuildingPart) {
+	this.consistsOfBuildingPart = consistsOfBuildingPart;
+}
+
+public void setAddress(List<CG_Address> address) {
+	this.address = address;
+}
+
+/**
    * Gets the value of the clazz property.
    * 
    * @return possible object is {@link String }

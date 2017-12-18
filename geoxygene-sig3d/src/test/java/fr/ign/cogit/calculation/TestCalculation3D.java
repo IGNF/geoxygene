@@ -39,6 +39,8 @@ public class TestCalculation3D extends TestCase {
 	public void testArea1() {
 		
 		log.info("Test for method to compute area of single random triangle");
+		
+		DirectPosition.PRECISION = 12;
 
 		// Creating random triangle
 
@@ -109,6 +111,7 @@ public class TestCalculation3D extends TestCase {
 		// Recovering actual value
 		double a = Calculation3D.area(LT);  
 
+		
 		// Comparison
 		assertEquals("Triangle area is not correct", aExp, a, epsilon);
 
