@@ -38,7 +38,7 @@ public class SocialGraph<V, E> {
 	// private static Logger LOGGER = Logger.getLogger(SocialGraph.class);
 	public static String host = "localhost";
 	public static String port = "5432";
-	public static String dbName = "iledelacite1";
+	public static String dbName = "paris";
 	public static String dbUser = "postgres";
 	public static String dbPwd = "postgres";
 	private static double factor = 4;
@@ -46,15 +46,8 @@ public class SocialGraph<V, E> {
 
 	public static void main(String[] args) throws Exception {
 		LoadFromPostGIS loader = new LoadFromPostGIS("localhost", "5432", "iledelacite1", "postgres", "postgres");
-		List<Double> bbox = new ArrayList<Double>();
-		//ile de la cite
-        bbox.add(2.3398);
-        bbox.add(48.8522);
-        bbox.add(2.3527);
-        bbox.add(48.8576);
-        List<String> timespan = new ArrayList<String>();
-        timespan.add("2010-01-01");
-        timespan.add("2014-01-01");
+		Double[] bbox = { 2.3398, 48.8522, 2.3527, 48.8576 };
+		String[] timespan = { "2010-01-01", "2014-01-01" };
 
 		// Charge les nodes
 		loader.selectNodes(bbox, timespan);
@@ -95,21 +88,21 @@ public class SocialGraph<V, E> {
 		// depth, cocontribution OR colocation
 		DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> wcollabg = createCollaborationGraph(nodeOSMObjects,
 				myOSMContributors, "width");
-		 writeGraph2CSV(wcollabg, new
-		 File("data/idc-widthCollabGraph-2010-2013.csv"));
+		writeGraph2CSV(wcollabg, new File("data/idc-widthCollabGraph-2010-2013.csv"));
 
 		DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> dcollabg = createCollaborationGraph(nodeOSMObjects,
 				myOSMContributors, "depth");
-		 writeGraph2CSV(dcollabg, new
-		 File("data/idc-depthCollabGraph_2010-2013.csv"));
+		writeGraph2CSV(dcollabg, new File("data/idc-depthCollabGraph_2010-2013.csv"));
 
-//		DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> coeditg = createCoEditionGraph(nodeOSMObjects,
-//				myOSMContributors);
+		// DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> coeditg =
+		// createCoEditionGraph(nodeOSMObjects,
+		// myOSMContributors);
 		// writeGraph2CSV(coeditg, new
 		// File("qlatin-coeditGraph_2010-2015.csv"));
 
-//		SimpleWeightedGraph<Long, DefaultWeightedEdge> cocontribg = createCoContribGraph(nodeOSMObjects,
-//				myOSMContributors);
+		// SimpleWeightedGraph<Long, DefaultWeightedEdge> cocontribg =
+		// createCoContribGraph(nodeOSMObjects,
+		// myOSMContributors);
 		// writeSimpleWeightedGraph2CSV(cocontribg, new
 		// File("qlatin-cocontribGraph_2010-2015.csv"));
 
@@ -120,18 +113,19 @@ public class SocialGraph<V, E> {
 		// File("paris-centre_coLocationGraph_Delaunay50m_2013-2015.csv"));
 
 		// Ordonne chronologiquement les contributions de type way
-//		objectIDs = wayOSMObjects.keySet().iterator();
-//		while (objectIDs.hasNext()) {
-//			long currentID = objectIDs.next();
-//			List<OSMResource> contributionList = wayOSMObjects.get(currentID).getContributions();
-//			Collections.sort(contributionList, new Comparator<OSMResource>() {
-//				//
-//				@Override
-//				public int compare(OSMResource r1, OSMResource r2) {
-//					return r1.getDate().compareTo(r2.getDate());
-//				}
-//			});
-//		}
+		// objectIDs = wayOSMObjects.keySet().iterator();
+		// while (objectIDs.hasNext()) {
+		// long currentID = objectIDs.next();
+		// List<OSMResource> contributionList =
+		// wayOSMObjects.get(currentID).getContributions();
+		// Collections.sort(contributionList, new Comparator<OSMResource>() {
+		// //
+		// @Override
+		// public int compare(OSMResource r1, OSMResource r2) {
+		// return r1.getDate().compareTo(r2.getDate());
+		// }
+		// });
+		// }
 		// Write Way contributions
 		// IntrinsicAssessment.writeContributionSummary(wayOSMObjects, new
 		// File("2013-2015-paris-centre-way-summary.csv"));
@@ -139,59 +133,72 @@ public class SocialGraph<V, E> {
 		// File("2013-2015-paris-centre-way-contributions.csv"),
 		// wayOSMObjects);
 
-//		DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> useg = createUseGraph2(myOSMContributors, wayOSMObjects,
-//				nodeOSMObjects, "2013-01-01");
+		// DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> useg =
+		// createUseGraph2(myOSMContributors, wayOSMObjects,
+		// nodeOSMObjects, "2013-01-01");
 
 		// writeGraph2CSV(useg, new File("qlatin-useGraph_2010-2015.csv"));
 
 		// Converting into simple weighted graphs i.e. take maximum weight
 		// between two parallel edges
-//		SimpleWeightedGraph<Long, DefaultWeightedEdge> simplewcollabg = GraphAnalysis
-//				.directedGraph2simpleGraph(wcollabg);
+		// SimpleWeightedGraph<Long, DefaultWeightedEdge> simplewcollabg =
+		// GraphAnalysis
+		// .directedGraph2simpleGraph(wcollabg);
 		// writeSimpleWeightedGraph2CSV(simplewcollabg, new
 		// File("paris-centre_simplewcollabg_2013-2015.csv"));
 
-//		SimpleWeightedGraph<Long, DefaultWeightedEdge> simpledcollabg = GraphAnalysis
-//				.directedGraph2simpleGraph(dcollabg);
+		// SimpleWeightedGraph<Long, DefaultWeightedEdge> simpledcollabg =
+		// GraphAnalysis
+		// .directedGraph2simpleGraph(dcollabg);
 		// writeSimpleWeightedGraph2CSV(simpledcollabg, new
 		// File("paris-centre_simpledcollabg_2013-2015.csv"));
 
-//		SimpleWeightedGraph<Long, DefaultWeightedEdge> simplecoeditg = GraphAnalysis.directedGraph2simpleGraph(coeditg);
+		// SimpleWeightedGraph<Long, DefaultWeightedEdge> simplecoeditg =
+		// GraphAnalysis.directedGraph2simpleGraph(coeditg);
 		// writeSimpleWeightedGraph2CSV(simplecoeditg, new
 		// File("paris-centre_simplecoeditg_2013-2015.csv"));
 
-//		SimpleWeightedGraph<Long, DefaultWeightedEdge> simpleuseg = GraphAnalysis.directedGraph2simpleGraph(useg);
+		// SimpleWeightedGraph<Long, DefaultWeightedEdge> simpleuseg =
+		// GraphAnalysis.directedGraph2simpleGraph(useg);
 		// writeSimpleWeightedGraph2CSV(simpleuseg, new
 		// File("paris-centre_simpleuseg_2013-2015.csv"));
 
 		// Creating adjacency matrices with thresholds:
 		// Sans seuil
-//		double[][] adjcoedit = GraphAnalysis.createSimpleAdjacencyMatrix(simplecoeditg, 0);
-//		double[][] adjcollabw = GraphAnalysis.createSimpleAdjacencyMatrix(simplewcollabg, 0);
-//		double[][] adjcollabd = GraphAnalysis.createSimpleAdjacencyMatrix(simpledcollabg, 0);
-//		double[][] adjcocontrib = GraphAnalysis.createSimpleAdjacencyMatrix(cocontribg, 0);
+		// double[][] adjcoedit =
+		// GraphAnalysis.createSimpleAdjacencyMatrix(simplecoeditg, 0);
+		// double[][] adjcollabw =
+		// GraphAnalysis.createSimpleAdjacencyMatrix(simplewcollabg, 0);
+		// double[][] adjcollabd =
+		// GraphAnalysis.createSimpleAdjacencyMatrix(simpledcollabg, 0);
+		// double[][] adjcocontrib =
+		// GraphAnalysis.createSimpleAdjacencyMatrix(cocontribg, 0);
 		// double[][] adjcolocation =
 		// GraphAnalysis.createSimpleAdjacencyMatrix(colocationg, 0);
-//		double[][] adjuse = GraphAnalysis.createSimpleAdjacencyMatrix(simpleuseg, 0);
+		// double[][] adjuse =
+		// GraphAnalysis.createSimpleAdjacencyMatrix(simpleuseg, 0);
 
 		// Building the multiplex system
-//		HashMap<Long, Integer> contributorIndex = GraphAnalysis.contributorIndex(simplecoeditg);
+		// HashMap<Long, Integer> contributorIndex =
+		// GraphAnalysis.contributorIndex(simplecoeditg);
 
 		// Sans seuil 5dim
-//		ArrayList<SimpleWeightedGraph<Long, DefaultWeightedEdge>> multiplex5dim = new ArrayList<SimpleWeightedGraph<Long, DefaultWeightedEdge>>();
-//		multiplex5dim.add(simplecoeditg);
-//		multiplex5dim.add(simplewcollabg);
-//		multiplex5dim.add(simpledcollabg);
-//		multiplex5dim.add(cocontribg);
+		// ArrayList<SimpleWeightedGraph<Long, DefaultWeightedEdge>>
+		// multiplex5dim = new ArrayList<SimpleWeightedGraph<Long,
+		// DefaultWeightedEdge>>();
+		// multiplex5dim.add(simplecoeditg);
+		// multiplex5dim.add(simplewcollabg);
+		// multiplex5dim.add(simpledcollabg);
+		// multiplex5dim.add(cocontribg);
 		// multiplex5dim.add(colocationg);
-//		multiplex5dim.add(simpleuseg);
+		// multiplex5dim.add(simpleuseg);
 
-//		ArrayList<double[][]> adjM5 = new ArrayList<double[][]>();
-//		adjM5.add(adjcoedit);
-//		adjM5.add(adjcollabw);
-//		adjM5.add(adjcollabd);
+		// ArrayList<double[][]> adjM5 = new ArrayList<double[][]>();
+		// adjM5.add(adjcoedit);
+		// adjM5.add(adjcollabw);
+		// adjM5.add(adjcollabd);
 		// adjM5.add(adjcolocation);
-//		adjM5.add(adjuse);
+		// adjM5.add(adjuse);
 		// Graphe agrégé sans seuil 5dim
 		// SimpleWeightedGraph<Long, DefaultWeightedEdge> aggregatedGraph =
 		// GraphAnalysis.monoplex(adjM5,
@@ -238,26 +245,38 @@ public class SocialGraph<V, E> {
 		// Co-edition graph : threshold = 3
 		// Collaboration width : threshold = 3
 		// Collaboration depth : threshold = 2
-//		double[][] adjcoedit3 = GraphAnalysis.createSimpleAdjacencyMatrix(simplecoeditg, (double) 3);
-//		double[][] adjcollabw2 = GraphAnalysis.createSimpleAdjacencyMatrix(simplewcollabg, (double) 3);
-//		double[][] adjcollabd2 = GraphAnalysis.createSimpleAdjacencyMatrix(simpledcollabg, (double) 2);
-//		ArrayList<double[][]> adjM5seuil = new ArrayList<double[][]>();
-//		adjM5seuil.add(adjcoedit3);
-//		adjM5seuil.add(adjcollabw2);
-//		adjM5seuil.add(adjcollabd2);
-//		adjM5seuil.add(adjcocontrib);
-//		adjM5seuil.add(adjuse);
+		// double[][] adjcoedit3 =
+		// GraphAnalysis.createSimpleAdjacencyMatrix(simplecoeditg, (double) 3);
+		// double[][] adjcollabw2 =
+		// GraphAnalysis.createSimpleAdjacencyMatrix(simplewcollabg, (double)
+		// 3);
+		// double[][] adjcollabd2 =
+		// GraphAnalysis.createSimpleAdjacencyMatrix(simpledcollabg, (double)
+		// 2);
+		// ArrayList<double[][]> adjM5seuil = new ArrayList<double[][]>();
+		// adjM5seuil.add(adjcoedit3);
+		// adjM5seuil.add(adjcollabw2);
+		// adjM5seuil.add(adjcollabd2);
+		// adjM5seuil.add(adjcocontrib);
+		// adjM5seuil.add(adjuse);
 		// Graphe agrégé sans seuil 5dim
-//		SimpleWeightedGraph<Long, DefaultWeightedEdge> aggregatedGraph5dimseuil = GraphAnalysis.monoplex(adjM5seuil,
-//				contributorIndex);
-//		writeSimpleWeightedGraph2CSV(aggregatedGraph5dimseuil, new File("paris-centre_aggregated_graph_5dim.csv"));
-//		// // Sans seuil
-//		HashMap<Long, Double> coeffList1_5dimseuil = GraphAnalysis.clusteringCoefficient1(adjM5seuil, contributorIndex);
-//		HashMap<Long, Double> coeffList2_5dimseuil = GraphAnalysis.clusteringCoefficient2(adjM5seuil, contributorIndex);
-//		HashMap<Long, Double> participationList_5dimseuil = GraphAnalysis.participationCoefficientMultiplex(adjM5seuil,
-//				contributorIndex);
-//		GraphAnalysis.writeIndicators(contributorIndex, adjM5seuil, participationList_5dimseuil, coeffList1_5dimseuil,
-//				coeffList2_5dimseuil, "indicateurs_paris-centre_2013-2015_multiplex_5dim_seuil.csv");
+		// SimpleWeightedGraph<Long, DefaultWeightedEdge>
+		// aggregatedGraph5dimseuil = GraphAnalysis.monoplex(adjM5seuil,
+		// contributorIndex);
+		// writeSimpleWeightedGraph2CSV(aggregatedGraph5dimseuil, new
+		// File("paris-centre_aggregated_graph_5dim.csv"));
+		// // // Sans seuil
+		// HashMap<Long, Double> coeffList1_5dimseuil =
+		// GraphAnalysis.clusteringCoefficient1(adjM5seuil, contributorIndex);
+		// HashMap<Long, Double> coeffList2_5dimseuil =
+		// GraphAnalysis.clusteringCoefficient2(adjM5seuil, contributorIndex);
+		// HashMap<Long, Double> participationList_5dimseuil =
+		// GraphAnalysis.participationCoefficientMultiplex(adjM5seuil,
+		// contributorIndex);
+		// GraphAnalysis.writeIndicators(contributorIndex, adjM5seuil,
+		// participationList_5dimseuil, coeffList1_5dimseuil,
+		// coeffList2_5dimseuil,
+		// "indicateurs_paris-centre_2013-2015_multiplex_5dim_seuil.csv");
 
 		// ArrayList<double[][]> adjM4seuil = new ArrayList<double[][]>();
 		// adjM4seuil.add(adjcoedit3);
@@ -304,7 +323,7 @@ public class SocialGraph<V, E> {
 					// OSMContributor nodeFin = myContributors.get((long)
 					// osmObject.getContributions().get(j).getUid());
 					Long nodeFin = (long) osmObject.getContributions().get(j).getUid();
-//					System.out.println(g.containsEdge(nodeIni, nodeFin));
+					// System.out.println(g.containsEdge(nodeIni, nodeFin));
 					if (nodeIni.equals(nodeFin))
 						continue;
 					if (!g.containsEdge(nodeIni, nodeFin) || !g.containsEdge(nodeFin, nodeIni)) {
@@ -427,7 +446,7 @@ public class SocialGraph<V, E> {
 			g.addVertex((long) contributor.getId());
 		}
 		int nbVertice = myContributors.size();
-//		System.out.println("Nombre de sommets dans le graphe :" + nbVertice);
+		// System.out.println("Nombre de sommets dans le graphe :" + nbVertice);
 
 		// Add edges
 		for (OSMObject osmObject : myOSMObjects.values()) {
@@ -440,7 +459,8 @@ public class SocialGraph<V, E> {
 			osmObjectGraph = new DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge>(DefaultWeightedEdge.class);
 			sumEdgeGraph = new DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge>(DefaultWeightedEdge.class);
 
-//			System.out.println("OSMObject en cours :" + osmObject.getOsmId());
+			// System.out.println("OSMObject en cours :" +
+			// osmObject.getOsmId());
 			// Récupère le nombre de versions de l'objet étudié
 			int lastContributionRange = osmObject.getContributions().size() - 1;
 			// System.out.println("lastContributionRange :" +
@@ -462,7 +482,7 @@ public class SocialGraph<V, E> {
 				boolean egalite = false;
 				int j = i - 1;
 				while (!egalite && j > 0) {
-//					System.out.println("j = " + j);
+					// System.out.println("j = " + j);
 					nodeFin = (long) osmObject.getContributions().get(j).getUid();
 					if (nodeIni.equals(nodeFin)) {
 						currentContributorPreviousContribution = j;
@@ -814,7 +834,7 @@ public class SocialGraph<V, E> {
 				+ dateMin + "\' AND b.datemodif <=\'" + dateMax + "\' AND b.idrel = a.idrel AND a.idmb = ANY("
 				+ idmbArray + "::int[]);";
 
-//		System.out.println(query);
+		// System.out.println(query);
 		java.sql.Connection conn;
 		String[][] table;
 		try {
@@ -822,7 +842,7 @@ public class SocialGraph<V, E> {
 			conn = DriverManager.getConnection(url, dbUser, dbPwd);
 			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			ResultSet r = s.executeQuery(query);
-//			System.out.println("------- Query Executed -------");
+			// System.out.println("------- Query Executed -------");
 			table = new String[r.getFetchSize()][4];
 			int i = 0;
 			while (r.next()) {
@@ -858,14 +878,14 @@ public class SocialGraph<V, E> {
 		// query += ") AND datemodif >=\'" + resource.getDate() + "\'" + " AND
 		// datemodif <=\'" + dateMax + "\';";
 		query += ") AND datemodif >=\'" + resource.getDate() + "\';";
-//		System.out.println(query);
+		// System.out.println(query);
 		java.sql.Connection conn;
 		try {
 			String url = "jdbc:postgresql://" + host + ":" + port + "/" + dbName;
 			conn = DriverManager.getConnection(url, dbUser, dbPwd);
 			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			ResultSet r = s.executeQuery(query);
-//			System.out.println("------- Query Executed -------");
+			// System.out.println("------- Query Executed -------");
 			while (r.next()) {
 				listOfuid.add(r.getLong("uid"));
 			}
@@ -889,7 +909,7 @@ public class SocialGraph<V, E> {
 			conn = DriverManager.getConnection(url, dbUser, dbPwd);
 			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			ResultSet r = s.executeQuery(idrelQuery);
-//			System.out.println("------- Query Executed -------");
+			// System.out.println("------- Query Executed -------");
 			while (r.next()) {
 				listOfidrel.add(r.getLong("idrel"));
 			}
@@ -1083,7 +1103,7 @@ public class SocialGraph<V, E> {
 	public static void writeGraph2CSV(DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> usegraph, File file)
 			throws IOException {
 		CSVWriter writer = new CSVWriter(new FileWriter(file), ';');
-//		System.out.println("écriture du fichier csv");
+		// System.out.println("écriture du fichier csv");
 		// write header
 		String[] line = new String[3];
 		line[0] = "source";

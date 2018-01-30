@@ -35,6 +35,11 @@ public class OSMDefaultFeature extends AbstractFeature implements OSMFeature {
 	 */
 	private Date date;
 
+	/**
+	 * When visible is false, it means the contribution has been deleted
+	 */
+	private boolean visible = true;
+
 	public OSMDefaultFeature(String contributor, IGeometry geom, long id, int changeSet, int version, int uid,
 			Date date, Map<String, String> tags) {
 		super();
@@ -248,4 +253,13 @@ public class OSMDefaultFeature extends AbstractFeature implements OSMFeature {
 	public int compareTo(OSMFeature o) {
 		return this.getDate().compareTo(o.getDate());
 	}
+
+	@Override
+	public boolean isDeleted() {
+		// TODO
+		System.out.println("Vrai par défaut tant que l'attribut visible n'est pas codé");
+		return this.visible;
+
+	}
+
 }

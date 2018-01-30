@@ -22,6 +22,14 @@ import fr.ign.cogit.geoxygene.osm.schema.OSMFeature;
 import fr.ign.cogit.geoxygene.osm.schema.OsmGeometryConversion;
 
 public class ContributorAssessment {
+	/**
+	 * Makes a summary of the contributors of a set of OSM contributions
+	 * 
+	 * @param myJavaObjects
+	 *            set of OSMResource
+	 * @return a hashmap containing all OSM contributors indexed by their uid
+	 * @throws Exception
+	 */
 	public static HashMap<Long, OSMContributor> contributorSummary(Set<OSMResource> myJavaObjects) throws Exception {
 		// Fills only the keys of myContributors hashmap
 		// HashMap<Long, OSMContributor> myContributors =
@@ -41,12 +49,12 @@ public class ContributorAssessment {
 					// Ajout d'un nouveau contributeur dans la liste et
 					// initialise
 					// avec l'objet parcouru
-					myContributors.put(uid,
-							new OSMContributor(new FT_FeatureCollection<OSMFeature>(), username, uid.intValue()));
+					myContributors.put(uid, new OSMContributor(new FT_FeatureCollection<OSMDefaultFeature>(), username,
+							uid.intValue()));
 				} else {
 					// Ajoute l'objet parcouru dans les contributions du
 					// contributeur existant
-					OSMFeature feature = OSMResource2OSMFeature(contribution, myJavaObjects);
+					OSMDefaultFeature feature = OSMResource2OSMFeature(contribution, myJavaObjects);
 					myContributors.get(uid).addContribution(feature);
 
 				}
@@ -68,11 +76,11 @@ public class ContributorAssessment {
 			int nbOfNightTimeContributions = myContributors.get(currentUID).getNighttimeContributions().size();
 			int nbOfweekContributions = myContributors.get(currentUID).getWeekContributions().size();
 			int nbOfweekendContributions = myContributors.get(currentUID).getWeekEndContributions().size();
-			myContributors.get(currentUID).setNbOfContributions(nbOfContributions);
-			myContributors.get(currentUID).setNbOfDayTimeContributions(nbOfDayTimeContributions);
-			myContributors.get(currentUID).setNbOfNightTimeContributions(nbOfNightTimeContributions);
-			myContributors.get(currentUID).setNbOfweekContributions(nbOfweekContributions);
-			myContributors.get(currentUID).setNbOfweekendContributions(nbOfweekendContributions);
+			// myContributors.get(currentUID).setNbOfContributions(nbOfContributions);
+			// myContributors.get(currentUID).setNbOfDayTimeContributions(nbOfDayTimeContributions);
+			// myContributors.get(currentUID).setNbOfNightTimeContributions(nbOfNightTimeContributions);
+			// myContributors.get(currentUID).setNbOfweekContributions(nbOfweekContributions);
+			// myContributors.get(currentUID).setNbOfweekendContributions(nbOfweekendContributions);
 		}
 		return myContributors;
 	}
@@ -103,14 +111,14 @@ public class ContributorAssessment {
 			String username = contribution.getContributeur();
 			if (!myContributors.containsKey(uid)) {
 				myContributors.put(uid,
-						new OSMContributor(new FT_FeatureCollection<OSMFeature>(), username, uid.intValue()));
+						new OSMContributor(new FT_FeatureCollection<OSMDefaultFeature>(), username, uid.intValue()));
 			}
 
 		}
 		return myContributors;
 	}
 
-	public static OSMFeature OSMResource2OSMFeature(OSMResource resource, Set<OSMResource> myJavaObjects)
+	public static OSMDefaultFeature OSMResource2OSMFeature(OSMResource resource, Set<OSMResource> myJavaObjects)
 			throws Exception {
 		OsmGeometryConversion convertor = new OsmGeometryConversion("4326");
 		IGeometry igeom = null;
@@ -124,7 +132,7 @@ public class ContributorAssessment {
 		if (resource.getGeom().getClass().getSimpleName().equals("OSMRelation")) {
 			// Plus tard
 		}
-		OSMFeature feature = new OSMDefaultFeature(resource.getContributeur(), igeom, (int) resource.getId(),
+		OSMDefaultFeature feature = new OSMDefaultFeature(resource.getContributeur(), igeom, (int) resource.getId(),
 				resource.getChangeSet(), resource.getVersion(), resource.getUid(), resource.getDate(),
 				resource.getTags());
 		return feature;
@@ -148,11 +156,11 @@ public class ContributorAssessment {
 			line = new String[7];
 			line[0] = String.valueOf(contributor.getId());
 			line[1] = String.valueOf(contributor.getName());
-			line[2] = String.valueOf(contributor.getNbOfContributions());
-			line[3] = String.valueOf(contributor.getNbOfDayTimeContributions());
-			line[4] = String.valueOf(contributor.getNbOfNightTimeContributions());
-			line[5] = String.valueOf(contributor.getNbOfweekContributions());
-			line[6] = String.valueOf(contributor.getNbOfweekendContributions());
+			line[2] = String.valueOf(contributor.getNbContributions());
+			line[3] = String.valueOf(contributor.getNbDayTimeContributions());
+			line[4] = String.valueOf(contributor.getNbNightTimeContributions());
+			line[5] = String.valueOf(contributor.getNbWeekContributions());
+			line[6] = String.valueOf(contributor.getNbWeekendContributions());
 			writer.writeNext(line);
 		}
 		writer.close();

@@ -164,6 +164,7 @@ public class GeoxPbfReader {
 				}
 			}
 		}
+		conn.close();
 	}
 
 	/*****

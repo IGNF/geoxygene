@@ -49,20 +49,20 @@ public class LoadFromPostGIS {
 
 	public static void main(String[] args) throws Exception {
 		LoadFromPostGIS loader = new LoadFromPostGIS("localhost", "5432", "paris", "postgres", "postgres");
-		List<Double> bbox = new ArrayList<Double>();
-		bbox.add(2.3322);
-		bbox.add(48.8489);
-		bbox.add(2.3634);
-		bbox.add(48.8627);
-
-		List<String> timespan = new ArrayList<String>();
-		timespan.add("2010-01-01");
-		timespan.add("2013-01-01");
+		// List<Double> bbox = new ArrayList<Double>();
+		// bbox.add(2.3322);
+		// bbox.add(48.8489);
+		// bbox.add(2.3634);
+		// bbox.add(48.8627);
+		//
+		// List<String> timespan = new ArrayList<String>();
+		// timespan.add("2010-01-01");
+		// timespan.add("2013-01-01");
 
 		// loader.relationEvolution(bbox, timespan);
 		// loader.selectRelations(bbox, timespan);
 
-		loader.getDataFrombbox(bbox, timespan);
+		// loader.getDataFrombbox(bbox, timespan);
 
 	}
 
@@ -79,20 +79,20 @@ public class LoadFromPostGIS {
 		this.myJavaRelations = new HashSet<OSMResource>();
 	}
 
-	public void getDataFrombbox(List<Double> bbox, List<String> timespan) throws Exception {
+	public void getDataFrombbox(Double[] bbox, String[] timespan) throws Exception {
 		// Nodes at t1
-		selectNodesInit(bbox, timespan.get(0).toString());
+		selectNodesInit(bbox, timespan[0].toString());
 		// Nodes between t1 and t2
 		selectNodes(bbox, timespan);
 
 		// Ways at t1
-		selectWaysInit(bbox, timespan.get(0).toString());
+		selectWaysInit(bbox, timespan[0].toString());
 		// Ways between t1 and t2
 		selectWays(bbox, timespan);
 
 		// Relations at t1
-		relationSnapshot(bbox, timespan.get(0).toString());
-		selectRelInit(bbox, timespan.get(0).toString());
+		relationSnapshot(bbox, timespan[0].toString());
+		selectRelInit(bbox, timespan[0].toString());
 		// Relations between t1 and t2
 		relationEvolution(bbox, timespan);
 		selectRelations(bbox, timespan);
@@ -152,22 +152,22 @@ public class LoadFromPostGIS {
 
 	}
 
-	public void relationEvolution(List<Double> bbox, List<String> timespan) throws Exception {
+	public void relationEvolution(Double[] bbox, String[] timespan) throws Exception {
 		String dropViewQuery = "DROP VIEW IF EXISTS "
 				+ "relationmemberselected, numberselectedrelmb, allrelationmember, "
 				+ "totalnumberselectedrelmb, idrelinbbox, idinbbox CASCADE;"
 				+ "DROP VIEW IF EXISTS relmbcomposedofrel,nbrelmbcomposedofrel,allrelmbcomposedofrel,"
 				+ "totalnbrelmbcomposedofrel,idrelofrelinbbox CASCADE;";
 
-		String subqueryNode = "SELECT DISTINCT ON (id) id FROM node WHERE datemodif >\'" + timespan.get(0).toString()
-				+ "\' AND datemodif <= \'" + timespan.get(1).toString() + "\' AND node.geom && ST_MakeEnvelope("
-				+ bbox.get(0).toString() + "," + bbox.get(1).toString() + "," + bbox.get(2).toString() + ","
-				+ bbox.get(3).toString() + ")";
+		String subqueryNode = "SELECT DISTINCT ON (id) id FROM node WHERE datemodif >\'" + timespan[0].toString()
+				+ "\' AND datemodif <= \'" + timespan[1].toString() + "\' AND node.geom && ST_MakeEnvelope("
+				+ bbox[0].toString() + "," + bbox[1].toString() + "," + bbox[2].toString() + "," + bbox[3].toString()
+				+ ")";
 
-		String subqueryWay = "SELECT DISTINCT ON (id) id FROM way WHERE datemodif >\'" + timespan.get(0).toString()
-				+ "\' AND datemodif <= \'" + timespan.get(1).toString() + "\' AND lon_min >=" + bbox.get(0).toString()
-				+ " AND lat_min >=" + bbox.get(1).toString() + " AND lon_max <=" + bbox.get(1).toString()
-				+ " AND lat_max <= " + bbox.get(3).toString();
+		String subqueryWay = "SELECT DISTINCT ON (id) id FROM way WHERE datemodif >\'" + timespan[0].toString()
+				+ "\' AND datemodif <= \'" + timespan[1].toString() + "\' AND lon_min >=" + bbox[0].toString()
+				+ " AND lat_min >=" + bbox[1].toString() + " AND lon_max <=" + bbox[1].toString() + " AND lat_max <= "
+				+ bbox[3].toString();
 
 		String query = "CREATE VIEW relationmemberselected AS SELECT * FROM relationmember WHERE (idmb in ("
 				+ subqueryWay + ") AND typemb = 'Way') OR (idmb in (" + subqueryNode
@@ -196,9 +196,9 @@ public class LoadFromPostGIS {
 		// Même raisonnement pour les relations composées des relations
 		// contenues dans la fenêtre
 		query += "CREATE VIEW relmbcomposedofrel AS SELECT * FROM relationmember WHERE idmb in ("
-				+ "SELECT DISTINCT ON (id) id FROM relation WHERE datemodif >\'" + timespan.get(0).toString()
-				+ "\' AND datemodif <=\'" + timespan.get(1).toString()
-				+ "\' AND idrel in (SELECT idrel FROM idrelinbbox)" + ");";
+				+ "SELECT DISTINCT ON (id) id FROM relation WHERE datemodif >\'" + timespan[0].toString()
+				+ "\' AND datemodif <=\'" + timespan[1].toString() + "\' AND idrel in (SELECT idrel FROM idrelinbbox)"
+				+ ");";
 
 		// Compte le nombre de membres sélectionnés par relation
 		query += "CREATE VIEW nbrelmbcomposedofrel AS "
@@ -243,7 +243,7 @@ public class LoadFromPostGIS {
 
 	}
 
-	public void relationSnapshot(List<Double> bbox, String beginDate) throws Exception {
+	public void relationSnapshot(Double[] bbox, String beginDate) throws Exception {
 		String dropViewQuery = "DROP VIEW IF EXISTS "
 				+ "relationmemberselected, numberselectedrelmb, allrelationmember, "
 				+ "totalnumberselectedrelmb, idrelinbbox, relationinbbox, idinbbox CASCADE; "
@@ -252,12 +252,11 @@ public class LoadFromPostGIS {
 				+ "DROP TRIGGER IF EXISTS idrelinbbox_trig ON idrelinbbox;";
 		// Recuperation des membres de relation de type node ou de type way
 		String subqueryNode = "SELECT DISTINCT ON (id) id FROM node WHERE datemodif <= \'" + beginDate
-				+ "\' AND node.geom && ST_MakeEnvelope(" + bbox.get(0).toString() + "," + bbox.get(1).toString() + ","
-				+ bbox.get(2).toString() + "," + bbox.get(3).toString() + ") ORDER BY id, vnode DESC";
+				+ "\' AND node.geom && ST_MakeEnvelope(" + bbox[0].toString() + "," + bbox[1].toString() + ","
+				+ bbox[2].toString() + "," + bbox[3].toString() + ") ORDER BY id, vnode DESC";
 		String subqueryWay = "SELECT DISTINCT ON (id) id FROM way WHERE datemodif <= \'" + beginDate
-				+ "\' AND lon_min >=" + bbox.get(0).toString() + " AND lat_min >=" + bbox.get(1).toString()
-				+ " AND lon_max <=" + bbox.get(1).toString() + " AND lat_max <= " + bbox.get(3).toString()
-				+ " ORDER BY id, datemodif DESC";
+				+ "\' AND lon_min >=" + bbox[0].toString() + " AND lat_min >=" + bbox[1].toString() + " AND lon_max <="
+				+ bbox[1].toString() + " AND lat_max <= " + bbox[3].toString() + " ORDER BY id, datemodif DESC";
 
 		String query = "CREATE VIEW relationmemberselected AS " + "SELECT * FROM relationmember WHERE (idmb in ("
 				+ subqueryWay + ") AND typemb = \'Way\') " + "OR (idmb in (" + subqueryNode
@@ -359,12 +358,20 @@ public class LoadFromPostGIS {
 	 *            : timespan lower boundary
 	 * @throws SQLException
 	 */
-	public void selectNodesInit(List<Double> bbox, String beginDate) throws SQLException {
-		String query = "SELECT idnode, id, uid, vnode, changeset, username, datemodif, hstore_to_json(tags), lat, lon FROM ("
+	public void selectNodesInit(Double[] bbox, String beginDate) throws SQLException {
+		// String query = "SELECT idnode, id, uid, vnode, changeset, username,
+		// datemodif, hstore_to_json(tags), lat, lon FROM ("
+		// + "SELECT DISTINCT ON (id) * FROM node WHERE datemodif <= \'" +
+		// beginDate
+		// + "\' AND node.geom && ST_MakeEnvelope(" + bbox[0].toString() + "," +
+		// bbox[1].toString() + ","
+		// + bbox[2].toString() + "," + bbox[3].toString() + ") ORDER BY id,
+		// datemodif DESC) AS node_and_tags;";
+		// Query visible attribute
+		String query = "SELECT idnode, id, uid, vnode, changeset, username, datemodif, hstore_to_json(tags), lat, lon, visible FROM ("
 				+ "SELECT DISTINCT ON (id) * FROM node WHERE datemodif <= \'" + beginDate
-				+ "\' AND node.geom && ST_MakeEnvelope(" + bbox.get(0).toString() + "," + bbox.get(1).toString() + ","
-				+ bbox.get(2).toString() + "," + bbox.get(3).toString()
-				+ ") ORDER BY id, datemodif DESC) AS node_and_tags;";
+				+ "\' AND node.geom && ST_MakeEnvelope(" + bbox[0].toString() + "," + bbox[1].toString() + ","
+				+ bbox[2].toString() + "," + bbox[3].toString() + ") ORDER BY id, datemodif DESC) AS node_and_tags;";
 		// Query database
 		try {
 			selectFromDB(query, "node");
@@ -389,13 +396,13 @@ public class LoadFromPostGIS {
 	 *            timestamp format
 	 * @throws SQLException
 	 */
-	public void selectNodes(List<Double> bbox, List<String> timespan) throws SQLException {
+	public void selectNodes(Double[] bbox, String[] timespan) throws SQLException {
 
 		// Nodes created/edited within timespan
-		String query = "SELECT idnode, id, uid, vnode, changeset, username, datemodif, hstore_to_json(tags), lat, lon FROM node WHERE node.geom && ST_MakeEnvelope("
-				+ bbox.get(0).toString() + "," + bbox.get(1).toString() + "," + bbox.get(2).toString() + ","
-				+ bbox.get(3).toString() + ", 4326) AND datemodif > \'" + timespan.get(0).toString()
-				+ "\' AND datemodif <= \'" + timespan.get(1).toString() + "\';";
+		String query = "SELECT idnode, id, uid, vnode, changeset, username, datemodif, hstore_to_json(tags), lat, lon, visible FROM node WHERE node.geom && ST_MakeEnvelope("
+				+ bbox[0].toString() + "," + bbox[1].toString() + "," + bbox[2].toString() + "," + bbox[3].toString()
+				+ ", 4326) AND datemodif > \'" + timespan[0].toString() + "\' AND datemodif <= \'"
+				+ timespan[1].toString() + "\';";
 		// Query database
 		try {
 			selectFromDB(query, "node");
@@ -405,12 +412,11 @@ public class LoadFromPostGIS {
 		}
 	}
 
-	public void selectWaysInit(List<Double> bbox, String beginDate) throws SQLException {
-		String query = "SELECT idway, id, uid, vway, changeset, username, datemodif, hstore_to_json(tags), composedof FROM ("
+	public void selectWaysInit(Double[] bbox, String beginDate) throws SQLException {
+		String query = "SELECT idway, id, uid, vway, changeset, username, datemodif, hstore_to_json(tags), composedof, visible FROM ("
 				+ "SELECT DISTINCT ON (id) * FROM way WHERE datemodif <= \'" + beginDate + "\' AND lon_min >="
-				+ bbox.get(0).toString() + " AND lat_min >=" + bbox.get(1).toString() + " AND lon_max <="
-				+ bbox.get(2).toString() + "AND lat_max <=" + bbox.get(3).toString()
-				+ " ORDER BY id, datemodif DESC) AS way_selected;";
+				+ bbox[0].toString() + " AND lat_min >=" + bbox[1].toString() + " AND lon_max <=" + bbox[2].toString()
+				+ "AND lat_max <=" + bbox[3].toString() + " ORDER BY id, datemodif DESC) AS way_selected;";
 		// Query database
 		try {
 			selectFromDB(query, "way");
@@ -435,13 +441,12 @@ public class LoadFromPostGIS {
 	 *            timestamp format
 	 * @throws SQLException
 	 */
-	public void selectWays(List<Double> bbox, List<String> timespan) throws SQLException {
+	public void selectWays(Double[] bbox, String[] timespan) throws SQLException {
 		// Ways created/edited within timespan
-		String query = "SELECT idway, id, uid, vway, changeset, username, datemodif, hstore_to_json(tags), composedof FROM way "
-				+ "WHERE datemodif > \'" + timespan.get(0).toString() + "\' AND datemodif <= \'"
-				+ timespan.get(1).toString() + "\'" + " AND lon_min >=" + bbox.get(0).toString() + " AND lat_min >="
-				+ bbox.get(1).toString() + " AND lon_max <=" + bbox.get(2).toString() + " AND lat_max <="
-				+ bbox.get(3).toString();
+		String query = "SELECT idway, id, uid, vway, changeset, username, datemodif, hstore_to_json(tags), composedof, visible FROM way "
+				+ "WHERE datemodif > \'" + timespan[0].toString() + "\' AND datemodif <= \'" + timespan[1].toString()
+				+ "\'" + " AND lon_min >=" + bbox[0].toString() + " AND lat_min >=" + bbox[1].toString()
+				+ " AND lon_max <=" + bbox[2].toString() + " AND lat_max <=" + bbox[3].toString();
 		// Query database
 		try {
 			selectFromDB(query, "way");
@@ -452,7 +457,7 @@ public class LoadFromPostGIS {
 
 	}
 
-	public void selectRelInit(List<Double> bbox, String beginDate) throws Exception {
+	public void selectRelInit(Double[] bbox, String beginDate) throws Exception {
 
 		relationSnapshot(bbox, beginDate);
 
@@ -463,7 +468,7 @@ public class LoadFromPostGIS {
 			// Recherche les membres de relations avant t1 et les écrit
 			selectFromDB(query, "relationmember");
 			// Recherche dans la table relation et écriture d'OSMRelation
-			query = "SELECT idrel, id, uid, vrel, changeset, username, datemodif, hstore_to_json(tags) "
+			query = "SELECT idrel, id, uid, vrel, changeset, username, datemodif, hstore_to_json(tags), visible "
 					+ "FROM (SELECT DISTINCT ON (id) * FROM relation WHERE datemodif <=\'" + beginDate + "\'"
 					+ "ORDER BY id,datemodif DESC) as relationselected WHERE id in (SELECT * FROM idinbbox);";
 			selectFromDB(query, "relation");
@@ -479,7 +484,7 @@ public class LoadFromPostGIS {
 
 	}
 
-	public void selectRelations(List<Double> bbox, List<String> timespan) throws Exception {
+	public void selectRelations(Double[] bbox, String[] timespan) throws Exception {
 		relationEvolution(bbox, timespan);
 
 		// Query database
@@ -489,9 +494,9 @@ public class LoadFromPostGIS {
 			// Recherche les membres de relations avant t1 et les écrit
 			selectFromDB(query, "relationmember");
 			// Recherche dans la table relation et écriture d'OSMRelation
-			query = "SELECT idrel, id, uid, vrel, changeset, username, datemodif, hstore_to_json(tags) FROM "
-					+ "(SELECT DISTINCT ON (id) * FROM relation WHERE datemodif >\'" + timespan.get(0).toString()
-					+ "\' AND datemodif <= \'" + timespan.get(1).toString() + "\') as relationselected"
+			query = "SELECT idrel, id, uid, vrel, changeset, username, datemodif, hstore_to_json(tags), visible FROM "
+					+ "(SELECT DISTINCT ON (id) * FROM relation WHERE datemodif >\'" + timespan[0].toString()
+					+ "\' AND datemodif <= \'" + timespan[1].toString() + "\') as relationselected"
 					+ " WHERE idrel in (SELECT idrel FROM idrelinbbox);";
 			selectFromDB(query, "relation");
 		} catch (Exception e) {
@@ -514,6 +519,8 @@ public class LoadFromPostGIS {
 		OSMResource myOsmResource = new OSMResource(r.getString("username"),
 				new OSMNode(r.getDouble("lat"), r.getDouble("lon")), r.getLong("id"), r.getInt("changeset"),
 				r.getInt("vnode"), r.getInt("uid"), date);
+		// Visible
+		myOsmResource.setVisible(r.getBoolean("visible"));
 		// Add tags if exist
 		if (!r.getString("hstore_to_json").toString().equalsIgnoreCase("{}")) {
 			try {
@@ -625,6 +632,8 @@ public class LoadFromPostGIS {
 		// Creates a new OSMResource
 		OSMResource myOsmResource = new OSMResource(r.getString("username"), myRelation, r.getLong("id"),
 				r.getInt("changeset"), r.getInt("vrel"), r.getInt("uid"), date);
+		// Visible
+		myOsmResource.setVisible(r.getBoolean("visible"));
 		// Add tags if exist
 		if (!r.getString("hstore_to_json").toString().equalsIgnoreCase("{}")) {
 			try {
@@ -667,6 +676,8 @@ public class LoadFromPostGIS {
 		}
 		OSMResource myOsmResource = new OSMResource(r.getString("username"), new OSMWay(composedof), r.getLong("id"),
 				r.getInt("changeset"), r.getInt("vway"), r.getInt("uid"), date);
+		// Visible
+		myOsmResource.setVisible(r.getBoolean("visible"));
 		// Add tags if exist
 		if (!r.getString("hstore_to_json").toString().equalsIgnoreCase("{}")) {
 			try {

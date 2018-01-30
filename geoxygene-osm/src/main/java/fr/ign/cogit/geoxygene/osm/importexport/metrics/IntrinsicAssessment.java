@@ -26,14 +26,9 @@ public class IntrinsicAssessment {
 	public static Set<OSMResource> myJavaObjects;
 
 	public static void main(String[] args) throws Exception {
-		List<Double> bbox = new ArrayList<Double>();
-		bbox.add(2.3398);
-		bbox.add(48.8522);
-		bbox.add(2.3527);
-		bbox.add(48.8576);
-		List<String> timespan = new ArrayList<String>();
-		timespan.add("2010-01-01");
-		timespan.add("2014-01-01");
+
+		Double[] bbox = { 2.3398, 48.8522, 2.3527, 48.8576 };
+		String[] timespan = { "2010-01-01", "2014-01-01" };
 
 		LoadFromPostGIS loader = new LoadFromPostGIS("localhost", "5432", "iledelacite1", "postgres", "postgres");
 
