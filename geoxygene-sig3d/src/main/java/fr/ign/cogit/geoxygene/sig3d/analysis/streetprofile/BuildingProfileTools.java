@@ -168,21 +168,24 @@ public class BuildingProfileTools {
 				double dist2 = 0.0;
 				if (pointP != null) {
 					dist2 = pointP.distance(dpActu);
-				}
-				if (dist2 == 0) {
+				} else {
 					continue;
 				}
+
 				if (dist2 < distMin2) {
 					distMin2 = dist2;
 					ipp = pointP;
+
+					ftpp = (new DefaultFeature(new GM_Point(ipp)));
+					Object V = distMin2;
+					AttributeManager.addAttribute(ftpp, "Distance", V, "Double");
+					AttributeManager.addAttribute(ftpp, BuildingProfileParameters.ID,
+							b1.getAttribute(BuildingProfileParameters.ID), "Double");
 				}
-				ftpp = (new DefaultFeature(new GM_Point(ipp)));
-				Object V = distMin2;
-				AttributeManager.addAttribute(ftpp, "Distance", V, "Double");
-				AttributeManager.addAttribute(ftpp, BuildingProfileParameters.ID,
-						b1.getAttribute(BuildingProfileParameters.ID), "Double");
+
 			}
 		}
+
 		return ftpp;
 	}
 

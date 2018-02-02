@@ -228,11 +228,13 @@ public class Grid3D {
 
     }
 
+    
+    
     if (RayCasting.lieInsidePolygon(dp, poly)) {
       return dp;
-    }
+     }
 
-    return null;
+      return null;
   }
 
   public IDirectPosition getOrigine() {

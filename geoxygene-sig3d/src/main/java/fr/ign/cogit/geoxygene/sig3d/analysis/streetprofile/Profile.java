@@ -36,7 +36,7 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
  * 
  * 
  * Stage de Marina Fund : USAGE D'INDICATEUR 3D ET AMENAGEMENT URBAIN
-
+ * 
  * 
  * @author MFund
  * @author MBrasebin
@@ -175,8 +175,6 @@ public class Profile {
 	 */
 	private IFeatureCollection<IFeature> roadsProfiled;
 
-
-
 	/**
 	 * Compteur déterminant le nombre de points pris sur la rue considérée
 	 */
@@ -199,7 +197,7 @@ public class Profile {
 	public IFeatureCollection<IFeature> getBuildingSide2() {
 		return buildingSide2;
 	}
-	
+
 	public IFeatureCollection<IFeature> getRoadsProfiled() {
 		return roadsProfiled;
 	}
@@ -214,15 +212,11 @@ public class Profile {
 	 * Ensemble des points projetés
 	 */
 	private IFeatureCollection<IFeature> pproj = null;
-	
+
 	/**
 	 * Toits des bâtiments
 	 */
-	private IFeatureCollection<IFeature> buildingRoofs = null; 
-	
-	
-	
-	
+	private IFeatureCollection<IFeature> buildingRoofs = null;
 
 	public static Logger getLogger() {
 		return logger;
@@ -378,8 +372,6 @@ public class Profile {
 		logger.info("Launching of profile estimation");
 		logger.info("-------------------------------------------");
 
-		
-	
 		// Chargement des données
 
 		logger.info("-------------------------------------------");
@@ -394,23 +386,21 @@ public class Profile {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		
-		
-		if(altZMax == -1){
+
+		if (altZMax == -1) {
 			logger.info("Autodetermining max height");
 			altZMin = Double.POSITIVE_INFINITY;
-			for(IFeature feat:bati){
-				Box3D b= new Box3D(feat.getGeom());
-				
+			for (IFeature feat : bati) {
+				Box3D b = new Box3D(feat.getGeom());
+
 				altZMin = Math.min(altZMin, b.getLLDP().getZ());
 				altZMax = Math.max(altZMax, b.getURDP().getZ());
-				
+
 			}
-			
+
 			diff2DRep = altZMin - 5;
 		}
-		
+
 		logger.info("Horizontal step : " + pas);
 		logger.info("Vertical step : " + pasZ);
 		logger.info("Maximal height : " + altZMin);
@@ -418,26 +408,21 @@ public class Profile {
 		logger.info("Maximal distance: " + longCut);
 		logger.info("-------------------------------------------");
 
-		
-		buildingRoofs = RoofDetection.detectRoof(bati,  0.1, false);
-		for(IFeature feat : buildingRoofs){
-		//	feat.setGeom(feat.getGeom().buffer(0.01));
-			if(feat.getGeom() == null || feat.getGeom().isEmpty()){
-				
+		buildingRoofs = RoofDetection.detectRoof(bati, 0.1, false);
+		for (IFeature feat : buildingRoofs) {
+			// feat.setGeom(feat.getGeom().buffer(0.01));
+			if (feat.getGeom() == null || feat.getGeom().isEmpty()) {
+
 				feat.setGeom(new GM_Polygon());
-				
-			}else{
-				//feat.setGeom(feat.getGeom().getEnvelope().getGeom());
-				
+
+			} else {
+				// feat.setGeom(feat.getGeom().getEnvelope().getGeom());
+
 				feat.setGeom(feat.getGeom().convexHull());
-				
+
 			}
-			
-		
+
 		}
-		
-	
-		
 
 		// -------------------------------------------------------------------------------------
 
@@ -510,6 +495,9 @@ public class Profile {
 		this.counterX = nbP * pas;
 
 		// Boucles sur les points échantillonnés
+
+	
+
 		for (int i = 0; i < nbP; i++) {
 
 			// Mise-à-jour du compteur
@@ -579,21 +567,16 @@ public class Profile {
 			int stat1 = 0;
 			int stat2 = 0;
 
-			IFeatureCollection<IFeature> batiPP = null; 
+			IFeatureCollection<IFeature> batiPP = null;
 			IFeatureCollection<IFeature> batiPP1 = null;
-			
-			if(parcelle == null || parcelle.isEmpty()){
-				batiPP = BuildingProfileTools.batimentPProcheNoParcel( ls, bati, dpPred, buildingRoofs);
-				batiPP1 = BuildingProfileTools.batimentPProcheNoParcel(ls1, bati, dpPred, buildingRoofs);
-			}else{
-				batiPP =  BuildingProfileTools.batimentPProche(parcelle, ls, bati, dpPred, buildingRoofs);
-				batiPP1=  BuildingProfileTools.batimentPProche(parcelle, ls1, bati, dpPred, buildingRoofs);
-			}
-			
-			
 
-			
-			
+			if (parcelle == null || parcelle.isEmpty()) {
+				batiPP = BuildingProfileTools.batimentPProcheNoParcel(ls, bati, dpPred, buildingRoofs);
+				batiPP1 = BuildingProfileTools.batimentPProcheNoParcel(ls1, bati, dpPred, buildingRoofs);
+			} else {
+				batiPP = BuildingProfileTools.batimentPProche(parcelle, ls, bati, dpPred, buildingRoofs);
+				batiPP1 = BuildingProfileTools.batimentPProche(parcelle, ls1, bati, dpPred, buildingRoofs);
+			}
 
 			if (batiPP == null) {
 				stat1 = 2;
