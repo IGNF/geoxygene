@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.sig3d.analysis.streetprofile;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.log4j.Level;
@@ -55,6 +56,8 @@ public class Profile {
 	// ---------------------------------- ATTRIBUTS
 	// ----------------------------------
 
+	
+	private Hashtable<Double, IFeatureCollection<IFeature>> pointsByX;
 	// Paramètres
 
 	/**
@@ -178,7 +181,7 @@ public class Profile {
 	/**
 	 * Compteur déterminant le nombre de points pris sur la rue considérée
 	 */
-	private double counterX;
+	private int nbP;
 
 	/**
 	 * Collection des vecteurs normaux (pour la visu)
@@ -262,8 +265,8 @@ public class Profile {
 		return parcelle;
 	}
 
-	public double getCounterX() {
-		return counterX;
+	public int getNumberOfPoints() {
+		return nbP;
 	}
 
 	public IFeatureCollection<IFeature> getBuildingRoofs() {
@@ -488,11 +491,9 @@ public class Profile {
 			return;
 		}
 
-		int nbP = dpl.size();
+		 nbP = dpl.size();
 
 		int counter = 0;
-
-		this.counterX = nbP * pas;
 
 		// Boucles sur les points échantillonnés
 
@@ -743,10 +744,10 @@ public class Profile {
 
 		logger.info("Fichiers brut : " + output);
 
-		IFeatureCollection<IFeature> featC = TransformToCircle.transform(pproj, counterX,
+		IFeatureCollection<IFeature> featC = TransformToCircle.transform(pproj, nbP,
 				1 + (int) ((altZMax - altZMin) / pasZ), radius);
 
-		logger.info("Counter X : " + counterX);
+		logger.info("Counter X : " + nbP);
 
 		ShapefileWriter.write(featC, output);
 
@@ -789,7 +790,7 @@ public class Profile {
 			return heights;
 		}
 
-		for (int i = 0; i < counterX; i++) {
+		for (int i = 0; i < nbP; i++) {
 
 			IFeatureCollection<IFeature> iFeatureCollTemp = this.getPointAtXstep(i * this.getXYStep(), side);
 
@@ -799,30 +800,65 @@ public class Profile {
 
 		return heights;
 	}
+	
+	
+	
+	
+	private void initializeHashTable(){
+		
+		
+		pointsByX = new Hashtable<>();
+		
+		for (IFeature feat : this.pproj) {
+			double x = Double.parseDouble(feat.getAttribute(BuildingProfileParameters.NAM_ATT_X).toString());
+			
+			if(! pointsByX.containsKey(x)){
+				pointsByX.put(x, new FT_FeatureCollection<>());
+			}
+			pointsByX.get(x).add(feat);
+			
+		}
+	}
+	
 
 	// Get the points at the X value
 	public IFeatureCollection<IFeature> getPointAtXstep(double xValue, SIDE side) {
 
+		
+		
+		
 		IFeatureCollection<IFeature> iFeatureCollOut = new FT_FeatureCollection<>();
 
 		if (pproj == null) {
 			logger.error("Erreur : profile is not generated");
 			return iFeatureCollOut;
 		}
+		
 
-		for (IFeature feat : this.pproj) {
+		if(pointsByX == null){
+			initializeHashTable();
+		}
+		
+		IFeatureCollection<IFeature> featCollTemp = pointsByX.get(xValue);
+		
+		if (side.equals(SIDE.BOTH)) {
+			return featCollTemp;
+			
+		}
 
-			double x = Double.parseDouble(feat.getAttribute(BuildingProfileParameters.NAM_ATT_X).toString());
+		
+		if(featCollTemp == null ||featCollTemp.isEmpty()){
+			return iFeatureCollOut;
+		}
+		
 
-			if (x != xValue) {
-				continue;
-			}
+		for (IFeature feat : featCollTemp) {
 
+	
 			double y = Double.parseDouble(feat.getAttribute(BuildingProfileParameters.NAM_ATT_Y).toString());
-
-			if (side.equals(SIDE.BOTH)) {
-				iFeatureCollOut.add(feat);
-			} else if (side.equals(SIDE.UPSIDE) && y > 0) {
+			
+			
+			if (side.equals(SIDE.UPSIDE) && y > 0) {
 				iFeatureCollOut.add(feat);
 			} else if (side.equals(SIDE.DOWNSIDE) && y < 0) {
 				iFeatureCollOut.add(feat);
