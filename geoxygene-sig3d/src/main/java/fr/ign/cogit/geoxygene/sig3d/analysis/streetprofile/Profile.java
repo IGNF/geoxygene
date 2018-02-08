@@ -780,9 +780,11 @@ public class Profile {
 		return iFeatureCollOut;
 
 	}
-
-	public List<Double> getHeightAlongRoad(SIDE side) {
-
+	
+	
+	public List<Double> getHeightAlongRoad(SIDE side, int begin, int end) {
+		
+		
 		List<Double> heights = new ArrayList<>();
 
 		if (pproj == null) {
@@ -790,7 +792,7 @@ public class Profile {
 			return heights;
 		}
 
-		for (int i = 0; i < nbP; i++) {
+		for (int i = begin; i < end; i++) {
 
 			IFeatureCollection<IFeature> iFeatureCollTemp = this.getPointAtXstep(i * this.getXYStep(), side);
 
@@ -799,6 +801,13 @@ public class Profile {
 		}
 
 		return heights;
+		
+		
+	}
+
+	public List<Double> getHeightAlongRoad(SIDE side) {
+		return getHeightAlongRoad(side, 0, nbP);
+
 	}
 	
 	

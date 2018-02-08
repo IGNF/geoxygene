@@ -33,17 +33,16 @@ public class ProfileAutoCorrelation {
 
 		for (int i = 0; i < nbEstimations; i++) {
 			tabACF[i] = calculateACFCorrelation(heights, i, pb.getMoy()) / variance;
-
 		}
 
 	}
 	
 	
-	private double calculateVariance(List<Double> heights, double moyenne){
+	public static double calculateVariance(List<Double> heights, double moyenne){
 		double value = 0 ;
 		
 		for(Double h: heights){
-			value = Math.pow(h-moyenne, 2);
+			value = value + Math.pow(h-moyenne, 2);
 		}
 		return value / heights.size();
 	}
