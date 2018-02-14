@@ -20,7 +20,8 @@ public class OSMObject {
 	private int nbStableTags;
 	private int nbTagEdition;
 	private int nbGeomEdition;
-	public List<List<Long>> wayComposition;
+	// public List<List<Long>> wayComposition;
+	private String primitiveGeomOSM;
 
 	public long getOsmId() {
 		return osmId;
@@ -124,6 +125,14 @@ public class OSMObject {
 		this.nbStableTags = nbStableTags;
 		this.nbTagEdition = nbTagEdition;
 		this.nbGeomEdition = nbGeomEdition;
+	}
+
+	public String getPrimitiveGeomOSM() {
+		return primitiveGeomOSM;
+	}
+
+	public void setPrimitiveGeomOSM(String primitiveGeomOSM) {
+		this.primitiveGeomOSM = primitiveGeomOSM;
 	}
 
 }

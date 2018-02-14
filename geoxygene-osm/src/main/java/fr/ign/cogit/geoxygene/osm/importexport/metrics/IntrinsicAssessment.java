@@ -49,6 +49,11 @@ public class IntrinsicAssessment {
 
 	}
 
+	/**
+	 * Sort contributions in chronological order
+	 * 
+	 * @param myJavaObjects
+	 */
 	public static void sortJavaObjects(List<OSMResource> myJavaObjects) {
 		Collections.sort(myJavaObjects, new Comparator<OSMResource>() {
 			@Override
@@ -317,14 +322,6 @@ public class IntrinsicAssessment {
 	 * @return myOSMObjects
 	 **/
 	public static HashMap<Long, OSMObject> osmObjectsInit(Set<OSMResource> myJavaObjects, String OsmResourceType) {
-		// Sorting OSMResource list in the chronological order
-		// Collections.sort(myJavaObjects, new Comparator<OSMResource>() {
-		// @Override
-		// public int compare(OSMResource r1, OSMResource r2) {
-		// return r1.getDate().compareTo(r2.getDate());
-		// }
-		// });
-		// sortJavaObjects(myJavaObjects);
 		HashMap<Long, OSMObject> myOSMObjects = new HashMap<Long, OSMObject>();
 		/** Parsing myJavaObjects to create indicators inside of OSMObjects **/
 		Iterator<OSMResource> it = myJavaObjects.iterator();
@@ -347,12 +344,15 @@ public class IntrinsicAssessment {
 					if (!myOSMObjects.get(contribution.getId()).getContributorList().contains(contribution.getUid()))
 						myOSMObjects.get(contribution.getId()).addContributor((long) contribution.getUid());
 				}
-				if (contribution.getGeom().getClass().getSimpleName().equals("OSMWay")) {
-					// If the object is a way, gets its node composition
-					myOSMObjects.get(contribution.getId()).wayComposition = new ArrayList<List<Long>>();
-					OSMWay primitive = (OSMWay) contribution.getGeom();
-					myOSMObjects.get(contribution.getId()).wayComposition.add(primitive.getVertices());
-				}
+				// if
+				// (contribution.getGeom().getClass().getSimpleName().equals("OSMWay"))
+				// {
+				// // If the object is a way, gets its node composition
+				// myOSMObjects.get(contribution.getId()).wayComposition = new
+				// ArrayList<List<Long>>();
+				// OSMWay primitive = (OSMWay) contribution.getGeom();
+				// myOSMObjects.get(contribution.getId()).wayComposition.add(primitive.getVertices());
+				// }
 			}
 		}
 		return myOSMObjects;
@@ -422,7 +422,7 @@ public class IntrinsicAssessment {
 				line[4] = resource.getContributeur();
 				line[5] = resource.getDate().toString();
 				line[6] = resource.getSource();
-				line[7] = Integer.toString(resource.getNbTags());
+				// line[7] = Integer.toString(resource.getNbTags());
 				line[8] = Double.toString(node.getLongitude());
 				line[9] = Double.toString(node.getLatitude());
 				writer.writeNext(line);
@@ -460,7 +460,7 @@ public class IntrinsicAssessment {
 			line[4] = resource.getContributeur();
 			line[5] = resource.getDate().toString();
 			line[6] = resource.getSource();
-			line[7] = Integer.toString(resource.getNbTags());
+			// line[7] = Integer.toString(resource.getNbTags());
 			line[8] = resource.getGeom().getClass().getSimpleName();
 			writer.writeNext(line);
 
@@ -495,7 +495,7 @@ public class IntrinsicAssessment {
 				line[4] = resource.getContributeur();
 				line[5] = resource.getDate().toString();
 				line[6] = resource.getSource();
-				line[7] = Integer.toString(resource.getNbTags());
+				// line[7] = Integer.toString(resource.getNbTags());
 				line[8] = resource.getGeom().getClass().getSimpleName();
 				writer.writeNext(line);
 			}
@@ -538,7 +538,7 @@ public class IntrinsicAssessment {
 				line[4] = resource.getContributeur();
 				line[5] = resource.getDate().toString();
 				line[6] = resource.getSource();
-				line[7] = Integer.toString(resource.getNbTags());
+				// line[7] = Integer.toString(resource.getNbTags());
 				line[8] = Integer.toString(way.getVertices().size());
 				writer.writeNext(line);
 			}

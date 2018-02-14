@@ -219,7 +219,6 @@ public class ActivityArea {
 				if (!r.getString("hstore_to_json").toString().equalsIgnoreCase("{}")) {
 					try {
 						JSONObject obj = new JSONObject(r.getString("hstore_to_json"));
-						myOsmResource.setNbTags(obj.names().length());
 						for (int i = 0; i < obj.names().length(); i++) {
 							String key = obj.names().getString(i);
 							String value = obj.getString(key);
