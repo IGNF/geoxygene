@@ -182,71 +182,102 @@ public class OSMContributor implements INode {
 	 *            de type OSMResource
 	 */
 	public void addContribution(OSMResource contribution) {
-		this.resource.add(contribution);
-		this.nbContributions++;
-		// Met à jours les indicateurs sur le contributeur
-		if (contribution.getEditionType().equals("creation")) {
-			this.nbCreation++;
-			// Attributs portant sur les types node, way et relation
-			this.nbNodeCreation = (contribution.getGeom().getClass().equals("OSMNode") ? this.nbCreation++
-					: this.nbNodeCreation);
-			this.nbWayCreation = (contribution.getGeom().getClass().equals("OSMWay") ? this.nbWayCreation++
-					: this.nbWayCreation);
-			this.nbRelationCreation = (contribution.getGeom().getClass().equals("OSMRelation")
-					? this.nbRelationCreation++ : this.nbRelationCreation);
-		} else if (contribution.getEditionType().equals("modification")) {
-			this.nbModification++;
-			// Attributs portant sur les types node, way et relation
-			this.nbNodeModification = (contribution.getGeom().getClass().equals("OSMNode") ? this.nbCreation++
-					: this.nbNodeCreation);
-			this.nbWayModification = (contribution.getGeom().getClass().equals("OSMWay") ? this.nbWayCreation++
-					: this.nbWayCreation);
-			this.nbRelationModification = (contribution.getGeom().getClass().equals("OSMRelation")
-					? this.nbRelationCreation++ : this.nbRelationCreation);
-		} else if (contribution.getEditionType().equals("delete")) {
-			this.nbDelete++;
-			// Attributs portant sur les types node, way et relation
-			this.nbNodeDelete = (contribution.getGeom().getClass().equals("OSMNode") ? this.nbCreation++
-					: this.nbNodeCreation);
-			this.nbWayDelete = (contribution.getGeom().getClass().equals("OSMWay") ? this.nbWayCreation++
-					: this.nbWayCreation);
-			this.nbRelationDelete = (contribution.getGeom().getClass().equals("OSMRelation") ? this.nbRelationCreation++
-					: this.nbRelationCreation);
-		} else {
-			this.nbRevert++;
-		}
-		if (contribution.isUpToDate()) {
-			this.nbNodeUpToDate = (contribution.getGeom().getClass().equals("OSMNode") ? this.nbNodeUpToDate++
-					: this.nbNodeUpToDate);
-			this.nbWayUpToDate = (contribution.getGeom().getClass().equals("OSMWay") ? this.nbWayUpToDate++
-					: this.nbWayUpToDate);
-			this.nbRelationUpToDate = (contribution.getGeom().getClass().equals("OSMRelation")
-					? this.nbRelationUpToDate++ : this.nbRelationUpToDate);
-		}
-		if (contribution.willbeCorrected()) {
-			this.nbNodeCorrected = (contribution.getGeom().getClass().equals("OSMNode") ? this.nbNodeCorrected++
-					: this.nbNodeCorrected);
-			this.nbWayCorrected = (contribution.getGeom().getClass().equals("OSMWay") ? this.nbWayCorrected++
-					: this.nbWayCorrected);
-			this.nbRelationCorrected = (contribution.getGeom().getClass().equals("OSMRelation")
-					? this.nbRelationCorrected++ : this.nbRelationCorrected);
-		}
-		if (contribution.willbeAutoCorrected()) {
-			this.nbNodeAutoCorrected = (contribution.getGeom().getClass().equals("OSMNode") ? this.nbNodeAutoCorrected++
-					: this.nbNodeAutoCorrected);
-			this.nbWayAutoCorrected = (contribution.getGeom().getClass().equals("OSMWay") ? this.nbWayAutoCorrected++
-					: this.nbWayCorrected);
-			this.nbRelationAutoCorrected = (contribution.getGeom().getClass().equals("OSMRelation")
-					? this.nbRelationAutoCorrected++ : this.nbRelationAutoCorrected);
-		}
-		if (contribution.isNightTimeContribution())
-			this.nbNightTimeContributions++;
-		else
-			this.nbDayTimeContributions++;
-		if (contribution.isWeekendContribution())
-			this.nbWeekendContributions++;
-		else
-			this.nbWeekContributions++;
+		// this.resource.add(contribution);
+		// this.nbContributions++;
+		// // Met à jours les indicateurs sur le contributeur
+		// if (contribution.getEditionType().equals("creation")) {
+		// this.nbCreation++;
+		// // Attributs portant sur les types node, way et relation
+		// this.nbNodeCreation =
+		// (contribution.getGeom().getClass().equals("OSMNode") ?
+		// this.nbCreation++
+		// : this.nbNodeCreation);
+		// this.nbWayCreation =
+		// (contribution.getGeom().getClass().equals("OSMWay") ?
+		// this.nbWayCreation++
+		// : this.nbWayCreation);
+		// this.nbRelationCreation =
+		// (contribution.getGeom().getClass().equals("OSMRelation")
+		// ? this.nbRelationCreation++ : this.nbRelationCreation);
+		// } else if (contribution.getEditionType().equals("modification")) {
+		// this.nbModification++;
+		// // Attributs portant sur les types node, way et relation
+		// this.nbNodeModification =
+		// (contribution.getGeom().getClass().equals("OSMNode") ?
+		// this.nbCreation++
+		// : this.nbNodeCreation);
+		// this.nbWayModification =
+		// (contribution.getGeom().getClass().equals("OSMWay") ?
+		// this.nbWayCreation++
+		// : this.nbWayCreation);
+		// this.nbRelationModification =
+		// (contribution.getGeom().getClass().equals("OSMRelation")
+		// ? this.nbRelationCreation++ : this.nbRelationCreation);
+		// } else if (contribution.getEditionType().equals("delete")) {
+		// this.nbDelete++;
+		// // Attributs portant sur les types node, way et relation
+		// this.nbNodeDelete =
+		// (contribution.getGeom().getClass().equals("OSMNode") ?
+		// this.nbCreation++
+		// : this.nbNodeCreation);
+		// this.nbWayDelete =
+		// (contribution.getGeom().getClass().equals("OSMWay") ?
+		// this.nbWayCreation++
+		// : this.nbWayCreation);
+		// this.nbRelationDelete =
+		// (contribution.getGeom().getClass().equals("OSMRelation") ?
+		// this.nbRelationCreation++
+		// : this.nbRelationCreation);
+		// } else {
+		// this.nbRevert++;
+		// }
+		// if (contribution.isUpToDate()) {
+		// this.nbNodeUpToDate =
+		// (contribution.getGeom().getClass().equals("OSMNode") ?
+		// this.nbNodeUpToDate++
+		// : this.nbNodeUpToDate);
+		// this.nbWayUpToDate =
+		// (contribution.getGeom().getClass().equals("OSMWay") ?
+		// this.nbWayUpToDate++
+		// : this.nbWayUpToDate);
+		// this.nbRelationUpToDate =
+		// (contribution.getGeom().getClass().equals("OSMRelation")
+		// ? this.nbRelationUpToDate++ : this.nbRelationUpToDate);
+		// }
+		// if (contribution.willbeCorrected()) {
+		// this.nbNodeCorrected =
+		// (contribution.getGeom().getClass().equals("OSMNode") ?
+		// this.nbNodeCorrected++
+		// : this.nbNodeCorrected);
+		// this.nbWayCorrected =
+		// (contribution.getGeom().getClass().equals("OSMWay") ?
+		// this.nbWayCorrected++
+		// : this.nbWayCorrected);
+		// this.nbRelationCorrected =
+		// (contribution.getGeom().getClass().equals("OSMRelation")
+		// ? this.nbRelationCorrected++ : this.nbRelationCorrected);
+		// }
+		// if (contribution.willbeAutoCorrected()) {
+		// this.nbNodeAutoCorrected =
+		// (contribution.getGeom().getClass().equals("OSMNode") ?
+		// this.nbNodeAutoCorrected++
+		// : this.nbNodeAutoCorrected);
+		// this.nbWayAutoCorrected =
+		// (contribution.getGeom().getClass().equals("OSMWay") ?
+		// this.nbWayAutoCorrected++
+		// : this.nbWayCorrected);
+		// this.nbRelationAutoCorrected =
+		// (contribution.getGeom().getClass().equals("OSMRelation")
+		// ? this.nbRelationAutoCorrected++ : this.nbRelationAutoCorrected);
+		// }
+		// if (contribution.isNightTimeContribution())
+		// this.nbNightTimeContributions++;
+		// else
+		// this.nbDayTimeContributions++;
+		// if (contribution.isWeekendContribution())
+		// this.nbWeekendContributions++;
+		// else
+		// this.nbWeekContributions++;
 	}
 
 	/**

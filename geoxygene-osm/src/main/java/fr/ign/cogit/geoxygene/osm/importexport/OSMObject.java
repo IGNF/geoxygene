@@ -20,7 +20,7 @@ public class OSMObject {
 	private int nbStableTags;
 	private int nbTagEdition;
 	private int nbGeomEdition;
-	// public List<List<Long>> wayComposition;
+	public List<List<Long>> wayComposition;
 	private String primitiveGeomOSM;
 
 	public long getOsmId() {
