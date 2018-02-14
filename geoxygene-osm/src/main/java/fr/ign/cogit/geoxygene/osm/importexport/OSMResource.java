@@ -198,4 +198,24 @@ public class OSMResource {
 		this.visible = visible;
 	}
 
+	public boolean isGeomEquals(OSMResource r) {
+		// Egalité géométrique
+		if (r.getGeom().getClass().getSimpleName().equals("OSMNode"))
+			return ((OSMNode) this.getGeom()).isGeomEquals((OSMNode) r.getGeom());
+		if (r.getGeom().getClass().getSimpleName().equals("OSMWay"))
+			return ((OSMWay) this.getGeom()).isVerticeEquals((OSMWay) r.getGeom());
+		// Cas des relations pas traité
+		return false;
+	}
+
+	public boolean isTagsEquals(OSMResource r) {
+		// Egalité géométrique
+		if (r.getTags().size() != this.getTags().size())
+			return false;
+		if (r.getTags().keySet().equals(this.getTags().keySet()))
+			if (r.getTags().values().equals(r.getTags().values()))
+				return true;
+		return false;
+	}
+
 }
