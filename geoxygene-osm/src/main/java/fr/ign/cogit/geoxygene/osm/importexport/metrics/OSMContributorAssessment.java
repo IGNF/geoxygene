@@ -58,6 +58,11 @@ public class OSMContributorAssessment {
 		return nbWeekendContrib;
 	}
 
+	/**
+	 * 
+	 * @param contributions
+	 * @return
+	 */
 	public static Integer getNbNightContributions(Set<OSMResource> contributions) {
 		int nbNightContrib = 0;
 		for (OSMResource obj : contributions) {
