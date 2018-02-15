@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -160,8 +159,9 @@ public class IntrinsicAssessment {
 		// myOSMObjects.get(currentID).setContributions(contributionList);
 		List<OSMResource> contributionList = myOSMObjects.get(currentID).getContributions();
 		/** dateMin and dateMax **/
-		Date datemin = contributionList.get(0).getDate();
-		Date datemax = contributionList.get(contributionList.size() - 1).getDate();
+		// Date datemin = contributionList.get(0).getDate();
+		// Date datemax = contributionList.get(contributionList.size() -
+		// 1).getDate();
 		// myOSMObjects.get(currentID).setDateMin(datemin);
 		// myOSMObjects.get(currentID).setDateMax(datemax);
 		/** Tag & geom editions **/
