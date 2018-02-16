@@ -51,11 +51,19 @@
 			<groupId>com.vividsolutions</groupId>
 			<artifactId>jts</artifactId>
 		</dependency>
+        <!--  igetdb.sourceforge pas dispo, je mets celui dispo sur maven central -->
+		<!-- <dependency> -->
+		<!-- <groupId>jmathplot</groupId> -->
+		<!-- <artifactId>jmathplot</artifactId> -->
+		<!-- <version>1.0</version> -->
+		<!-- </dependency> -->
+		<!--  igetdb.sourceforge pas dispo, je mets celui dispo sur maven central -->
 		<dependency>
-			<groupId>jmathplot</groupId>
-			<artifactId>jmathplot</artifactId>
-			<version>1.0</version>
+			<groupId>com.github.yannrichet</groupId>
+			<artifactId>JMathPlot</artifactId>
+			<version>1.0.1</version>
 		</dependency>
+
 		<dependency>
 			<groupId>gov.nist.math.jama</groupId>
 			<artifactId>gov.nist.math.jama</artifactId>
@@ -101,13 +109,21 @@
 	</dependencies>
 
 	<repositories>
-		<repository>
-			<id>IGetDB</id>
-			<url>http://igetdb.sourceforge.net/maven2-repository/</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
+<!-- 		<repository> -->
+<!-- 			<id>IGetDB</id> -->
+<!-- 			<url>http://igetdb.sourceforge.net/maven2-repository/</url> -->
+<!-- 			<snapshots> -->
+<!-- 				<enabled>false</enabled> -->
+<!-- 			</snapshots> -->
+<!-- 		</repository> -->
+       <repository>
+           <id>Maven Central</id>
+           <url>http://central.maven.org/maven2/</url>
+           <snapshots>
+               <enabled>false</enabled>
+           </snapshots>
+       </repository>
+
 	</repositories>
 
 
