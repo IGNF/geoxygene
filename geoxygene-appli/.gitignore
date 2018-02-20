@@ -6,3 +6,4 @@
 /data/matching-test/
 /log/
 geoxygene-configuration.xml
+*.log
