@@ -64,18 +64,23 @@ public class ContributorAssessment {
 
 		Iterator<Long> contributorsIDs = myContributors.keySet().iterator();
 		while (contributorsIDs.hasNext()) {
-			long currentUID = contributorsIDs.next();
+			// long currentUID = contributorsIDs.next();
 			// List<OSMFeature> contributionList =
 			// fillcontributionList(currentUID, myJavaObjects);
 			// for (OSMFeature contribution : contributionList)
 			// myContributors.get(currentUID).addContribution(contribution);
 
 			/** Calcul des indicateurs **/
-			int nbOfContributions = myContributors.get(currentUID).getContributions().size();
-			int nbOfDayTimeContributions = myContributors.get(currentUID).getDaytimeContributions().size();
-			int nbOfNightTimeContributions = myContributors.get(currentUID).getNighttimeContributions().size();
-			int nbOfweekContributions = myContributors.get(currentUID).getWeekContributions().size();
-			int nbOfweekendContributions = myContributors.get(currentUID).getWeekEndContributions().size();
+			// int nbOfContributions =
+			// myContributors.get(currentUID).getContributions().size();
+			// int nbOfDayTimeContributions =
+			// myContributors.get(currentUID).getDaytimeContributions().size();
+			// int nbOfNightTimeContributions =
+			// myContributors.get(currentUID).getNighttimeContributions().size();
+			// int nbOfweekContributions =
+			// myContributors.get(currentUID).getWeekContributions().size();
+			// int nbOfweekendContributions =
+			// myContributors.get(currentUID).getWeekEndContributions().size();
 			// myContributors.get(currentUID).setNbOfContributions(nbOfContributions);
 			// myContributors.get(currentUID).setNbOfDayTimeContributions(nbOfDayTimeContributions);
 			// myContributors.get(currentUID).setNbOfNightTimeContributions(nbOfNightTimeContributions);
@@ -157,10 +162,13 @@ public class ContributorAssessment {
 			line[0] = String.valueOf(contributor.getId());
 			line[1] = String.valueOf(contributor.getName());
 			line[2] = String.valueOf(contributor.getNbContributions());
-			line[3] = String.valueOf(contributor.getNbDayTimeContributions());
-			line[4] = String.valueOf(contributor.getNbNightTimeContributions());
-			line[5] = String.valueOf(contributor.getNbWeekContributions());
-			line[6] = String.valueOf(contributor.getNbWeekendContributions());
+			// line[3] =
+			// String.valueOf(contributor.getNbDayTimeContributions());
+			// line[4] =
+			// String.valueOf(contributor.getNbNightTimeContributions());
+			// line[5] = String.valueOf(contributor.getNbWeekContributions());
+			// line[6] =
+			// String.valueOf(contributor.getNbWeekendContributions());
 			writer.writeNext(line);
 		}
 		writer.close();

@@ -32,4 +32,12 @@ public class OSMNode extends PrimitiveGeomOSM {
 		return new DirectPosition(longitude, latitude);
 	}
 
+	public boolean isGeomEquals(OSMNode node) {
+		if (node.getPosition().equals(this.getPosition()))
+			return true;
+		else
+			return false;
+
+	}
+
 }

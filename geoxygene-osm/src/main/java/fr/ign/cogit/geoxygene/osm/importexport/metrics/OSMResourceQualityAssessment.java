@@ -61,21 +61,31 @@ public class OSMResourceQualityAssessment {
 			if (!myOSMObjects.containsKey(contribution.getId())) {
 				// If OSMObject doesn't exist yet, create a new object
 				OSMObject objet = new OSMObject(contribution.getId());
-				objet.nbVersions = 1;
-				objet.addContributor((long) contribution.getUid());
-				myOSMObjects.put(contribution.getId(), objet);
-				objet.addcontribution(contribution);
+				/*
+				 * objet.nbVersions = 1; objet.addContributor((long)
+				 * contribution.getUid());
+				 * myOSMObjects.put(contribution.getId(), objet);
+				 * objet.addcontribution(contribution);
+				 */
 				// Indicate if OSM primitive is an OSMNode, OSMWay or
 				// OSMRelation
 				objet.setPrimitiveGeomOSM(nameGeomOSM);
 			} else {
 				// If OSMObject already exists : increments the number of
 				// version and stores the contribution
-				myOSMObjects.get(contribution.getId()).nbVersions += 1;
-				myOSMObjects.get(contribution.getId()).addcontribution(contribution);
+				/*
+				 * myOSMObjects.get(contribution.getId()).nbVersions += 1;
+				 * myOSMObjects.get(contribution.getId()).addcontribution(
+				 * contribution);
+				 */
 				// Refresh the list of unique contributors of the OSMobject
-				if (!myOSMObjects.get(contribution.getId()).getContributorList().contains(contribution.getUid()))
-					myOSMObjects.get(contribution.getId()).addContributor((long) contribution.getUid());
+				/*
+				 * if
+				 * (!myOSMObjects.get(contribution.getId()).getContributorList()
+				 * .contains(contribution.getUid()))
+				 * myOSMObjects.get(contribution.getId()).addContributor((long)
+				 * contribution.getUid());
+				 */
 			}
 		}
 		// Chronologically order every list of contributions in each OSMObject
@@ -91,7 +101,7 @@ public class OSMResourceQualityAssessment {
 	 * @param resource
 	 * @return number tags
 	 */
-	public Integer countTags(OSMResource resource) {
+	public static Integer countTags(OSMResource resource) {
 		return resource.getTags().size();
 	}
 
@@ -177,6 +187,17 @@ public class OSMResourceQualityAssessment {
 		return null;
 	}
 
+	public static EditionType getEditionType(OSMResource resource, OSMResource former) {
+		if (resource.getVersion() == 1)
+			return EditionType.creation;
+		if (!resource.isVisible())
+			return EditionType.delete;
+		else if (former.isVisible())
+			return EditionType.revert;
+		else
+			return EditionType.modification;
+	}
+
 	public Date getFormerEditionDate(OSMResource resource) {
 		return this.getFormerVersion(resource).getDate();
 	}
@@ -257,6 +278,12 @@ public class OSMResourceQualityAssessment {
 		return false;
 	}
 
+	public static boolean isTagCreation(Map<String, String> tags, Map<String, String> formerTags) {
+		if (formerTags.keySet().containsAll(tags.keySet()))
+			return false;
+		return true;
+	}
+
 	/**
 	 * Determines whether the is tag modification in the current tag set,
 	 * relatively to the previous set of tags.
@@ -281,6 +308,22 @@ public class OSMResourceQualityAssessment {
 	}
 
 	/**
+	 * 
+	 * @param resource
+	 * @param former
+	 * @return true if the values of the former tags have been changed
+	 */
+	public static boolean isTagModification(OSMResource resource, OSMResource former) {
+		Iterator<String> it = resource.getTags().keySet().iterator();
+		while (it.hasNext()) {
+			String key = it.next();
+			if (!former.getTags().get(key).equals(resource.getTags().get(key)))
+				return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Compare with the tags of the previous version and determines whether a
 	 * tag is deleted in the current tag set.
 	 * 
@@ -295,6 +338,12 @@ public class OSMResourceQualityAssessment {
 				return true;
 		}
 		return false;
+	}
+
+	public static boolean isTagDelete(Map<String, String> tags, Map<String, String> formerTags) {
+		if (tags.keySet().containsAll(formerTags.keySet()))
+			return false;
+		return true;
 	}
 
 	public OSMDefaultFeature getOSMFeature(OSMResource resource) throws Exception {
@@ -327,6 +376,34 @@ public class OSMResourceQualityAssessment {
 		return myNodeList;
 	}
 
+	public static List<OSMResource> getWayComposition(OSMResource way, HashMap<Long, OSMObject> myNodeObjects) {
+		List<OSMResource> myNodeList = new ArrayList<OSMResource>();
+		for (Long nodeId : ((OSMWay) way.getGeom()).getVertices()) {
+			List<OSMResource> nodeHistory = myNodeObjects.get(nodeId).getContributions();
+			OSMResource r = getLatestElement(nodeHistory, nodeId, way.getDate());
+			myNodeList.add(r);
+		}
+		return myNodeList;
+	}
+
+	public static boolean isNodeGeomEdition(OSMResource node, OSMResource former) {
+		return node.isGeomEquals(former);
+	}
+
+	public static boolean isCompositionsEquals(List<OSMResource> nodes, List<OSMResource> formerNodes) {
+		if (nodes.size() != formerNodes.size())
+			return true;
+		for (int i = 0; i < nodes.size(); i++)
+			if (!isNodeGeomEdition(nodes.get(i), formerNodes.get(i)))
+				return true;
+		return false;
+	}
+
+	public static boolean isGeomEdition(OSMResource resource, OSMResource former) {
+		return !resource.isGeomEquals(former);
+
+	}
+
 	public List<OSMResource> getRelationComposition(OSMResource relation) {
 		List<OSMResource> myMemberList = new ArrayList<OSMResource>();
 		List<OsmRelationMember> members = ((OSMRelation) relation.getGeom()).getMembers();
@@ -355,6 +432,19 @@ public class OSMResourceQualityAssessment {
 		// Get the set of OSMObject which primitive is the same as resource
 		HashMap<Long, OSMObject> osmObj = this.myOSMObjects.get(primitive);
 		Iterator<OSMResource> it = osmObj.get(eltID).getContributions().iterator();
+		OSMResource toDate = null;
+		while (it.hasNext()) {
+			OSMResource next = it.next();
+			// Break the loop as soon as node date is after way date
+			if (next.getDate().after(d))
+				break;
+			toDate = next;
+		}
+		return toDate;
+	}
+
+	public static OSMResource getLatestElement(List<OSMResource> history, Long eltID, Date d) {
+		Iterator<OSMResource> it = history.iterator();
 		OSMResource toDate = null;
 		while (it.hasNext()) {
 			OSMResource next = it.next();
@@ -415,5 +505,16 @@ public class OSMResourceQualityAssessment {
 		}
 		return nbAdditions;
 	}
+
+	// public static boolean isTagsEqual(Map<String, String> tags, Map<String,
+	// String> formerTags) {
+	// if (tags.size() != formerTags.size())
+	// return false;
+	// if (tags.keySet().equals(formerTags.keySet()))
+	// for (String k : tags.keySet())
+	// if (formerTags.get(k).equals(tags.get(k)))
+	// return false;
+	// return true;
+	// }
 
 }
