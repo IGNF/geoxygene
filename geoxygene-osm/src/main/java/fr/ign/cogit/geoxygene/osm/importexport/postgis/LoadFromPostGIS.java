@@ -62,7 +62,9 @@ public class LoadFromPostGIS {
 		// loader.relationEvolution(bbox, timespan);
 		// loader.selectRelations(bbox, timespan);
 
-		// loader.getDataFrombbox(bbox, timespan);
+		Double[] bbox = { 2.3322, 48.8489, 2.3634, 48.8627 };
+		String[] timespan = { "2010-01-01", "2010-02-01" };
+		loader.getDataFrombbox(bbox, timespan);
 
 	}
 
@@ -86,16 +88,16 @@ public class LoadFromPostGIS {
 		selectNodes(bbox, timespan);
 
 		// Ways at t1
-		selectWaysInit(bbox, timespan[0].toString());
+		// selectWaysInit(bbox, timespan[0].toString());
 		// Ways between t1 and t2
-		selectWays(bbox, timespan);
+		// selectWays(bbox, timespan);
 
 		// Relations at t1
-		relationSnapshot(bbox, timespan[0].toString());
-		selectRelInit(bbox, timespan[0].toString());
+		// relationSnapshot(bbox, timespan[0].toString());
+		// selectRelInit(bbox, timespan[0].toString());
 		// Relations between t1 and t2
-		relationEvolution(bbox, timespan);
-		selectRelations(bbox, timespan);
+		// relationEvolution(bbox, timespan);
+		// selectRelations(bbox, timespan);
 	}
 
 	public ArrayList<OsmRelationMember> getRelationMemberList(int idrel) throws Exception {
@@ -324,7 +326,7 @@ public class LoadFromPostGIS {
 		try {
 			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
 			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
-			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			System.out.println(dropViewQuery + query);
 			s.executeQuery(dropViewQuery + query);
 			System.out.println("------- Query Executed -------");
@@ -340,9 +342,9 @@ public class LoadFromPostGIS {
 		try {
 			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
 			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
-			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			ResultSet r = s.executeQuery(query);
-			System.out.println("------- Query Executed -------");
+			System.out.println("------- Query Executed : Snapshot Relation -------");
 			writeOSMResource(r, osmDataType);
 			s.close();
 			conn.close();
@@ -519,13 +521,12 @@ public class LoadFromPostGIS {
 		OSMResource myOsmResource = new OSMResource(r.getString("username"),
 				new OSMNode(r.getDouble("lat"), r.getDouble("lon")), r.getLong("id"), r.getInt("changeset"),
 				r.getInt("vnode"), r.getInt("uid"), date);
-		// Visible
+		// Visible : peut être null
 		myOsmResource.setVisible(r.getBoolean("visible"));
 		// Add tags if exist
 		if (!r.getString("hstore_to_json").toString().equalsIgnoreCase("{}")) {
 			try {
 				JSONObject obj = new JSONObject(r.getString("hstore_to_json"));
-				myOsmResource.setNbTags(obj.names().length());
 				for (int i = 0; i < obj.names().length(); i++) {
 					String key = obj.names().getString(i);
 					String value = obj.getString(key);
@@ -632,7 +633,7 @@ public class LoadFromPostGIS {
 		// Creates a new OSMResource
 		OSMResource myOsmResource = new OSMResource(r.getString("username"), myRelation, r.getLong("id"),
 				r.getInt("changeset"), r.getInt("vrel"), r.getInt("uid"), date);
-		// Visible
+		// Visible : peut être null
 		myOsmResource.setVisible(r.getBoolean("visible"));
 		// Add tags if exist
 		if (!r.getString("hstore_to_json").toString().equalsIgnoreCase("{}")) {
@@ -676,7 +677,7 @@ public class LoadFromPostGIS {
 		}
 		OSMResource myOsmResource = new OSMResource(r.getString("username"), new OSMWay(composedof), r.getLong("id"),
 				r.getInt("changeset"), r.getInt("vway"), r.getInt("uid"), date);
-		// Visible
+		// Visible : peut être null
 		myOsmResource.setVisible(r.getBoolean("visible"));
 		// Add tags if exist
 		if (!r.getString("hstore_to_json").toString().equalsIgnoreCase("{}")) {

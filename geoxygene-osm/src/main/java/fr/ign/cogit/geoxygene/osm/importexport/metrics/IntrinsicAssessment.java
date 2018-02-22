@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -49,6 +48,11 @@ public class IntrinsicAssessment {
 
 	}
 
+	/**
+	 * Sort contributions in chronological order
+	 * 
+	 * @param myJavaObjects
+	 */
 	public static void sortJavaObjects(List<OSMResource> myJavaObjects) {
 		Collections.sort(myJavaObjects, new Comparator<OSMResource>() {
 			@Override
@@ -104,8 +108,9 @@ public class IntrinsicAssessment {
 			intrinsicIndicators(currentID, myOSMWayObjects);
 			// List<String> contributorList = contributorList("OSMWay",
 			// currentID, myJavaObjects);
-			int nbContributors = myOSMWayObjects.get(currentID).getContributorList().size();
-			myOSMWayObjects.get(currentID).setNbContributors(nbContributors);
+			// int nbContributors =
+			// myOSMWayObjects.get(currentID).getContributorList().size();
+			// myOSMWayObjects.get(currentID).setNbContributors(nbContributors);
 
 		}
 		System.out.println("Taille de myOSMWayObjects : " + myOSMWayObjects.size());
@@ -129,8 +134,9 @@ public class IntrinsicAssessment {
 			// currentID, myJavaObjects);
 			// Compte le nombre de contributeurs uniques
 			// myOSMNodeObjects.get(currentID).setNbContributors(contributorList.size());
-			int nbContributors = myOSMNodeObjects.get(currentID).getContributorList().size();
-			myOSMNodeObjects.get(currentID).setNbContributors(nbContributors);
+			// int nbContributors =
+			// myOSMNodeObjects.get(currentID).getContributorList().size();
+			// myOSMNodeObjects.get(currentID).setNbContributors(nbContributors);
 		}
 		System.out.println("Taille de myOSMNodeObjects : " + myOSMNodeObjects.size());
 		return myOSMNodeObjects;
@@ -153,10 +159,11 @@ public class IntrinsicAssessment {
 		// myOSMObjects.get(currentID).setContributions(contributionList);
 		List<OSMResource> contributionList = myOSMObjects.get(currentID).getContributions();
 		/** dateMin and dateMax **/
-		Date datemin = contributionList.get(0).getDate();
-		Date datemax = contributionList.get(contributionList.size() - 1).getDate();
-		myOSMObjects.get(currentID).setDateMin(datemin);
-		myOSMObjects.get(currentID).setDateMax(datemax);
+		// Date datemin = contributionList.get(0).getDate();
+		// Date datemax = contributionList.get(contributionList.size() -
+		// 1).getDate();
+		// myOSMObjects.get(currentID).setDateMin(datemin);
+		// myOSMObjects.get(currentID).setDateMax(datemax);
 		/** Tag & geom editions **/
 		int nbStableTags = 0;
 		int nbTagEdition = 0;
@@ -181,9 +188,9 @@ public class IntrinsicAssessment {
 			// nbTagEdition = nbStableTags;
 			// }
 		}
-		myOSMObjects.get(currentID).setNbGeomEdition(nbGeomEdition);
-		myOSMObjects.get(currentID).setNbTagEdition(nbTagEdition);
-		myOSMObjects.get(currentID).setNbStableTags(nbStableTags);
+		// myOSMObjects.get(currentID).setNbGeomEdition(nbGeomEdition);
+		// myOSMObjects.get(currentID).setNbTagEdition(nbTagEdition);
+		// myOSMObjects.get(currentID).setNbStableTags(nbStableTags);
 	}
 
 	public static int[] nodeEditionDetails(List<OSMResource> contributionList, int nbStableTags, int nbTagEdition,
@@ -317,14 +324,6 @@ public class IntrinsicAssessment {
 	 * @return myOSMObjects
 	 **/
 	public static HashMap<Long, OSMObject> osmObjectsInit(Set<OSMResource> myJavaObjects, String OsmResourceType) {
-		// Sorting OSMResource list in the chronological order
-		// Collections.sort(myJavaObjects, new Comparator<OSMResource>() {
-		// @Override
-		// public int compare(OSMResource r1, OSMResource r2) {
-		// return r1.getDate().compareTo(r2.getDate());
-		// }
-		// });
-		// sortJavaObjects(myJavaObjects);
 		HashMap<Long, OSMObject> myOSMObjects = new HashMap<Long, OSMObject>();
 		/** Parsing myJavaObjects to create indicators inside of OSMObjects **/
 		Iterator<OSMResource> it = myJavaObjects.iterator();
@@ -334,25 +333,30 @@ public class IntrinsicAssessment {
 				if (!myOSMObjects.containsKey(contribution.getId())) {
 					// If OSMObject doesn't exist yet, create a new object
 					OSMObject objet = new OSMObject(contribution.getId());
-					objet.nbVersions = 1;
-					objet.addContributor((long) contribution.getUid());
+					// objet.nbVersions = 1;
+					// objet.addContributor((long) contribution.getUid());
 					myOSMObjects.put(contribution.getId(), objet);
 					objet.addcontribution(contribution);
 				} else {
 					// If OSMObject already exists : increments the number of
 					// version and stores the contribution
-					myOSMObjects.get(contribution.getId()).nbVersions += 1;
+					// myOSMObjects.get(contribution.getId()).nbVersions += 1;
 					myOSMObjects.get(contribution.getId()).addcontribution(contribution);
 					// Refresh the list of unique contributors of the OSMobject
-					if (!myOSMObjects.get(contribution.getId()).getContributorList().contains(contribution.getUid()))
-						myOSMObjects.get(contribution.getId()).addContributor((long) contribution.getUid());
+					// if
+					// (!myOSMObjects.get(contribution.getId()).getContributorList().contains(contribution.getUid()))
+					// myOSMObjects.get(contribution.getId()).addContributor((long)
+					// contribution.getUid());
 				}
-				if (contribution.getGeom().getClass().getSimpleName().equals("OSMWay")) {
-					// If the object is a way, gets its node composition
-					myOSMObjects.get(contribution.getId()).wayComposition = new ArrayList<List<Long>>();
-					OSMWay primitive = (OSMWay) contribution.getGeom();
-					myOSMObjects.get(contribution.getId()).wayComposition.add(primitive.getVertices());
-				}
+				// if
+				// (contribution.getGeom().getClass().getSimpleName().equals("OSMWay"))
+				// {
+				// // If the object is a way, gets its node composition
+				// myOSMObjects.get(contribution.getId()).wayComposition = new
+				// ArrayList<List<Long>>();
+				// OSMWay primitive = (OSMWay) contribution.getGeom();
+				// myOSMObjects.get(contribution.getId()).wayComposition.add(primitive.getVertices());
+				// }
 			}
 		}
 		return myOSMObjects;
@@ -375,13 +379,13 @@ public class IntrinsicAssessment {
 		for (OSMObject myObject : myOSMObjects.values()) {
 			line = new String[8];
 			line[0] = String.valueOf(myObject.getOsmId());
-			line[1] = String.valueOf(myObject.getNbVersions());
-			line[2] = String.valueOf(myObject.getNbContributors());
-			line[3] = String.valueOf(myObject.getNbGeomEdition());
-			line[4] = String.valueOf(myObject.getNbTagEdition());
-			line[5] = String.valueOf(myObject.getNbStableTags());
-			line[6] = String.valueOf(myObject.getDateMin());
-			line[7] = String.valueOf(myObject.getDateMax());
+			// line[1] = String.valueOf(myObject.getNbVersions());
+			// line[2] = String.valueOf(myObject.getNbContributors());
+			// line[3] = String.valueOf(myObject.getNbGeomEdition());
+			// line[4] = String.valueOf(myObject.getNbTagEdition());
+			// line[5] = String.valueOf(myObject.getNbStableTags());
+			// line[6] = String.valueOf(myObject.getDateMin());
+			// line[7] = String.valueOf(myObject.getDateMax());
 			writer.writeNext(line);
 		}
 		writer.close();
@@ -422,7 +426,7 @@ public class IntrinsicAssessment {
 				line[4] = resource.getContributeur();
 				line[5] = resource.getDate().toString();
 				line[6] = resource.getSource();
-				line[7] = Integer.toString(resource.getNbTags());
+				// line[7] = Integer.toString(resource.getNbTags());
 				line[8] = Double.toString(node.getLongitude());
 				line[9] = Double.toString(node.getLatitude());
 				writer.writeNext(line);
@@ -460,7 +464,7 @@ public class IntrinsicAssessment {
 			line[4] = resource.getContributeur();
 			line[5] = resource.getDate().toString();
 			line[6] = resource.getSource();
-			line[7] = Integer.toString(resource.getNbTags());
+			// line[7] = Integer.toString(resource.getNbTags());
 			line[8] = resource.getGeom().getClass().getSimpleName();
 			writer.writeNext(line);
 
@@ -495,7 +499,7 @@ public class IntrinsicAssessment {
 				line[4] = resource.getContributeur();
 				line[5] = resource.getDate().toString();
 				line[6] = resource.getSource();
-				line[7] = Integer.toString(resource.getNbTags());
+				// line[7] = Integer.toString(resource.getNbTags());
 				line[8] = resource.getGeom().getClass().getSimpleName();
 				writer.writeNext(line);
 			}
@@ -538,7 +542,7 @@ public class IntrinsicAssessment {
 				line[4] = resource.getContributeur();
 				line[5] = resource.getDate().toString();
 				line[6] = resource.getSource();
-				line[7] = Integer.toString(resource.getNbTags());
+				// line[7] = Integer.toString(resource.getNbTags());
 				line[8] = Integer.toString(way.getVertices().size());
 				writer.writeNext(line);
 			}

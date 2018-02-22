@@ -28,7 +28,8 @@ public class GeoxPbfReader {
 	public static GeoxSink mySink = new GeoxSink();
 
 	public static void main(String[] args) {
-		pbf2postgis("data/iledelacite_osmconvert.osm.pbf");
+		// pbf2postgis("data/iledelacite_osmconvert.osm.pbf");
+		pbf2postgis("D:/Users/qttruong/data/nepal_2018.osm.pbf");
 
 	}
 
@@ -125,46 +126,76 @@ public class GeoxPbfReader {
 	 * @param dbPwd
 	 * @param type:
 	 *            table name ("node", "way" or "relation")
+	 * @throws SQLException
 	 * @throws Exception
 	 */
 	public static void setVisibleAttr(String host, String port, String dbName, String dbUser, String dbPwd, String type)
-			throws Exception {
+			throws SQLException {
 		// Connnexion to database
-		java.sql.Connection conn;
+		java.sql.Connection conn = null;
+		Statement s = null;
 		String url = "jdbc:postgresql://" + host + ":" + port + "/" + dbName;
-		conn = DriverManager.getConnection(url, dbUser, dbPwd);
-		Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-
-		// Select all nodes from database
-		String query = "SELECT DISTINCT ON (id) id FROM " + type + " WHERE visible IS NULL;";
-		ResultSet r = s.executeQuery(query);
 		String urlAPI;
+		Element elt = null;
+		String idPK = "";
+		try {
+			conn = DriverManager.getConnection(url, dbUser, dbPwd);
+			s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
-		while (r.next()) {
-			urlAPI = "http://www.openstreetmap.org/api/0.6/" + type.toLowerCase() + "/" + r.getString("id")
-					+ "/history";
-			Document xml = SQLDBPreAnonymization.getDataFromAPI(urlAPI);
+			// Select all nodes from database
+			String query = "SELECT DISTINCT ON (id) id FROM " + type + " WHERE visible IS NULL;";
+			// Test sur les ways qui ont déjà été update
+			query = "SELECT DISTINCT ON (id) id FROM " + type + ";";
+			ResultSet r = s.executeQuery(query);
 
-			Node osm = xml.getFirstChild();
-			NodeList list = osm.getChildNodes();
-			int nbnode = list.getLength();
-			for (int i = 0; i < nbnode; i++) {
-				if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
-					final Element elt = (Element) list.item(i);
-					// System.out.println("id : " + elt.getAttribute("id"));
-					// System.out.println("version : " +
-					// elt.getAttribute("version"));
-					// System.out.println("visible : " +
-					// elt.getAttribute("visible"));
+			while (r.next()) {
+				urlAPI = "http://www.openstreetmap.org/api/0.6/" + type.toLowerCase() + "/" + r.getString("id")
+						+ "/history";
+				System.out.println(urlAPI);
+				Document xml = SQLDBPreAnonymization.getDataFromAPI(urlAPI);
 
-					// PK of the table (idnode, idway or idrel)
-					String idPK = elt.getAttribute("id") + elt.getAttribute("version");
-					updateVisibleColumn("localhost", "5432", "paris", "postgres", "postgres", type, idPK,
-							elt.getAttribute("visible"));
+				Node osm = xml.getFirstChild();
+				NodeList list = osm.getChildNodes();
+				int nbnode = list.getLength();
+
+				for (int i = 0; i < nbnode; i++) {
+					if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
+						elt = (Element) list.item(i);
+
+						// System.out.println("id : " + elt.getAttribute("id"));
+						// System.out.println("version : " +
+						// elt.getAttribute("version"));
+						// System.out.println("visible : " +
+						// elt.getAttribute("visible"));
+						// PK of the table (idnode, idway or idrel)
+						idPK = elt.getAttribute("id") + elt.getAttribute("version");
+						// System.out.println("update visible of ID : " + idPK);
+						if (elt.getAttribute("visible").equals("false"))
+							System.out.println("version " + elt.getAttribute("version") + " is false");
+						// updateVisibleColumn("localhost", "5432", "paris",
+						// "postgres", "postgres", type, idPK,
+						// elt.getAttribute("visible"));
+					}
 				}
 			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			// e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+
+			// if (idPK.equals("10853444")) {
+			// System.out.println("update visible of ID : " + idPK);
+			// System.out.println("id : " + elt.getAttribute("id"));
+			// System.out.println("version : " + elt.getAttribute("version"));
+			// System.out.println("visible : " + elt.getAttribute("visible"));
+			// e.printStackTrace();
+			// }
+		} finally {
+			s.close();
+			conn.close();
 		}
-		conn.close();
 	}
 
 	/*****
@@ -186,7 +217,8 @@ public class GeoxPbfReader {
 	 */
 	public static void updateVisibleColumn(String host, String port, String dbName, String dbUser, String dbPwd,
 			String type, String idPK, String visible) throws Exception {
-		java.sql.Connection conn;
+		java.sql.Connection conn = null;
+		Statement s = null;
 		String query = "UPDATE " + type.toLowerCase() + " SET visible = " + visible.toUpperCase() + " WHERE ";
 		switch (type.toLowerCase()) {
 		case "node":
@@ -200,17 +232,23 @@ public class GeoxPbfReader {
 			break;
 		}
 		query += idPK + ";";
+
 		try {
 			String url = "jdbc:postgresql://" + host + ":" + port + "/" + dbName;
 			conn = DriverManager.getConnection(url, dbUser, dbPwd);
-			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			s.executeQuery(query);
-			// System.out.println("------- Query Executed : " + query);
-			s.close();
-			conn.close();
+
 		} catch (Exception e) {
 			// throw e;
+			// System.out.println("------- Query Executed : " + query);
+			// e.printStackTrace();
+
+		} finally {
+			s.close();
+			conn.close();
 		}
 
 	}
+
 }
