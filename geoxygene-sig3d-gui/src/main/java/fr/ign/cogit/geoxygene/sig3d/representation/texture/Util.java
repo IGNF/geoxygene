@@ -213,7 +213,7 @@ public class Util {
 
 				Vecteur vectProject = axe.prodVectoriel(vect);
 
-				for (int j = 0; j < n; j++) {
+				for (int j = 0; j < tabpoints.length; j++) {
 					// On complète le tableau de points
 					IDirectPosition dp = lPoints.get(j);
 					Point3f point = new Point3f((float) dp.getX(), (float) dp.getY(), (float) dp.getZ());
