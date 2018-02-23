@@ -58,7 +58,7 @@ public class PostgisManager {
 		}
 		System.out.println("-------------------------");
 
-		IFeatureCollection<IFeature> featC = loadGeometricTable( "localhost", "5432", "Lyon_Database",  "roads",
+		IFeatureCollection<IFeature> featC = loadGeometricTable( "localhost", "5432", "Lyon_Database","schematest" , "BiBi",
 				"postgres", "postgres");
 
 		System.out.println("Number of features : " + featC.size());
@@ -296,7 +296,7 @@ public class PostgisManager {
 
 			int indColonGeom = -1;
 			int compt = 0;
-			String sql = "SELECT * FROM " + schema + "." + table;
+			String sql = "SELECT * FROM \"" + schema + "\".\"" + table+"\"";
 			//System.out.println(sql);
 			PostgisManager.logger.debug("Récupération données : " + sql);
 			// //Schéma contruit on instancie les features
@@ -356,7 +356,7 @@ public class PostgisManager {
 			fType.setSchema(featureSchema);
 			featureSchema.setAttLookup(attLookup);
 
-			String requestSelect = "SELECT " + OP_ASEWKT + "(" + nomColonneGeom + ") as asewkt, * FROM " + schema + "."+ table;
+			String requestSelect = "SELECT " + OP_ASEWKT + "(" + nomColonneGeom + ") as asewkt, * FROM \"" + schema + "\".\""+ table+"\"";
 
 			if (!whereClause.isEmpty()) {
 
@@ -545,7 +545,7 @@ public class PostgisManager {
 			fType.setSchema(schemaFeature);
 			schemaFeature.setAttLookup(attLookup);
 
-			String requestSelect = "SELECT * FROM " + schema + "." + table;
+			String requestSelect = "SELECT * FROM \"" + schema + "\".\"" + table+"\"";
 			if (!(whereClause.equals(""))) {
 
 				requestSelect = requestSelect + " WHERE " + whereClause;
@@ -696,7 +696,7 @@ public class PostgisManager {
 				int crs = featTemp.getGeom().getCRS();
 				columns = columns + ")";
 
-				String sql_insert = "insert into " + schema + "." + table + columns + " VALUES(" + OP_GEOM_FROM_TEXT
+				String sql_insert = "insert into \"" + schema + "\".\"" + table +"\""+ columns + " VALUES(" + OP_GEOM_FROM_TEXT
 						+ "('" + geom + "', " + crs+ " )";
 
 				if (lAtt != null) {
@@ -1085,7 +1085,7 @@ public class PostgisManager {
 				if (erase) {
 
 					// C'est le cas on supprime la table
-					String sqlSupp = "drop table " + schema + "."+ table + ";";
+					String sqlSupp = "drop table \"" + schema + "\".\""+ table + "\";";
 					PostgisManager.logger.debug(Messages.getString("Sauvegarde") + " : " + sqlSupp);
 					s.execute(sqlSupp);
 					// On supprime la colonne géométrique
@@ -1104,7 +1104,7 @@ public class PostgisManager {
 			}
 			// On sait qu'il n'y a plus de table de type nom table
 			// On crée la table
-			String sqlCreat = "create table " + schema+"."+table + "();";
+			String sqlCreat = "create table \"" + schema+"\".\""+table + "\"();";
 			System.out.println(sqlCreat);
 			PostgisManager.logger.debug(Messages.getString("Sauvegarde.CreateTable") + " : " + sqlCreat);
 			s.execute(sqlCreat);
@@ -1164,7 +1164,7 @@ public class PostgisManager {
 						type = PostgisManager.SQL_UNKNOWN;
 					}
 
-					String sql = "ALTER table " +schema +"." + table + " add " + nom_col + " " + type;
+					String sql = "ALTER table \"" +schema +"\".\"" + table + "\" add " + nom_col + " " + type;
 					PostgisManager.logger.info(Messages.getString("Sauvegarde.AddColum") + " : " + sql);
 					System.out.println(sql);
 					s.execute(sql);
