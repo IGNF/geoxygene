@@ -43,6 +43,8 @@ public class PostGISStoringWindow extends JDialog implements ActionListener {
   JTextField jTFUserName;
   JTextField jTFMDP;
   JTextField jTFLayerName;
+  JTextField jtfSchema;
+  
   JCheckBox jcbErase;
 
   JButton browse = new JButton();
@@ -55,6 +57,11 @@ public class PostGISStoringWindow extends JDialog implements ActionListener {
 
   FT_FeatureCollection<IFeature> featColl;
 
+  
+  
+  public static void main(String[] args){
+	  (new PostGISStoringWindow(null)).setVisible(true);
+  }
   // Les controles
 
   /**
@@ -104,7 +111,7 @@ public class PostGISStoringWindow extends JDialog implements ActionListener {
 
     // Formulaire du type
     JLabel labelBDD = new JLabel();
-    labelBDD.setBounds(10, 90, 100, 20);
+    labelBDD.setBounds(10, 90, 170, 20);
     labelBDD.setText("Database"); //$NON-NLS-1$
     this.add(labelBDD);
 
@@ -113,61 +120,73 @@ public class PostGISStoringWindow extends JDialog implements ActionListener {
     this.jTFBDD.setVisible(true);
     this.jTFBDD.addActionListener(this);
     this.add(this.jTFBDD);
+    
+    JLabel labelSchema = new JLabel();
+    labelSchema.setBounds(10, 130, 100, 20);
+    labelSchema.setText("Schema"); //$NON-NLS-1$
+    this.add(labelSchema);
+
+    this.jtfSchema = new JTextField("public");
+    this.jtfSchema.setBounds(160, 130, 200, 20);
+    this.jtfSchema.setVisible(true);
+    this.jtfSchema.addActionListener(this);
+    this.add(this.jtfSchema);
+
 
     // Formulaire du type
     JLabel labelNomUser = new JLabel();
-    labelNomUser.setBounds(10, 130, 100, 20);
+    labelNomUser.setBounds(10, 170, 100, 20);
     labelNomUser.setText("User"); //$NON-NLS-1$
     this.add(labelNomUser);
 
     this.jTFUserName = new JTextField("");
-    this.jTFUserName.setBounds(160, 130, 200, 20);
+    this.jTFUserName.setBounds(160, 170, 200, 20);
     this.jTFUserName.setVisible(true);
     this.jTFUserName.addActionListener(this);
     this.add(this.jTFUserName);
 
     // Formulaire du type
     JLabel labelMDP = new JLabel();
-    labelMDP.setBounds(10, 170, 100, 20);
+    labelMDP.setBounds(10, 210, 100, 20);
     labelMDP.setText("Password"); //$NON-NLS-1$
     this.add(labelMDP);
 
     this.jTFMDP = new JPasswordField("");
-    this.jTFMDP.setBounds(160, 170, 200, 20);
+    this.jTFMDP.setBounds(160, 210, 200, 20);
     this.jTFMDP.setVisible(true);
     this.jTFMDP.addActionListener(this);
     this.add(this.jTFMDP);
 
     // Formulaire du type
     JLabel labelNCouche = new JLabel();
-    labelNCouche.setBounds(10, 210, 100, 20);
+    labelNCouche.setBounds(10, 250, 100, 20);
     labelNCouche.setText("Table"); //$NON-NLS-1$
     this.add(labelNCouche);
 
     this.jTFLayerName = new JTextField("");
-    this.jTFLayerName.setBounds(160, 210, 200, 20);
+    this.jTFLayerName.setBounds(160, 250, 200, 20);
     this.jTFLayerName.setVisible(true);
     this.jTFLayerName.addActionListener(this);
     this.add(this.jTFLayerName);
 
     this.jcbErase = new JCheckBox(
         Messages.getString("FenetreSauvegerde.SuppTable"));
-    this.jcbErase.setBounds(10, 250, 200, 20);
+    this.jcbErase.setBounds(10, 290, 200, 20);
     this.jcbErase.setVisible(true);
     this.add(this.jcbErase);
 
     // Boutons de validations
-    this.ok.setBounds(50, 290, 100, 20);
+    this.ok.setBounds(50, 330, 100, 20);
     this.ok.setText(Messages.getString("3DGIS.OK")); //$NON-NLS-1$
     this.ok.addActionListener(this);
     this.add(this.ok);
 
-    this.cancel.setBounds(150, 290, 100, 20);
+    this.cancel.setBounds(150, 330, 100, 20);
     this.cancel.setText(Messages.getString("3DGIS.NO")); //$NON-NLS-1$
     this.cancel.addActionListener(this);
     this.add(this.cancel);
 
-    this.test.setBounds(250, 290, 100, 20);
+    this.test.setBounds(250, 330, 100, 20);
     this.test.setText("Test"); //$NON-NLS-1$
     this.test.addActionListener(this);
     this.add(this.test);
@@ -192,6 +211,7 @@ public class PostGISStoringWindow extends JDialog implements ActionListener {
     String database = this.jTFBDD.getText();
     String port = this.jTFPort.getText();
     String user = this.jTFUserName.getText();
+    String schema = this.jtfSchema.getText();
     String pw = this.jTFMDP.getText();
     String table = this.jTFLayerName.getText();
 
@@ -209,8 +229,8 @@ public class PostGISStoringWindow extends JDialog implements ActionListener {
 
       try {
 
-        PostgisManager.saveGeometricTable(host, port, database, user, pw,
-            table, this.featColl, this.jcbErase.isSelected());
+        PostgisManager.saveGeometricTable(host, port, database, schema, table,  user, pw,
+            this.featColl, this.jcbErase.isSelected());
       } catch (Exception e) {
         // Erreur de connexion
         JOptionPane
@@ -234,7 +254,7 @@ public class PostGISStoringWindow extends JDialog implements ActionListener {
 
     if (source.equals(this.test)) {
       try {
-        PostgisManager.tableWithGeom(host, port, database, user, pw);
+        PostgisManager.tableWithGeom(host, port, database, schema, user, pw);
 
         // Avec couche géométrique
         JOptionPane

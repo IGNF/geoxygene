@@ -15,6 +15,12 @@ import fr.ign.cogit.geoxygene.sig3d.calculation.parcelDecomposition.OBBBlockDeco
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 
 public class TestOBBBlockDecomposition {
+	
+	
+	
+	public static void main(String[] args){
+		(new TestOBBBlockDecomposition()).test1();
+	}
 
 	@Test
 	public void test1() {
