@@ -1010,7 +1010,7 @@ public class PostgisManager {
 				Statement s = conn.createStatement();
 
 				s.execute(sqlRequest);
-				System.out.println(sqlRequest);
+				//System.out.println(sqlRequest);
 
 				s.close();
 				conn.close();
