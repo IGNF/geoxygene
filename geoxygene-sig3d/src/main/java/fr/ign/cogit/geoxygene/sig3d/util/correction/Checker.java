@@ -14,7 +14,6 @@ import fr.ign.cogit.geoxygene.sig3d.geometry.topology.Triangle;
 import fr.ign.cogit.geoxygene.sig3d.geometry.topology.Vertex;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Triangle;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
 
 /**
  * 

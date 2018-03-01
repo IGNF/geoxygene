@@ -380,8 +380,21 @@ public class PostgisManager {
 				for (int i = 1; i <= nbAttribut + shiftIni; i++) {
 					if (i == 1) {
 						// D'après la requête la géométrie est en tête
-						deF.setGeom(WktGeOxygene.makeGeOxygene(r2.getString(1)));
+						
+						String geomAsWKT = r2.getString(1);
+						
+						if(geomAsWKT == null || geomAsWKT.isEmpty()){
+							
+							deF.setGeom(null);
+							
+						}else{
+							
+							IGeometry geom = WktGeOxygene.makeGeOxygene(geomAsWKT);
+							deF.setGeom(geom);
 
+						}
+						
+					
 						// le shift sert à faire la correspondance entre l'index
 						// de l'attribut et l'index du résultat de la requete
 

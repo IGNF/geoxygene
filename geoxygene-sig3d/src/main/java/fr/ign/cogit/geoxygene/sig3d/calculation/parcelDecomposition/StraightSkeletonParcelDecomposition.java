@@ -806,10 +806,13 @@ public class StraightSkeletonParcelDecomposition {
 
 		logger.info("------Fixing diagonal edges...-----");
 		// 3 group of edges : interior/exterior/side
+
+		/*
 		List<Strip> listOfLists = fixingDiagonal(stripFace, cs.getExteriorArcs());
 
 		featCollOut.add(new DefaultFeature());
-		/*
+		
+		
 		if (DEBUG) {
 			logger.info("------Saving for debug ...-----");
 			IFeatureCollection<IFeature> featDebug = new FT_FeatureCollection<>();
@@ -1090,7 +1093,7 @@ public class StraightSkeletonParcelDecomposition {
 	 * @param externalSkeltonArcs
 	 * @return
 	 */
-	private static List<Strip> fixingDiagonal(List<List<Face>> stripFace, List<Arc> externalSkeltonArcs) {
+	protected static List<Strip> fixingDiagonal(List<List<Face>> stripFace, List<Arc> externalSkeltonArcs) {
 
 		List<List<ILineString>> outArcs = new ArrayList<List<ILineString>>();
 

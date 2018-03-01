@@ -17,6 +17,7 @@ import javax.swing.ScrollPaneConstants;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.sig3d.Messages;
 import fr.ign.cogit.geoxygene.sig3d.gui.InterfaceMap3D;
 import fr.ign.cogit.geoxygene.sig3d.io.vector.PostgisManager;
@@ -197,8 +198,32 @@ public class PostGISLayerChoiceWindow extends JDialog implements ActionListener 
 				}
 				// On effectue le même traitement que les shapefiles suivant la
 				// dimension
-				int dimension = featColl.get(0).getGeom().coordinateDimension();
+				
+				
+				
+				
+				int dimension = -1;
+				
+				for(IFeature feat: featColl){
+					IGeometry geom = feat.getGeom();
+					if(geom == null ||geom.isEmpty()){
+						continue;
+					}
+					dimension = geom.coordinateDimension();
+				}
+				
 
+				if (dimension == -1) {
+					JOptionPane.showMessageDialog(null,
+							Messages.getString("FenetreChargement.Error") + nomActu + "\n" //$NON-NLS-1$
+									+ "ALL THE GEOMETRIES ARE NULL",
+							Messages.getString("FenetreChargement.PostGISTitle"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+					continue;
+				}
+				
+				
+				
+				
 				if (dimension == 2) {
 
 					try {

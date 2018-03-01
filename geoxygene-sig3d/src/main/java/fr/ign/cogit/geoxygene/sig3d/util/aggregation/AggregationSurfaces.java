@@ -170,7 +170,7 @@ public class AggregationSurfaces {
     return featCollOutCollection;
 
   }
-
+  @SuppressWarnings("unchecked")
   public static boolean isIntersected(IGeometry geom, IFeature feat) {
 
     IGeometry geom2 = feat.getGeom();
@@ -194,7 +194,8 @@ public class AggregationSurfaces {
     return false;
   }
 
-  public static IMultiSurface<IOrientableSurface> tryFusion(IGeometry geom1,
+  @SuppressWarnings("unchecked")
+public static IMultiSurface<IOrientableSurface> tryFusion(IGeometry geom1,
       IGeometry geom2) {
     IMultiSurface<IOrientableSurface> mS = new GM_MultiSurface<IOrientableSurface>();
 
