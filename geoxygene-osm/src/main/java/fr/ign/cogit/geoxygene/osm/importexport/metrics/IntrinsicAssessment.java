@@ -485,7 +485,7 @@ public class IntrinsicAssessment {
 		line[4] = "contributeur";
 		line[5] = "date";
 		line[6] = "source";
-		line[7] = "nbTags";
+		// line[7] = "nbTags";
 		line[8] = "OSMResource.getGeom()";
 
 		writer.writeNext(line);

@@ -26,6 +26,7 @@ import org.w3c.dom.NodeList;
 
 import fr.ign.cogit.geoxygene.osm.anonymization.db.SQLDBPreAnonymization;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMResource;
+import fr.ign.cogit.geoxygene.osm.importexport.pbf.GeoxSink;
 
 public class ChangesetRetriever {
 	private String host;
@@ -59,15 +60,15 @@ public class ChangesetRetriever {
 	public void createChangesetTable() throws Exception {
 		try {
 			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			s.executeQuery("DROP TABLE IF EXISTS changeset;");
-			s.executeQuery("CREATE TABLE IF NOT EXISTS changeset ( " + "changesetid BIGINT PRIMARY KEY," + "uid BIGINT,"
-					+ "username VARCHAR," + "created_at TIMESTAMP WITH TIME ZONE,"
-					+ "closed_at TIMESTAMP WITH TIME ZONE," + "lon_min numeric," + "lat_min numeric,"
-					+ "lon_max numeric," + "lat_max numeric," + "tags hstore," + "comments_count INTEGER" + ")");
+			s.executeQuery("DROP TABLE IF EXISTS changeset;" + "CREATE TABLE IF NOT EXISTS changeset ( "
+					+ "changesetid BIGINT PRIMARY KEY," + "uid BIGINT," + "username VARCHAR,"
+					+ "created_at TIMESTAMP WITH TIME ZONE," + "closed_at TIMESTAMP WITH TIME ZONE,"
+					+ "lon_min numeric," + "lat_min numeric," + "lon_max numeric," + "lat_max numeric," + "tags hstore,"
+					+ "comments_count INTEGER" + ")");
 			s.close();
 			conn.close();
 		} catch (Exception e) {
-			throw e;
+			// throw e;
 		}
 	}
 
@@ -76,38 +77,87 @@ public class ChangesetRetriever {
 	 * related to the input changeset ID. The information is fetched from OSM
 	 * API.
 	 * 
-	 * @param changesetID
-	 *            ID of the changeset to retrieve.
+	 * @param values
+	 *            rows that are to be inserted into the database
 	 * @author QTTruong
 	 * @throws Exception
 	 */
-	public void insertIntoChangeset(Long changesetID) throws Exception {
+	public void insertIntoChangeset(Set<String> values) throws Exception {
 		try {
 
 			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			System.out.println(changesetID);
+			// System.out.println(changesetID);
 			StringBuffer insertQuery = new StringBuffer();
 			insertQuery.append(
-					"INSERT INTO changeset (changesetid, uid, username, created_at, closed_at, lon_min, lat_min, lon_max, lat_max, tags, comments_count) VALUES (");
+					"INSERT INTO changeset (changesetid, uid, username, created_at, closed_at, lon_min, lat_min, lon_max, lat_max, tags, comments_count) VALUES ");
+			Iterator<String> it = values.iterator();
+			while (it.hasNext()) {
+				insertQuery.append(it.next() + ",");
+			}
+			insertQuery.deleteCharAt(insertQuery.length() - 1);
+			// évite les erreurs de clé dupliquée
+			insertQuery.append(" ON CONFLICT (changesetid) DO NOTHING;");
+			System.out.println(insertQuery.toString());
+			s.executeQuery(insertQuery.toString());
+			s.close();
+			conn.close();
+		} catch (Exception e) {
+			// throw e;
+
+		}
+	}
+
+	public void insertOneRow(String value) throws Exception {
+		try {
+
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			// System.out.println(changesetID);
+			StringBuffer insertQuery = new StringBuffer();
+			insertQuery.append(
+					"INSERT INTO changeset (changesetid, uid, username, created_at, closed_at, lon_min, lat_min, lon_max, lat_max, tags, comments_count) VALUES ");
+			insertQuery.append(value);
+			insertQuery.append(";");
+			// System.out.println(insertQuery.toString());
+			s.executeQuery(insertQuery.toString());
+			s.close();
+			conn.close();
+		} catch (Exception e) {
+			throw e;
+
+		}
+
+	}
+
+	public String getChangesetValues(Long changesetID) {
+		StringBuffer value = new StringBuffer();
+		try {
 			String urlAPI = "http://api.openstreetmap.org/api/0.6/changeset/" + changesetID
 					+ "?include_discussion=true";
 			Document xml = SQLDBPreAnonymization.getDataFromAPI(urlAPI);
 			Node osm = xml.getFirstChild();
 			Element changeset = (Element) osm.getChildNodes().item(1);
-			insertQuery.append(changesetID + ",");
-			insertQuery.append(changeset.getAttribute("uid") + ",");
-			insertQuery.append("\'" + changeset.getAttribute("user") + "\',");
+
+			value.append("(" + changesetID + ",");
+			value.append(changeset.getAttribute("uid") + ",");
+			value.append("\'" + GeoxSink.escapeSQL(changeset.getAttribute("user")) + "\',");
 			// Dates
-			System.out.println("\'" + changeset.getAttribute("created_at") + "\',");
-			System.out.println("\'" + changeset.getAttribute("closed_at") + "\',");
+			// System.out.println("\'" + changeset.getAttribute("created_at") +
+			// "\',");
+			// System.out.println("\'" + changeset.getAttribute("closed_at") +
+			// "\',");
 			// System.out.println("\'" +
-			// changeset.getAttribute("comments_count") + "\',");
-			insertQuery.append("\'" + changeset.getAttribute("created_at") + "\',");
-			insertQuery.append("\'" + changeset.getAttribute("closed_at") + "\',");
-			insertQuery.append(changeset.getAttribute("min_lon") + ",");
-			insertQuery.append(changeset.getAttribute("min_lat") + ",");
-			insertQuery.append(changeset.getAttribute("max_lon") + ",");
-			insertQuery.append(changeset.getAttribute("max_lat") + ",");
+			// changeset.getAttribute("comments_count") +
+			// "\',");
+			value.append("\'" + changeset.getAttribute("created_at") + "\',");
+			value.append("\'" + changeset.getAttribute("closed_at") + "\',");
+			String min_lon = (changeset.getAttribute("min_lon").isEmpty() ? "NULL" : changeset.getAttribute("min_lon"));
+			String min_lat = (changeset.getAttribute("min_lat").isEmpty() ? "NULL" : changeset.getAttribute("min_lat"));
+			String max_lon = (changeset.getAttribute("max_lon").isEmpty() ? "NULL" : changeset.getAttribute("max_lon"));
+			String max_lat = (changeset.getAttribute("max_lat").isEmpty() ? "NULL" : changeset.getAttribute("max_lat"));
+			value.append(min_lon + ",");
+			value.append(min_lat + ",");
+			value.append(max_lon + ",");
+			value.append(max_lat + ",");
 			// Tags & Discussion
 			NodeList tagsAndDiscussion = changeset.getChildNodes();
 			StringBuffer hstore = new StringBuffer();
@@ -115,9 +165,10 @@ public class ChangesetRetriever {
 				if (tagsAndDiscussion.item(i).getNodeType() == Node.ELEMENT_NODE) {
 					Element child = (Element) tagsAndDiscussion.item(i);
 					if (child.getNodeName().equals("tag")) {
-						System.out.println("k " + child.getAttribute("k"));
-						System.out.println("v " + child.getAttribute("v"));
-						hstore.append("\"" + child.getAttribute("k") + "\"=>\"" + child.getAttribute("v") + "\",");
+						// System.out.println("k " + child.getAttribute("k"));
+						// System.out.println("v " + child.getAttribute("v"));
+						hstore.append("\"" + GeoxSink.escapeSQL(child.getAttribute("k")) + "\"=>\""
+								+ GeoxSink.escapeSQL(child.getAttribute("v")) + "\",");
 					}
 
 				}
@@ -125,15 +176,15 @@ public class ChangesetRetriever {
 			if (hstore.length() > 0)
 				hstore.deleteCharAt(hstore.length() - 1); // Deletes last hstore
 															// comma
-			insertQuery.append("\'" + hstore + "\',");
-			System.out.println(changeset.getAttribute("comments_count"));
-			insertQuery.append(changeset.getAttribute("comments_count") + ");");
-			System.out.println(insertQuery.toString());
-			s.executeQuery(insertQuery.toString());
-		} catch (Exception e) {
-			// throw e;
+			value.append("\'" + hstore + "\',");
+			// System.out.println(changeset.getAttribute("comments_count"));
+			value.append(changeset.getAttribute("comments_count") + ")");
+			return value.toString();
+		} catch (NullPointerException e) {
+			System.out.println("See changeset ID : " + changesetID);
 
 		}
+		return value.toString();
 	}
 
 	/**
@@ -171,20 +222,34 @@ public class ChangesetRetriever {
 	public void updateChangeSetTable(String tablename) {
 		try {
 			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			ResultSet r = s.executeQuery("SELECT DISTINCT changeset FROM " + tablename);
+			// ResultSet r = s.executeQuery("SELECT DISTINCT changeset FROM " +
+			// tablename);
+
+			ResultSet r = s.executeQuery("SELECT DISTINCT a.changeset " + "FROM " + tablename
+					+ " a WHERE  a.changeset NOT IN ( " + "SELECT DISTINCT changesetid FROM   changeset);");
 			HashSet<Long> changesetID = new HashSet<Long>();
+			Set<String> values = new HashSet<String>();
 			while (r.next()) {
 				changesetID.add(r.getLong(1));
 			}
+			System.out.println("Nombre de changesets uniques : " + changesetID.size());
 			Iterator<Long> it = changesetID.iterator();
 			while (r.next()) {
 				// System.out.println("Changeset n°" + r.getLong(1));
 				changesetID.add(r.getLong(1));
 			}
 			while (it.hasNext()) {
-				// System.out.println(insertQueryToExecute(it.next()));
-				insertIntoChangeset(it.next());
+				values.add(getChangesetValues(it.next()));
+				// Au bout de 100 valeurs on met à jour la base de données
+				if (values.size() >= 100) {
+					insertIntoChangeset(values);
+					values.clear();
+				}
+
 			}
+			// insère les dernières lignes
+			insertIntoChangeset(values);
+			values.clear();
 			conn.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -218,8 +283,8 @@ public class ChangesetRetriever {
 	public Double getChgstAverageDuration(Set<Integer> chgstIDs) throws Exception {
 		Double avg = 0.0;
 		for (Integer id : chgstIDs) {
-			if (!this.isInChangesetTable(Long.valueOf(id)))
-				this.insertIntoChangeset(Long.valueOf(id));
+			// if (!this.isInChangesetTable(Long.valueOf(id)))
+			// this.insertIntoChangeset(Long.valueOf(id));
 			avg += this.changesetDuration(id);
 		}
 		avg /= chgstIDs.size();

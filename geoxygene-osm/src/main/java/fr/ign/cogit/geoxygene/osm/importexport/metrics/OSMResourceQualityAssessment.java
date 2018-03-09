@@ -1,16 +1,20 @@
 package fr.ign.cogit.geoxygene.osm.importexport.metrics;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import au.com.bytecode.opencsv.CSVWriter;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMNode;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMObject;
@@ -31,16 +35,20 @@ public class OSMResourceQualityAssessment {
 	 * primitive OSM.
 	 * 
 	 */
-	HashMap<String, HashMap<Long, OSMObject>> myOSMObjects;
+	// HashMap<String, HashMap<Long, OSMObject>> myOSMObjects;
+	private HashMap<Long, OSMObject> myOSMObjects;
+	private HashMap<Long, OSMObject> myNodeOSMObjects;
+	private HashMap<Long, OSMObject> myWayOSMObjects;
+	private HashMap<Long, OSMObject> myRelOSMObjects;
 
 	public OSMResourceQualityAssessment(Set<OSMResource> myJavaObjects) {
 		this.myJavaObjects = myJavaObjects;
-		HashMap<Long, OSMObject> myNodeOSMObjects = groupByOSMObject(myJavaObjects, "OSMNode");
-		HashMap<Long, OSMObject> myWayOSMObjects = groupByOSMObject(myJavaObjects, "OSMWay");
-		HashMap<Long, OSMObject> myRelOSMObjects = groupByOSMObject(myJavaObjects, "OSMRelation");
-		this.myOSMObjects.put("OSMNode", myNodeOSMObjects);
-		this.myOSMObjects.put("OSMWay", myWayOSMObjects);
-		this.myOSMObjects.put("OSMRelation", myRelOSMObjects);
+		this.myOSMObjects = groupByOSMObject(myJavaObjects);
+		this.myNodeOSMObjects = groupObjectByType(myJavaObjects, "OSMNode");
+		System.out.println("myNodeObjects : " + this.myNodeOSMObjects.size());
+		this.myWayOSMObjects = groupObjectByType(myJavaObjects, "OSMWay");
+		System.out.println("myWayOSMObjects : " + this.myWayOSMObjects.size());
+
 	}
 
 	/**
@@ -51,41 +59,71 @@ public class OSMResourceQualityAssessment {
 	 *            equals "OSMNode", "OSMWay" or "OSMRelation"
 	 * @return a map of OSMobjects identified by their OSM ID
 	 */
-	public static HashMap<Long, OSMObject> groupByOSMObject(Set<OSMResource> myJavaObjects, String nameGeomOSM) {
+	public static HashMap<Long, OSMObject> groupObjectByType(Set<OSMResource> myJavaObjects, String nameGeomOSM) {
 		HashMap<Long, OSMObject> myOSMObjects = new HashMap<Long, OSMObject>();
 		Iterator<OSMResource> it = myJavaObjects.iterator();
 		while (it.hasNext()) {
 			OSMResource contribution = it.next();
-			if (!contribution.getGeom().getClass().getSimpleName().equals(nameGeomOSM))
+			if (!contribution.getGeom().getClass().getSimpleName().equalsIgnoreCase(nameGeomOSM))
 				continue;
+			OSMObject objet = new OSMObject(contribution.getId());
+			myOSMObjects.put(contribution.getId(), objet);
+			objet.addcontribution(contribution);
+			// if (!myOSMObjects.containsKey(contribution.getId())) {
+			// // If OSMObject doesn't exist yet, create a new object
+			// OSMObject objet = new OSMObject(contribution.getId());
+			//
+			// // objet.nbVersions = 1;
+			// // objet.addContributor((long) contribution.getUid());
+			// myOSMObjects.put(contribution.getId(), objet);
+			// objet.addcontribution(contribution);
+			//
+			// // Indicate if OSM primitive is an OSMNode, OSMWay or
+			// // OSMRelation
+			// objet.setPrimitiveGeomOSM(nameGeomOSM);
+			//
+			// System.out.println("Ajout objet");
+			// } else {
+			// // If OSMObject already exists : increments the number of
+			// // version and stores the contribution
+			// /*
+			// * myOSMObjects.get(contribution.getId()).nbVersions += 1;
+			// * myOSMObjects.get(contribution.getId()).addcontribution(
+			// * contribution);
+			// */
+			// // Refresh the list of unique contributors of the OSMobject
+			// /*
+			// * if
+			// * (!myOSMObjects.get(contribution.getId()).getContributorList()
+			// * .contains(contribution.getUid()))
+			// * myOSMObjects.get(contribution.getId()).addContributor((long)
+			// * contribution.getUid());
+			// */
+			// }
+		}
+		System.out.println("size of the list " + myOSMObjects.size());
+		// Chronologically order every list of contributions in each OSMObject
+		for (OSMObject o : myOSMObjects.values()) {
+			Collections.sort(o.getContributions(), new OSMResourceComparator());
+		}
+		return myOSMObjects;
+	}
+
+	public static HashMap<Long, OSMObject> groupByOSMObject(Set<OSMResource> myJavaObjects) {
+		HashMap<Long, OSMObject> myOSMObjects = new HashMap<Long, OSMObject>();
+		Iterator<OSMResource> it = myJavaObjects.iterator();
+		while (it.hasNext()) {
+			OSMResource contribution = it.next();
+
 			if (!myOSMObjects.containsKey(contribution.getId())) {
 				// If OSMObject doesn't exist yet, create a new object
 				OSMObject objet = new OSMObject(contribution.getId());
-				/*
-				 * objet.nbVersions = 1; objet.addContributor((long)
-				 * contribution.getUid());
-				 * myOSMObjects.put(contribution.getId(), objet);
-				 * objet.addcontribution(contribution);
-				 */
-				// Indicate if OSM primitive is an OSMNode, OSMWay or
-				// OSMRelation
-				objet.setPrimitiveGeomOSM(nameGeomOSM);
+				myOSMObjects.put(contribution.getId(), objet);
+				objet.addcontribution(contribution);
+				objet.setPrimitiveGeomOSM(contribution.getGeom().getClass().getSimpleName());
 			} else {
-				// If OSMObject already exists : increments the number of
-				// version and stores the contribution
-				/*
-				 * myOSMObjects.get(contribution.getId()).nbVersions += 1;
-				 * myOSMObjects.get(contribution.getId()).addcontribution(
-				 * contribution);
-				 */
-				// Refresh the list of unique contributors of the OSMobject
-				/*
-				 * if
-				 * (!myOSMObjects.get(contribution.getId()).getContributorList()
-				 * .contains(contribution.getUid()))
-				 * myOSMObjects.get(contribution.getId()).addContributor((long)
-				 * contribution.getUid());
-				 */
+				myOSMObjects.get(contribution.getId()).addcontribution(contribution);
+
 			}
 		}
 		// Chronologically order every list of contributions in each OSMObject
@@ -116,9 +154,13 @@ public class OSMResourceQualityAssessment {
 			return null;
 		else {
 			// Get the set of OSMObject which primitive is the same as resource
-			HashMap<Long, OSMObject> osmObj = this.myOSMObjects.get(resource.getGeom().getClass().getSimpleName());
+			// HashMap<Long, OSMObject> osmObj =
+			// this.myOSMObjects.get(resource.getGeom().getClass().getSimpleName());
+			OSMObject osmObj = this.myOSMObjects.get(resource.getId());
 			// List of all the versions of the current contribution
-			List<OSMResource> allVersions = osmObj.get(resource.getId()).getContributions();
+			// List<OSMResource> allVersions =
+			// osmObj.get(resource.getId()).getContributions();
+			List<OSMResource> allVersions = osmObj.getContributions();
 			Iterator<OSMResource> it = allVersions.iterator();
 			OSMResource former = null;
 			int i = 0;
@@ -376,6 +418,12 @@ public class OSMResourceQualityAssessment {
 		return myNodeList;
 	}
 
+	/**
+	 * 
+	 * @param way
+	 * @param myNodeObjects
+	 * @return most recent nodes that compose the way
+	 */
 	public static List<OSMResource> getWayComposition(OSMResource way, HashMap<Long, OSMObject> myNodeObjects) {
 		List<OSMResource> myNodeList = new ArrayList<OSMResource>();
 		for (Long nodeId : ((OSMWay) way.getGeom()).getVertices()) {
@@ -386,8 +434,42 @@ public class OSMResourceQualityAssessment {
 		return myNodeList;
 	}
 
+	/**
+	 * 
+	 * @param node
+	 * @param former
+	 * @return true if the geometries are different
+	 */
 	public static boolean isNodeGeomEdition(OSMResource node, OSMResource former) {
 		return node.isGeomEquals(former);
+	}
+
+	/**
+	 * Compare la composition de deux ways et s'il y a eu ajout de node retourne
+	 * les nodes ajoutés
+	 * 
+	 * @param composition
+	 * @param former
+	 *            composition
+	 * @return set of added nodes
+	 */
+	public static Set<OSMResource> getAddedNodes(List<OSMResource> composition, List<OSMResource> former) {
+		Set<OSMResource> addedNodes = new HashSet<OSMResource>();
+		for (OSMResource r : composition) {
+			Iterator<OSMResource> it = former.iterator();
+			boolean isInFormer = false;
+			OSMResource f = null;
+			while (it.hasNext()) {
+				f = it.next();
+				if (r.getId() == f.getId()) {
+					isInFormer = true;
+					break;
+				}
+			}
+			if (!isInFormer)
+				addedNodes.add(f);
+		}
+		return addedNodes;
 	}
 
 	public static boolean isCompositionsEquals(List<OSMResource> nodes, List<OSMResource> formerNodes) {
@@ -430,8 +512,9 @@ public class OSMResourceQualityAssessment {
 	 */
 	public OSMResource getLatestElement(String primitive, Long eltID, Date d) {
 		// Get the set of OSMObject which primitive is the same as resource
-		HashMap<Long, OSMObject> osmObj = this.myOSMObjects.get(primitive);
-		Iterator<OSMResource> it = osmObj.get(eltID).getContributions().iterator();
+		// HashMap<Long, OSMObject> osmObj = this.myOSMObjects.get(primitive);
+		OSMObject osmObj = this.myOSMObjects.get(primitive);
+		Iterator<OSMResource> it = osmObj.getContributions().iterator();
 		OSMResource toDate = null;
 		while (it.hasNext()) {
 			OSMResource next = it.next();
@@ -506,15 +589,47 @@ public class OSMResourceQualityAssessment {
 		return nbAdditions;
 	}
 
-	// public static boolean isTagsEqual(Map<String, String> tags, Map<String,
-	// String> formerTags) {
-	// if (tags.size() != formerTags.size())
-	// return false;
-	// if (tags.keySet().equals(formerTags.keySet()))
-	// for (String k : tags.keySet())
-	// if (formerTags.get(k).equals(tags.get(k)))
-	// return false;
-	// return true;
-	// }
+	public HashMap<Long, OSMObject> getMyNodeOSMObjects() {
+		return myNodeOSMObjects;
+	}
+
+	public void setMyNodeOSMObjects(HashMap<Long, OSMObject> myNodeOSMObjects) {
+		this.myNodeOSMObjects = myNodeOSMObjects;
+	}
+
+	public HashMap<Long, OSMObject> getMyWayOSMObjects() {
+		return myWayOSMObjects;
+	}
+
+	public void setMyWayOSMObjects(HashMap<Long, OSMObject> myWayOSMObjects) {
+		this.myWayOSMObjects = myWayOSMObjects;
+	}
+
+	public HashMap<Long, OSMObject> getMyRelOSMObjects() {
+		return myRelOSMObjects;
+	}
+
+	public void setMyRelOSMObjects(HashMap<Long, OSMObject> myRelOSMObjects) {
+		this.myRelOSMObjects = myRelOSMObjects;
+	}
+
+	public void writeOSMObjectCSV(String filename, Long anonymValue) throws IOException {
+		CSVWriter writer = new CSVWriter(new FileWriter(filename), ';');
+		// System.out.println("écriture du fichier csv");
+		// write header
+		String[] line = { "id", "version", "changeset", "uid", "user", "date", "visible", "primitive", "source" };
+		writer.writeNext(line);
+
+		for (OSMObject obj : this.myOSMObjects.values()) {
+			for (OSMResource r : obj.getContributions()) {
+				String[] row = { String.valueOf(r.getId()), String.valueOf(r.getVersion()), String.valueOf(r.getUid()),
+						String.valueOf(r.getContributeur()), String.valueOf(r.getDate()), String.valueOf(r.isVisible()),
+						String.valueOf(r.getGeom().getClass().getSimpleName()), String.valueOf(r.getSource()) };
+				writer.writeNext(row);
+			}
+
+		}
+		writer.close();
+	}
 
 }

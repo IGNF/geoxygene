@@ -17,6 +17,7 @@ import fr.ign.cogit.geoxygene.osm.contributor.OSMContributor;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMNode;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMResource;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMWay;
+import fr.ign.cogit.geoxygene.osm.importexport.postgis.ChangesetRetriever;
 import fr.ign.cogit.geoxygene.osm.schema.OSMDefaultFeature;
 import fr.ign.cogit.geoxygene.osm.schema.OSMFeature;
 import fr.ign.cogit.geoxygene.osm.schema.OsmGeometryConversion;
@@ -51,42 +52,44 @@ public class ContributorAssessment {
 					// avec l'objet parcouru
 					myContributors.put(uid, new OSMContributor(new FT_FeatureCollection<OSMDefaultFeature>(), username,
 							uid.intValue()));
+					myContributors.get(uid).addContribution(contribution);
 				} else {
 					// Ajoute l'objet parcouru dans les contributions du
 					// contributeur existant
 					OSMDefaultFeature feature = OSMResource2OSMFeature(contribution, myJavaObjects);
 					myContributors.get(uid).addContribution(feature);
+					myContributors.get(uid).addContribution(contribution);
 
 				}
 			}
 
 		}
 
-		Iterator<Long> contributorsIDs = myContributors.keySet().iterator();
-		while (contributorsIDs.hasNext()) {
-			// long currentUID = contributorsIDs.next();
-			// List<OSMFeature> contributionList =
-			// fillcontributionList(currentUID, myJavaObjects);
-			// for (OSMFeature contribution : contributionList)
-			// myContributors.get(currentUID).addContribution(contribution);
+		// Iterator<Long> contributorsIDs = myContributors.keySet().iterator();
+		// while (contributorsIDs.hasNext()) {
+		// long currentUID = contributorsIDs.next();
+		// List<OSMFeature> contributionList =
+		// fillcontributionList(currentUID, myJavaObjects);
+		// for (OSMFeature contribution : contributionList)
+		// myContributors.get(currentUID).addContribution(contribution);
 
-			/** Calcul des indicateurs **/
-			// int nbOfContributions =
-			// myContributors.get(currentUID).getContributions().size();
-			// int nbOfDayTimeContributions =
-			// myContributors.get(currentUID).getDaytimeContributions().size();
-			// int nbOfNightTimeContributions =
-			// myContributors.get(currentUID).getNighttimeContributions().size();
-			// int nbOfweekContributions =
-			// myContributors.get(currentUID).getWeekContributions().size();
-			// int nbOfweekendContributions =
-			// myContributors.get(currentUID).getWeekEndContributions().size();
-			// myContributors.get(currentUID).setNbOfContributions(nbOfContributions);
-			// myContributors.get(currentUID).setNbOfDayTimeContributions(nbOfDayTimeContributions);
-			// myContributors.get(currentUID).setNbOfNightTimeContributions(nbOfNightTimeContributions);
-			// myContributors.get(currentUID).setNbOfweekContributions(nbOfweekContributions);
-			// myContributors.get(currentUID).setNbOfweekendContributions(nbOfweekendContributions);
-		}
+		/** Calcul des indicateurs **/
+		// int nbOfContributions =
+		// myContributors.get(currentUID).getContributions().size();
+		// int nbOfDayTimeContributions =
+		// myContributors.get(currentUID).getDaytimeContributions().size();
+		// int nbOfNightTimeContributions =
+		// myContributors.get(currentUID).getNighttimeContributions().size();
+		// int nbOfweekContributions =
+		// myContributors.get(currentUID).getWeekContributions().size();
+		// int nbOfweekendContributions =
+		// myContributors.get(currentUID).getWeekEndContributions().size();
+		// myContributors.get(currentUID).setNbOfContributions(nbOfContributions);
+		// myContributors.get(currentUID).setNbOfDayTimeContributions(nbOfDayTimeContributions);
+		// myContributors.get(currentUID).setNbOfNightTimeContributions(nbOfNightTimeContributions);
+		// myContributors.get(currentUID).setNbOfweekContributions(nbOfweekContributions);
+		// myContributors.get(currentUID).setNbOfweekendContributions(nbOfweekendContributions);
+		// }
 		return myContributors;
 	}
 
@@ -148,7 +151,7 @@ public class ContributorAssessment {
 		// Create a CSV writer
 		CSVWriter writer = new CSVWriter(new FileWriter(file), ';');
 		// write header
-		String[] line = new String[7];
+		String[] line = new String[20];
 		line[0] = "uid";
 		line[1] = "name";
 		line[2] = "nbContributions";
@@ -156,19 +159,55 @@ public class ContributorAssessment {
 		line[4] = "nbNightContributions";
 		line[5] = "nbOfweekContributions";
 		line[6] = "nbOfweekendContributions";
+		line[7] = "nbCreations";
+		line[8] = "nbModifications";
+		line[9] = "nbDeletes";
+		line[10] = "nbBlockReceived";
+		line[11] = "totalChangesetCount";
+		line[12] = "p_DayContributions";
+		line[13] = "p_NightContributions";
+		line[14] = "p_OfweekContributions";
+		line[15] = "p_OfweekendContributions";
+		line[16] = "p_Creations";
+		line[17] = "p_Modifications";
+		line[18] = "p_Deletes";
+		line[19] = "nbChangesetFenetre";
+
 		writer.writeNext(line);
 		for (OSMContributor contributor : myContributors.values()) {
-			line = new String[7];
+			line = new String[20];
 			line[0] = String.valueOf(contributor.getId());
 			line[1] = String.valueOf(contributor.getName());
 			line[2] = String.valueOf(contributor.getNbContributions());
-			// line[3] =
-			// String.valueOf(contributor.getNbDayTimeContributions());
-			// line[4] =
-			// String.valueOf(contributor.getNbNightTimeContributions());
-			// line[5] = String.valueOf(contributor.getNbWeekContributions());
-			// line[6] =
-			// String.valueOf(contributor.getNbWeekendContributions());
+
+			line[3] = String.valueOf(contributor.getNbDayTimeContributions());
+			line[4] = String.valueOf(contributor.getNbNightTimeContributions());
+			line[5] = String.valueOf(contributor.getNbWeekContributions());
+			line[6] = String.valueOf(contributor.getNbWeekendContributions());
+			line[7] = String.valueOf(OSMContributorAssessment.getNbCreations(contributor.getResource()));
+			line[8] = String.valueOf(OSMContributorAssessment.getNbModification(contributor.getResource()));
+			line[9] = String.valueOf(OSMContributorAssessment.getNbDeletes(contributor.getResource()));
+
+			line[10] = String.valueOf(OSMContributorAssessment.getNbBlockReceived(contributor.getId()));
+			line[11] = String.valueOf(OSMContributorAssessment.getTotalChgsetCount(contributor.getId()));
+
+			line[12] = String.valueOf(Double.valueOf(contributor.getNbDayTimeContributions())
+					/ Double.valueOf(contributor.getNbContributions()));
+			line[13] = String.valueOf(Double.valueOf(contributor.getNbNightTimeContributions())
+					/ Double.valueOf(contributor.getNbContributions()));
+			line[14] = String.valueOf(Double.valueOf(contributor.getNbWeekContributions())
+					/ Double.valueOf(contributor.getNbContributions()));
+			line[15] = String.valueOf(Double.valueOf(contributor.getNbWeekendContributions())
+					/ Double.valueOf(contributor.getNbContributions()));
+			line[16] = String.valueOf(Double.valueOf(OSMContributorAssessment.getNbCreations(contributor.getResource()))
+					/ Double.valueOf(contributor.getNbContributions()));
+			line[17] = String
+					.valueOf(Double.valueOf(OSMContributorAssessment.getNbModification(contributor.getResource()))
+							/ Double.valueOf(contributor.getNbContributions()));
+			line[18] = String.valueOf(Double.valueOf(OSMContributorAssessment.getNbDeletes(contributor.getResource()))
+					/ Double.valueOf(contributor.getNbContributions()));
+			line[19] = String.valueOf(ChangesetRetriever.getNbChangesets(contributor.getResource()));
+
 			writer.writeNext(line);
 		}
 		writer.close();

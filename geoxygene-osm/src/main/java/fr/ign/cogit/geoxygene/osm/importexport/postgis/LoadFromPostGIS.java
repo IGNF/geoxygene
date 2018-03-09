@@ -48,17 +48,7 @@ public class LoadFromPostGIS {
 	public Set<OSMResource> myJavaRelations;
 
 	public static void main(String[] args) throws Exception {
-		LoadFromPostGIS loader = new LoadFromPostGIS("localhost", "5432", "paris", "postgres", "postgres");
-		// List<Double> bbox = new ArrayList<Double>();
-		// bbox.add(2.3322);
-		// bbox.add(48.8489);
-		// bbox.add(2.3634);
-		// bbox.add(48.8627);
-		//
-		// List<String> timespan = new ArrayList<String>();
-		// timespan.add("2010-01-01");
-		// timespan.add("2013-01-01");
-
+		LoadFromPostGIS loader = new LoadFromPostGIS("localhost", "5432", "idf", "postgres", "postgres");
 		// loader.relationEvolution(bbox, timespan);
 		// loader.selectRelations(bbox, timespan);
 
@@ -88,9 +78,9 @@ public class LoadFromPostGIS {
 		selectNodes(bbox, timespan);
 
 		// Ways at t1
-		// selectWaysInit(bbox, timespan[0].toString());
+		selectWaysInit(bbox, timespan[0].toString());
 		// Ways between t1 and t2
-		// selectWays(bbox, timespan);
+		selectWays(bbox, timespan);
 
 		// Relations at t1
 		// relationSnapshot(bbox, timespan[0].toString());
@@ -344,7 +334,7 @@ public class LoadFromPostGIS {
 			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
 			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			ResultSet r = s.executeQuery(query);
-			System.out.println("------- Query Executed : Snapshot Relation -------");
+			System.out.println("------- Query Executed -------");
 			writeOSMResource(r, osmDataType);
 			s.close();
 			conn.close();
@@ -370,10 +360,15 @@ public class LoadFromPostGIS {
 		// + bbox[2].toString() + "," + bbox[3].toString() + ") ORDER BY id,
 		// datemodif DESC) AS node_and_tags;";
 		// Query visible attribute
-		String query = "SELECT idnode, id, uid, vnode, changeset, username, datemodif, hstore_to_json(tags), lat, lon, visible FROM ("
-				+ "SELECT DISTINCT ON (id) * FROM node WHERE datemodif <= \'" + beginDate
-				+ "\' AND node.geom && ST_MakeEnvelope(" + bbox[0].toString() + "," + bbox[1].toString() + ","
-				+ bbox[2].toString() + "," + bbox[3].toString() + ") ORDER BY id, datemodif DESC) AS node_and_tags;";
+		String query = "SELECT idnode, id, uid, vnode, changeset, username, datemodif, hstore_to_json(tags), lat, lon, visible FROM "
+				+ "(SELECT DISTINCT ON (id) * FROM node WHERE datemodif <= \'" + beginDate + "\' AND lon >= " + bbox[0]
+				+ " AND lon <= " + bbox[2] + " AND lat>= " + bbox[1] + " AND lat <= " + bbox[3]
+				+ " ORDER BY id, datemodif DESC) AS node_and_tags;";
+		// + "\' AND node.geom && ST_MakeEnvelope(" + bbox[0].toString() + "," +
+		// bbox[1].toString() + ","
+		// + bbox[2].toString() + "," + bbox[3].toString() + ") ORDER BY id,
+		// datemodif DESC) AS node_and_tags;";
+
 		// Query database
 		try {
 			selectFromDB(query, "node");
@@ -401,10 +396,19 @@ public class LoadFromPostGIS {
 	public void selectNodes(Double[] bbox, String[] timespan) throws SQLException {
 
 		// Nodes created/edited within timespan
-		String query = "SELECT idnode, id, uid, vnode, changeset, username, datemodif, hstore_to_json(tags), lat, lon, visible FROM node WHERE node.geom && ST_MakeEnvelope("
-				+ bbox[0].toString() + "," + bbox[1].toString() + "," + bbox[2].toString() + "," + bbox[3].toString()
-				+ ", 4326) AND datemodif > \'" + timespan[0].toString() + "\' AND datemodif <= \'"
-				+ timespan[1].toString() + "\';";
+		// String query = "SELECT idnode, id, uid, vnode, changeset, username,
+		// datemodif, hstore_to_json(tags), lat, lon, visible FROM node WHERE
+		// node.geom && ST_MakeEnvelope("
+		// + bbox[0].toString() + "," + bbox[1].toString() + "," +
+		// bbox[2].toString() + "," + bbox[3].toString()
+		// + ", 4326) AND datemodif > \'" + timespan[0].toString() + "\' AND
+		// datemodif <= \'"
+		// + timespan[1].toString() + "\';";
+		String query = "SELECT idnode, id, uid, vnode, changeset, username, datemodif, hstore_to_json(tags), lat, lon, visible FROM node WHERE "
+				+ " lon >= " + bbox[0] + " AND lon <= " + bbox[2] + " AND lat>= " + bbox[1] + " AND lat <= " + bbox[3]
+				+ " AND datemodif > \'" + timespan[0].toString() + "\' AND datemodif <= \'" + timespan[1].toString()
+				+ "\';";
+
 		// Query database
 		try {
 			selectFromDB(query, "node");
