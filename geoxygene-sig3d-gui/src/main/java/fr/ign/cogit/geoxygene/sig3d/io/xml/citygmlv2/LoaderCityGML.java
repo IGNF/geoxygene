@@ -112,8 +112,6 @@ public class LoaderCityGML {
 			if (cGO.getRepresentation() == null) {
 				continue;
 			}
-			
-			
 
 			IFeature feat = new DefaultFeature(p);
 			feat.setRepresentation(cGO.getRepresentation());

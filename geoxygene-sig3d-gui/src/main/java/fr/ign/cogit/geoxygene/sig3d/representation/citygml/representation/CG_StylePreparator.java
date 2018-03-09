@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.sig3d.representation.citygml.representation;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.media.j3d.BranchGroup;
@@ -9,10 +10,13 @@ import javax.media.j3d.Shape3D;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.appearance.CG_AbstractSurfaceData;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.appearance.CG_AbstractTextureParameterization;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.appearance.CG_GeoreferencedTexture;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.appearance.CG_ParameterizedTexture;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.appearance.CG_TexCoordList;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.appearance.CG_TextureCoordinates;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.appearance.CG_X3DMaterial;
-import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.GML_Polygon;
+import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.GML_Geometry;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSolid;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
@@ -99,7 +103,7 @@ public class CG_StylePreparator {
   public static Shape3D generateRepresentation(GM_OrientableSurface oS,
       List<CG_AbstractSurfaceData> lCGA) {
 
-    GML_Polygon poly = (GML_Polygon) oS;
+	  GML_Geometry poly = (GML_Geometry) oS;
 
     List<Object> llOPolygon = new ArrayList<Object>();
     llOPolygon = CG_StylePreparator.retrieveStyle(poly, lCGA);
@@ -109,7 +113,7 @@ public class CG_StylePreparator {
     return sG.getShape();
   }
 
-  private static List<Object> retrieveStyle(GML_Polygon poly,
+  private static List<Object> retrieveStyle(GML_Geometry poly,
       List<CG_AbstractSurfaceData> lCGA) {
 
     return CG_StylePreparator.retrieveStyle(poly.getID(), lCGA);
@@ -147,10 +151,42 @@ public class CG_StylePreparator {
         continue;
 
       } else if (cABS instanceof CG_ParameterizedTexture) {
+    	  
+    	  CG_ParameterizedTexture parameterizedTexture = ((CG_ParameterizedTexture) cABS);
+    	  
+    	  
+    	  if(parameterizedTexture.getMapTarget().containsKey(searchedID)){
+    		  lRep.add(cABS);
+    	  }else{
+					Collection<CG_AbstractTextureParameterization> coll = parameterizedTexture.getMapTarget().values();
+					
+					
+					for(CG_AbstractTextureParameterization param : coll){
+						
+						if(param instanceof CG_TexCoordList) {
+							CG_TexCoordList cGT = (CG_TexCoordList) param;
+							
+							
+							for(CG_TextureCoordinates coordList : cGT.getTextureCoordinates()){
+								//System.out.println("Ring : " + coordList.getRing());
+								if(coordList.getRing().equalsIgnoreCase(searchedID)){
+									 lRep.add(cABS);
+								}
+							}
+							
+							
+						}else{
 
-        if  ((((CG_ParameterizedTexture) cABS).getMapTarget().containsKey(searchedID))){
-          lRep.add(cABS);
-        }
+							System.out.println("CG_StylePreparator : cas non traité" + param.getClass() );	
+						}
+						
+					}
+    		  
+    	  }
+    	  
+    	  
+    	
+
 
       } else {
         System.out.println("Type non géré : " + cABS.getClass());
@@ -161,20 +197,6 @@ public class CG_StylePreparator {
     return lRep;
   }
 
-  /*
-  private static boolean isInList(String ID, HashSet<String> lS) {
 
-    int nbElem = lS.size();
-
-    for (int i = 0; i < nbElem; i++) {
-      if (lS.get(i).equalsIgnoreCase("#" + ID)) {
-
-        return true;
-      }
-
-    }
-
-    return false;
-  }*/
 
 }

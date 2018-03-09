@@ -3,9 +3,12 @@ package fr.ign.cogit.geoxygene.sig3d.representation.citygml.relief;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.media.j3d.BranchGroup;
+
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.appearance.CG_AbstractSurfaceData;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.relief.CG_TINRelief;
 import fr.ign.cogit.geoxygene.sig3d.representation.citygml.core.RP_CityObject;
+import fr.ign.cogit.geoxygene.sig3d.representation.citygml.representation.CG_StylePreparator;
 
 public class RP_TINRelief extends RP_CityObject {
 
@@ -31,8 +34,10 @@ public class RP_TINRelief extends RP_CityObject {
 
 		if (tin.getTin() != null) {
 
-			RepresentationTin rpTin = new RepresentationTin(tin.getTin());
-			this.bGRep.addChild(rpTin.getBGRep());
+			//RepresentationTin rpTin = new RepresentationTin(tin.getTin());
+			
+			 BranchGroup bg = CG_StylePreparator.generateRepresentation(tin.getTin().getlPolygons(),lCGA);
+			this.bGRep.addChild(bg);
 
 		}
 

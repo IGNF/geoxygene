@@ -193,8 +193,7 @@ public class Util {
 				IDirectPosition dpMin = Util.pointMin(lPoints);
 
 				// Nombres de points de la contribution
-				int n = lPoints.size();
-
+			
 				Vecteur axe = vect.prodVectoriel(new Vecteur(0, 0, 1));
 
 				if (axe.norme() < 0.1) {
