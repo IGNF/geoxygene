@@ -71,6 +71,252 @@ public class LoadFromPostGIS {
 		this.myJavaRelations = new HashSet<OSMResource>();
 	}
 
+	/**
+	 * Récupère les coordonnées lon_min, lat_min, lon_max, lat_max de la commune
+	 * Attention: il faut lancer le script
+	 * 
+	 * @param city
+	 *            Nom de la commune
+	 * @param timestamp
+	 *            Date à laquelle on cherche la dernière version des frontières
+	 * @return les coordonnées géographiques {xmin, ymin, xmax, ymax} de la
+	 *         commune
+	 * @throws Exception
+	 */
+	public Double[] getCityBoundary(String city, String timestamp) throws Exception {
+		java.sql.Connection conn;
+		try {
+			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
+			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			String query = "SELECT idrel FROM  relation WHERE tags -> 'boundary' = 'administrative' ANd tags->'admin_level'='8' "
+					+ "AND tags-> 'name'='" + city + "' AND datemodif <= '" + timestamp
+					+ "' ORDER BY vrel DESC LIMIT 1;";
+			ResultSet r = s.executeQuery(query);
+			// Get relation members
+			Long idrel = null;
+			while (r.next()) {
+				idrel = r.getLong("idrel");
+			}
+			System.out.println("idrel = " + idrel);
+
+			query = "DROP TABLE IF EXISTS enveloppe ;"
+					+ "CREATE TABLE enveloppe (lon_min numeric DEFAULT 180,lat_min numeric DEFAULT 90,lon_max numeric DEFAULT -180,lat_max numeric DEFAULT -90);"
+					+ "INSERT INTO enveloppe VALUES (180, 90, -180 ,-90);";
+			query += "SELECT relation_boundary(" + idrel + ", '" + timestamp + "');"; // run
+																						// first
+																						// pgScript
+																						// "relation_boundary.sql"
+			s.execute(query);
+			query = "SELECT * FROM enveloppe LIMIT 1;";
+			ResultSet r1 = s.executeQuery(query);
+			Double xmin = null, ymin = null, xmax = null, ymax = null;
+			while (r1.next()) {
+				xmin = r1.getDouble("lon_min");
+				ymin = r1.getDouble("lat_min");
+				xmax = r1.getDouble("lon_max");
+				ymax = r1.getDouble("lat_max");
+				System.out.println(xmin);
+				System.out.println(ymin);
+				System.out.println(xmax);
+				System.out.println(ymax);
+			}
+
+			Double[] borders = { xmin, ymin, xmax, ymax };
+			s.close();
+			conn.close();
+			return borders;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * Loads the latest version of every building that was created inside the
+	 * input borders. The buildings can be visible or not.
+	 * 
+	 * @param borders
+	 *            {xmin, ymin, xmax, ymax}
+	 * @param timestamp
+	 *            date du snapshot
+	 * @throws Exception
+	 */
+	public void getSnapshotBuilding(Double[] borders, String timestamp) throws Exception {
+		java.sql.Connection conn;
+		try {
+			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
+			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+			String uniqueBuildingQuery = "SELECT DISTINCT ON (id) * FROM way WHERE tags->'building'='yes' "
+					+ "AND lon_min >= " + borders[0] + "AND lat_min>= " + borders[1] + "AND lon_max<= " + borders[2]
+					+ "AND lat_max<= " + borders[3] + "ORDER BY id, datemodif DESC";
+			String infoBuildingQuery = "SELECT max(way.vway) as max, way.id FROM way, (" + uniqueBuildingQuery
+					+ ") as unique_building WHERE way.id = unique_building.id AND way.datemodif <='" + timestamp
+					+ "' GROUP BY way.id";
+			String query = "SELECT way.idway, way.id, way.uid, way.vway, way.changeset, way.username, way.datemodif, hstore_to_json(way.tags), way.composedof, way.visible "
+					+ "FROM way, (" + infoBuildingQuery
+					+ ") AS info_building WHERE way.id=info_building.id AND way.vway=info_building.max;";
+
+			ResultSet r = s.executeQuery(query);
+			System.out.println("------- Query Executed -------");
+			writeOSMResource(r, "way");
+			s.close();
+			conn.close();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * Load the evolution of the buildings that are inside the input border,
+	 * including : - the later versions of the buildings selected at begin date
+	 * until end date - the versions of the buildings created during the input
+	 * timespan until end date
+	 * 
+	 * @param borders
+	 * @param timespan
+	 * @throws Exception
+	 */
+	public void getEvolutionBuilding(Double[] borders, String[] timespan) throws Exception {
+		java.sql.Connection conn;
+		try {
+			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
+			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			// Query the evolution of all buildings which where selected at
+			// timespan[0] until timespan[1]
+			String uniqueBuildingQuery = "SELECT DISTINCT ON (id) * FROM way WHERE tags->'building'='yes' "
+					+ "AND lon_min >= " + borders[0] + "AND lat_min>= " + borders[1] + "AND lon_max<= " + borders[2]
+					+ "AND lat_max<= " + borders[3] + "ORDER BY id, datemodif DESC";
+			String infoBuildingQuery = "SELECT max(way.vway) as max, way.id FROM way, (" + uniqueBuildingQuery
+					+ ") as unique_building WHERE way.id = unique_building.id AND way.datemodif <='" + timespan[0]
+					+ "' GROUP BY way.id";
+			String query = "SELECT way.idway, way.id, way.uid, way.vway, way.changeset, way.username, way.datemodif, hstore_to_json(way.tags), way.composedof, way.visible "
+					+ "FROM way, (" + infoBuildingQuery
+					+ ") AS info_building WHERE way.id = info_building.id AND way.vway > info_building.max AND way.datemodif <= '"
+					+ timespan[1] + "' ORDER BY way.id;";
+			ResultSet r = s.executeQuery(query);
+			System.out.println("------- Query Executed -------");
+			writeOSMResource(r, "way");
+
+			// Query the buildings that were created inside timespan and all the
+			// versions which fall between this time interval
+			String createdBuildings = "SELECT DISTINCT ON (id) * FROM way WHERE tags->'building'='yes' "
+					+ "AND lon_min >= " + borders[0] + "AND lat_min>=" + borders[1] + " AND lon_max<=" + borders[2]
+					+ " AND lat_max<=" + borders[3] + "AND vway = 1 AND datemodif > '" + timespan[0]
+					+ "' AND datemodif <= '" + timespan[1] + "'";
+
+			query = "SELECT way.idway, way.id, way.uid, way.vway, way.changeset, way.username, way.datemodif, hstore_to_json(way.tags), way.composedof, way.visible "
+					+ "FROM way, (" + createdBuildings
+					+ ") AS bati_cree WHERE way.id = bati_cree.id AND way.datemodif <='" + timespan[1] + "';";
+
+			r = s.executeQuery(query);
+			System.out.println("------- Query Executed -------");
+			writeOSMResource(r, "way");
+			s.close();
+			conn.close();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * Get the latest version of all nodes (visible or not) that are contained
+	 * inside the borders
+	 * 
+	 * @param borders
+	 * @param timestamp
+	 * @throws Exception
+	 */
+	public void getSnapshotNodes(Double[] borders, String timestamp) throws Exception {
+		java.sql.Connection conn;
+		try {
+			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
+			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+			String uniqueNodeQuery = "SELECT DISTINCT ON (id) * FROM node WHERE lon >= " + borders[0] + "AND lat>= "
+					+ borders[1] + "AND lon<= " + borders[2] + "AND lat<= " + borders[3]
+					+ " ORDER BY id, datemodif DESC";
+			String infoNodeQuery = "SELECT max(node.vnode) as max, node.id FROM node, (" + uniqueNodeQuery
+					+ ") AS unique_nodes WHERE node.id = unique_nodes.id AND node.datemodif <='" + timestamp
+					+ "' GROUP BY node.id";
+			String query = "SELECT node.idnode, node.id,node.uid,node.vnode, node.changeset, node.username, node.datemodif, hstore_to_json(node.tags), node.visible, node.lon, node.lat "
+					+ " FROM node, (" + infoNodeQuery
+					+ ") AS info_node WHERE node.id=info_node.id AND node.vnode=info_node.max;";
+
+			ResultSet r = s.executeQuery(query);
+			System.out.println("------- Query Executed -------");
+			writeOSMResource(r, "node");
+			s.close();
+			conn.close();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * Retrieves OSM nodes from a PostGIS database according to spatiotemporal
+	 * parameters: 1) select the later versions of all queried nodes a
+	 * timespan[0] 2) select all created nodes inside timespan including their
+	 * later versions until timespan[1]
+	 * 
+	 * @param borders
+	 * @param timespan
+	 * @throws Exception
+	 */
+	public void getEvolutionNode(Double[] borders, String[] timespan) throws Exception {
+		java.sql.Connection conn;
+		try {
+			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
+			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			// Query the evolution of all buildings which where selected at
+			// timespan[0] until timespan[1]
+			String uniqueNodeQuery = "SELECT DISTINCT ON (id) * FROM node WHERE lon >= " + borders[0] + " AND lat>= "
+					+ borders[1] + " AND lon<= " + borders[2] + " AND lat<= " + borders[3]
+					+ " ORDER BY id, datemodif DESC";
+			String infoNodeQuery = "SELECT max(node.vnode) as max, node.id FROM node, (" + uniqueNodeQuery
+					+ ") as unique_node WHERE node.id = unique_node.id AND node.datemodif <='" + timespan[0]
+					+ "' GROUP BY node.id";
+			String query = "SELECT node.idnode, node.id,node.uid,node.vnode, node.changeset, node.username, node.datemodif, hstore_to_json(node.tags), node.visible, node.lon, node.lat "
+					+ " FROM node, (" + infoNodeQuery
+					+ ") AS info_node WHERE node.id = info_node.id AND node.vnode > info_node.max AND node.datemodif <= '"
+					+ timespan[1] + "' ORDER BY node.id;";
+			ResultSet r = s.executeQuery(query);
+			System.out.println("------- Query Executed -------");
+			writeOSMResource(r, "node");
+
+			// Query the buildings that were created inside timespan and all the
+			// versions which fall between this time interval
+			String createdNodes = "SELECT DISTINCT ON (id) * FROM node WHERE lon >= " + borders[0] + " AND lat>="
+					+ borders[1] + " AND lon<=" + borders[2] + " AND lat<=" + borders[3]
+					+ "AND vnode = 1 AND datemodif > '" + timespan[0] + "' AND datemodif <= '" + timespan[1] + "'";
+
+			query = "SELECT node.idnode, node.id,node.uid,node.vnode, node.changeset, node.username, node.datemodif, hstore_to_json(node.tags), node.visible, node.lon, node.lat "
+					+ "FROM node, (" + createdNodes
+					+ ") AS node_cree WHERE node.id = node_cree.id AND node.datemodif <='" + timespan[1] + "';";
+
+			r = s.executeQuery(query);
+			System.out.println("------- Query Executed -------");
+			writeOSMResource(r, "node");
+			s.close();
+			conn.close();
+		} catch (Exception e) {
+			throw e;
+		}
+
+	}
+
+	/**
+	 * Récupère un snapshot des nodes & ways à t1 et leurs évolutions entre t1
+	 * et t2
+	 * 
+	 * @param bbox
+	 * @param timespan
+	 * @throws Exception
+	 */
 	public void getDataFrombbox(Double[] bbox, String[] timespan) throws Exception {
 		// Nodes at t1
 		selectNodesInit(bbox, timespan[0].toString());
@@ -81,13 +327,6 @@ public class LoadFromPostGIS {
 		selectWaysInit(bbox, timespan[0].toString());
 		// Ways between t1 and t2
 		selectWays(bbox, timespan);
-
-		// Relations at t1
-		// relationSnapshot(bbox, timespan[0].toString());
-		// selectRelInit(bbox, timespan[0].toString());
-		// Relations between t1 and t2
-		// relationEvolution(bbox, timespan);
-		// selectRelations(bbox, timespan);
 	}
 
 	public ArrayList<OsmRelationMember> getRelationMemberList(int idrel) throws Exception {
@@ -120,12 +359,6 @@ public class LoadFromPostGIS {
 		if (!r.getString("hstore_to_json").toString().equalsIgnoreCase("{}")) {
 			try {
 				JSONObject obj = new JSONObject(r.getString("hstore_to_json"));
-				// for (int i = 0; i < obj.names().length(); i++) {
-				// String key = obj.names().getString(i);
-				// if (key.toString().equalsIgnoreCase("type")) {
-				// value = obj.getString(key);
-				// }
-				// }
 				int i = 0;
 				while (value == " " && i < obj.names().length()) {
 					String key = obj.names().getString(i);
@@ -144,6 +377,12 @@ public class LoadFromPostGIS {
 
 	}
 
+	/**
+	 * @deprecated
+	 * @param bbox
+	 * @param timespan
+	 * @throws Exception
+	 */
 	public void relationEvolution(Double[] bbox, String[] timespan) throws Exception {
 		String dropViewQuery = "DROP VIEW IF EXISTS "
 				+ "relationmemberselected, numberselectedrelmb, allrelationmember, "
@@ -235,6 +474,12 @@ public class LoadFromPostGIS {
 
 	}
 
+	/**
+	 * @deprecated
+	 * @param bbox
+	 * @param beginDate
+	 * @throws Exception
+	 */
 	public void relationSnapshot(Double[] bbox, String beginDate) throws Exception {
 		String dropViewQuery = "DROP VIEW IF EXISTS "
 				+ "relationmemberselected, numberselectedrelmb, allrelationmember, "
@@ -344,31 +589,22 @@ public class LoadFromPostGIS {
 	}
 
 	/**
-	 * Gets the latest nodes at date beginDate
+	 * Gets the latest visible nodes at date beginDate
 	 * 
 	 * @param beginDate
 	 *            : timespan lower boundary
 	 * @throws SQLException
 	 */
 	public void selectNodesInit(Double[] bbox, String beginDate) throws SQLException {
-		// String query = "SELECT idnode, id, uid, vnode, changeset, username,
-		// datemodif, hstore_to_json(tags), lat, lon FROM ("
-		// + "SELECT DISTINCT ON (id) * FROM node WHERE datemodif <= \'" +
-		// beginDate
-		// + "\' AND node.geom && ST_MakeEnvelope(" + bbox[0].toString() + "," +
-		// bbox[1].toString() + ","
-		// + bbox[2].toString() + "," + bbox[3].toString() + ") ORDER BY id,
-		// datemodif DESC) AS node_and_tags;";
+		String uniqueNodesQuery = "SELECT DISTINCT ON (id) * FROM node	WHERE lon >=" + bbox[0] + " AND lat>= "
+				+ bbox[1] + " AND lon<=" + bbox[2] + " AND lat<=" + bbox[3] + " ORDER BY id, datemodif DESC";
+		String infoNodesQuery = "SELECT max(node.vnode) as max, node.id FROM node,(" + uniqueNodesQuery
+				+ ") as unique_nodes WHERE node.id = unique_nodes.id AND node.datemodif <='" + beginDate
+				+ "' GROUP BY node.id";
 		// Query visible attribute
-		String query = "SELECT idnode, id, uid, vnode, changeset, username, datemodif, hstore_to_json(tags), lat, lon, visible FROM "
-				+ "(SELECT DISTINCT ON (id) * FROM node WHERE datemodif <= \'" + beginDate + "\' AND lon >= " + bbox[0]
-				+ " AND lon <= " + bbox[2] + " AND lat>= " + bbox[1] + " AND lat <= " + bbox[3]
-				+ " ORDER BY id, datemodif DESC) AS node_and_tags;";
-		// + "\' AND node.geom && ST_MakeEnvelope(" + bbox[0].toString() + "," +
-		// bbox[1].toString() + ","
-		// + bbox[2].toString() + "," + bbox[3].toString() + ") ORDER BY id,
-		// datemodif DESC) AS node_and_tags;";
-
+		String query = "SELECT node.idnode, node.id,node.uid,node.vnode, node.changeset, node.username, node.datemodif, hstore_to_json(node.tags), node.visible, node.lon, node.lat FROM node, ("
+				+ infoNodesQuery
+				+ ") as info_node WHERE node.id=info_node.id AND node.vnode=info_node.max AND node.visible IS TRUE;";
 		// Query database
 		try {
 			selectFromDB(query, "node");
@@ -382,7 +618,9 @@ public class LoadFromPostGIS {
 
 	/**
 	 * Retrieves OSM nodes from a PostGIS database according to spatiotemporal
-	 * parameters
+	 * parameters: 1) select the later versions of visible nodes at timespan[0]
+	 * until timespan[1]; 2) select all created nodes inside timespan including
+	 * their later versions until timespan[1]
 	 * 
 	 * @param bbox
 	 *            contains the bounding box coordinates in the following order :
@@ -394,35 +632,71 @@ public class LoadFromPostGIS {
 	 * @throws SQLException
 	 */
 	public void selectNodes(Double[] bbox, String[] timespan) throws SQLException {
-
-		// Nodes created/edited within timespan
-		// String query = "SELECT idnode, id, uid, vnode, changeset, username,
-		// datemodif, hstore_to_json(tags), lat, lon, visible FROM node WHERE
-		// node.geom && ST_MakeEnvelope("
-		// + bbox[0].toString() + "," + bbox[1].toString() + "," +
-		// bbox[2].toString() + "," + bbox[3].toString()
-		// + ", 4326) AND datemodif > \'" + timespan[0].toString() + "\' AND
-		// datemodif <= \'"
-		// + timespan[1].toString() + "\';";
-		String query = "SELECT idnode, id, uid, vnode, changeset, username, datemodif, hstore_to_json(tags), lat, lon, visible FROM node WHERE "
-				+ " lon >= " + bbox[0] + " AND lon <= " + bbox[2] + " AND lat>= " + bbox[1] + " AND lat <= " + bbox[3]
-				+ " AND datemodif > \'" + timespan[0].toString() + "\' AND datemodif <= \'" + timespan[1].toString()
-				+ "\';";
-
+		String uniqueNodesQuery = "SELECT DISTINCT ON (id) * FROM node	WHERE lon >=" + bbox[0] + " AND lat>= "
+				+ bbox[1] + " AND lon<=" + bbox[2] + " AND lat<=" + bbox[3] + " ORDER BY id, datemodif DESC";
+		String infoNodesQuery = "SELECT max(node.vnode) as max, node.id FROM node,(" + uniqueNodesQuery
+				+ ") as unique_nodes WHERE node.id = unique_nodes.id AND node.datemodif <='" + timespan[0]
+				+ "' GROUP BY node.id";
+		String visibleNodeBeginDate = "SELECT node.* FROM node, (" + infoNodesQuery
+				+ ") as info_node WHERE node.id=info_node.id AND node.vnode=info_node.max AND node.visible IS TRUE";
+		String query = "SELECT node.idnode, node.id,node.uid,node.vnode, node.changeset, node.username, node.datemodif, hstore_to_json(node.tags), node.visible, node.lon, node.lat FROM node, ("
+				+ visibleNodeBeginDate + ") AS visible_node_t1 "
+				+ " WHERE node.id = visible_node_t1.id AND node.vnode > visible_node_t1.vnode AND node.datemodif <= '"
+				+ timespan[1] + "';";
 		// Query database
 		try {
 			selectFromDB(query, "node");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.out.println(query);
+		}
+		// Query the nodes that were created inside timespan and all the
+		// versions which fall between this time interval
+		String createdNodes = "SELECT DISTINCT ON (id) * FROM node WHERE lon >= " + bbox[0] + " AND lat>=" + bbox[1]
+				+ " AND lon<=" + bbox[2] + " AND lat<=" + bbox[3] + "AND vnode = 1 AND datemodif > '" + timespan[0]
+				+ "' AND datemodif <= '" + timespan[1] + "'";
+
+		query = "SELECT node.idnode, node.id,node.uid,node.vnode, node.changeset, node.username, node.datemodif, hstore_to_json(node.tags), node.visible, node.lon, node.lat "
+				+ "FROM node, (" + createdNodes + ") AS node_cree WHERE node.id = node_cree.id AND node.datemodif <='"
+				+ timespan[1] + "';";
+		// Query database
+		try {
+			selectFromDB(query, "node");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println(query);
 		}
 	}
 
+	/**
+	 * Gets the latest visible ways at date beginDate
+	 * 
+	 * @param bbox
+	 * @param beginDate
+	 * @throws SQLException
+	 */
 	public void selectWaysInit(Double[] bbox, String beginDate) throws SQLException {
-		String query = "SELECT idway, id, uid, vway, changeset, username, datemodif, hstore_to_json(tags), composedof, visible FROM ("
-				+ "SELECT DISTINCT ON (id) * FROM way WHERE datemodif <= \'" + beginDate + "\' AND lon_min >="
-				+ bbox[0].toString() + " AND lat_min >=" + bbox[1].toString() + " AND lon_max <=" + bbox[2].toString()
-				+ "AND lat_max <=" + bbox[3].toString() + " ORDER BY id, datemodif DESC) AS way_selected;";
+		/*
+		 * String query =
+		 * "SELECT idway, id, uid, vway, changeset, username, datemodif, hstore_to_json(tags), composedof, visible FROM ("
+		 * + "SELECT DISTINCT ON (id) * FROM way WHERE datemodif <= \'" +
+		 * beginDate + "\' AND lon_min >=" + bbox[0].toString() +
+		 * " AND lat_min >=" + bbox[1].toString() + " AND lon_max <=" +
+		 * bbox[2].toString() + "AND lat_max <=" + bbox[3].toString() +
+		 * " ORDER BY id, datemodif DESC) AS way_selected;";
+		 */
+
+		String uniqueWaysQuery = "SELECT DISTINCT ON (id) * FROM way WHERE lon_min >=" + bbox[0] + " AND lat_min>= "
+				+ bbox[1] + " AND lon_max<=" + bbox[2] + " AND lat_max<=" + bbox[3] + " ORDER BY id, datemodif DESC";
+		String infoWaysQuery = "SELECT max(way.vway) as max, way.id FROM way,(" + uniqueWaysQuery
+				+ ") as unique_ways WHERE way.id = unique_ways.id AND way.datemodif <='" + beginDate
+				+ "' GROUP BY way.id";
+		// Query visible attribute
+		String query = "SELECT way.id,way.uid,way.vway, way.changeset, way.username, way.datemodif, hstore_to_json(way.tags), way.visible,way.composedof FROM way, ("
+				+ infoWaysQuery
+				+ ") as info_way WHERE way.id=info_way.id AND way.vway=info_way.max AND way.visible IS TRUE;";
 		// Query database
 		try {
 			selectFromDB(query, "way");
@@ -445,14 +719,39 @@ public class LoadFromPostGIS {
 	 * @param timespan
 	 *            is composed of the begin date and end date written in
 	 *            timestamp format
-	 * @throws SQLException
+	 * @throws Exception
 	 */
-	public void selectWays(Double[] bbox, String[] timespan) throws SQLException {
-		// Ways created/edited within timespan
-		String query = "SELECT idway, id, uid, vway, changeset, username, datemodif, hstore_to_json(tags), composedof, visible FROM way "
-				+ "WHERE datemodif > \'" + timespan[0].toString() + "\' AND datemodif <= \'" + timespan[1].toString()
-				+ "\'" + " AND lon_min >=" + bbox[0].toString() + " AND lat_min >=" + bbox[1].toString()
-				+ " AND lon_max <=" + bbox[2].toString() + " AND lat_max <=" + bbox[3].toString();
+	public void selectWays(Double[] bbox, String[] timespan) throws Exception {
+		// Query later versions of visible ways at begin date
+		String uniqueWaysQuery = "SELECT DISTINCT ON (id) * FROM way WHERE lon_min >=" + bbox[0] + " AND lat_min>= "
+				+ bbox[1] + " AND lon_min<=" + bbox[2] + " AND lat_min<=" + bbox[3] + " ORDER BY id, datemodif DESC";
+		String infoWaysQuery = "SELECT max(way.vway) as max, way.id FROM way,(" + uniqueWaysQuery
+				+ ") as unique_ways WHERE way.id = unique_ways.id AND way.datemodif <='" + timespan[0]
+				+ "' GROUP BY way.id";
+		String visibleWayBeginDate = "SELECT way.* FROM way, (" + infoWaysQuery
+				+ ") as info_way WHERE way.id=info_way.id AND way.vway=info_way.max AND way.visible IS TRUE";
+		String query = "SELECT way.id,way.uid,way.vway, way.changeset, way.username, way.datemodif, hstore_to_json(way.tags), way.visible, way.composedof FROM way, ("
+				+ visibleWayBeginDate + ") AS visible_way_t1 "
+				+ " WHERE way.id = visible_way_t1.id AND way.vway > visible_way_t1.vway AND way.datemodif <= '"
+				+ timespan[1] + "';";
+		// Query database
+		try {
+			selectFromDB(query, "way");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println(query);
+			// throw e;
+		}
+		// Query the nodes that were created inside timespan and all the
+		// versions which fall between this time interval
+		String createdWays = "SELECT DISTINCT ON (id) * FROM way WHERE lon_min >= " + bbox[0] + " AND lat_min>="
+				+ bbox[1] + " AND lon_min<=" + bbox[2] + " AND lat_min<=" + bbox[3] + "AND vway = 1 AND datemodif > '"
+				+ timespan[0] + "' AND datemodif <= '" + timespan[1] + "'";
+
+		query = "SELECT way.idway, way.id,way.uid,way.vway, way.changeset, way.username, way.datemodif, hstore_to_json(way.tags), way.visible, way.composedof "
+				+ "FROM way, (" + createdWays + ") AS way_cree WHERE way.id = way_cree.id AND way.datemodif <='"
+				+ timespan[1] + "';";
 		// Query database
 		try {
 			selectFromDB(query, "way");
@@ -463,6 +762,12 @@ public class LoadFromPostGIS {
 
 	}
 
+	/**
+	 * @deprecated
+	 * @param bbox
+	 * @param beginDate
+	 * @throws Exception
+	 */
 	public void selectRelInit(Double[] bbox, String beginDate) throws Exception {
 
 		relationSnapshot(bbox, beginDate);
@@ -482,7 +787,7 @@ public class LoadFromPostGIS {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
-			throw e;
+			// throw e;
 		}
 
 		// Cherche si les relations qui viennent d'être créées sont également
@@ -490,6 +795,12 @@ public class LoadFromPostGIS {
 
 	}
 
+	/**
+	 * @deprecated
+	 * @param bbox
+	 * @param timespan
+	 * @throws Exception
+	 */
 	public void selectRelations(Double[] bbox, String[] timespan) throws Exception {
 		relationEvolution(bbox, timespan);
 
