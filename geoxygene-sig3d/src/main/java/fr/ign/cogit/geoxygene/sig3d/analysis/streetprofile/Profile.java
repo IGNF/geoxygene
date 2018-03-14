@@ -48,7 +48,17 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
 public class Profile {
 
 	public enum SIDE {
-		UPSIDE, DOWNSIDE, BOTH
+		UPSIDE("UP"), DOWNSIDE("DOWN"), BOTH("BOTH");
+		
+	    private final String fieldDescription;
+
+	    private SIDE(String value) {
+	        fieldDescription = value;
+	    }
+
+	    public String toString() {
+	        return fieldDescription;
+	    }
 	}
 
 	private static Logger logger = Logger.getLogger(Profile.class);

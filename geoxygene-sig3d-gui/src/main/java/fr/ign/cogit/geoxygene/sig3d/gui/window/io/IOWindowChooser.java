@@ -5,7 +5,7 @@ import java.io.File;
 import javax.swing.JOptionPane;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.sig3d.Messages;
 import fr.ign.cogit.geoxygene.sig3d.gui.InterfaceMap3D;
 import fr.ign.cogit.geoxygene.sig3d.gui.filter.CITYGMLFilter;
@@ -39,7 +39,7 @@ public class IOWindowChooser {
     if(shpFilter.accept(f)){
       
       // On recupere le fichier
-      FT_FeatureCollection<IFeature> ftColl = (FT_FeatureCollection<IFeature>) ShapefileReader
+      IFeatureCollection<IFeature> ftColl = ShapefileReader
           .read(f.getAbsolutePath());
       // On procède aux tests d'usage
       if (ftColl == null) {

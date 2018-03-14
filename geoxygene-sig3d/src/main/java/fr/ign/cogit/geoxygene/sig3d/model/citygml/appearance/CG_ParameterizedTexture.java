@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.sig3d.model.citygml.appearance;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,10 +18,7 @@ public class CG_ParameterizedTexture extends CG_AbstractTexture {
   public CG_ParameterizedTexture(ParameterizedTexture pT) {
     super(pT);
 
-    if (pT.isSetTarget()) {
-
-    }
-
+    
     if (pT.isSetTarget()) {
 
       int nbTarget = pT.getTarget().size();
@@ -51,8 +49,37 @@ public class CG_ParameterizedTexture extends CG_AbstractTexture {
   
   
   public CG_AbstractTextureParameterization findTexture(String id){
+	  
+	  CG_AbstractTextureParameterization cgAT = mapTarget.get(id);
+	  
+	  if(cgAT == null){
+		  Collection<CG_AbstractTextureParameterization> coll = mapTarget.values();
+			
+			
+			for(CG_AbstractTextureParameterization param : coll){
+				
+				if(param instanceof CG_TexCoordList) {
+					CG_TexCoordList cGT = (CG_TexCoordList) param;
+					
+					
+					for(CG_TextureCoordinates coordList : cGT.getTextureCoordinates()){
+					//	System.out.println("Ring : " + coordList.getRing());
+						if(coordList.getRing().equalsIgnoreCase(id)){
+							cgAT = param;
+							break;
+						}
+					}
+					
+					
+				}else{
+
+					System.out.println("CG_StylePreparator : cas non traité" + param.getClass() );	
+				}
+				
+			}
+	  }
 	
-	  return mapTarget.get(id);
+	  return cgAT;
   }
 
   

@@ -98,7 +98,8 @@ public class DTMWindow extends JDialog implements ActionListener,
    * @param filePath le chemin du MNT
    * @param iMap3D la carte dans laquelle il sera affiché
    */
-  public DTMWindow(String filePath, InterfaceMap3D iMap3D) {
+  @SuppressWarnings("unchecked")
+public DTMWindow(String filePath, InterfaceMap3D iMap3D) {
 
     super();
     // Elle est rendue modale

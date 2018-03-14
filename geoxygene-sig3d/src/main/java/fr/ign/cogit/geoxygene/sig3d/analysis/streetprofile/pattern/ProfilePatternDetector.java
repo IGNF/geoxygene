@@ -2,6 +2,7 @@ package fr.ign.cogit.geoxygene.sig3d.analysis.streetprofile.pattern;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -22,13 +23,19 @@ public class ProfilePatternDetector {
 	public int getPatternMinLength() {
 		return patternMinLength;
 	}
+	
+	public HashMap<Integer,List<Pattern>> patternDetector(Profile p, Profile.SIDE s) {
+		return patternDetector(p,s,2);
+	}
 
-	public List<Pattern> patternDetector(Profile p, Profile.SIDE s) {
+	public HashMap<Integer,List<Pattern>> patternDetector(Profile p, Profile.SIDE s, double threshold) {
 
-		List<Pattern> lPatterns = new ArrayList<>();
+		//Integer = repeatLength; ListPattern contains best correlation
+		// (positive and negatiive and correlation other provided threshol in positive and negative)
+		HashMap<Integer,List<Pattern>> patternsMap = new HashMap<>();
 
 		if (this.patternMinLength < 1) {
-			return lPatterns;
+			return patternsMap;
 		}
 
 		// Longeur du signal
@@ -53,7 +60,48 @@ public class ProfilePatternDetector {
 					// Calcul du pattern
 					Pattern patternCalculated = calculateCorrelation(p, i, repeat, patternLength, s);
 					if (patternCalculated != null) {
-						lPatterns.add(patternCalculated);
+						
+						int repeatCalculated = patternCalculated.getRepeat();
+						
+						List<Pattern> lP = patternsMap.get(repeatCalculated);
+						
+						if(lP == null){
+							lP = new ArrayList<>();
+							patternsMap.put(repeatCalculated, lP);
+						}
+						
+						//0 or 1 element we add it
+						if(lP.size() == 1  ||lP.isEmpty()){
+							lP.add(patternCalculated);
+							Collections.sort(lP);
+							continue;
+						}
+						
+						
+						//List with more than 2 elements
+						double calculatedCorrelationValue = patternCalculated.getCorrelationScore();
+						//IS it the smallest ?
+						if(calculatedCorrelationValue < lP.get(0).getCorrelationScore()){
+							lP.add(0, patternCalculated);
+							if(Math.abs(lP.get(1).getCorrelationScore()) < threshold){
+								lP.remove(1);
+							}
+						}
+						
+						
+						//IS it the biggest ?
+						if(calculatedCorrelationValue > lP.get(lP.size()-1).getCorrelationScore()){
+							lP.add(patternCalculated);
+							if(Math.abs(lP.get(lP.size()-2).getCorrelationScore()) < threshold){
+								lP.remove(lP.size()-2);
+							}
+						}
+						
+						if(Math.abs(calculatedCorrelationValue) > threshold){
+							lP.add(patternCalculated);
+							Collections.sort(lP);
+						}
+						
 					}
 
 				}
@@ -62,8 +110,8 @@ public class ProfilePatternDetector {
 
 		}
 
-		Collections.sort(lPatterns);
-		return lPatterns;
+	
+		return patternsMap;
 
 	}
 

@@ -213,38 +213,9 @@ IDirectPosition dpOut =new DirectPosition(dp.getX() * 4970.125 ,
       }
 
     }
-    // Format3DSToGeoxygene.applyRotationX(lOS);
     return lOS;
 
   }
 
-  private static void applyRotationX(List<IOrientableSurface> lOS) {
-    int nbEl = lOS.size();
-
-    for (int i = 0; i < nbEl; i++) {
-
-      IDirectPositionList dpl = lOS.get(i).coord();
-
-      int dplS = dpl.size();
-
-      if (dpl.get(0) == dpl.get(dplS - 1)) {
-
-        dplS--;
-      }
-
-      for (int j = 0; j < dplS; j++) {
-
-        IDirectPosition dp = dpl.get(j);
-        double y = dp.getY();
-        double z = dp.getZ();
-
-        dp.setZ(y);
-        dp.setY(-z);
-
-      }
-
-    }
-
-  }
 
 }

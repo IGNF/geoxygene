@@ -770,7 +770,7 @@ public class TestUtil extends TestCase {
 		log.info("Test for method to compute area of a triangulated surface (cube)");
 
 		// Random cube parameter
-		double size = Math.random()*100.0; 
+		int size = (int) (Math.random()*100.0); 
 
 		// Creating triangulated cube
 		GM_Solid cube = Utils.createTriangulatedCube(0, 0, 0, size);

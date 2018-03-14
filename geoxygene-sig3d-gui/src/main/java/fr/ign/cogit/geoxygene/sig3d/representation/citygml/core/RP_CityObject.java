@@ -138,7 +138,11 @@ public class RP_CityObject extends Default3DRep {
 		} else if (cO instanceof CG_ReliefFeature) {
 			new RP_ReliefFeature((CG_ReliefFeature) cO, lCGA);
 
+		}else{
+			System.out.println("Non géré" + cO.getClass().toString());
 		}
+
+	
 
 		return;
 	}

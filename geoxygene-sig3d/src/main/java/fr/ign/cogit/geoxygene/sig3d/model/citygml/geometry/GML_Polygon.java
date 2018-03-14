@@ -2,6 +2,7 @@ package fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISurface;
@@ -13,9 +14,9 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
  * @author MBrasebin
  * 
  */
-public class GML_Polygon extends GM_Polygon {
+public class GML_Polygon extends GM_Polygon implements GML_Geometry {
 
-	public GML_Polygon( ICurve curve, double tolerance) throws Exception {
+	public GML_Polygon(ICurve curve, double tolerance) throws Exception {
 		super(curve, tolerance);
 		// TODO Auto-generated constructor stub
 	}
@@ -73,10 +74,13 @@ public class GML_Polygon extends GM_Polygon {
 	public void setID(String iD) {
 		this.ID = iD;
 	}
-	
-	
-	public String toString(){
-		return "ID " + this.getID() +"  " + super.toString();
+
+	public String toString() {
+		return "ID " + this.getID() + "  " + super.toString();
+	}
+
+	public IPolygon getGeometry() {
+		return this;
 	}
 
 }
