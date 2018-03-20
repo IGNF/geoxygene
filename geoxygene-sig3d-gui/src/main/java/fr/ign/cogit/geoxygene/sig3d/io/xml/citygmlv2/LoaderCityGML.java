@@ -47,14 +47,14 @@ public class LoaderCityGML {
 
 	public static boolean CLEAN_GEOX_GEOM = false;
 
-	public static VectorLayer read(File f, String context, String layerName)
+	public static VectorLayer read(File f, String context, String layerName, boolean generateRepresentation)
 			throws CityGMLReadException, JAXBException {
 
 		Context.CITY_GML_CONTEXT = context;
 
 		CityGMLReader reader = LoaderCityGML.getCityGMLInputFactory().createCityGMLReader(f);
 
-		System.out.println(reader.hasNext());
+		//System.out.println(reader.hasNext());
 
 		CityGML citygml = reader.nextFeature();
 
@@ -66,28 +66,32 @@ public class LoaderCityGML {
 
 		int nbElem = cityModel.size();
 
-		for (CG_CityObject cGO : cityModel.getElements()) {
+		if(generateRepresentation){
+			for (CG_CityObject cGO : cityModel.getElements()) {
 
-			if (cGO != null) {
-				RP_CityObject.generateCityObjectRepresentation(cGO, cityModel.getlCGA());
-			}
-
-			System.out.println("Représentation generated");
-		}
-
-		for (int i = 0; i < nbElem; i++) {
-
-			IFeature feat = cityModel.get(i);
-
-			if (feat.getRepresentation() == null) {
-
-				cityModel.remove(i);
-				i--;
-				nbElem--;
+				if (cGO != null) {
+					RP_CityObject.generateCityObjectRepresentation(cGO, cityModel.getlCGA());
+				}
 
 			}
+			
+			for (int i = 0; i < nbElem; i++) {
 
+				IFeature feat = cityModel.get(i);
+
+				if (feat.getRepresentation() == null) {
+
+					cityModel.remove(i);
+					i--;
+					nbElem--;
+
+				}
+
+			}
 		}
+	
+
+
 
 		return new CG_VectorLayer(cityModel, layerName);
 

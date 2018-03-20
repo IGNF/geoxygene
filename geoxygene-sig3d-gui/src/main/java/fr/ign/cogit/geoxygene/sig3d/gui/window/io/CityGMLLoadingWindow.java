@@ -121,7 +121,7 @@ public class CityGMLLoadingWindow extends JDialog implements ActionListener {
 
 				Context.LOD_REP = lod;
 
-				VectorLayer vl = LoaderCityGML.read(f, f.getParentFile().getAbsolutePath(), "CityGML_Layer");
+				VectorLayer vl = LoaderCityGML.read(f, f.getParentFile().getAbsolutePath(), "CityGML_Layer", true);
 
 				MainWindow win = new MainWindow();
 				Map3D carte = win.getInterfaceMap3D().getCurrent3DMap();

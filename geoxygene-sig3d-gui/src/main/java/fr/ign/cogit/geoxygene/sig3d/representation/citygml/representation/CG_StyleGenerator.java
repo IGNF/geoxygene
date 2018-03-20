@@ -126,7 +126,7 @@ public class CG_StyleGenerator {
 		IPolygon poly = polyIn.getGeometry();
 
 		// On compte le nombres de points
-		int npoints = poly.coord().size();
+		int npoints = poly.getExterior().coord().size();
 
 		int nbInt = poly.getInterior().size();
 		for (int i = 0; i < nbInt; i++) {

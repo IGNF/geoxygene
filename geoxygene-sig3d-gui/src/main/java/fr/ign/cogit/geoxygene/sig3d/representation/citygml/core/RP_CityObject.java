@@ -139,7 +139,7 @@ public class RP_CityObject extends Default3DRep {
 			new RP_ReliefFeature((CG_ReliefFeature) cO, lCGA);
 
 		}else{
-			System.out.println("Non géré" + cO.getClass().toString());
+			System.out.println("Not handeled" + cO.getClass().toString());
 		}
 
 	
