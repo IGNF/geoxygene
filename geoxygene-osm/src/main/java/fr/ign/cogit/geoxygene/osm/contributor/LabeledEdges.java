@@ -44,7 +44,7 @@ public class LabeledEdges {
 		LoadFromPostGIS loader = new LoadFromPostGIS("localhost", "5432", "paris", "postgres", "postgres");
 		Double[] bbox = { 2.3322, 48.8489, 2.3634, 48.8627 };
 		String[] timespan = { "2014-01-01", "2014-01-02" };
-		loader.selectNodes(bbox, timespan);
+		loader.getEvolutionVisibleNode(bbox, timespan);
 		// loader.selectWays(bbox, timespan);
 		HashMap<Long, OSMObject> nodeOSMObjects = IntrinsicAssessment.nodeContributionSummary(loader.myJavaObjects);
 		// HashMap<Long, OSMObject> wayOSMObjects =
