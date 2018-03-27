@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,7 +45,8 @@ public class LoadFromPostGIS {
 	public String dbUser;
 	public String dbPwd;
 	public Set<OSMResource> myJavaObjects;
-	public Map<OsmRelationMember, Long> OsmRelMbList;
+	// public Map<OsmRelationMember, Long> OsmRelMbList;
+	public Map<Long, List<OsmRelationMember>> OsmRelMbList;
 	public Set<OSMResource> myJavaRelations;
 
 	public LoadFromPostGIS(String host, String port, String dbName, String dbUser, String dbPwd) {
@@ -56,7 +56,8 @@ public class LoadFromPostGIS {
 		this.dbUser = dbUser;
 		this.dbPwd = dbPwd;
 		this.myJavaObjects = new HashSet<OSMResource>();
-		this.OsmRelMbList = new HashMap<OsmRelationMember, Long>();
+		// this.OsmRelMbList = new HashMap<OsmRelationMember, Long>();
+		this.OsmRelMbList = new HashMap<Long, List<OsmRelationMember>>();
 		this.myJavaRelations = new HashSet<OSMResource>();
 	}
 
@@ -130,182 +131,84 @@ public class LoadFromPostGIS {
 	 *            date du snapshot
 	 * @throws Exception
 	 */
-	public Set<OSMResource> getSnapshotBuilding(Double[] borders, String timestamp) throws Exception {
-		// Dernière version de tous les multipolygones en IdF à t1
-		getVisibleMultipolygons(timestamp);
+	public Map<Long, OSMResource> getSnapshotBuilding(Double[] borders, String timestamp) throws Exception {
+		Map<Long, OSMResource> latestBuildings = new HashMap<Long, OSMResource>();
 
-		// Dernière version de tous les ways en IdF à t1
-		this.getSnapshotWay(borders, timestamp); // Contenu dans myJavaObjects
+		// Dernière version de tous les ways à t1 à l'intérieur des frontières
+		getSnapshotVisibleWay(borders, timestamp);
+		System.out.println("nombre de ways visibles " + this.myJavaObjects.size());
 
-		Set<OSMResource> latestBuildings = new HashSet<OSMResource>();
-		// Parcourt tous les ways pour écrire les batiments et les
-		// multipolygones
-		int nbSimpleBuildings = 0;
+		// int nbSimpleBuildings = 0;
 		for (OSMResource way : this.myJavaObjects) {
-			boolean isMultipolygonMb = false;
-			// Cherche si l'objet est un batiment
-			if (way.getTags().containsKey("building")) {
-				// On l'ajoute directement s'il est invisible
-				if (!way.isVisible()) {
-					latestBuildings.add(way);
-					nbSimpleBuildings++;
-					continue;
-				}
-				// S'il appartient à un multipolygone, on ajoute l'objet
-				// relation (multipolygone)
-				for (OSMResource rel : this.myJavaRelations) {
-					List<Long> mbIDs = ((OSMRelation) rel.getGeom()).getMembersID();
-					if (mbIDs.contains(Long.valueOf(way.getId()))) {
-						latestBuildings.add(rel);
-						isMultipolygonMb = true;
-					}
-				}
-				// Si c'est un batiment simple (polygone), on l'ajoute
-				if (!isMultipolygonMb) {
-					latestBuildings.add(way);
-					nbSimpleBuildings++;
-				}
-			}
+			// System.out.println("Way ID : " + way.getId());
+			// System.out.println("---- Tags --- ");
+			if (way.getTags().containsKey("building"))
+				// for (String key : way.getTags().keySet()) {
+				// System.out.println("Key " + key + " - Value : " +
+				// way.getTags().get(key));
+				// }
+				// System.out.println("Way ID : " + way.getId());
+				// if (way.getTags().containsKey("buiding")) {
+				// System.out.println("Le way contient le tag 'building' ");
+				latestBuildings.put(way.getId(), way);
+			// nbSimpleBuildings++;
+			// }
 		}
-		// Parcourt toutes les relations pour écrire les batiments
-		// multipolygones
-		for (OSMResource m : this.myJavaRelations) {
-			if (latestBuildings.contains(m))
+		Map<Long, OSMResource> indexedWays = new HashMap<Long, OSMResource>();
+		for (OSMResource w : this.myJavaObjects)
+			indexedWays.put(w.getId(), w);
+		System.out.println("Nombre de ways chargés " + indexedWays.size());
+
+		// Dernière version de tous les multipolygones en IdF à t1
+		Set<OSMResource> latestMultipolygons = getBuildingRelations(timestamp);
+		for (OSMResource rel : latestMultipolygons) {
+			List<OsmRelationMember> outer = ((OSMRelation) rel.getGeom()).getOuterMembers();
+			// System.out.println("outer.size() = " + outer.size());
+			if (outer.size() != 1)
 				continue;
-			if (m.getTags().containsKey("building")) {
-				for (OSMResource w : this.myJavaObjects) {
-					if (latestBuildings.contains(w))
-						continue;
-					List<Long> mbIDs = ((OSMRelation) m.getGeom()).getMembersID();
-					if (mbIDs.contains(Long.valueOf(w.getId())))
-						latestBuildings.add(m);
-				}
+			System.out.println(" Outer member ID = " + outer.get(0).getRef());
+			if (indexedWays.keySet().contains(outer.get(0).getRef())) {
+				System.out.println("Relation " + rel.getId() + " est dans la ville ");
+				latestBuildings.remove(outer.get(0).getRef());
+				latestBuildings.put(rel.getId(), rel);
+				// indexedWays.remove(outer.get(0).getRef());
 			}
 		}
-		System.out.println("Nombre total batiments : " + latestBuildings.size() + " - Nombre de multipolygones "
-				+ (latestBuildings.size() - nbSimpleBuildings));
+		// System.out.println("Nombre de ways restants " + indexedWays.size());
+
+		System.out.println("Nombre total batiments : " + latestBuildings.size());
 		return latestBuildings;
 	}
 
-	/**
-	 * Get the evolution of the input buildings until a certain date and store
-	 * them in myJavaObjects attribute. Multipolygones members are stored in
-	 * OsmRelMbList attribute.
-	 * 
-	 * @param snapshotBuildings:
-	 *            set of buildings (OSMRelation or OSMWay)
-	 * @param borders
-	 * @param timespan
-	 * @throws Exception
-	 */
-	public Set<OSMResource> getEvolutionBuilding(Set<OSMResource> snapshotBuildings, Double[] borders,
-			String[] timespan) throws Exception {
-		Set<OSMResource> buildingsWithinTimespan = new HashSet<OSMResource>();
+	public Set<OSMResource> getInvisibleBuilding(Double[] borders, String timestamp) throws Exception {
+		Set<OSMResource> invisible = new HashSet<OSMResource>();
 		java.sql.Connection conn;
 		try {
 			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
 			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
 			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			String query = "";
-			ResultSet r;
-			for (OSMResource building : snapshotBuildings) {
-				if (building.getGeom().getClass().getSimpleName().equalsIgnoreCase("OSMWay")) {
-					// Query PostGIS table way : select the evolution of
-					// existing ways
-					query = "SELECT way.id,way.uid,way.vway, way.changeset, way.username, way.datemodif, hstore_to_json(way.tags), way.visible,way.composedof FROM way "
-							+ "WHERE id = " + building.getId() + " AND vway > " + building.getVersion()
-							+ " AND datemodif <='" + timespan[1] + "';";
-					r = s.executeQuery(query);
-					while (r.next())
-						buildingsWithinTimespan.add(this.writeWay(r));
 
-				}
-				if (building.getGeom().getClass().getSimpleName().equalsIgnoreCase("OSMRelation")) {
-					String queryRelation = "SELECT idrel FROM relation WHERE id = " + building.getId() + " AND vrel > "
-							+ building.getVersion() + " AND datemodif <= '" + timespan[1] + "'";
-					// First, query PostGIS table relation member
-					query = "SELECT * FROM relationmember r, (" + queryRelation
-							+ ") AS later_idrel WHERE r.idrel =  later_idrel.idrel";
-					r = s.executeQuery(query);
-					this.writeOSMResource(r, "relationmember");
-					// Then query PostGIS table relation
-					queryRelation = "SELECT idrel, id, uid, vrel, changeset, username, datemodif, hstore_to_json(tags), visible FROM relation"
-							+ " WHERE id = " + building.getId() + " AND vrel > " + building.getVersion()
-							+ " AND datemodif <= '" + timespan[1] + "'";
-					r = s.executeQuery(queryRelation);
-					while (r.next())
-						buildingsWithinTimespan.add(this.writeRelation(r));
-				}
+			String uniqueWayQuery = "SELECT DISTINCT ON (id) * FROM way WHERE tags ?& ARRAY['building'] "
+					+ "AND lon_min >= " + borders[0] + "AND lat_min>= " + borders[1] + "AND lon_max<= " + borders[2]
+					+ "AND lat_max<= " + borders[3] + "ORDER BY id, datemodif DESC";
+			String infoWayQuery = "SELECT max(way.vway) as max, way.id FROM way, (" + uniqueWayQuery
+					+ ") as unique_way WHERE way.id = unique_way.id AND way.datemodif <='" + timestamp
+					+ "' AND way.visible IS FALSE GROUP BY way.id";
+			String query = "SELECT way.idway, way.id, way.uid, way.vway, way.changeset, way.username, way.datemodif, hstore_to_json(way.tags), way.composedof, way.visible "
+					+ "FROM way, (" + infoWayQuery
+					+ ") AS info_way WHERE way.id=info_way.id AND way.vway=info_way.max;";
 
-			}
-			// Query the evolutions of ways and multipolygons that are created
-			// within timespan
-			Set<OSMResource> waysCreated = this.getEvolutionWay(borders, timespan);
-			Set<OSMResource> multipolygonsCreated = this.getEvolutionMultipolygons(borders, timespan);
-
-			// Parcourt les batiments qui sont dans des multipolygones
-			for (OSMResource way : waysCreated) {
-				if (way.getTags().containsKey("building")) {
-					if (!way.isVisible())
-						buildingsWithinTimespan.add(way);
-					// On commence par déterminer les dates de validité pour
-					// lesquelles considérer les multipolygones auxquels peuvent
-					// appartenir les ways
-					Iterator<OSMResource> it = waysCreated.iterator();
-					Date nextVersion = null;
-					while (it.hasNext() && nextVersion == null) {
-						OSMResource next = it.next();
-						if (next.getDate().after(way.getDate()))
-							continue;
-						if (next.getId() == way.getId())
-							nextVersion = next.getDate();
-					}
-					// Parcourt des multipolygones appartenant à l'intervalle de
-					// validité du way
-					boolean isMultipolygonMb = false;
-					it = multipolygonsCreated.iterator();
-					while (it.hasNext()) {
-						OSMResource rel = it.next();
-						if (rel.getDate().before(way.getDate()))
-							continue;
-						if (nextVersion != null)
-							if (rel.getDate().after(nextVersion))
-								break;
-						List<Long> mbIDs = ((OSMRelation) rel.getGeom()).getMembersID();
-						if (mbIDs.contains(Long.valueOf(way.getId()))) {
-							buildingsWithinTimespan.add(rel);
-							isMultipolygonMb = true;
-						}
-					}
-					if (!isMultipolygonMb)
-						buildingsWithinTimespan.add(way);
-				}
-			}
-			// Parcourt les batiments multipolygones
-			for (OSMResource m : multipolygonsCreated) {
-				if (buildingsWithinTimespan.contains(m))
-					continue;
-				Iterator<OSMResource> it = waysCreated.iterator();
-				while (it.hasNext()) {
-					OSMResource w = it.next();
-					if (w.getDate().after(m.getDate()))
-						break;
-					if (!w.isVisible())
-						continue;
-					if (!w.getTags().containsKey("building"))
-						continue;
-					List<Long> mbIDs = ((OSMRelation) m.getGeom()).getMembersID();
-					if (mbIDs.contains(Long.valueOf(w.getId()))) {
-						buildingsWithinTimespan.add(m);
-						break;
-					}
-				}
-			}
-
-			return buildingsWithinTimespan;
+			ResultSet r = s.executeQuery(query);
+			System.out.println("------- Query Executed -------");
+			while (r.next())
+				invisible.add(this.writeWay(r));
+			s.close();
+			conn.close();
+			return invisible;
 		} catch (Exception e) {
 			throw e;
 		}
+
 	}
 
 	/**
@@ -316,7 +219,7 @@ public class LoadFromPostGIS {
 	 * @throws Exception
 	 */
 	public Set<OSMResource> getVisibleMultipolygons(String timestamp) throws Exception {
-		Set<OSMResource> multipolygons = new TreeSet<OSMResource>(new OSMResourceComparator());
+		Set<OSMResource> multipolygons = new HashSet<OSMResource>();
 		java.sql.Connection conn;
 		try {
 			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
@@ -329,9 +232,6 @@ public class LoadFromPostGIS {
 			String query = "SELECT r.* FROM relationmember r, (" + visibleAtT1 + ") AS visible_at_t1 "
 					+ "WHERE r.idrel = visible_at_t1.idrel AND (r.rolemb = 'inner' OR r.rolemb = 'outer') ORDER BY r.idrel;";
 			ResultSet r = s.executeQuery(query);
-			r = s.executeQuery(query);
-			System.out.println("------- Query Executed -------");
-
 			// Writes all the relation members that were queried
 			writeOSMResource(r, "relationmember");
 
@@ -346,6 +246,40 @@ public class LoadFromPostGIS {
 			s.close();
 			conn.close();
 			return multipolygons;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	public Set<OSMResource> getBuildingRelations(String timestamp) throws Exception {
+		Set<OSMResource> buildings = new HashSet<OSMResource>();
+		java.sql.Connection conn;
+		try {
+			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
+			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			String queryUniqueRel = "SELECT max(vrel) AS max, id FROM relation WHERE tags ?& ARRAY [ 'building' ] GROUP BY id";
+			String multipolygon = "SELECT idrel FROM relation r , (" + queryUniqueRel + ") AS unique_rel  "
+					+ "WHERE r.id=unique_rel.id AND r.vrel=unique_rel.max";
+			String query = "SELECT r.* FROM relationmember r, (" + multipolygon + ") AS multipolygon "
+					+ "WHERE r.idrel = multipolygon.idrel";
+			ResultSet r = s.executeQuery(query);
+			// Writes all the relation members that were queried
+			writeOSMResource(r, "relationmember");
+
+			for (Long idrel : this.OsmRelMbList.keySet()) {
+				query = "SELECT relation.idrel, relation.id, relation.uid, relation.vrel, relation.changeset, relation.username, relation.datemodif, hstore_to_json(relation.tags), relation.visible"
+						+ " FROM relation WHERE idrel = " + idrel;
+				r = s.executeQuery(query);
+				// Writes all the relation that were queried
+				while (r.next()) {
+					buildings.add(this.writeRelation(r));
+				}
+			}
+			s.close();
+			conn.close();
+
+			return buildings;
 		} catch (Exception e) {
 			throw e;
 		}
@@ -390,8 +324,8 @@ public class LoadFromPostGIS {
 			// Query the created multipolygons' evolution until end date
 			queryCreatedRelations = "SELECT id FROM relation WHERE datemodif > '" + timespan[0] + "' AND datemodif <= '"
 					+ timespan[1] + "' AND tags->'type'='multipolygon' AND vrel = 1";
-			query = "SELECT * FROM relation r, (" + queryCreatedRelations
-					+ ") WHERE r.id = rel_crees.id AND r.vrel > 1 AND r.datemodif <= '" + timespan[1] + "'";
+			query = "SELECT * FROM relation r, (" + queryCreatedRelations + ") AS rel_crees"
+					+ " WHERE r.id = rel_crees.id AND r.vrel > 1 AND r.datemodif <= '" + timespan[1] + "'";
 			query = "SELECT * FROM relationmember r, (" + query + ")  AS rel_evol WHERE r.idrel = rel_evol.idrel ";
 			r = s.executeQuery(query);
 			this.writeOSMResource(r, "relationmember");
@@ -513,7 +447,7 @@ public class LoadFromPostGIS {
 	 * @throws Exception
 	 */
 	public Set<OSMResource> getSnapshotWay(Double[] borders, String timestamp) throws Exception {
-		Set<OSMResource> waySet = new TreeSet<OSMResource>(new OSMResourceComparator());
+		Set<OSMResource> waySet = new HashSet<OSMResource>();
 		java.sql.Connection conn;
 		try {
 			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
@@ -553,7 +487,7 @@ public class LoadFromPostGIS {
 	 * @throws Exception
 	 */
 	public Set<OSMResource> getEvolutionWay(Double[] borders, String[] timespan) throws Exception {
-		Set<OSMResource> waySet = new TreeSet<OSMResource>(new OSMResourceComparator());
+		Set<OSMResource> waySet = new HashSet<OSMResource>();
 		java.sql.Connection conn;
 		try {
 			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
@@ -568,7 +502,8 @@ public class LoadFromPostGIS {
 					+ "' AND lon_min >= " + borders[0] + " AND lat_min>=" + borders[1] + " AND lon_max<=" + borders[2]
 					+ " AND lat_max<=" + borders[3];
 			r = s.executeQuery(queryCreatedWays);
-			this.writeOSMResource(r, "way");
+			while (r.next())
+				waySet.add(this.writeWay(r));
 			// Query the created ways' evolution until end date
 			queryCreatedWays = "SELECT id FROM way " + "WHERE vway = 1 AND datemodif > '" + timespan[0]
 					+ "' AND datemodif <= '" + timespan[1] + "' AND lon_min >= " + borders[0] + " AND lat_min>="
@@ -1151,19 +1086,28 @@ public class LoadFromPostGIS {
 			if (osmDataType.equalsIgnoreCase("relation")) {
 				System.out.println("Writing resource with type relation...");
 				// writeRelation(r);
-				this.myJavaObjects.add(writeRelation(r));
+				this.myJavaRelations.add(writeRelation(r));
 			}
 			if (osmDataType.equalsIgnoreCase("relationmember")) {
-				this.OsmRelMbList.put(writeRelationMember(r), r.getLong("idrel"));
+				// this.OsmRelMbList.put(writeRelationMember(r),
+				// r.getLong("idrel"));
+				if (this.OsmRelMbList.containsKey(r.getLong("idrel")))
+					this.OsmRelMbList.get(r.getLong("idrel")).add(writeRelationMember(r));
+				else {
+					List<OsmRelationMember> mbList = new ArrayList<OsmRelationMember>();
+					mbList.add(writeRelationMember(r));
+					this.OsmRelMbList.put(r.getLong("idrel"), mbList);
+				}
+				// writeRelationMember(r));
 
 			}
 		}
 	}
 
 	public OsmRelationMember writeRelationMember(ResultSet r) throws Exception {
-		boolean isNode = r.getString("typeMb").toLowerCase().equalsIgnoreCase("node");
-		boolean isWay = r.getString("typeMb").toLowerCase().equalsIgnoreCase("way");
-		boolean isRelation = r.getString("typeMb").toLowerCase().equalsIgnoreCase("relation");
+		boolean isNode = r.getString("typeMb").toLowerCase().equalsIgnoreCase("n");
+		boolean isWay = r.getString("typeMb").toLowerCase().equalsIgnoreCase("w");
+		boolean isRelation = r.getString("typeMb").toLowerCase().equalsIgnoreCase("r");
 		Long idmb = r.getLong("idmb");
 		if (r.getString("rolemb").toLowerCase().equalsIgnoreCase("outer")) {
 			OsmRelationMember osmRelMb = new OsmRelationMember(RoleMembre.OUTER, isNode, isWay, isRelation, idmb);
@@ -1193,28 +1137,32 @@ public class LoadFromPostGIS {
 		}
 
 		// Crée une liste de membres de relation: parcourt OsmRelMbList
-		ArrayList<OsmRelationMember> mbList = new ArrayList<OsmRelationMember>();
-		for (OsmRelationMember mb : OsmRelMbList.keySet()) {
-			// System.out.println("ID : " + r.getString("id") + " Version : " +
-			// r.getString("vrel") + "Concaténation "
-			// + Long.valueOf(r.getString("id") + r.getString("vrel")));
-			if (OsmRelMbList.get(mb).equals(Long.valueOf(r.getString("id") + r.getString("vrel"))))
-				mbList.add(mb);
-		}
-
+		List<OsmRelationMember> mbList = new ArrayList<OsmRelationMember>();
+		// for (OsmRelationMember mb : OsmRelMbList.keySet()) {
+		// if (OsmRelMbList.get(mb).equals(Long.valueOf(r.getString("id") +
+		// r.getString("vrel"))))
+		// mbList.add(mb);
+		// }
+		Long idrel = r.getLong("idrel");
+		String user = r.getString("username");
+		Long id = r.getLong("id");
+		Integer changeset = r.getInt("changeset");
+		Integer vrel = r.getInt("vrel");
+		Integer uid = r.getInt("uid");
+		mbList = this.OsmRelMbList.get(idrel);
 		// Récupère le type de relation (MULTIPOLYGON ou NON_DEF)
 		TypeRelation relType = getRelationType(r);
 		PrimitiveGeomOSM myRelation = new OSMRelation(relType, mbList);
 
 		// Creates a new OSMResource
-		OSMResource myOsmResource = new OSMResource(r.getString("username"), myRelation, r.getLong("id"),
-				r.getInt("changeset"), r.getInt("vrel"), r.getInt("uid"), date);
+		OSMResource myOsmResource = new OSMResource(user, myRelation, id, changeset, vrel, uid, date);
 		// Visible : peut être null
 		myOsmResource.setVisible(r.getBoolean("visible"));
+		String hstoreToJson = r.getString("hstore_to_json");
 		// Add tags if exist
-		if (!r.getString("hstore_to_json").toString().equalsIgnoreCase("{}")) {
+		if (!hstoreToJson.toString().equalsIgnoreCase("{}")) {
 			try {
-				JSONObject obj = new JSONObject(r.getString("hstore_to_json"));
+				JSONObject obj = new JSONObject(hstoreToJson);
 				for (int i = 0; i < obj.names().length(); i++) {
 					String key = obj.names().getString(i);
 					String value = obj.getString(key);
@@ -1230,7 +1178,7 @@ public class LoadFromPostGIS {
 				+ myOsmResource.getContributeur() + "     uid = " + myOsmResource.getUid() + "\nvrel = "
 				+ myOsmResource.getVersion() + "\ndate = " + myOsmResource.getDate() + "   Changeset = "
 				+ myOsmResource.getChangeSet());
-		this.myJavaRelations.add(myOsmResource);
+		// this.myJavaRelations.add(myOsmResource);
 
 		System.out.println("-------------------------------------------");
 		return myOsmResource;
