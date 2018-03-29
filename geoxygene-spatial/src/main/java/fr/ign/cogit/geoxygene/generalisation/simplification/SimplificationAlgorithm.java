@@ -75,6 +75,11 @@ public class SimplificationAlgorithm {
       cps = PolygonSegment.getSmallest(poly_, seuil);
     }
 
+    // sometimes the algorithm bugs and produces very large polygon. This
+    // verification prevents such problems
+    if (poly_.area() > 2 * poly.area())
+      return poly;
+
     return poly_;
   }
 
@@ -105,8 +110,8 @@ public class SimplificationAlgorithm {
     }
 
     // recupere resultat d'essai de suppression du cote de l'anneau
-    resultatSuppressionCoteLigne res = SimplificationAlgorithm.suppressionCote(
-        anneauJTS, cotePolygone.segment);
+    resultatSuppressionCoteLigne res = SimplificationAlgorithm
+        .suppressionCote(anneauJTS, cotePolygone.segment);
 
     // en cas d'echec, renvoyer un echec
     if (!res.ok) {
@@ -150,8 +155,8 @@ public class SimplificationAlgorithm {
   public static LineString simplification(LinearRing lr, double seuil) {
 
     if (SimplificationAlgorithm.logger.isDebugEnabled()) {
-      SimplificationAlgorithm.logger.debug("recupere les cotes trop courts, < "
-          + seuil);
+      SimplificationAlgorithm.logger
+          .debug("recupere les cotes trop courts, < " + seuil);
     }
     LinearRing lr_ = (LinearRing) lr.clone();
     ArrayList<LineStringSegment> cotesTropCourts = LineStringSegment
@@ -204,8 +209,8 @@ public class SimplificationAlgorithm {
 
     // s'il y a moins de 3 points, sortir
     if (coord.length <= 4) {
-      SimplificationAlgorithm.logger.debug("simplification de " + lr
-          + " impossible: moins de trois points");
+      SimplificationAlgorithm.logger.debug(
+          "simplification de " + lr + " impossible: moins de trois points");
       return new resultatSuppressionCoteLigne(null, false);
     }
 
@@ -276,7 +281,8 @@ public class SimplificationAlgorithm {
       }
     }
 
-    else if (Math.abs(angle) <= SimplificationAlgorithm.SEUIL_COTES_PARRALLELES) {
+    else if (Math
+        .abs(angle) <= SimplificationAlgorithm.SEUIL_COTES_PARRALLELES) {
       // cotes presque paralleles
       // on est en presence d'un petit depassement
       // tente de projeter a_ et b_ respectivement sur (b,b_) et (a,a_)
@@ -290,22 +296,22 @@ public class SimplificationAlgorithm {
       }
 
       // calcul du projete de a_ sur (b,b_)
-      double aux_a = ((b.x - b_.x) * (a_.x - b_.x) + (b.y - b_.y)
-          * (a_.y - b_.y))
+      double aux_a = ((b.x - b_.x) * (a_.x - b_.x)
+          + (b.y - b_.y) * (a_.y - b_.y))
           / ((b.x - b_.x) * (b.x - b_.x) + (b.y - b_.y) * (b.y - b_.y));
-      Coordinate ca = new Coordinate(b_.x + aux_a * (b.x - b_.x), b_.y + aux_a
-          * (b.y - b_.y));
-      boolean app_a = (b_.x - ca.x) * (b.x - ca.x) + (b_.y - ca.y)
-          * (b.y - ca.y) < 0;
+      Coordinate ca = new Coordinate(b_.x + aux_a * (b.x - b_.x),
+          b_.y + aux_a * (b.y - b_.y));
+      boolean app_a = (b_.x - ca.x) * (b.x - ca.x)
+          + (b_.y - ca.y) * (b.y - ca.y) < 0;
 
       // calcul du projete de b_ sur (a,a_)
-      double aux_b = ((a.x - a_.x) * (b_.x - a_.x) + (a.y - a_.y)
-          * (b_.y - a_.y))
+      double aux_b = ((a.x - a_.x) * (b_.x - a_.x)
+          + (a.y - a_.y) * (b_.y - a_.y))
           / ((a.x - a_.x) * (a.x - a_.x) + (a.y - a_.y) * (a.y - a_.y));
-      Coordinate cb = new Coordinate(a_.x + aux_b * (a.x - a_.x), a_.y + aux_b
-          * (a.y - a_.y));
-      boolean app_b = (a_.x - cb.x) * (a.x - cb.x) + (a_.y - cb.y)
-          * (a.y - cb.y) < 0;
+      Coordinate cb = new Coordinate(a_.x + aux_b * (a.x - a_.x),
+          a_.y + aux_b * (a.y - a_.y));
+      boolean app_b = (a_.x - cb.x) * (a.x - cb.x)
+          + (a_.y - cb.y) * (a.y - cb.y) < 0;
 
       // determination des deux coordonnees a garder
       Coordinate c1, c2;
@@ -449,7 +455,7 @@ public class SimplificationAlgorithm {
    */
   public static class resultatSuppressionCotePolygone {
     /**
-		 */
+    	 */
     public IPolygon poly = null;
     public boolean ok = false;
 
