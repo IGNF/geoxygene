@@ -122,6 +122,27 @@ public class LoadFromPostGIS {
 	}
 
 	/**
+	 * Creates a new set of OSMResource data which contain at least one of the
+	 * input key tags
+	 * 
+	 * @param keyTags:
+	 *            list of key tags
+	 * @return a set of data filtered by key tags
+	 */
+	public Set<OSMResource> filterByTags(String[] keyTags) {
+		Set<OSMResource> filteredData = new HashSet<OSMResource>();
+		for (OSMResource r : this.myJavaObjects) {
+			for (String s : keyTags) {
+				if (r.getTags().containsKey(s)) {
+					filteredData.add(r);
+					break;
+				}
+			}
+		}
+		return filteredData;
+	}
+
+	/**
 	 * Loads the latest version of every building that was created inside the
 	 * input borders. The buildings can be visible or not.
 	 * 
@@ -208,7 +229,6 @@ public class LoadFromPostGIS {
 		} catch (Exception e) {
 			throw e;
 		}
-
 	}
 
 	/**
@@ -345,6 +365,34 @@ public class LoadFromPostGIS {
 		}
 	}
 
+	public Set<OSMResource> getNodes(List<Long> nodes, String timestamp) throws Exception {
+		Set<OSMResource> nodeSet = new HashSet<OSMResource>();
+
+		java.sql.Connection conn;
+		try {
+			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
+			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+			for (int i = 0; i < nodes.size() - 1; i++) {
+				Long id = nodes.get(i);
+				String vmax = "(SELECT max(vnode) AS max FROM node WHERE id = " + id + " AND datemodif <= '" + timestamp
+						+ "')";
+				String query = "SELECT node.idnode, node.id,node.uid,node.vnode, node.changeset, node.username, node.datemodif, hstore_to_json(node.tags), node.visible, node.lon, node.lat "
+						+ "FROM node WHERE id = " + id + " AND vnode = " + vmax;
+				ResultSet r = s.executeQuery(query);
+				while (r.next())
+					nodeSet.add(this.writeNode(r));
+			}
+
+			s.close();
+			conn.close();
+			return nodeSet;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
 	/**
 	 * Get the latest version of all nodes (visible or not) that are contained
 	 * inside the borders
@@ -433,6 +481,31 @@ public class LoadFromPostGIS {
 			s.close();
 			conn.close();
 			return nodeSet;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	public OSMResource getWay(Long id, String timestamp) throws Exception {
+		java.sql.Connection conn;
+		try {
+			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
+			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			// Query the evolution of all buildings which where selected at
+			// timespan[0] until timespan[1]
+			String vmax = "(SELECT max(vway) AS max FROM way WHERE id = " + id + " AND datemodif <= '" + timestamp
+					+ "')";
+			String query = "SELECT way.id,way.uid,way.vway, way.changeset, way.username, way.datemodif, hstore_to_json(way.tags), way.visible,way.composedof "
+					+ "FROM way WHERE id = " + id + " AND vway = " + vmax;
+			ResultSet r = s.executeQuery(query);
+			System.out.println("------- Query Executed -------");
+			OSMResource way = null;
+			while (r.next())
+				way = writeWay(r);
+			s.close();
+			conn.close();
+			return way;
 		} catch (Exception e) {
 			throw e;
 		}
