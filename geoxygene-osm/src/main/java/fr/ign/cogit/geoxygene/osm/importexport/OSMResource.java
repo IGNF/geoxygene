@@ -45,7 +45,7 @@ public class OSMResource {
 	}
 
 	public String getSource() {
-		return source;
+		return this.tags.get("source");
 	}
 
 	public void setSource(String source) {
