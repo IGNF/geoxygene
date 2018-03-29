@@ -14,7 +14,6 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.contrib.geometrie.IndicesForme;
-import fr.ign.cogit.geoxygene.osm.NePasCommit.NumberPointsException;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMRelation;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMResource;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMWay;
@@ -86,8 +85,9 @@ public class BuildingAssessment {
 
 				IPolygon polygon = OsmGeometryConversion.convertOSMPolygonToLambert93((OSMWay) outerWay.getGeom(),
 						nodes);
-				if (polygon.dimension() < 2)
-					throw new NumberPointsException("Way #" + b.getId() + " est composé de " + nodes.size() + "nodes");
+				// if (polygon.dimension() < 2)
+				// throw new NumberPointsException("Way #" + b.getId() + " est
+				// composé de " + nodes.size() + "nodes");
 
 				List<OsmRelationMember> inners = primitive.getInnerMembers();
 				// add inner rings to polygon
