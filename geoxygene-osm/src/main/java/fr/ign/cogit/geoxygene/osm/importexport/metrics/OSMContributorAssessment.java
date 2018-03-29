@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.osm.importexport.metrics;
 
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -44,7 +45,7 @@ public class OSMContributorAssessment {
 	 * @param user
 	 * @return number of contributions produced on Saturdays and Sundays
 	 */
-	public static Integer getNbWeekendContributions(Set<OSMResource> contributions) {
+	public static Integer getNbWeekendContributions(Collection<OSMResource> contributions) {
 		int nbWeekendContrib = 0;
 		for (OSMResource obj : contributions) {
 			Date contributionDate = obj.getDate();
@@ -63,7 +64,7 @@ public class OSMContributorAssessment {
 	 * @param contributions
 	 * @return
 	 */
-	public static Integer getNbNightContributions(Set<OSMResource> contributions) {
+	public static Integer getNbNightContributions(Collection<OSMResource> contributions) {
 		int nbNightContrib = 0;
 		for (OSMResource obj : contributions) {
 			Date contributionDate = obj.getDate();
@@ -81,7 +82,7 @@ public class OSMContributorAssessment {
 		return nbNightContrib;
 	}
 
-	public static Integer getNbCreations(Set<OSMResource> contributions) {
+	public static Integer getNbCreations(Collection<OSMResource> contributions) {
 		int nbCrea = 0;
 		for (OSMResource r : contributions) {
 			if (r.getVersion() == 1)
@@ -90,7 +91,7 @@ public class OSMContributorAssessment {
 		return nbCrea;
 	}
 
-	public static Integer getNbModification(Set<OSMResource> contributions) {
+	public static Integer getNbModification(Collection<OSMResource> contributions) {
 		int k = 0;
 		for (OSMResource r : contributions)
 			if (r.getVersion() > 1)
@@ -98,7 +99,7 @@ public class OSMContributorAssessment {
 		return k;
 	}
 
-	public static Integer getNbDeletes(Set<OSMResource> contributions) {
+	public static Integer getNbDeletes(Collection<OSMResource> contributions) {
 		int k = 0;
 		for (OSMResource r : contributions)
 			if (!r.isVisible())
@@ -107,7 +108,7 @@ public class OSMContributorAssessment {
 	}
 	// getNbReverts(Set<OSMResource> contributions)
 
-	public static Integer getNbCreatedNodes(Set<OSMResource> contributions) {
+	public static Integer getNbCreatedNodes(Collection<OSMResource> contributions) {
 		int k = 0;
 		for (OSMResource r : contributions)
 			if (r.getGeom().getClass().getSimpleName().equalsIgnoreCase("OSMNode"))
@@ -116,7 +117,7 @@ public class OSMContributorAssessment {
 		return k;
 	}
 
-	public static Integer getNbCreatedWays(Set<OSMResource> contributions) {
+	public static Integer getNbCreatedWays(Collection<OSMResource> contributions) {
 		int k = 0;
 		for (OSMResource r : contributions)
 			if (r.getGeom().getClass().getSimpleName().equalsIgnoreCase("OSMWay"))
@@ -125,7 +126,7 @@ public class OSMContributorAssessment {
 		return k;
 	}
 
-	public static Integer getNbCreatedRelations(Set<OSMResource> contributions) {
+	public static Integer getNbCreatedRelations(Collection<OSMResource> contributions) {
 		int k = 0;
 		for (OSMResource r : contributions)
 			if (r.getGeom().getClass().getSimpleName().equalsIgnoreCase("OSMRelation"))
@@ -134,7 +135,7 @@ public class OSMContributorAssessment {
 		return k;
 	}
 
-	public static Integer getNbModifiedNodes(Set<OSMResource> contributions) {
+	public static Integer getNbModifiedNodes(Collection<OSMResource> contributions) {
 		int k = 0;
 		for (OSMResource r : contributions)
 			if (r.getGeom().getClass().getSimpleName().equalsIgnoreCase("OSMNode"))
@@ -144,7 +145,7 @@ public class OSMContributorAssessment {
 		return k;
 	}
 
-	public static Integer getNbDeletedNodes(Set<OSMResource> contributions) {
+	public static Integer getNbDeletedNodes(Collection<OSMResource> contributions) {
 		int k = 0;
 		for (OSMResource r : contributions)
 			if (r.getGeom().getClass().getSimpleName().equalsIgnoreCase("OSMNode"))
@@ -154,7 +155,7 @@ public class OSMContributorAssessment {
 		return k;
 	}
 
-	public static Integer getNbDeletedWays(Set<OSMResource> contributions) {
+	public static Integer getNbDeletedWays(Collection<OSMResource> contributions) {
 		int k = 0;
 		for (OSMResource r : contributions)
 			if (r.getGeom().getClass().getSimpleName().equalsIgnoreCase("OSMWay"))
@@ -164,7 +165,7 @@ public class OSMContributorAssessment {
 		return k;
 	}
 
-	public static Integer getNbDeletedRelations(Set<OSMResource> contributions) {
+	public static Integer getNbDeletedRelations(Collection<OSMResource> contributions) {
 		int k = 0;
 		for (OSMResource r : contributions)
 			if (r.getGeom().getClass().getSimpleName().equalsIgnoreCase("OSMRelation"))
@@ -195,20 +196,24 @@ public class OSMContributorAssessment {
 	 * @return the number of changesets a user produced since his/her
 	 *         registration on OSM
 	 */
-	public static Integer getTotalChgsetCount(Integer uid) {
+	public static Integer getTotalChgsetCount(Integer uid) throws NullPointerException {
 		int nbChgsetTot = 0;
-		String urlAPI = "http://www.openstreetmap.org/api/0.6/user/" + uid;
-		Document xml = SQLDBPreAnonymization.getDataFromAPI(urlAPI);
+		try {
+			String urlAPI = "http://api.openstreetmap.org/api/0.6/user/" + uid;
+			Document xml = SQLDBPreAnonymization.getDataFromAPI(urlAPI);
 
-		Node osm = xml.getFirstChild();
-		Element user = (Element) osm.getChildNodes().item(1);
-		NodeList properties = user.getChildNodes();
-		for (int i = 0; i < properties.getLength(); i++) {
-			if (properties.item(i).getNodeType() == Node.ELEMENT_NODE) {
-				Element elt = (Element) properties.item(i);
-				if (elt.getNodeName().equals("changesets"))
-					nbChgsetTot = Integer.valueOf(elt.getAttribute("count"));
+			Node osm = xml.getFirstChild();
+			Element user = (Element) osm.getChildNodes().item(1);
+			NodeList properties = user.getChildNodes();
+			for (int i = 0; i < properties.getLength(); i++) {
+				if (properties.item(i).getNodeType() == Node.ELEMENT_NODE) {
+					Element elt = (Element) properties.item(i);
+					if (elt.getNodeName().equals("changesets"))
+						nbChgsetTot = Integer.valueOf(elt.getAttribute("count"));
+				}
 			}
+		} catch (NullPointerException e) {
+			return null;
 		}
 		return nbChgsetTot;
 	}
@@ -218,25 +223,28 @@ public class OSMContributorAssessment {
 	 * @param uid
 	 * @return number of received block for a OSM user
 	 */
-	public static Integer getNbBlockReceived(Integer uid) {
-		String urlAPI = "http://www.openstreetmap.org/api/0.6/user/" + uid;
-		Document xml = SQLDBPreAnonymization.getDataFromAPI(urlAPI);
+	public static Integer getNbBlockReceived(Integer uid) throws NullPointerException {
+		try {
+			String urlAPI = "http://api.openstreetmap.org/api/0.6/user/" + uid;
+			Document xml = SQLDBPreAnonymization.getDataFromAPI(urlAPI);
+			Node osm = xml.getFirstChild();
+			Element user = (Element) osm.getChildNodes().item(1);
+			NodeList properties = user.getChildNodes();
+			for (int i = 0; i < properties.getLength(); i++) {
+				if (properties.item(i).getNodeType() == Node.ELEMENT_NODE) {
+					Element elt = (Element) properties.item(i);
+					// System.out.println(elt.getNodeName());
+					if (elt.getNodeName().equals("blocks")) {
+						Element blocks = (Element) elt.getChildNodes().item(1);
+						// System.out.println(blocks.getNodeName());
+						// System.out.println(Integer.valueOf(blocks.getAttribute("count")));
+						return Integer.valueOf(blocks.getAttribute("count"));
+					}
 
-		Node osm = xml.getFirstChild();
-		Element user = (Element) osm.getChildNodes().item(1);
-		NodeList properties = user.getChildNodes();
-		for (int i = 0; i < properties.getLength(); i++) {
-			if (properties.item(i).getNodeType() == Node.ELEMENT_NODE) {
-				Element elt = (Element) properties.item(i);
-				// System.out.println(elt.getNodeName());
-				if (elt.getNodeName().equals("blocks")) {
-					Element blocks = (Element) elt.getChildNodes().item(1);
-					// System.out.println(blocks.getNodeName());
-					// System.out.println(Integer.valueOf(blocks.getAttribute("count")));
-					return Integer.valueOf(blocks.getAttribute("count"));
 				}
-
 			}
+		} catch (NullPointerException e) {
+			return null;
 		}
 		return 0;
 
@@ -256,8 +264,10 @@ public class OSMContributorAssessment {
 			throws Exception {
 		HashMap<String, Double> chsgtEditors = new HashMap<String, Double>();
 		for (Integer chgstID : changesetIDs) {
-			if (!retriever.isInChangesetTable(Long.valueOf(chgstID)))
-				retriever.insertIntoChangeset(Long.valueOf(chgstID));
+			if (!retriever.isInChangesetTable(Long.valueOf(chgstID))) {
+				String value = retriever.getChangesetValues(Long.valueOf(chgstID));
+				retriever.insertOneRow(value);
+			}
 			String editor = retriever.getChgestEditor(chgstID);
 			if (!chsgtEditors.containsKey(editor))
 				chsgtEditors.put(editor, Double.valueOf(1 / changesetIDs.size()));

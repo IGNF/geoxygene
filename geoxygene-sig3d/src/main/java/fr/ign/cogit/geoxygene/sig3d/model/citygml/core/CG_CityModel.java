@@ -108,12 +108,12 @@ public class CG_CityModel extends FT_FeatureCollection<CG_CityObject> {
 			
 			CG_CityObject object = CG_CityObject.generateCityObject(cityObjectMember.getObject());
 			this.add(object);
-			System.out.println("Object added ("+(++count)+"/"+ nbElem+") : " + object);
+			//System.out.println("Object added ("+(++count)+"/"+ nbElem+") : " + object);
 			
 			
 		}
 		
-		System.out.println("The end");
+	//	System.out.println("The end");
 
 	}
 

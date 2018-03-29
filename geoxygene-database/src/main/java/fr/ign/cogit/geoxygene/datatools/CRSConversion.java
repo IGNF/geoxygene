@@ -1,11 +1,11 @@
 /*******************************************************************************
  * This software is released under the licence CeCILL
- *  
- *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
- *  
- *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
- *  
- *  @copyright IGN
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
  ******************************************************************************/
 package fr.ign.cogit.geoxygene.datatools;
 
@@ -16,8 +16,11 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import com.vividsolutions.jts.geom.Geometry;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
+import fr.ign.cogit.geoxygene.spatial.geomengine.GeometryEngine;
 import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
 
 /**
@@ -48,6 +51,33 @@ public class CRSConversion {
     transformer.setMathTransform(CRS.findMathTransform(crs1, crs2));
     Geometry jtsGeom = transformer.transform(geom);
     return JtsGeOxygene.makeGeOxygeneGeom(jtsGeom);
+  }
+
+  public static IGeometry changeCRS(IGeometry geom, String epsg1, String epsg2,
+      boolean projected1, boolean projected2, boolean reverse)
+      throws Exception {
+    CoordinateReferenceSystem crs1 = CRS.decode("EPSG:" + epsg1, projected2);
+    CoordinateReferenceSystem crs2 = CRS.decode("EPSG:" + epsg2, projected1);
+    IGeometry newGeom = changeCRS(geom, crs1, crs2);
+    if (reverse) {
+      // change x to y and conversely
+      IDirectPositionList coords = new DirectPositionList();
+      for (int i = 0; i < newGeom.numPoints(); i++) {
+        IDirectPosition point = newGeom.coord().get(i);
+        coords.add(new DirectPosition(point.getY(), point.getX()));
+      }
+      if (newGeom.isPoint())
+        newGeom = GeometryEngine.getFactory().createPoint(coords.get(0));
+      else if (newGeom.isLineString())
+        newGeom = GeometryEngine.getFactory().createILineString(coords);
+      else if (newGeom.isMultiCurve())
+        newGeom = GeometryEngine.getFactory().createILineString(coords);
+      else if (newGeom.isPolygon())
+        newGeom = GeometryEngine.getFactory().createIPolygon(coords);
+      else if (newGeom.isMultiSurface())
+        newGeom = GeometryEngine.getFactory().createIPolygon(coords);
+    }
+    return newGeom;
   }
 
   public static IGeometry changeCRS(IGeometry geom, String epsg1, String epsg2,

@@ -26,10 +26,10 @@ import fr.ign.cogit.geoxygene.osm.schema.OSMFeature;
 public class OSMContributor implements INode {
 
 	private IFeatureCollection<OSMDefaultFeature> contributions;
-	private Set<OSMResource> resource;
+	private Set<OSMResource> resource = new HashSet<OSMResource>();
 	private String name;
 	private int id;
-	private int nbContributions = 0;
+	// private int nbContributions = 0;
 
 	private IFeatureCollection<DefaultFeature> activityAreas;
 
@@ -401,11 +401,28 @@ public class OSMContributor implements INode {
 	}
 
 	public int getNbContributions() {
-		return nbContributions;
+		return this.resource.size();
 	}
 
 	public void setActivityAreas(IFeatureCollection<DefaultFeature> denseActivityCollection) {
 		this.activityAreas = denseActivityCollection;
+	}
+
+	public int getNbDayTimeContributions() {
+		return this.getDaytimeContributions().size();
+	}
+
+	public int getNbNightTimeContributions() {
+		return this.getNbContributions() - this.getNbDayTimeContributions();
+	}
+
+	public int getNbWeekContributions() {
+		return this.getWeekContributions().size();
+	}
+
+	public int getNbWeekendContributions() {
+		// TODO Auto-generated method stub
+		return this.getNbContributions() - this.getNbWeekContributions();
 	}
 
 }

@@ -76,8 +76,9 @@ public class ActivityArea {
 
 	/**
 	 * @param nodeList
-	 *            corresponds to the list of nodes contributed by a contributor
-	 * @return hull is a multipolygon of the contributor's activity areas
+	 *            : list of nodes authored by a contributor
+	 * @return hull : multipolygon corresponding to the contributor's activity
+	 *         areas
 	 **/
 	public static IGeometry getActivityAreas(List<OSMResource> nodeList, double threshold) throws Exception {
 		IFeatureCollection<IFeature> ftcolPoints = new FT_FeatureCollection<IFeature>();

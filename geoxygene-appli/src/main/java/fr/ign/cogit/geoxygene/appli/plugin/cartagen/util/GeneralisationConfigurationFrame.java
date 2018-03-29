@@ -33,14 +33,10 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import fr.ign.cogit.cartagen.core.GeneralisationSpecifications;
 import fr.ign.cogit.cartagen.core.Legend;
+import fr.ign.cogit.cartagen.core.SLDUtilCartagen;
 import fr.ign.cogit.cartagen.core.dataset.CartAGenDoc;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
-import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
-import fr.ign.cogit.geoxygene.style.Layer;
-import fr.ign.cogit.geoxygene.style.Rule;
-import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
-import fr.ign.cogit.geoxygene.style.Symbolizer;
 
 /**
  * @author JGaffuri
@@ -190,15 +186,12 @@ public class GeneralisationConfigurationFrame extends JFrame {
   }
 
   public void validateValues() {
-    this.oldScale = Legend.getSYMBOLISATI0N_SCALE();
+
     // general
     GeneralisationSpecifications.setDESCRIPTION(tDescription.getText());
-    Legend.setSYMBOLISATI0N_SCALE(Double.parseDouble(tEchelleCible.getText()));
     GeneralisationSpecifications
         .setRESOLUTION(Double.parseDouble(tResolution.getText()));
 
-    // update the SLD width values with the new scale value
-    double scaleRatio = Legend.getSYMBOLISATI0N_SCALE() / oldScale;
     StyledLayerDescriptor sld = null;
     if (CartAGenDoc.getInstance() != null
         && CartAGenDoc.getInstance().getCurrentDataset() != null)
@@ -206,20 +199,10 @@ public class GeneralisationConfigurationFrame extends JFrame {
     else
       sld = CartAGenPlugin.getInstance().getApplication().getMainFrame()
           .getSelectedProjectFrame().getSld();
-    for (Layer layer : sld.getLayers()) {
-      for (Style style : layer.getStyles()) {
-        for (FeatureTypeStyle ftStyle : style.getFeatureTypeStyles()) {
-          for (Rule rule : ftStyle.getRules()) {
-            for (Symbolizer symbolizer : rule.getSymbolizers()) {
-              if (symbolizer.getStroke() != null)
-                symbolizer.getStroke().setStrokeWidth(
-                    (float) (symbolizer.getStroke().getStrokeWidth()
-                        * scaleRatio));
-            }
-          }
-        }
-      }
-    }
+
+    SLDUtilCartagen.changeSymbolisationScale(
+        Double.parseDouble(tEchelleCible.getText()), sld);
+
     CartAGenPlugin.getInstance().getApplication().getMainFrame()
         .getSelectedProjectFrame().getLayerViewPanel().repaint();
   }

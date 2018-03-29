@@ -16,7 +16,6 @@ import fr.ign.cogit.geoxygene.sig3d.gui.InterfaceMap3D;
 import fr.ign.cogit.geoxygene.sig3d.gui.MainWindow;
 import fr.ign.cogit.geoxygene.sig3d.io.xml.citygmlv2.Context;
 import fr.ign.cogit.geoxygene.sig3d.io.xml.citygmlv2.LoaderCityGML;
-import fr.ign.cogit.geoxygene.sig3d.representation.citygml.CG_VectorLayer;
 import fr.ign.cogit.geoxygene.sig3d.semantic.Map3D;
 import fr.ign.cogit.geoxygene.sig3d.semantic.VectorLayer;
 
@@ -122,7 +121,7 @@ public class CityGMLLoadingWindow extends JDialog implements ActionListener {
 
 				Context.LOD_REP = lod;
 
-				VectorLayer vl = LoaderCityGML.read(f, f.getParentFile().getAbsolutePath(), "CityGML_Layer");
+				VectorLayer vl = LoaderCityGML.read(f, f.getParentFile().getAbsolutePath(), "CityGML_Layer", true);
 
 				MainWindow win = new MainWindow();
 				Map3D carte = win.getInterfaceMap3D().getCurrent3DMap();

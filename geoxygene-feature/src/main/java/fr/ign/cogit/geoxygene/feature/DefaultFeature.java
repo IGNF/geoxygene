@@ -62,8 +62,8 @@ import fr.ign.cogit.geoxygene.api.spatial.toporoot.ITopology;
 public class DefaultFeature extends AbstractFeature {
 
   /** Logger. */
-  protected static final Logger LOGGER = Logger.getLogger(DefaultFeature.class
-      .getName());
+  protected static final Logger LOGGER = Logger
+      .getLogger(DefaultFeature.class.getName());
 
   /**
    * Constructeur vide
@@ -179,8 +179,8 @@ public class DefaultFeature extends AbstractFeature {
       }
     }
     if (LOGGER.isDebugEnabled()) {
-      LOGGER
-          .warn("!!! le nom '" + nom + "' ne correspond pas à un attribut de ce feature !!!"); //$NON-NLS-1$//$NON-NLS-2$
+      LOGGER.warn("!!! le nom '" + nom //$NON-NLS-1$
+          + "' ne correspond pas à un attribut de ce feature !!!"); //$NON-NLS-1$
     }
     return null;
   }
@@ -246,15 +246,15 @@ public class DefaultFeature extends AbstractFeature {
       }
     }
     if (LOGGER.isDebugEnabled()) {
-      LOGGER
-          .warn("!!! le nom '" + nom + "' ne correspond pas à un attribut de ce feature !!!"); //$NON-NLS-1$ //$NON-NLS-2$
+      LOGGER.warn("!!! le nom '" + nom //$NON-NLS-1$
+          + "' ne correspond pas à un attribut de ce feature !!!"); //$NON-NLS-1$
       for (Integer key : this.getSchema().getAttLookup().keySet()) {
         tabNoms = this.getSchema().getAttLookup().get(key);
         if (tabNoms == null) {
           LOGGER.debug("Attribut " + key + " nul"); //$NON-NLS-1$ //$NON-NLS-2$
         } else {
-          LOGGER
-              .debug("Attribut " + key + " = " + tabNoms[0] + " - " + tabNoms[1]); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+          LOGGER.debug(
+              "Attribut " + key + " = " + tabNoms[0] + " - " + tabNoms[1]); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
         }
       }
     }
@@ -279,18 +279,14 @@ public class DefaultFeature extends AbstractFeature {
   public void setAttribute(GF_AttributeType attribute, Object valeur) {
     // FIXME changer le comportement !!!!
     if (attribute.getMemberName().equals("geom")) { //$NON-NLS-1$
-      AbstractFeature
-          .getLogger()
-          .warn(
-              "WARNING : Pour affecter la primitive géométrique par défaut, veuillez utiliser " //$NON-NLS-1$
-                  + "la méthode FT_Feature.getGeom() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
+      AbstractFeature.getLogger().warn(
+          "WARNING : Pour affecter la primitive géométrique par défaut, veuillez utiliser " //$NON-NLS-1$
+              + "la méthode FT_Feature.getGeom() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
       this.setGeom((IGeometry) valeur);
     } else if (attribute.getMemberName().equals("topo")) { //$NON-NLS-1$
-      AbstractFeature
-          .getLogger()
-          .warn(
-              "WARNING : Pour affecter la primitive topologique par défaut, veuillez utiliser " //$NON-NLS-1$
-                  + "la méthode FT_Feature.getTopo() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
+      AbstractFeature.getLogger().warn(
+          "WARNING : Pour affecter la primitive topologique par défaut, veuillez utiliser " //$NON-NLS-1$
+              + "la méthode FT_Feature.getTopo() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
       this.setTopo((ITopology) valeur);
     } else {
       this.setAttribute(attribute.getMemberName(), valeur);
@@ -316,8 +312,8 @@ public class DefaultFeature extends AbstractFeature {
 
   @Override
   public IFeature cloneGeom() throws CloneNotSupportedException {
-    DefaultFeature clone = new DefaultFeature((IGeometry) this.getGeom()
-        .clone());
+    DefaultFeature clone = new DefaultFeature(
+        (IGeometry) this.getGeom().clone());
     clone.setSchema(this.getSchema());
     clone.setAttributes(this.getAttributes());
     clone.setFeatureType(this.getFeatureType());

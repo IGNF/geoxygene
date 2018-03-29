@@ -52,7 +52,6 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Tin;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Triangle;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_TriangulatedSurface;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
@@ -277,11 +276,8 @@ public class ConvertCityGMLtoGeometry {
 			maxL = geom.getMaxLength().getValue();
 		}
 
-		
-		
 		GM_Tin tin = new GM_Tin(iDPL, lSSL, lSBL, (float) maxL);
-		
-		
+
 		return tin;
 	}
 
@@ -431,14 +427,10 @@ public class ConvertCityGMLtoGeometry {
 			dplExt = ConvertCityGMLtoGeometry
 					.convertPosOrPointPropertyOrPointRep(linearRing.getPosOrPointPropertyOrPointRep());
 		}
-		
-		
-		if(! dplExt.get(0).equals(dplExt.get(dplExt.size()-1))){
+
+		if (!dplExt.get(0).equals(dplExt.get(dplExt.size() - 1))) {
 			dplExt.add(dplExt.get(0));
 		}
-		
-		
-
 
 		GML_Polygon poly = new GML_Polygon();
 		GML_Ring ring = new GML_Ring(new GM_LineString(dplExt));
@@ -447,8 +439,7 @@ public class ConvertCityGMLtoGeometry {
 			ring.setID(linearRing.getId());
 		}
 
-		
-		if(ring.coord().size() < 4){
+		if (ring.coord().size() < 4) {
 			return null;
 		}
 		poly.setExterior(ring);
@@ -474,16 +465,15 @@ public class ConvertCityGMLtoGeometry {
 						.convertPosOrPointPropertyOrPointRep(linearRing.getPosOrPointPropertyOrPointRep());
 			}
 
-			
-			if(! dplExt.get(0).equals(dplExt.get(dplExt.size()-1))){
+			if (!dplExt.get(0).equals(dplExt.get(dplExt.size() - 1))) {
 				dplExt.add(dplExt.get(0));
 			}
-			
-			if(dplExt.size() < 4){
-				//IGNORE RING WITHOUT ENOUG POINTS
+
+			if (dplExt.size() < 4) {
+				// IGNORE RING WITHOUT ENOUG POINTS
 				continue;
 			}
-			
+
 			GML_Ring ringInt = new GML_Ring(new GM_LineString(dplExt));
 			if (lRing.get(i).getRing().isSetId()) {
 				ringInt.setID(lRing.get(i).getRing().getId());
@@ -511,19 +501,17 @@ public class ConvertCityGMLtoGeometry {
 
 	public static IMultiSurface<IOrientableSurface> convertGMLOrientableSurface(AbstractSurface as) {
 
-		 IMultiSurface<IOrientableSurface> lOS = new GM_MultiSurface<>();
+		IMultiSurface<IOrientableSurface> lOS = new GM_MultiSurface<>();
 
 		if (as instanceof OrientableSurface) {
 
 			lOS.addAll(ConvertCityGMLtoGeometry.convertGMLOrientableSurface((OrientableSurface) as));
 		} else if (as instanceof Polygon) {
-			
+
 			GML_Polygon pol = ConvertCityGMLtoGeometry.convertGMLPolygon((Polygon) as);
-			if(pol != null){
+			if (pol != null) {
 				lOS.add(pol);
 			}
-
-			
 
 			/*
 			 * } else if (as instanceof MultiSurface) {
@@ -542,8 +530,6 @@ public class ConvertCityGMLtoGeometry {
 
 			System.out.println("OS non reconnu" + as.getClass());
 		}
-
-
 
 		return lOS;
 
@@ -578,7 +564,7 @@ public class ConvertCityGMLtoGeometry {
 		} else if (as instanceof Polygon) {
 
 			GML_Polygon pol = ConvertCityGMLtoGeometry.convertGMLPolygon((Polygon) as);
-			if(pol != null){
+			if (pol != null) {
 				lOS.add(pol);
 			}
 
@@ -714,19 +700,15 @@ public class ConvertCityGMLtoGeometry {
 			} else if (as instanceof Polygon) {
 
 				GML_Polygon pol = ConvertCityGMLtoGeometry.convertGMLPolygon((Polygon) as);
-				
-				
-				
-				if(pol == null){
+
+				if (pol == null) {
 					System.out.println("Polygon ignored due to errors : " + as.getId());
 				}
-	
-				
-				
-				if(pol != null){
+
+				if (pol != null) {
 					lOS.add(pol);
 				}
-				
+
 				/*
 				 * } else if (as instanceof MultiSurface) {
 				 * 
@@ -854,11 +836,9 @@ public class ConvertCityGMLtoGeometry {
 			} else if (as instanceof Polygon) {
 
 				GML_Polygon pol = ConvertCityGMLtoGeometry.convertGMLPolygon((Polygon) as);
-				if(pol != null)
-				{
+				if (pol != null) {
 					lOS.add(pol);
 				}
-				
 
 				/*
 				 * } else if (as instanceof MultiSurface) {
@@ -1000,7 +980,7 @@ public class ConvertCityGMLtoGeometry {
 	 *            le triangle que l'on souhaite convertir
 	 * @return un GM_Triangle issu de l'objet initial
 	 */
-	public static GM_Triangle convertGMLTriangle(Triangle t) {
+	public static GML_Triangle convertGMLTriangle(Triangle t) {
 
 		LinearRing linearRing = (LinearRing) t.getExterior().getRing();
 
@@ -1015,8 +995,18 @@ public class ConvertCityGMLtoGeometry {
 			dplExt = ConvertCityGMLtoGeometry
 					.convertPosOrPointPropertyOrPointRep(linearRing.getPosOrPointPropertyOrPointRep());
 		}
+		
+		GML_Ring r = new GML_Ring(new GM_LineString(dplExt));
+		
+		
 
-		GM_Triangle tri = new GM_Triangle(dplExt.get(0), dplExt.get(1), dplExt.get(2));
+		GML_Triangle tri = new GML_Triangle(r);
+		
+	
+		if (linearRing.isSetId()) {
+			tri.setID(linearRing.getId());
+			r.setID(linearRing.getId());
+		}
 
 		return tri;
 	}

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -23,6 +24,9 @@ import fr.ign.cogit.geoxygene.osm.importexport.postgis.LoadFromPostGIS;
 
 public class IntrinsicAssessment {
 	public static Set<OSMResource> myJavaObjects;
+	// Delimiter used in CSV file
+	private static final String COMMA_DELIMITER = ",";
+	private static final String NEW_LINE_SEPARATOR = "\n";
 
 	public static void main(String[] args) throws Exception {
 
@@ -31,8 +35,8 @@ public class IntrinsicAssessment {
 
 		LoadFromPostGIS loader = new LoadFromPostGIS("localhost", "5432", "iledelacite1", "postgres", "postgres");
 
-		loader.selectNodes(bbox, timespan);
-		loader.selectWays(bbox, timespan);
+		loader.getEvolutionVisibleNode(bbox, timespan);
+		loader.getEvolutionVisibleWay(bbox, timespan);
 		myJavaObjects = loader.myJavaObjects;
 
 		HashMap<Long, OSMObject> myOSMNodesObjects = nodeContributionSummary(myJavaObjects);
@@ -392,84 +396,118 @@ public class IntrinsicAssessment {
 	}
 
 	public static void writeNodeContributionDetails(File file) throws IOException {
-		/*
-		 * Collections.sort(myJavaObjects, new Comparator<OSMResource>() {
-		 * 
-		 * @Override public int compare(OSMResource r1, OSMResource r2) { return
-		 * r1.getDate().compareTo(r2.getDate()); } });
-		 */
-		// Create a CSV writer
-		CSVWriter writer = new CSVWriter(new FileWriter(file), ';');
-		// write header
-		String[] line = new String[10];
-		line[0] = "id";
-		line[1] = "version";
-		line[2] = "changeset";
-		line[3] = "uid";
-		line[4] = "contributeur";
-		line[5] = "date";
-		line[6] = "source";
-		line[7] = "nbTags";
-		line[8] = "longitude";
-		line[9] = "latitude";
+		FileWriter fileWriter = new FileWriter(file);
+		String FILE_HEADER = "id,version,changeset,uid,username,date,source,nbTags,longitude,latitude";
+		fileWriter.append(FILE_HEADER.toString());
+		fileWriter.append(NEW_LINE_SEPARATOR);
+		try {
+			for (OSMResource r : myJavaObjects) {
+				fileWriter.append(String.valueOf(r.getId()));
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append((String.valueOf(r.getVersion())));
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append(String.valueOf(r.getChangeSet()));
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append(String.valueOf(r.getUid()));
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append(String.valueOf(r.getContributeur()));
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append(String.valueOf(r.getDate()));
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append(r.getTags().get("source"));
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append(String.valueOf(r.getTags().size()));
+				fileWriter.append(COMMA_DELIMITER);
 
-		writer.writeNext(line);
-
-		for (OSMResource resource : myJavaObjects) {
-			if (resource.getGeom().getClass().getSimpleName().equals("OSMNode")) {
-				OSMNode node = (OSMNode) resource.getGeom();
-				line = new String[10];
-				line[0] = Long.toString(resource.getId());
-				line[1] = Integer.toString(resource.getVersion());
-				line[2] = Integer.toString(resource.getChangeSet());
-				line[3] = Integer.toString(resource.getUid());
-				line[4] = resource.getContributeur();
-				line[5] = resource.getDate().toString();
-				line[6] = resource.getSource();
-				// line[7] = Integer.toString(resource.getNbTags());
-				line[8] = Double.toString(node.getLongitude());
-				line[9] = Double.toString(node.getLatitude());
-				writer.writeNext(line);
+				OSMNode node = (OSMNode) r.getGeom();
+				fileWriter.append(String.valueOf(node.getLongitude()));
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append(String.valueOf(node.getLatitude()));
+				fileWriter.append(NEW_LINE_SEPARATOR);
+			}
+		} catch (Exception e) {
+			System.out.println("Erreur d'écriture");
+			e.printStackTrace();
+		} finally {
+			try {
+				fileWriter.flush();
+				fileWriter.close();
+			} catch (IOException e) {
+				System.out.println("Error while flushing/closing fileWriter !!!");
+				e.printStackTrace();
 			}
 		}
-		writer.close();
+
 	}
 
-	public static void writeContributionDetails(File file, Set<OSMResource> myJavaObjects) throws IOException {
-		// Create a CSV writer
-		CSVWriter writer = new CSVWriter(new FileWriter(file), ';');
-		// write header
-		String[] line = new String[9];
-		line[0] = "id";
-		line[1] = "version";
-		line[2] = "changeset";
-		line[3] = "uid";
-		line[4] = "contributeur";
-		line[5] = "date";
-		line[6] = "source";
-		line[7] = "nbTags";
-		line[8] = "OSMResource.getGeom()";
+	public static void writeContributionDetails(File file, Collection<OSMResource> myJavaObjects) throws IOException {
+		FileWriter fileWriter = new FileWriter(file);
+		String FILE_HEADER = "id,version,changeset,uid,username,date,visible,source,nbTags,OSMResource.getGeom()";
+		fileWriter.append(FILE_HEADER.toString());
+		fileWriter.append(NEW_LINE_SEPARATOR);
+		try {
+			for (OSMResource r : myJavaObjects) {
+				fileWriter.append(String.valueOf(r.getId()));
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append((String.valueOf(r.getVersion())));
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append(String.valueOf(r.getChangeSet()));
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append(String.valueOf(r.getUid()));
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append(String.valueOf(r.getContributeur()));
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append(String.valueOf(r.getDate()));
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append(String.valueOf(r.isVisible()));
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append(r.getTags().get("source"));
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append(String.valueOf(r.getTags().size()));
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append(String.valueOf(r.getGeom().getClass().getSimpleName()));
 
-		writer.writeNext(line);
-
-		for (OSMResource resource : myJavaObjects) {
-
-			// OSMNode node = (OSMNode) resource.getGeom();
-			// OSMWay way = (OSMWay) resource.getGeom();
-			line = new String[9];
-			line[0] = Long.toString(resource.getId());
-			line[1] = Integer.toString(resource.getVersion());
-			line[2] = Integer.toString(resource.getChangeSet());
-			line[3] = Integer.toString(resource.getUid());
-			line[4] = resource.getContributeur();
-			line[5] = resource.getDate().toString();
-			line[6] = resource.getSource();
-			// line[7] = Integer.toString(resource.getNbTags());
-			line[8] = resource.getGeom().getClass().getSimpleName();
-			writer.writeNext(line);
-
+				fileWriter.append(NEW_LINE_SEPARATOR);
+			}
+		} catch (Exception e) {
+			System.out.println("Erreur d'écriture");
+			e.printStackTrace();
+		} finally {
+			try {
+				fileWriter.flush();
+				fileWriter.close();
+			} catch (IOException e) {
+				System.out.println("Error while flushing/closing fileWriter !!!");
+				e.printStackTrace();
+			}
 		}
-		writer.close();
+
+		/*
+		 * // Create a CSV writer CSVWriter writer = new CSVWriter(new
+		 * FileWriter(file), ';'); // write header String[] line = new
+		 * String[9]; line[0] = "id"; line[1] = "version"; line[2] =
+		 * "changeset"; line[3] = "uid"; line[4] = "contributeur"; line[5] =
+		 * "date"; line[6] = "source"; line[7] = "nbTags"; line[8] =
+		 * "OSMResource.getGeom()";
+		 * 
+		 * writer.writeNext(line);
+		 * 
+		 * for (OSMResource resource : myJavaObjects) {
+		 * 
+		 * // OSMNode node = (OSMNode) resource.getGeom(); // OSMWay way =
+		 * (OSMWay) resource.getGeom(); line = new String[9]; line[0] =
+		 * Long.toString(resource.getId()); line[1] =
+		 * Integer.toString(resource.getVersion()); line[2] =
+		 * Integer.toString(resource.getChangeSet()); line[3] =
+		 * Integer.toString(resource.getUid()); line[4] =
+		 * resource.getContributeur(); line[5] = resource.getDate().toString();
+		 * line[6] = resource.getSource(); // line[7] =
+		 * Integer.toString(resource.getNbTags()); line[8] =
+		 * resource.getGeom().getClass().getSimpleName();
+		 * writer.writeNext(line);
+		 * 
+		 * } writer.close();
+		 */
 	}
 
 	public static void writeOSMObjectContributions(File file, HashMap<Long, OSMObject> myOSMObjects)
@@ -485,7 +523,7 @@ public class IntrinsicAssessment {
 		line[4] = "contributeur";
 		line[5] = "date";
 		line[6] = "source";
-		line[7] = "nbTags";
+		// line[7] = "nbTags";
 		line[8] = "OSMResource.getGeom()";
 
 		writer.writeNext(line);
@@ -508,46 +546,45 @@ public class IntrinsicAssessment {
 	}
 
 	public static void writeWayContributionDetails(File file) throws IOException {
-		/*
-		 * Collections.sort(myJavaObjects, new Comparator<OSMResource>() {
-		 * 
-		 * @Override public int compare(OSMResource r1, OSMResource r2) { return
-		 * r1.getDate().compareTo(r2.getDate()); } });
-		 */
-		// Create a CSV writer
-		CSVWriter writer = new CSVWriter(new FileWriter(file), ';');
-		// write header
-		String[] line = new String[10];
-		line[0] = "id";
-		line[1] = "version";
-		line[2] = "changeset";
-		line[3] = "uid";
-		line[4] = "contributeur";
-		line[5] = "date";
-		line[6] = "source";
-		line[7] = "nbTags";
-		line[8] = "nbNodes";
+		FileWriter fileWriter = new FileWriter(file);
+		String FILE_HEADER = "id,version,changeset,uid,username,date,source,nbTags,nbNodes";
+		fileWriter.append(FILE_HEADER.toString());
+		fileWriter.append(NEW_LINE_SEPARATOR);
+		try {
+			for (OSMResource r : myJavaObjects) {
+				fileWriter.append(String.valueOf(r.getId()));
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append((String.valueOf(r.getVersion())));
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append(String.valueOf(r.getChangeSet()));
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append(String.valueOf(r.getUid()));
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append(String.valueOf(r.getContributeur()));
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append(String.valueOf(r.getDate()));
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append(r.getTags().get("source"));
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append(String.valueOf(r.getTags().size()));
+				fileWriter.append(COMMA_DELIMITER);
 
-		writer.writeNext(line);
-
-		for (OSMResource resource : myJavaObjects) {
-			if (resource.getGeom().getClass().getSimpleName().equals("OSMWay")) {
-				// OSMNode node = (OSMNode) resource.getGeom();
-				OSMWay way = (OSMWay) resource.getGeom();
-				line = new String[9];
-				line[0] = Long.toString(resource.getId());
-				line[1] = Integer.toString(resource.getVersion());
-				line[2] = Integer.toString(resource.getChangeSet());
-				line[3] = Integer.toString(resource.getUid());
-				line[4] = resource.getContributeur();
-				line[5] = resource.getDate().toString();
-				line[6] = resource.getSource();
-				// line[7] = Integer.toString(resource.getNbTags());
-				line[8] = Integer.toString(way.getVertices().size());
-				writer.writeNext(line);
+				OSMWay way = (OSMWay) r.getGeom();
+				fileWriter.append(String.valueOf(way.getVertices().size()));
+				fileWriter.append(NEW_LINE_SEPARATOR);
+			}
+		} catch (Exception e) {
+			System.out.println("Erreur d'écriture");
+			e.printStackTrace();
+		} finally {
+			try {
+				fileWriter.flush();
+				fileWriter.close();
+			} catch (IOException e) {
+				System.out.println("Error while flushing/closing fileWriter !!!");
+				e.printStackTrace();
 			}
 		}
-		writer.close();
 	}
 
 }

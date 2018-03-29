@@ -8,6 +8,7 @@ import java.util.Map;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.osm.util.OSMVersionComparator;
 
 /**
  * A class to compute the quality assessment of OSM motorway junction point

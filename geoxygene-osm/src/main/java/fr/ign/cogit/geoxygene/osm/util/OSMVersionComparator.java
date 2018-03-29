@@ -1,4 +1,4 @@
-package fr.ign.cogit.geoxygene.osm.quality.spatialrelations;
+package fr.ign.cogit.geoxygene.osm.util;
 
 import java.util.Comparator;
 

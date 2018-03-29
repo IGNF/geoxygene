@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import fr.ign.cogit.geoxygene.osm.importexport.OSMNode;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMRelation;
@@ -33,6 +34,7 @@ import fr.ign.cogit.geoxygene.osm.importexport.OSMResource;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMWay;
 import fr.ign.cogit.geoxygene.osm.importexport.OsmRelationMember;
 import fr.ign.cogit.geoxygene.osm.importexport.PrimitiveGeomOSM;
+import fr.ign.cogit.geoxygene.osm.importexport.metrics.OSMResourceComparator;
 import twitter4j.JSONException;
 import twitter4j.JSONObject;
 
@@ -43,30 +45,9 @@ public class LoadFromPostGIS {
 	public String dbUser;
 	public String dbPwd;
 	public Set<OSMResource> myJavaObjects;
-	// public HashMap<Long, OSMContributor> myContributors;
-	public Map<OsmRelationMember, Long> OsmRelMbList;
+	// public Map<OsmRelationMember, Long> OsmRelMbList;
+	public Map<Long, List<OsmRelationMember>> OsmRelMbList;
 	public Set<OSMResource> myJavaRelations;
-
-	public static void main(String[] args) throws Exception {
-		LoadFromPostGIS loader = new LoadFromPostGIS("localhost", "5432", "paris", "postgres", "postgres");
-		// List<Double> bbox = new ArrayList<Double>();
-		// bbox.add(2.3322);
-		// bbox.add(48.8489);
-		// bbox.add(2.3634);
-		// bbox.add(48.8627);
-		//
-		// List<String> timespan = new ArrayList<String>();
-		// timespan.add("2010-01-01");
-		// timespan.add("2013-01-01");
-
-		// loader.relationEvolution(bbox, timespan);
-		// loader.selectRelations(bbox, timespan);
-
-		Double[] bbox = { 2.3322, 48.8489, 2.3634, 48.8627 };
-		String[] timespan = { "2010-01-01", "2010-02-01" };
-		loader.getDataFrombbox(bbox, timespan);
-
-	}
 
 	public LoadFromPostGIS(String host, String port, String dbName, String dbUser, String dbPwd) {
 		this.host = host;
@@ -75,29 +56,563 @@ public class LoadFromPostGIS {
 		this.dbUser = dbUser;
 		this.dbPwd = dbPwd;
 		this.myJavaObjects = new HashSet<OSMResource>();
-		// this.myOSMObjects = new HashMap<Long, OSMObject>();
-		// this.myContributors = new HashMap<Long, OSMContributor>();
-		this.OsmRelMbList = new HashMap<OsmRelationMember, Long>();
+		// this.OsmRelMbList = new HashMap<OsmRelationMember, Long>();
+		this.OsmRelMbList = new HashMap<Long, List<OsmRelationMember>>();
 		this.myJavaRelations = new HashSet<OSMResource>();
 	}
 
+	/**
+	 * Récupère les coordonnées lon_min, lat_min, lon_max, lat_max de la commune
+	 * Attention: il faut lancer le script
+	 * 
+	 * @param city
+	 *            Nom de la commune
+	 * @param timestamp
+	 *            Date à laquelle on cherche la dernière version des frontières
+	 * @return les coordonnées géographiques {xmin, ymin, xmax, ymax} de la
+	 *         commune
+	 * @throws Exception
+	 */
+	public Double[] getCityBoundary(String city, String timestamp) throws Exception {
+		java.sql.Connection conn;
+		try {
+			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
+			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			String query = "SELECT idrel FROM  relation WHERE tags -> 'boundary' = 'administrative' ANd tags->'admin_level'='8' "
+					+ "AND tags-> 'name'='" + city + "' AND datemodif <= '" + timestamp
+					+ "' ORDER BY vrel DESC LIMIT 1;";
+			ResultSet r = s.executeQuery(query);
+			// Get relation members
+			Long idrel = null;
+			while (r.next()) {
+				idrel = r.getLong("idrel");
+			}
+			System.out.println("idrel = " + idrel);
+
+			query = "DROP TABLE IF EXISTS enveloppe ;"
+					+ "CREATE TABLE enveloppe (lon_min numeric DEFAULT 180,lat_min numeric DEFAULT 90,lon_max numeric DEFAULT -180,lat_max numeric DEFAULT -90);"
+					+ "INSERT INTO enveloppe VALUES (180, 90, -180 ,-90);";
+			query += "SELECT relation_boundary(" + idrel + ", '" + timestamp + "');"; // run
+																						// first
+																						// pgScript
+																						// "relation_boundary.sql"
+			s.execute(query);
+			query = "SELECT * FROM enveloppe LIMIT 1;";
+			ResultSet r1 = s.executeQuery(query);
+			Double xmin = null, ymin = null, xmax = null, ymax = null;
+			while (r1.next()) {
+				xmin = r1.getDouble("lon_min");
+				ymin = r1.getDouble("lat_min");
+				xmax = r1.getDouble("lon_max");
+				ymax = r1.getDouble("lat_max");
+				System.out.println(xmin);
+				System.out.println(ymin);
+				System.out.println(xmax);
+				System.out.println(ymax);
+			}
+
+			Double[] borders = { xmin, ymin, xmax, ymax };
+			s.close();
+			conn.close();
+			return borders;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * Creates a new set of OSMResource data which contain at least one of the
+	 * input key tags
+	 * 
+	 * @param keyTags:
+	 *            list of key tags
+	 * @return a set of data filtered by key tags
+	 */
+	public Set<OSMResource> filterByTags(String[] keyTags) {
+		Set<OSMResource> filteredData = new HashSet<OSMResource>();
+		for (OSMResource r : this.myJavaObjects) {
+			for (String s : keyTags) {
+				if (r.getTags().containsKey(s)) {
+					filteredData.add(r);
+					break;
+				}
+			}
+		}
+		return filteredData;
+	}
+
+	/**
+	 * Loads the latest version of every building that was created inside the
+	 * input borders. The buildings can be visible or not.
+	 * 
+	 * @param borders
+	 *            {xmin, ymin, xmax, ymax}
+	 * @param timestamp
+	 *            date du snapshot
+	 * @throws Exception
+	 */
+	public Map<Long, OSMResource> getSnapshotBuilding(Double[] borders, String timestamp) throws Exception {
+		Map<Long, OSMResource> latestBuildings = new HashMap<Long, OSMResource>();
+
+		// Dernière version de tous les ways à t1 à l'intérieur des frontières
+		getSnapshotVisibleWay(borders, timestamp);
+		System.out.println("nombre de ways visibles " + this.myJavaObjects.size());
+
+		// int nbSimpleBuildings = 0;
+		for (OSMResource way : this.myJavaObjects) {
+			// System.out.println("Way ID : " + way.getId());
+			// System.out.println("---- Tags --- ");
+			if (way.getTags().containsKey("building"))
+				// for (String key : way.getTags().keySet()) {
+				// System.out.println("Key " + key + " - Value : " +
+				// way.getTags().get(key));
+				// }
+				// System.out.println("Way ID : " + way.getId());
+				// if (way.getTags().containsKey("buiding")) {
+				// System.out.println("Le way contient le tag 'building' ");
+				latestBuildings.put(way.getId(), way);
+			// nbSimpleBuildings++;
+			// }
+		}
+		Map<Long, OSMResource> indexedWays = new HashMap<Long, OSMResource>();
+		for (OSMResource w : this.myJavaObjects)
+			indexedWays.put(w.getId(), w);
+		System.out.println("Nombre de ways chargés " + indexedWays.size());
+
+		// Dernière version de tous les multipolygones en IdF à t1
+		Set<OSMResource> latestMultipolygons = getBuildingRelations(timestamp);
+		for (OSMResource rel : latestMultipolygons) {
+			List<OsmRelationMember> outer = ((OSMRelation) rel.getGeom()).getOuterMembers();
+			// System.out.println("outer.size() = " + outer.size());
+			if (outer.size() != 1)
+				continue;
+			System.out.println(" Outer member ID = " + outer.get(0).getRef());
+			if (indexedWays.keySet().contains(outer.get(0).getRef())) {
+				System.out.println("Relation " + rel.getId() + " est dans la ville ");
+				latestBuildings.remove(outer.get(0).getRef());
+				latestBuildings.put(rel.getId(), rel);
+				// indexedWays.remove(outer.get(0).getRef());
+			}
+		}
+		// System.out.println("Nombre de ways restants " + indexedWays.size());
+
+		System.out.println("Nombre total batiments : " + latestBuildings.size());
+		return latestBuildings;
+	}
+
+	public Set<OSMResource> getInvisibleBuilding(Double[] borders, String timestamp) throws Exception {
+		Set<OSMResource> invisible = new HashSet<OSMResource>();
+		java.sql.Connection conn;
+		try {
+			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
+			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+			String uniqueWayQuery = "SELECT DISTINCT ON (id) * FROM way WHERE tags ?& ARRAY['building'] "
+					+ "AND lon_min >= " + borders[0] + "AND lat_min>= " + borders[1] + "AND lon_max<= " + borders[2]
+					+ "AND lat_max<= " + borders[3] + "ORDER BY id, datemodif DESC";
+			String infoWayQuery = "SELECT max(way.vway) as max, way.id FROM way, (" + uniqueWayQuery
+					+ ") as unique_way WHERE way.id = unique_way.id AND way.datemodif <='" + timestamp
+					+ "' AND way.visible IS FALSE GROUP BY way.id";
+			String query = "SELECT way.idway, way.id, way.uid, way.vway, way.changeset, way.username, way.datemodif, hstore_to_json(way.tags), way.composedof, way.visible "
+					+ "FROM way, (" + infoWayQuery
+					+ ") AS info_way WHERE way.id=info_way.id AND way.vway=info_way.max;";
+
+			ResultSet r = s.executeQuery(query);
+			System.out.println("------- Query Executed -------");
+			while (r.next())
+				invisible.add(this.writeWay(r));
+			s.close();
+			conn.close();
+			return invisible;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * Get the latest OSM relations that are tagged type=multipolygon
+	 * 
+	 * @param timestamp:
+	 *            snapshot date
+	 * @throws Exception
+	 */
+	public Set<OSMResource> getVisibleMultipolygons(String timestamp) throws Exception {
+		Set<OSMResource> multipolygons = new HashSet<OSMResource>();
+		java.sql.Connection conn;
+		try {
+			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
+			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			String queryMaxVrel = "SELECT max(vrel) AS max, id FROM relation WHERE datemodif <='" + timestamp
+					+ "' GROUP BY id";
+			String visibleAtT1 = "SELECT * FROM relation, (" + queryMaxVrel + ") AS max_vrel "
+					+ "WHERE relation.visible IS TRUE AND relation.id = max_vrel.id AND relation.vrel = max_vrel.max AND tags->'type'='multipolygon' ORDER BY relation.id";
+			String query = "SELECT r.* FROM relationmember r, (" + visibleAtT1 + ") AS visible_at_t1 "
+					+ "WHERE r.idrel = visible_at_t1.idrel AND (r.rolemb = 'inner' OR r.rolemb = 'outer') ORDER BY r.idrel;";
+			ResultSet r = s.executeQuery(query);
+			// Writes all the relation members that were queried
+			writeOSMResource(r, "relationmember");
+
+			query = "SELECT relation.idrel, relation.id, relation.uid, relation.vrel, relation.changeset, relation.username, relation.datemodif, hstore_to_json(relation.tags), relation.visible FROM relation, ("
+					+ queryMaxVrel + ") AS max_vrel "
+					+ "WHERE relation.visible IS TRUE AND relation.id = max_vrel.id AND relation.vrel = max_vrel.max AND tags->'type'='multipolygon' ORDER BY relation.id";
+			r = s.executeQuery(query);
+			// Writes all the relation that were queried
+			while (r.next()) {
+				multipolygons.add(this.writeRelation(r));
+			}
+			s.close();
+			conn.close();
+			return multipolygons;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	public Set<OSMResource> getBuildingRelations(String timestamp) throws Exception {
+		Set<OSMResource> buildings = new HashSet<OSMResource>();
+		java.sql.Connection conn;
+		try {
+			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
+			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			String queryUniqueRel = "SELECT max(vrel) AS max, id FROM relation WHERE tags ?& ARRAY [ 'building' ] GROUP BY id";
+			String multipolygon = "SELECT idrel FROM relation r , (" + queryUniqueRel + ") AS unique_rel  "
+					+ "WHERE r.id=unique_rel.id AND r.vrel=unique_rel.max";
+			String query = "SELECT r.* FROM relationmember r, (" + multipolygon + ") AS multipolygon "
+					+ "WHERE r.idrel = multipolygon.idrel";
+			ResultSet r = s.executeQuery(query);
+			// Writes all the relation members that were queried
+			writeOSMResource(r, "relationmember");
+
+			for (Long idrel : this.OsmRelMbList.keySet()) {
+				query = "SELECT relation.idrel, relation.id, relation.uid, relation.vrel, relation.changeset, relation.username, relation.datemodif, hstore_to_json(relation.tags), relation.visible"
+						+ " FROM relation WHERE idrel = " + idrel;
+				r = s.executeQuery(query);
+				// Writes all the relation that were queried
+				while (r.next()) {
+					buildings.add(this.writeRelation(r));
+				}
+			}
+			s.close();
+			conn.close();
+
+			return buildings;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * Get OSM 'type=multipolygon' relations that are created within timespan
+	 * and their later versions until end date
+	 * 
+	 * @param borders:
+	 *            {xmin, ymin, ymax, ymax}
+	 * @param timespan:
+	 *            {beginDate, endDate}
+	 * @return a set of multipolygons
+	 * @throws Exception
+	 */
+	public Set<OSMResource> getEvolutionMultipolygons(Double[] borders, String[] timespan) throws Exception {
+		Set<OSMResource> multipolygons = new TreeSet<OSMResource>(new OSMResourceComparator());
+		java.sql.Connection conn;
+		try {
+			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
+			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			String query = "";
+			ResultSet r;
+			// Query PostGIS multipolygons' members that are created within
+			// timespan
+			String queryCreatedRelations = "SELECT idrel FROM relation WHERE datemodif > '" + timespan[0]
+					+ "' AND datemodif <= '" + timespan[1] + "' AND tags->'type'='multipolygon' AND vrel = 1";
+			query = "SELECT * FROM relationmember r, (" + queryCreatedRelations + ") AS rel_crees "
+					+ "WHERE r.idrel = rel_crees.idrel";
+			r = s.executeQuery(query);
+			this.writeOSMResource(r, "relationmember");
+
+			// Query the corresponding relations
+			queryCreatedRelations = "SELECT relation.idrel, relation.id, relation.uid, relation.vrel, relation.changeset, relation.username, relation.datemodif, hstore_to_json(relation.tags), relation.visible "
+					+ "FROM relation WHERE datemodif > '" + timespan[0] + "' AND datemodif <= '" + timespan[1]
+					+ "' AND tags->'type'='multipolygon' AND vrel = 1";
+			r = s.executeQuery(queryCreatedRelations);
+			this.writeOSMResource(r, "relation");
+
+			// Query the created multipolygons' evolution until end date
+			queryCreatedRelations = "SELECT id FROM relation WHERE datemodif > '" + timespan[0] + "' AND datemodif <= '"
+					+ timespan[1] + "' AND tags->'type'='multipolygon' AND vrel = 1";
+			query = "SELECT * FROM relation r, (" + queryCreatedRelations + ") AS rel_crees"
+					+ " WHERE r.id = rel_crees.id AND r.vrel > 1 AND r.datemodif <= '" + timespan[1] + "'";
+			query = "SELECT * FROM relationmember r, (" + query + ")  AS rel_evol WHERE r.idrel = rel_evol.idrel ";
+			r = s.executeQuery(query);
+			this.writeOSMResource(r, "relationmember");
+
+			// Query the corresponding relations
+			queryCreatedRelations = "SELECT relation.idrel, relation.id, relation.uid, relation.vrel, relation.changeset, relation.username, relation.datemodif, hstore_to_json(relation.tags), relation.visible"
+					+ " FROM relation WHERE datemodif > '" + timespan[0] + "' AND datemodif <= '" + timespan[1]
+					+ "' AND tags->'type'='multipolygon' AND vrel = 1";
+			r = s.executeQuery(queryCreatedRelations);
+			while (r.next())
+				multipolygons.add(this.writeRelation(r));
+			s.close();
+			conn.close();
+			return multipolygons;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	public Set<OSMResource> getNodes(List<Long> nodes, String timestamp) throws Exception {
+		Set<OSMResource> nodeSet = new HashSet<OSMResource>();
+
+		java.sql.Connection conn;
+		try {
+			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
+			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+			for (int i = 0; i < nodes.size() - 1; i++) {
+				Long id = nodes.get(i);
+				String vmax = "(SELECT max(vnode) AS max FROM node WHERE id = " + id + " AND datemodif <= '" + timestamp
+						+ "')";
+				String query = "SELECT node.idnode, node.id,node.uid,node.vnode, node.changeset, node.username, node.datemodif, hstore_to_json(node.tags), node.visible, node.lon, node.lat "
+						+ "FROM node WHERE id = " + id + " AND vnode = " + vmax;
+				ResultSet r = s.executeQuery(query);
+				while (r.next())
+					nodeSet.add(this.writeNode(r));
+			}
+
+			s.close();
+			conn.close();
+			return nodeSet;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * Get the latest version of all nodes (visible or not) that are contained
+	 * inside the borders
+	 * 
+	 * @param borders
+	 * @param timestamp
+	 * @throws Exception
+	 */
+	public Set<OSMResource> getSnapshotNodes(Double[] borders, String timestamp) throws Exception {
+		Set<OSMResource> nodeSet = new HashSet<OSMResource>();
+		java.sql.Connection conn;
+		try {
+			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
+			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+			String uniqueNodeQuery = "SELECT DISTINCT ON (id) * FROM node WHERE lon >= " + borders[0] + "AND lat>= "
+					+ borders[1] + "AND lon<= " + borders[2] + "AND lat<= " + borders[3]
+					+ " ORDER BY id, datemodif DESC";
+			String infoNodeQuery = "SELECT max(node.vnode) as max, node.id FROM node, (" + uniqueNodeQuery
+					+ ") AS unique_nodes WHERE node.id = unique_nodes.id AND node.datemodif <='" + timestamp
+					+ "' GROUP BY node.id";
+			String query = "SELECT node.idnode, node.id,node.uid,node.vnode, node.changeset, node.username, node.datemodif, hstore_to_json(node.tags), node.visible, node.lon, node.lat "
+					+ " FROM node, (" + infoNodeQuery
+					+ ") AS info_node WHERE node.id=info_node.id AND node.vnode=info_node.max;";
+
+			ResultSet r = s.executeQuery(query);
+			System.out.println("------- Query Executed -------");
+			while (r.next())
+				nodeSet.add(this.writeNode(r));
+			s.close();
+			conn.close();
+			return nodeSet;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * Retrieves OSM nodes from a PostGIS database according to spatiotemporal
+	 * parameters: 1) select the later versions of all queried nodes at
+	 * timespan[0] 2) select all created nodes inside timespan including their
+	 * later versions until timespan[1]
+	 * 
+	 * @param borders
+	 * @param timespan
+	 * @throws Exception
+	 */
+	public Set<OSMResource> getEvolutionNode(Double[] borders, String[] timespan) throws Exception {
+		Set<OSMResource> nodeSet = new HashSet<OSMResource>();
+		java.sql.Connection conn;
+		try {
+			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
+			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			// Query the evolution of all buildings which where selected at
+			// timespan[0] until timespan[1]
+			String uniqueNodeQuery = "SELECT DISTINCT ON (id) * FROM node WHERE lon >= " + borders[0] + " AND lat>= "
+					+ borders[1] + " AND lon<= " + borders[2] + " AND lat<= " + borders[3]
+					+ " ORDER BY id, datemodif DESC";
+			String infoNodeQuery = "SELECT max(node.vnode) as max, node.id FROM node, (" + uniqueNodeQuery
+					+ ") as unique_node WHERE node.id = unique_node.id AND node.datemodif <='" + timespan[0]
+					+ "' GROUP BY node.id";
+			String query = "SELECT node.idnode, node.id,node.uid,node.vnode, node.changeset, node.username, node.datemodif, hstore_to_json(node.tags), node.visible, node.lon, node.lat "
+					+ " FROM node, (" + infoNodeQuery
+					+ ") AS info_node WHERE node.id = info_node.id AND node.vnode > info_node.max AND node.datemodif <= '"
+					+ timespan[1] + "' ORDER BY node.id;";
+			ResultSet r = s.executeQuery(query);
+			System.out.println("------- Query Executed -------");
+			writeOSMResource(r, "node");
+
+			// Query the buildings that were created inside timespan and all the
+			// versions which fall between this time interval
+			String createdNodes = "SELECT DISTINCT ON (id) * FROM node WHERE lon >= " + borders[0] + " AND lat>="
+					+ borders[1] + " AND lon<=" + borders[2] + " AND lat<=" + borders[3]
+					+ "AND vnode = 1 AND datemodif > '" + timespan[0] + "' AND datemodif <= '" + timespan[1] + "'";
+
+			query = "SELECT node.idnode, node.id,node.uid,node.vnode, node.changeset, node.username, node.datemodif, hstore_to_json(node.tags), node.visible, node.lon, node.lat "
+					+ "FROM node, (" + createdNodes
+					+ ") AS node_cree WHERE node.id = node_cree.id AND node.datemodif <='" + timespan[1] + "';";
+
+			r = s.executeQuery(query);
+			System.out.println("------- Query Executed -------");
+			while (r.next())
+				nodeSet.add(this.writeNode(r));
+			s.close();
+			conn.close();
+			return nodeSet;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	public OSMResource getWay(Long id, String timestamp) throws Exception {
+		java.sql.Connection conn;
+		try {
+			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
+			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			// Query the evolution of all buildings which where selected at
+			// timespan[0] until timespan[1]
+			String vmax = "(SELECT max(vway) AS max FROM way WHERE id = " + id + " AND datemodif <= '" + timestamp
+					+ "')";
+			String query = "SELECT way.id,way.uid,way.vway, way.changeset, way.username, way.datemodif, hstore_to_json(way.tags), way.visible,way.composedof "
+					+ "FROM way WHERE id = " + id + " AND vway = " + vmax;
+			ResultSet r = s.executeQuery(query);
+			System.out.println("------- Query Executed -------");
+			OSMResource way = null;
+			while (r.next())
+				way = writeWay(r);
+			s.close();
+			conn.close();
+			return way;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * Get the latest version of all ways (visible or not) that are contained
+	 * inside the borders
+	 * 
+	 * @param borders
+	 * @param timestamp
+	 * @throws Exception
+	 */
+	public Set<OSMResource> getSnapshotWay(Double[] borders, String timestamp) throws Exception {
+		Set<OSMResource> waySet = new HashSet<OSMResource>();
+		java.sql.Connection conn;
+		try {
+			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
+			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+			String uniqueWayQuery = "SELECT DISTINCT ON (id) * FROM way WHERE lon_min >= " + borders[0]
+					+ "AND lat_min>= " + borders[1] + "AND lon_max<= " + borders[2] + "AND lat_max<= " + borders[3]
+					+ "ORDER BY id, datemodif DESC";
+			String infoWayQuery = "SELECT max(way.vway) as max, way.id FROM way, (" + uniqueWayQuery
+					+ ") as unique_way WHERE way.id = unique_way.id AND way.datemodif <='" + timestamp
+					+ "' GROUP BY way.id";
+			String query = "SELECT way.idway, way.id, way.uid, way.vway, way.changeset, way.username, way.datemodif, hstore_to_json(way.tags), way.composedof, way.visible "
+					+ "FROM way, (" + infoWayQuery
+					+ ") AS info_way WHERE way.id=info_way.id AND way.vway=info_way.max;";
+
+			ResultSet r = s.executeQuery(query);
+			System.out.println("------- Query Executed -------");
+			while (r.next())
+				waySet.add(this.writeWay(r));
+			s.close();
+			conn.close();
+			return waySet;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * Get all the ways that are created within a timespan and their evolution
+	 * (i.e. later versions) until end date
+	 * 
+	 * @param borders:
+	 *            {xmin, ymin, xmax, ymax}
+	 * @param timespan:
+	 *            {beginDate, endDate}
+	 * @throws Exception
+	 */
+	public Set<OSMResource> getEvolutionWay(Double[] borders, String[] timespan) throws Exception {
+		Set<OSMResource> waySet = new HashSet<OSMResource>();
+		java.sql.Connection conn;
+		try {
+			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
+			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			String query = "";
+			ResultSet r;
+			// Query PostGIS table way : select ways that are created within
+			// timespan
+			String queryCreatedWays = "SELECT way.id,way.uid,way.vway, way.changeset, way.username, way.datemodif, hstore_to_json(way.tags), way.visible,way.composedof FROM way "
+					+ "WHERE vway = 1 AND datemodif > '" + timespan[0] + "' AND datemodif <= '" + timespan[1]
+					+ "' AND lon_min >= " + borders[0] + " AND lat_min>=" + borders[1] + " AND lon_max<=" + borders[2]
+					+ " AND lat_max<=" + borders[3];
+			r = s.executeQuery(queryCreatedWays);
+			while (r.next())
+				waySet.add(this.writeWay(r));
+			// Query the created ways' evolution until end date
+			queryCreatedWays = "SELECT id FROM way " + "WHERE vway = 1 AND datemodif > '" + timespan[0]
+					+ "' AND datemodif <= '" + timespan[1] + "' AND lon_min >= " + borders[0] + " AND lat_min>="
+					+ borders[1] + " AND lon_max<=" + borders[2] + " AND lat_max<=" + borders[3];
+			query = "SELECT way.id,way.uid,way.vway, way.changeset, way.username, way.datemodif, hstore_to_json(way.tags), way.visible,way.composedof FROM way, ("
+					+ queryCreatedWays + ") AS ways_crees "
+					+ "WHERE way.id = ways_crees.id AND way.vway > 1 AND way.datemodif <= '" + timespan[1] + "'";
+			r = s.executeQuery(query);
+			while (r.next())
+				waySet.add(this.writeWay(r));
+			s.close();
+			conn.close();
+			return waySet;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * Récupère un snapshot des nodes & ways à t1 et leurs évolutions entre t1
+	 * et t2
+	 * 
+	 * @param bbox
+	 * @param timespan
+	 * @throws Exception
+	 */
 	public void getDataFrombbox(Double[] bbox, String[] timespan) throws Exception {
 		// Nodes at t1
-		selectNodesInit(bbox, timespan[0].toString());
+		// selectNodesInit(bbox, timespan[0].toString());
 		// Nodes between t1 and t2
-		selectNodes(bbox, timespan);
+		getEvolutionVisibleNode(bbox, timespan);
 
 		// Ways at t1
 		// selectWaysInit(bbox, timespan[0].toString());
 		// Ways between t1 and t2
-		// selectWays(bbox, timespan);
-
-		// Relations at t1
-		// relationSnapshot(bbox, timespan[0].toString());
-		// selectRelInit(bbox, timespan[0].toString());
-		// Relations between t1 and t2
-		// relationEvolution(bbox, timespan);
-		// selectRelations(bbox, timespan);
+		getEvolutionVisibleWay(bbox, timespan);
 	}
 
 	public ArrayList<OsmRelationMember> getRelationMemberList(int idrel) throws Exception {
@@ -130,12 +645,6 @@ public class LoadFromPostGIS {
 		if (!r.getString("hstore_to_json").toString().equalsIgnoreCase("{}")) {
 			try {
 				JSONObject obj = new JSONObject(r.getString("hstore_to_json"));
-				// for (int i = 0; i < obj.names().length(); i++) {
-				// String key = obj.names().getString(i);
-				// if (key.toString().equalsIgnoreCase("type")) {
-				// value = obj.getString(key);
-				// }
-				// }
 				int i = 0;
 				while (value == " " && i < obj.names().length()) {
 					String key = obj.names().getString(i);
@@ -154,6 +663,12 @@ public class LoadFromPostGIS {
 
 	}
 
+	/**
+	 * @deprecated
+	 * @param bbox
+	 * @param timespan
+	 * @throws Exception
+	 */
 	public void relationEvolution(Double[] bbox, String[] timespan) throws Exception {
 		String dropViewQuery = "DROP VIEW IF EXISTS "
 				+ "relationmemberselected, numberselectedrelmb, allrelationmember, "
@@ -245,6 +760,12 @@ public class LoadFromPostGIS {
 
 	}
 
+	/**
+	 * @deprecated
+	 * @param bbox
+	 * @param beginDate
+	 * @throws Exception
+	 */
 	public void relationSnapshot(Double[] bbox, String beginDate) throws Exception {
 		String dropViewQuery = "DROP VIEW IF EXISTS "
 				+ "relationmemberselected, numberselectedrelmb, allrelationmember, "
@@ -344,7 +865,7 @@ public class LoadFromPostGIS {
 			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
 			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			ResultSet r = s.executeQuery(query);
-			System.out.println("------- Query Executed : Snapshot Relation -------");
+			System.out.println("------- Query Executed -------");
 			writeOSMResource(r, osmDataType);
 			s.close();
 			conn.close();
@@ -354,26 +875,22 @@ public class LoadFromPostGIS {
 	}
 
 	/**
-	 * Gets the latest nodes at date beginDate
+	 * Gets the latest visible nodes at date beginDate
 	 * 
 	 * @param beginDate
 	 *            : timespan lower boundary
 	 * @throws SQLException
 	 */
-	public void selectNodesInit(Double[] bbox, String beginDate) throws SQLException {
-		// String query = "SELECT idnode, id, uid, vnode, changeset, username,
-		// datemodif, hstore_to_json(tags), lat, lon FROM ("
-		// + "SELECT DISTINCT ON (id) * FROM node WHERE datemodif <= \'" +
-		// beginDate
-		// + "\' AND node.geom && ST_MakeEnvelope(" + bbox[0].toString() + "," +
-		// bbox[1].toString() + ","
-		// + bbox[2].toString() + "," + bbox[3].toString() + ") ORDER BY id,
-		// datemodif DESC) AS node_and_tags;";
+	public void getSnapshotVisibleNode(Double[] bbox, String beginDate) throws SQLException {
+		String uniqueNodesQuery = "SELECT DISTINCT ON (id) * FROM node	WHERE lon >=" + bbox[0] + " AND lat>= "
+				+ bbox[1] + " AND lon<=" + bbox[2] + " AND lat<=" + bbox[3] + " ORDER BY id, datemodif DESC";
+		String infoNodesQuery = "SELECT max(node.vnode) as max, node.id FROM node,(" + uniqueNodesQuery
+				+ ") as unique_nodes WHERE node.id = unique_nodes.id AND node.datemodif <='" + beginDate
+				+ "' GROUP BY node.id";
 		// Query visible attribute
-		String query = "SELECT idnode, id, uid, vnode, changeset, username, datemodif, hstore_to_json(tags), lat, lon, visible FROM ("
-				+ "SELECT DISTINCT ON (id) * FROM node WHERE datemodif <= \'" + beginDate
-				+ "\' AND node.geom && ST_MakeEnvelope(" + bbox[0].toString() + "," + bbox[1].toString() + ","
-				+ bbox[2].toString() + "," + bbox[3].toString() + ") ORDER BY id, datemodif DESC) AS node_and_tags;";
+		String query = "SELECT node.idnode, node.id,node.uid,node.vnode, node.changeset, node.username, node.datemodif, hstore_to_json(node.tags), node.visible, node.lon, node.lat FROM node, ("
+				+ infoNodesQuery
+				+ ") as info_node WHERE node.id=info_node.id AND node.vnode=info_node.max AND node.visible IS TRUE;";
 		// Query database
 		try {
 			selectFromDB(query, "node");
@@ -387,7 +904,9 @@ public class LoadFromPostGIS {
 
 	/**
 	 * Retrieves OSM nodes from a PostGIS database according to spatiotemporal
-	 * parameters
+	 * parameters: 1) select the later versions of visible nodes at timespan[0]
+	 * until timespan[1]; 2) select all created nodes inside timespan including
+	 * their later versions until timespan[1]
 	 * 
 	 * @param bbox
 	 *            contains the bounding box coordinates in the following order :
@@ -398,27 +917,62 @@ public class LoadFromPostGIS {
 	 *            timestamp format
 	 * @throws SQLException
 	 */
-	public void selectNodes(Double[] bbox, String[] timespan) throws SQLException {
-
-		// Nodes created/edited within timespan
-		String query = "SELECT idnode, id, uid, vnode, changeset, username, datemodif, hstore_to_json(tags), lat, lon, visible FROM node WHERE node.geom && ST_MakeEnvelope("
-				+ bbox[0].toString() + "," + bbox[1].toString() + "," + bbox[2].toString() + "," + bbox[3].toString()
-				+ ", 4326) AND datemodif > \'" + timespan[0].toString() + "\' AND datemodif <= \'"
-				+ timespan[1].toString() + "\';";
+	public void getEvolutionVisibleNode(Double[] bbox, String[] timespan) throws SQLException {
+		String uniqueNodesQuery = "SELECT DISTINCT ON (id) * FROM node	WHERE lon >=" + bbox[0] + " AND lat>= "
+				+ bbox[1] + " AND lon<=" + bbox[2] + " AND lat<=" + bbox[3] + " ORDER BY id, datemodif DESC";
+		String infoNodesQuery = "SELECT max(node.vnode) as max, node.id FROM node,(" + uniqueNodesQuery
+				+ ") as unique_nodes WHERE node.id = unique_nodes.id AND node.datemodif <='" + timespan[0]
+				+ "' GROUP BY node.id";
+		String visibleNodeBeginDate = "SELECT node.* FROM node, (" + infoNodesQuery
+				+ ") as info_node WHERE node.id=info_node.id AND node.vnode=info_node.max AND node.visible IS TRUE";
+		String query = "SELECT node.idnode, node.id,node.uid,node.vnode, node.changeset, node.username, node.datemodif, hstore_to_json(node.tags), node.visible, node.lon, node.lat FROM node, ("
+				+ visibleNodeBeginDate + ") AS visible_node_t1 "
+				+ " WHERE node.id = visible_node_t1.id AND node.vnode > visible_node_t1.vnode AND node.datemodif <= '"
+				+ timespan[1] + "';";
 		// Query database
 		try {
 			selectFromDB(query, "node");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.out.println(query);
+		}
+		// Query the nodes that were created inside timespan and all the
+		// versions which fall between this time interval
+		String createdNodes = "SELECT DISTINCT ON (id) * FROM node WHERE lon >= " + bbox[0] + " AND lat>=" + bbox[1]
+				+ " AND lon<=" + bbox[2] + " AND lat<=" + bbox[3] + "AND vnode = 1 AND datemodif > '" + timespan[0]
+				+ "' AND datemodif <= '" + timespan[1] + "'";
+
+		query = "SELECT node.idnode, node.id,node.uid,node.vnode, node.changeset, node.username, node.datemodif, hstore_to_json(node.tags), node.visible, node.lon, node.lat "
+				+ "FROM node, (" + createdNodes + ") AS node_cree WHERE node.id = node_cree.id AND node.datemodif <='"
+				+ timespan[1] + "';";
+		// Query database
+		try {
+			selectFromDB(query, "node");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println(query);
 		}
 	}
 
-	public void selectWaysInit(Double[] bbox, String beginDate) throws SQLException {
-		String query = "SELECT idway, id, uid, vway, changeset, username, datemodif, hstore_to_json(tags), composedof, visible FROM ("
-				+ "SELECT DISTINCT ON (id) * FROM way WHERE datemodif <= \'" + beginDate + "\' AND lon_min >="
-				+ bbox[0].toString() + " AND lat_min >=" + bbox[1].toString() + " AND lon_max <=" + bbox[2].toString()
-				+ "AND lat_max <=" + bbox[3].toString() + " ORDER BY id, datemodif DESC) AS way_selected;";
+	/**
+	 * Gets the latest visible ways at date beginDate
+	 * 
+	 * @param bbox
+	 * @param beginDate
+	 * @throws SQLException
+	 */
+	public void getSnapshotVisibleWay(Double[] bbox, String beginDate) throws SQLException {
+		String uniqueWaysQuery = "SELECT DISTINCT ON (id) * FROM way WHERE lon_min >=" + bbox[0] + " AND lat_min>= "
+				+ bbox[1] + " AND lon_max<=" + bbox[2] + " AND lat_max<=" + bbox[3] + " ORDER BY id, datemodif DESC";
+		String infoWaysQuery = "SELECT max(way.vway) as max, way.id FROM way,(" + uniqueWaysQuery
+				+ ") as unique_ways WHERE way.id = unique_ways.id AND way.datemodif <='" + beginDate
+				+ "' GROUP BY way.id";
+		// Query visible attribute
+		String query = "SELECT way.id,way.uid,way.vway, way.changeset, way.username, way.datemodif, hstore_to_json(way.tags), way.visible,way.composedof FROM way, ("
+				+ infoWaysQuery
+				+ ") as info_way WHERE way.id=info_way.id AND way.vway=info_way.max AND way.visible IS TRUE;";
 		// Query database
 		try {
 			selectFromDB(query, "way");
@@ -441,14 +995,39 @@ public class LoadFromPostGIS {
 	 * @param timespan
 	 *            is composed of the begin date and end date written in
 	 *            timestamp format
-	 * @throws SQLException
+	 * @throws Exception
 	 */
-	public void selectWays(Double[] bbox, String[] timespan) throws SQLException {
-		// Ways created/edited within timespan
-		String query = "SELECT idway, id, uid, vway, changeset, username, datemodif, hstore_to_json(tags), composedof, visible FROM way "
-				+ "WHERE datemodif > \'" + timespan[0].toString() + "\' AND datemodif <= \'" + timespan[1].toString()
-				+ "\'" + " AND lon_min >=" + bbox[0].toString() + " AND lat_min >=" + bbox[1].toString()
-				+ " AND lon_max <=" + bbox[2].toString() + " AND lat_max <=" + bbox[3].toString();
+	public void getEvolutionVisibleWay(Double[] bbox, String[] timespan) throws Exception {
+		// Query later versions of visible ways at begin date
+		String uniqueWaysQuery = "SELECT DISTINCT ON (id) * FROM way WHERE lon_min >=" + bbox[0] + " AND lat_min>= "
+				+ bbox[1] + " AND lon_min<=" + bbox[2] + " AND lat_min<=" + bbox[3] + " ORDER BY id, datemodif DESC";
+		String infoWaysQuery = "SELECT max(way.vway) as max, way.id FROM way,(" + uniqueWaysQuery
+				+ ") as unique_ways WHERE way.id = unique_ways.id AND way.datemodif <='" + timespan[0]
+				+ "' GROUP BY way.id";
+		String visibleWayBeginDate = "SELECT way.* FROM way, (" + infoWaysQuery
+				+ ") as info_way WHERE way.id=info_way.id AND way.vway=info_way.max AND way.visible IS TRUE";
+		String query = "SELECT way.id,way.uid,way.vway, way.changeset, way.username, way.datemodif, hstore_to_json(way.tags), way.visible, way.composedof FROM way, ("
+				+ visibleWayBeginDate + ") AS visible_way_t1 "
+				+ " WHERE way.id = visible_way_t1.id AND way.vway > visible_way_t1.vway AND way.datemodif <= '"
+				+ timespan[1] + "';";
+		// Query database
+		try {
+			selectFromDB(query, "way");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println(query);
+			// throw e;
+		}
+		// Query the nodes that were created inside timespan and all the
+		// versions which fall between this time interval
+		String createdWays = "SELECT DISTINCT ON (id) * FROM way WHERE lon_min >= " + bbox[0] + " AND lat_min>="
+				+ bbox[1] + " AND lon_min<=" + bbox[2] + " AND lat_min<=" + bbox[3] + "AND vway = 1 AND datemodif > '"
+				+ timespan[0] + "' AND datemodif <= '" + timespan[1] + "'";
+
+		query = "SELECT way.idway, way.id,way.uid,way.vway, way.changeset, way.username, way.datemodif, hstore_to_json(way.tags), way.visible, way.composedof "
+				+ "FROM way, (" + createdWays + ") AS way_cree WHERE way.id = way_cree.id AND way.datemodif <='"
+				+ timespan[1] + "';";
 		// Query database
 		try {
 			selectFromDB(query, "way");
@@ -459,6 +1038,12 @@ public class LoadFromPostGIS {
 
 	}
 
+	/**
+	 * @deprecated
+	 * @param bbox
+	 * @param beginDate
+	 * @throws Exception
+	 */
 	public void selectRelInit(Double[] bbox, String beginDate) throws Exception {
 
 		relationSnapshot(bbox, beginDate);
@@ -478,7 +1063,7 @@ public class LoadFromPostGIS {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
-			throw e;
+			// throw e;
 		}
 
 		// Cherche si les relations qui viennent d'être créées sont également
@@ -486,6 +1071,12 @@ public class LoadFromPostGIS {
 
 	}
 
+	/**
+	 * @deprecated
+	 * @param bbox
+	 * @param timespan
+	 * @throws Exception
+	 */
 	public void selectRelations(Double[] bbox, String[] timespan) throws Exception {
 		relationEvolution(bbox, timespan);
 
@@ -508,7 +1099,8 @@ public class LoadFromPostGIS {
 
 	}
 
-	public void writeNode(ResultSet r) throws SQLException {
+	public OSMResource writeNode(ResultSet r) throws SQLException {
+		// Set<OSMResource> myNodeResource = new HashSet<OSMResource>();
 		System.out.println("Writing node...");
 		DateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssX");
 		Date date = null;
@@ -541,12 +1133,14 @@ public class LoadFromPostGIS {
 				e.printStackTrace();
 			}
 		}
-		this.myJavaObjects.add(myOsmResource);
+		// this.myJavaObjects.add(myOsmResource);
+		// myNodeResource.add(myOsmResource);
 		System.out.println("Java object created ! " + "\nid = " + myOsmResource.getId() + "\nusername = "
 				+ myOsmResource.getContributeur() + "     uid = " + myOsmResource.getUid() + "\nvnode = "
 				+ myOsmResource.getVersion() + "\ndate = " + myOsmResource.getDate() + "   Changeset = "
 				+ myOsmResource.getChangeSet());
 		System.out.println("-------------------------------------------");
+		return myOsmResource;
 	}
 
 	public void writeOSMResource(ResultSet r, String osmDataType) throws Exception {
@@ -556,43 +1150,38 @@ public class LoadFromPostGIS {
 			if (osmDataType.equalsIgnoreCase("node")) {
 				System.out.println("Writing resource with type node...");
 				System.out.println("r.next is a node");
-				writeNode(r);
+				this.myJavaObjects.add(writeNode(r));
 			}
 			if (osmDataType.equalsIgnoreCase("way")) {
 				System.out.println("Writing resource with type way...");
-				writeWay(r);
+				this.myJavaObjects.add(writeWay(r));
 			}
 			if (osmDataType.equalsIgnoreCase("relation")) {
 				System.out.println("Writing resource with type relation...");
 				// writeRelation(r);
-				writeRelation(r);
+				this.myJavaRelations.add(writeRelation(r));
 			}
 			if (osmDataType.equalsIgnoreCase("relationmember")) {
-				// if (!idRelPrev.equals(r.getLong("idrel"))) {
-				// String query = "SELECT idrel, id, uid, vrel, changeset,
-				// username, datemodif, hstore_to_json(tags) FROM relation WHERE
-				// idrel="
-				// + idRelPrev;
-				// selectFromDB(query, "relation");
-				// }
-				// Adds a new relation member in the list
-				// this.OsmRelMbList.add(writeRelationMember(r));
-				// idRelPrev = r.getLong("idrel");
-				// System.out.println("idrel =" + idRelPrev);
-				// System.out.println("OSMRelationMember added in
-				// OsmRelMbList.");
-
-				this.OsmRelMbList.put(writeRelationMember(r), r.getLong("idrel"));
+				// this.OsmRelMbList.put(writeRelationMember(r),
+				// r.getLong("idrel"));
+				if (this.OsmRelMbList.containsKey(r.getLong("idrel")))
+					this.OsmRelMbList.get(r.getLong("idrel")).add(writeRelationMember(r));
+				else {
+					List<OsmRelationMember> mbList = new ArrayList<OsmRelationMember>();
+					mbList.add(writeRelationMember(r));
+					this.OsmRelMbList.put(r.getLong("idrel"), mbList);
+				}
+				// writeRelationMember(r));
 
 			}
 		}
 	}
 
 	public OsmRelationMember writeRelationMember(ResultSet r) throws Exception {
-		boolean isNode = r.getString("typeMb").toLowerCase().equalsIgnoreCase("node");
-		boolean isWay = r.getString("typeMb").toLowerCase().equalsIgnoreCase("way");
-		boolean isRelation = r.getString("typeMb").toLowerCase().equalsIgnoreCase("relation");
-		long idmb = r.getLong("idmb");
+		boolean isNode = r.getString("typeMb").toLowerCase().equalsIgnoreCase("n");
+		boolean isWay = r.getString("typeMb").toLowerCase().equalsIgnoreCase("w");
+		boolean isRelation = r.getString("typeMb").toLowerCase().equalsIgnoreCase("r");
+		Long idmb = r.getLong("idmb");
 		if (r.getString("rolemb").toLowerCase().equalsIgnoreCase("outer")) {
 			OsmRelationMember osmRelMb = new OsmRelationMember(RoleMembre.OUTER, isNode, isWay, isRelation, idmb);
 			System.out.println("writeRelationMember(r)");
@@ -610,7 +1199,7 @@ public class LoadFromPostGIS {
 		}
 	}
 
-	public void writeRelation(ResultSet r) throws Exception {
+	public OSMResource writeRelation(ResultSet r) throws Exception {
 		// Get date
 		DateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssX");
 		Date date = null;
@@ -621,24 +1210,32 @@ public class LoadFromPostGIS {
 		}
 
 		// Crée une liste de membres de relation: parcourt OsmRelMbList
-		ArrayList<OsmRelationMember> mbList = new ArrayList<OsmRelationMember>();
-		for (OsmRelationMember mb : OsmRelMbList.keySet()) {
-			if (OsmRelMbList.get(mb) == (r.getLong("id") + r.getLong("vrel")))
-				mbList.add(mb);
-		}
+		List<OsmRelationMember> mbList = new ArrayList<OsmRelationMember>();
+		// for (OsmRelationMember mb : OsmRelMbList.keySet()) {
+		// if (OsmRelMbList.get(mb).equals(Long.valueOf(r.getString("id") +
+		// r.getString("vrel"))))
+		// mbList.add(mb);
+		// }
+		Long idrel = r.getLong("idrel");
+		String user = r.getString("username");
+		Long id = r.getLong("id");
+		Integer changeset = r.getInt("changeset");
+		Integer vrel = r.getInt("vrel");
+		Integer uid = r.getInt("uid");
+		mbList = this.OsmRelMbList.get(idrel);
 		// Récupère le type de relation (MULTIPOLYGON ou NON_DEF)
 		TypeRelation relType = getRelationType(r);
 		PrimitiveGeomOSM myRelation = new OSMRelation(relType, mbList);
 
 		// Creates a new OSMResource
-		OSMResource myOsmResource = new OSMResource(r.getString("username"), myRelation, r.getLong("id"),
-				r.getInt("changeset"), r.getInt("vrel"), r.getInt("uid"), date);
+		OSMResource myOsmResource = new OSMResource(user, myRelation, id, changeset, vrel, uid, date);
 		// Visible : peut être null
 		myOsmResource.setVisible(r.getBoolean("visible"));
+		String hstoreToJson = r.getString("hstore_to_json");
 		// Add tags if exist
-		if (!r.getString("hstore_to_json").toString().equalsIgnoreCase("{}")) {
+		if (!hstoreToJson.toString().equalsIgnoreCase("{}")) {
 			try {
-				JSONObject obj = new JSONObject(r.getString("hstore_to_json"));
+				JSONObject obj = new JSONObject(hstoreToJson);
 				for (int i = 0; i < obj.names().length(); i++) {
 					String key = obj.names().getString(i);
 					String value = obj.getString(key);
@@ -654,13 +1251,14 @@ public class LoadFromPostGIS {
 				+ myOsmResource.getContributeur() + "     uid = " + myOsmResource.getUid() + "\nvrel = "
 				+ myOsmResource.getVersion() + "\ndate = " + myOsmResource.getDate() + "   Changeset = "
 				+ myOsmResource.getChangeSet());
-		this.myJavaRelations.add(myOsmResource);
+		// this.myJavaRelations.add(myOsmResource);
 
 		System.out.println("-------------------------------------------");
+		return myOsmResource;
 
 	}
 
-	public void writeWay(ResultSet r) throws SQLException {
+	public OSMResource writeWay(ResultSet r) throws SQLException {
 		System.out.println("Writing way...");
 		Long[] nodeWay = (Long[]) r.getArray("composedof").getArray();
 		for (long i : nodeWay) {
@@ -694,12 +1292,13 @@ public class LoadFromPostGIS {
 				e.printStackTrace();
 			}
 		}
-		this.myJavaObjects.add(myOsmResource);
+		// this.myJavaObjects.add(myOsmResource);
 		System.out.println("Java object created ! " + "\nid = " + myOsmResource.getId() + "\nusername = "
 				+ myOsmResource.getContributeur() + "     uid = " + myOsmResource.getUid() + "\nvway = "
 				+ myOsmResource.getVersion() + "\ndate = " + myOsmResource.getDate() + "   Changeset = "
 				+ myOsmResource.getChangeSet());
 		System.out.println("-------------------------------------------");
+		return myOsmResource;
 	}
 
 }

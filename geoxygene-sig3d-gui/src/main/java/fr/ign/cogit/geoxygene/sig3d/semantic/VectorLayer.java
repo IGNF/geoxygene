@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.Representation;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.sig3d.geometry.Box3D;
 import fr.ign.cogit.geoxygene.sig3d.representation.I3DRepresentation;
@@ -122,9 +123,14 @@ public class VectorLayer extends FT_FeatureCollection<IFeature> implements Layer
     int nbElement = this.size();
     // Pour chaque élément, nous implémentons la bonne classe
     // En fonction de leur dimension
-    for (int i = 0; i < nbElement; i++) {
-      IFeature obj = this.get(i);
-      int dimension = obj.getGeom().dimension();
+    
+    
+    for (IFeature obj : featColl) {
+     IGeometry geom = obj.getGeom();
+     if(geom==null||geom.isEmpty()){
+    	 continue;
+     }
+      int dimension = geom.dimension();
       I3DRepresentation representation = null;
       switch (dimension) {
         case 0:

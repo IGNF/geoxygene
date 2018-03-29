@@ -79,4 +79,17 @@ public class OSMRelation extends PrimitiveGeomOSM {
 		}
 		return inners;
 	}
+
+	/**
+	 * Get the members of this relation with the role "inner".
+	 * 
+	 * @return
+	 */
+	public List<Long> getMembersID() {
+		List<Long> membersID = new ArrayList<Long>();
+		for (OsmRelationMember member : this.getMembers()) {
+			membersID.add(member.getRef());
+		}
+		return membersID;
+	}
 }

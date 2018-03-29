@@ -10,7 +10,7 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.contrib.algorithms.SpatialQuery;
-import fr.ign.cogit.geoxygene.osm.quality.spatialrelations.OSMVersionComparator;
+import fr.ign.cogit.geoxygene.osm.util.OSMVersionComparator;
 import fr.ign.cogit.geoxygene.util.algo.CommonAlgorithms;
 
 public class BusStopHistRelAssessment {

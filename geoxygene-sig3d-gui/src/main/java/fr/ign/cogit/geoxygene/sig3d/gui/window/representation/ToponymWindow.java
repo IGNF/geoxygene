@@ -675,9 +675,13 @@ public class ToponymWindow extends JDialog implements ActionListener {
 
         }
         // On applique la représentation
-        feat.setRepresentation(new BasicToponym3D(feat, couleur, opacite,
-            Math.PI * lambda / 180, Math.PI * teta / 180, Math.PI * phi / 180,
-            textTemp, police, taille, bFaceCamera));
+        
+        if(feat.getGeom()!=null&&!feat.getGeom().isEmpty()){
+            feat.setRepresentation(new BasicToponym3D(feat, couleur, opacite,
+                    Math.PI * lambda / 180, Math.PI * teta / 180, Math.PI * phi / 180,
+                    textTemp, police, taille, bFaceCamera));
+        }
+   
 
       }
 

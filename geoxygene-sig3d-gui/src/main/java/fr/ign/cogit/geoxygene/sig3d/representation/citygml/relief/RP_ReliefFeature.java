@@ -45,6 +45,8 @@ public class RP_ReliefFeature extends RP_CityObject {
       CG_AbstractReliefComponent aRC = rARC.get(i);
 
       if (aRC instanceof CG_TINRelief) {
+    	  
+    	  
         
         RP_TINRelief rpT = new RP_TINRelief((CG_TINRelief)aRC, lCGA);
         this.getBGRep().addChild(rpT.getBGRep());

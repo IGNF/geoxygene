@@ -16,6 +16,7 @@ import javax.swing.JTextField;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.Representation;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.sig3d.Messages;
 import fr.ign.cogit.geoxygene.sig3d.gui.InterfaceMap3D;
 import fr.ign.cogit.geoxygene.sig3d.gui.filter.ImageFilter;
@@ -450,8 +451,10 @@ public class BuildingModWindow extends JDialog implements ActionListener {
 
       for (int i = 0; i < nbFeat; i++) {
         IFeature feat = this.featColl.get(i);
-
-        if (feat.getGeom().dimension() > 1) {
+        
+        IGeometry geom = feat.getGeom();
+        
+        if (geom!=null && ! geom.isEmpty() && feat.getGeom().dimension() > 1) {
           // On associe la texture à l'objet
           feat.setRepresentation(new BuildingTexture(feat, texMur, longueurMur,
               hauteurMur, texToit, longueurToit, hauteurToit));
