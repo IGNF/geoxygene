@@ -689,8 +689,13 @@ public class SymbolWindow extends JDialog implements ActionListener,
 
         }
 
-        feat.setRepresentation(new RepresentationModel(feat, path, lambda
-            * Math.PI / 180, teta * Math.PI / 180, phi * Math.PI / 180, hauteur));
+        
+        if(feat.getGeom() != null&&!feat.getGeom().isEmpty()){
+            feat.setRepresentation(new RepresentationModel(feat, path, lambda
+                    * Math.PI / 180, teta * Math.PI / 180, phi * Math.PI / 180, hauteur));
+        	
+        }
+
 
       }
 

@@ -39,6 +39,7 @@ public class PostGISLoadingWindow extends JDialog implements ActionListener {
   JTextField jTFHost;
   JTextField jTFBDD;
   JTextField jTFPort;
+  JTextField jTFSchema;
   JTextField jTFUser;
   JTextField jTFMDP;
 
@@ -52,6 +53,11 @@ public class PostGISLoadingWindow extends JDialog implements ActionListener {
   InterfaceMap3D iCarte3D;
 
   // Les controles
+  
+  
+  public static void main(String[] args){
+	  (new PostGISLoadingWindow(null)).setVisible(true);
+  }
 
   /**
 	 */
@@ -110,43 +116,55 @@ public class PostGISLoadingWindow extends JDialog implements ActionListener {
     this.jTFBDD.setVisible(true);
     this.jTFBDD.addActionListener(this);
     this.add(this.jTFBDD);
+    // Formulaire du type
+    JLabel labelSchema = new JLabel();
+    labelSchema.setBounds(10, 130, 100, 20);
+    labelSchema.setText("Schema"); //$NON-NLS-1$
+    this.add(labelSchema);
 
+    this.jTFSchema = new JTextField("public");
+    this.jTFSchema.setBounds(160, 130, 200, 20);
+    this.jTFSchema.setVisible(true);
+    this.jTFSchema.addActionListener(this);
+    this.add(this.jTFSchema);
+
+    
     // Formulaire du type
     JLabel labelNomUser = new JLabel();
-    labelNomUser.setBounds(10, 130, 100, 20);
+    labelNomUser.setBounds(10, 170, 100, 20);
     labelNomUser.setText("User"); //$NON-NLS-1$
     this.add(labelNomUser);
 
     this.jTFUser = new JTextField("");
-    this.jTFUser.setBounds(160, 130, 200, 20);
+    this.jTFUser.setBounds(160, 170, 200, 20);
     this.jTFUser.setVisible(true);
     this.jTFUser.addActionListener(this);
     this.add(this.jTFUser);
 
     // Formulaire du type
     JLabel labelMDP = new JLabel();
-    labelMDP.setBounds(10, 170, 100, 20);
+    labelMDP.setBounds(10, 210, 100, 20);
     labelMDP.setText("Password"); //$NON-NLS-1$
     this.add(labelMDP);
 
     this.jTFMDP = new JPasswordField("");
-    this.jTFMDP.setBounds(160, 170, 200, 20);
+    this.jTFMDP.setBounds(160, 210, 200, 20);
     this.jTFMDP.setVisible(true);
     this.jTFMDP.addActionListener(this);
     this.add(this.jTFMDP);
 
     // Boutons de validations
-    this.ok.setBounds(50, 210, 100, 20);
+    this.ok.setBounds(50, 250, 100, 20);
     this.ok.setText(Messages.getString("3DGIS.OK")); //$NON-NLS-1$
     this.ok.addActionListener(this);
     this.add(this.ok);
 
-    this.cancel.setBounds(150, 210, 100, 20);
+    this.cancel.setBounds(150, 250, 100, 20);
     this.cancel.setText(Messages.getString("3DGIS.NO")); //$NON-NLS-1$
     this.cancel.addActionListener(this);
     this.add(this.cancel);
 
-    this.test.setBounds(250, 210, 100, 20);
+    this.test.setBounds(250, 250, 100, 20);
     this.test.setText("Test"); //$NON-NLS-1$
     this.test.addActionListener(this);
     this.add(this.test);
@@ -172,6 +190,7 @@ public class PostGISLoadingWindow extends JDialog implements ActionListener {
     String port = this.jTFPort.getText();
     String user = this.jTFUser.getText();
     String pw = this.jTFMDP.getText();
+    String schema = this.jTFSchema.getText();
 
     if (host.isEmpty() || database.isEmpty() || port.isEmpty()
         || user.isEmpty() || pw.isEmpty()) {
@@ -187,7 +206,7 @@ public class PostGISLoadingWindow extends JDialog implements ActionListener {
 
       try {
         List<String> lNoms = PostgisManager.tableWithGeom(host, port, database,
-            user, pw);
+           schema, user, pw);
 
         if (lNoms.size() == 0) {
           // Pas de couche géométrique
@@ -209,7 +228,7 @@ public class PostGISLoadingWindow extends JDialog implements ActionListener {
           this.dispose();
 
           (new PostGISLayerChoiceWindow(this.iCarte3D, lNoms, host, database,
-              port, user, pw)).setVisible(true);
+              port, schema, user, pw)).setVisible(true);
 
         }
 
@@ -230,10 +249,10 @@ public class PostGISLoadingWindow extends JDialog implements ActionListener {
 
     if (source.equals(this.test)) {
       try {
-        List<String> lNoms = PostgisManager.tableWithGeom(host, port, database,
+        List<String> lNoms = PostgisManager.tableWithGeom(host, port, database, schema,
             user, pw);
 
-        if (lNoms.size() == 0) {
+        if (lNoms.isEmpty()) {
           // Pas de couche géométrique mais connecté
           JOptionPane
               .showMessageDialog(

@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.sig3d.analysis.streetprofile;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.log4j.Level;
@@ -36,7 +37,7 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
  * 
  * 
  * Stage de Marina Fund : USAGE D'INDICATEUR 3D ET AMENAGEMENT URBAIN
-
+ * 
  * 
  * @author MFund
  * @author MBrasebin
@@ -47,7 +48,17 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
 public class Profile {
 
 	public enum SIDE {
-		UPSIDE, DOWNSIDE, BOTH
+		UPSIDE("UP"), DOWNSIDE("DOWN"), BOTH("BOTH");
+		
+	    private final String fieldDescription;
+
+	    private SIDE(String value) {
+	        fieldDescription = value;
+	    }
+
+	    public String toString() {
+	        return fieldDescription;
+	    }
 	}
 
 	private static Logger logger = Logger.getLogger(Profile.class);
@@ -55,6 +66,8 @@ public class Profile {
 	// ---------------------------------- ATTRIBUTS
 	// ----------------------------------
 
+	
+	private Hashtable<Double, IFeatureCollection<IFeature>> pointsByX;
 	// Paramètres
 
 	/**
@@ -175,12 +188,10 @@ public class Profile {
 	 */
 	private IFeatureCollection<IFeature> roadsProfiled;
 
-
-
 	/**
 	 * Compteur déterminant le nombre de points pris sur la rue considérée
 	 */
-	private double counterX;
+	private int nbP;
 
 	/**
 	 * Collection des vecteurs normaux (pour la visu)
@@ -199,7 +210,7 @@ public class Profile {
 	public IFeatureCollection<IFeature> getBuildingSide2() {
 		return buildingSide2;
 	}
-	
+
 	public IFeatureCollection<IFeature> getRoadsProfiled() {
 		return roadsProfiled;
 	}
@@ -214,15 +225,11 @@ public class Profile {
 	 * Ensemble des points projetés
 	 */
 	private IFeatureCollection<IFeature> pproj = null;
-	
+
 	/**
 	 * Toits des bâtiments
 	 */
-	private IFeatureCollection<IFeature> buildingRoofs = null; 
-	
-	
-	
-	
+	private IFeatureCollection<IFeature> buildingRoofs = null;
 
 	public static Logger getLogger() {
 		return logger;
@@ -268,8 +275,8 @@ public class Profile {
 		return parcelle;
 	}
 
-	public double getCounterX() {
-		return counterX;
+	public int getNumberOfPoints() {
+		return nbP;
 	}
 
 	public IFeatureCollection<IFeature> getBuildingRoofs() {
@@ -378,8 +385,6 @@ public class Profile {
 		logger.info("Launching of profile estimation");
 		logger.info("-------------------------------------------");
 
-		
-	
 		// Chargement des données
 
 		logger.info("-------------------------------------------");
@@ -394,23 +399,21 @@ public class Profile {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		
-		
-		if(altZMax == -1){
+
+		if (altZMax == -1) {
 			logger.info("Autodetermining max height");
 			altZMin = Double.POSITIVE_INFINITY;
-			for(IFeature feat:bati){
-				Box3D b= new Box3D(feat.getGeom());
-				
+			for (IFeature feat : bati) {
+				Box3D b = new Box3D(feat.getGeom());
+
 				altZMin = Math.min(altZMin, b.getLLDP().getZ());
 				altZMax = Math.max(altZMax, b.getURDP().getZ());
-				
+
 			}
-			
+
 			diff2DRep = altZMin - 5;
 		}
-		
+
 		logger.info("Horizontal step : " + pas);
 		logger.info("Vertical step : " + pasZ);
 		logger.info("Maximal height : " + altZMin);
@@ -418,26 +421,21 @@ public class Profile {
 		logger.info("Maximal distance: " + longCut);
 		logger.info("-------------------------------------------");
 
-		
-		buildingRoofs = RoofDetection.detectRoof(bati,  0.1, false);
-		for(IFeature feat : buildingRoofs){
-		//	feat.setGeom(feat.getGeom().buffer(0.01));
-			if(feat.getGeom() == null || feat.getGeom().isEmpty()){
-				
+		buildingRoofs = RoofDetection.detectRoof(bati, 0.1, false);
+		for (IFeature feat : buildingRoofs) {
+			// feat.setGeom(feat.getGeom().buffer(0.01));
+			if (feat.getGeom() == null || feat.getGeom().isEmpty()) {
+
 				feat.setGeom(new GM_Polygon());
-				
-			}else{
-				//feat.setGeom(feat.getGeom().getEnvelope().getGeom());
-				
+
+			} else {
+				// feat.setGeom(feat.getGeom().getEnvelope().getGeom());
+
 				feat.setGeom(feat.getGeom().convexHull());
-				
+
 			}
-			
-		
+
 		}
-		
-	
-		
 
 		// -------------------------------------------------------------------------------------
 
@@ -503,13 +501,14 @@ public class Profile {
 			return;
 		}
 
-		int nbP = dpl.size();
+		 nbP = dpl.size();
 
 		int counter = 0;
 
-		this.counterX = nbP * pas;
-
 		// Boucles sur les points échantillonnés
+
+	
+
 		for (int i = 0; i < nbP; i++) {
 
 			// Mise-à-jour du compteur
@@ -579,21 +578,16 @@ public class Profile {
 			int stat1 = 0;
 			int stat2 = 0;
 
-			IFeatureCollection<IFeature> batiPP = null; 
+			IFeatureCollection<IFeature> batiPP = null;
 			IFeatureCollection<IFeature> batiPP1 = null;
-			
-			if(parcelle == null || parcelle.isEmpty()){
-				batiPP = BuildingProfileTools.batimentPProcheNoParcel( ls, bati, dpPred, buildingRoofs);
-				batiPP1 = BuildingProfileTools.batimentPProcheNoParcel(ls1, bati, dpPred, buildingRoofs);
-			}else{
-				batiPP =  BuildingProfileTools.batimentPProche(parcelle, ls, bati, dpPred, buildingRoofs);
-				batiPP1=  BuildingProfileTools.batimentPProche(parcelle, ls1, bati, dpPred, buildingRoofs);
-			}
-			
-			
 
-			
-			
+			if (parcelle == null || parcelle.isEmpty()) {
+				batiPP = BuildingProfileTools.batimentPProcheNoParcel(ls, bati, dpPred, buildingRoofs);
+				batiPP1 = BuildingProfileTools.batimentPProcheNoParcel(ls1, bati, dpPred, buildingRoofs);
+			} else {
+				batiPP = BuildingProfileTools.batimentPProche(parcelle, ls, bati, dpPred, buildingRoofs);
+				batiPP1 = BuildingProfileTools.batimentPProche(parcelle, ls1, bati, dpPred, buildingRoofs);
+			}
 
 			if (batiPP == null) {
 				stat1 = 2;
@@ -760,10 +754,10 @@ public class Profile {
 
 		logger.info("Fichiers brut : " + output);
 
-		IFeatureCollection<IFeature> featC = TransformToCircle.transform(pproj, counterX,
+		IFeatureCollection<IFeature> featC = TransformToCircle.transform(pproj, nbP,
 				1 + (int) ((altZMax - altZMin) / pasZ), radius);
 
-		logger.info("Counter X : " + counterX);
+		logger.info("Counter X : " + nbP);
 
 		ShapefileWriter.write(featC, output);
 
@@ -796,9 +790,11 @@ public class Profile {
 		return iFeatureCollOut;
 
 	}
-
-	public List<Double> getHeightAlongRoad(SIDE side) {
-
+	
+	
+	public List<Double> getHeightAlongRoad(SIDE side, int begin, int end) {
+		
+		
 		List<Double> heights = new ArrayList<>();
 
 		if (pproj == null) {
@@ -806,7 +802,7 @@ public class Profile {
 			return heights;
 		}
 
-		for (int i = 0; i < counterX; i++) {
+		for (int i = begin; i < end; i++) {
 
 			IFeatureCollection<IFeature> iFeatureCollTemp = this.getPointAtXstep(i * this.getXYStep(), side);
 
@@ -815,31 +811,73 @@ public class Profile {
 		}
 
 		return heights;
+		
+		
 	}
+
+	public List<Double> getHeightAlongRoad(SIDE side) {
+		return getHeightAlongRoad(side, 0, nbP);
+
+	}
+	
+	
+	
+	
+	private void initializeHashTable(){
+		
+		
+		pointsByX = new Hashtable<>();
+		
+		for (IFeature feat : this.pproj) {
+			double x = Double.parseDouble(feat.getAttribute(BuildingProfileParameters.NAM_ATT_X).toString());
+			
+			if(! pointsByX.containsKey(x)){
+				pointsByX.put(x, new FT_FeatureCollection<>());
+			}
+			pointsByX.get(x).add(feat);
+			
+		}
+	}
+	
 
 	// Get the points at the X value
 	public IFeatureCollection<IFeature> getPointAtXstep(double xValue, SIDE side) {
 
+		
+		
+		
 		IFeatureCollection<IFeature> iFeatureCollOut = new FT_FeatureCollection<>();
 
 		if (pproj == null) {
 			logger.error("Erreur : profile is not generated");
 			return iFeatureCollOut;
 		}
+		
 
-		for (IFeature feat : this.pproj) {
+		if(pointsByX == null){
+			initializeHashTable();
+		}
+		
+		IFeatureCollection<IFeature> featCollTemp = pointsByX.get(xValue);
+		
+		if (side.equals(SIDE.BOTH)) {
+			return featCollTemp;
+			
+		}
 
-			double x = Double.parseDouble(feat.getAttribute(BuildingProfileParameters.NAM_ATT_X).toString());
+		
+		if(featCollTemp == null ||featCollTemp.isEmpty()){
+			return iFeatureCollOut;
+		}
+		
 
-			if (x != xValue) {
-				continue;
-			}
+		for (IFeature feat : featCollTemp) {
 
+	
 			double y = Double.parseDouble(feat.getAttribute(BuildingProfileParameters.NAM_ATT_Y).toString());
-
-			if (side.equals(SIDE.BOTH)) {
-				iFeatureCollOut.add(feat);
-			} else if (side.equals(SIDE.UPSIDE) && y > 0) {
+			
+			
+			if (side.equals(SIDE.UPSIDE) && y > 0) {
 				iFeatureCollOut.add(feat);
 			} else if (side.equals(SIDE.DOWNSIDE) && y < 0) {
 				iFeatureCollOut.add(feat);

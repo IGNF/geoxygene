@@ -20,7 +20,6 @@ public class OSMResource {
 	private int uid;
 	private HashMap<String, String> tags;
 	private Date date;
-	private int nbTags;
 	private boolean visible;
 
 	public static final String TAG_SOURCE = "source";
@@ -107,7 +106,6 @@ public class OSMResource {
 
 	public void setTags(HashMap<String, String> tags) {
 		this.tags = tags;
-		nbTags = tags.size();
 	}
 
 	public Date getDate() {
@@ -116,14 +114,6 @@ public class OSMResource {
 
 	public void setDate(Date date) {
 		this.date = date;
-	}
-
-	public int getNbTags() {
-		return nbTags;
-	}
-
-	public void setNbTags(int nbtags) {
-		this.nbTags = nbtags;
 	}
 
 	@Override
@@ -156,12 +146,22 @@ public class OSMResource {
 		this.version = version;
 		this.date = date;
 		tags = new HashMap<String, String>();
-		nbTags = tags.size();
+	}
+
+	public OSMResource(String contributeur, PrimitiveGeomOSM geom, long id, int changeSet, int version, int uid,
+			Date date, Boolean visible) {
+		this.contributeur = contributeur;
+		this.geom = geom;
+		this.id = id;
+		this.uid = uid;
+		this.changeSet = changeSet;
+		this.version = version;
+		this.date = date;
+		tags = new HashMap<String, String>();
 	}
 
 	public void addTag(String cle, String valeur) {
 		tags.put(cle, valeur);
-		nbTags += 1;
 	}
 
 	/**
@@ -196,6 +196,26 @@ public class OSMResource {
 
 	public void setVisible(boolean visible) {
 		this.visible = visible;
+	}
+
+	public boolean isGeomEquals(OSMResource r) {
+		// Egalité géométrique
+		if (r.getGeom().getClass().getSimpleName().equals("OSMNode"))
+			return ((OSMNode) this.getGeom()).isGeomEquals((OSMNode) r.getGeom());
+		if (r.getGeom().getClass().getSimpleName().equals("OSMWay"))
+			return ((OSMWay) this.getGeom()).isVerticeEquals((OSMWay) r.getGeom());
+		// Cas des relations pas traité
+		return false;
+	}
+
+	public boolean isTagsEquals(OSMResource r) {
+		// Egalité géométrique
+		if (r.getTags().size() != this.getTags().size())
+			return false;
+		if (r.getTags().keySet().equals(this.getTags().keySet()))
+			if (r.getTags().values().equals(r.getTags().values()))
+				return true;
+		return false;
 	}
 
 }

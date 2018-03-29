@@ -53,7 +53,8 @@ public class CorrectionBati3D {
    * 
    * @param feat
    */
-  public static void correctionNormales(IFeatureCollection<IFeature> featColl) {
+  @SuppressWarnings("unchecked")
+public static void correctionNormales(IFeatureCollection<IFeature> featColl) {
 
     int nbEl = featColl.size();
 
@@ -89,7 +90,7 @@ public class CorrectionBati3D {
 
   }
 
-  
+  @SuppressWarnings("unchecked")
   public static void correctionNormalesNoFloor(IFeatureCollection<IFeature> featColl) {
 
     int nbEl = featColl.size();
@@ -284,7 +285,7 @@ public class CorrectionBati3D {
     return finaleGOS;
 
   }
-
+  @SuppressWarnings("unchecked")
   public static void close3DBatiCollWithDTM(
       IFeatureCollection<IFeature> featColl, DTM mnt) {
 
@@ -318,7 +319,7 @@ public class CorrectionBati3D {
     }
 
   }
-
+  @SuppressWarnings("unchecked")
   public static IMultiSurface<IOrientableSurface> close3DBatiWithDTM(
       IMultiSurface<IOrientableSurface> gms, DTM mnt) {
 

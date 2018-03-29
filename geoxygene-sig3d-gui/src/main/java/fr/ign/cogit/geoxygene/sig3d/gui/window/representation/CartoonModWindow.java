@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.sig3d.Messages;
 import fr.ign.cogit.geoxygene.sig3d.gui.InterfaceMap3D;
 import fr.ign.cogit.geoxygene.sig3d.gui.actionpanelmenu.COGITColorChooserPanel;
@@ -302,9 +303,11 @@ public class CartoonModWindow extends JDialog implements ActionListener {
         // On associe la représentation en fonction des paramètres à
         // chaque objet
         for (int i = 0; i < nbFeat; i++) {
-          IFeature feat = this.featColl.get(i);
-
-          if (feat.getGeom().dimension() > 1) {
+            IFeature feat = this.featColl.get(i);
+            
+            IGeometry geom = feat.getGeom();
+            
+            if (geom!=null && ! geom.isEmpty() && feat.getGeom().dimension() > 1) {
             // On associe la texture à l'objet
             feat.setRepresentation(new ObjectCartoon(feat, couleur,
                 couleurBordure, largeurBordure, opacite));

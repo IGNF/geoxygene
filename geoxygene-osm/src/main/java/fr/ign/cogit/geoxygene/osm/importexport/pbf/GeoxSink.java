@@ -31,7 +31,7 @@ public class GeoxSink implements Sink {
 
 	String host = "localhost";
 	String port = "5432";
-	String dbName = "iledelacite";
+	String dbName = "nepalosh"; // "iledelacite"
 	String dbUser = "postgres";
 	String dbPwd = "postgres";
 	String url = "jdbc:postgresql://" + host + ":" + port + "/" + dbName;

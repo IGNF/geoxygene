@@ -15,7 +15,6 @@ import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
@@ -43,7 +42,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -88,7 +86,6 @@ import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.UserStyle;
 import fr.ign.cogit.geoxygene.vgi.flickr.FlickRFeature;
 import fr.ign.cogit.geoxygene.vgi.flickr.FlickRLoader;
-import fr.ign.cogit.geoxygene.vgi.flickr.FlickRXmlLoader;
 import fr.ign.cogit.geoxygene.vgi.foursquare.FoursquareFeature;
 import fr.ign.cogit.geoxygene.vgi.foursquare.FoursquareLoader;
 import fr.ign.cogit.geoxygene.vgi.panoramio.PanoramioFeature;
@@ -119,7 +116,7 @@ public class VGIPlugin
     JMenu menu = new JMenu("VGI");
     JMenu flickrMenu = new JMenu("FlickR");
     flickrMenu.add(new JMenuItem(new LoadFlickRAction()));
-    flickrMenu.add(new JMenuItem(new LoadFlickRFilesAction()));
+    // flickrMenu.add(new JMenuItem(new LoadFlickRFilesAction()));
     showPhotos = new JCheckBoxMenuItem(new ShowFlickRAction());
     flickrMenu.add(showPhotos);
     flickrMenu.add(new JMenuItem(new ExportFlickRAction()));
@@ -171,7 +168,6 @@ public class VGIPlugin
   @Override
   public void initialize(ProjectFrame projectFrame) {
     // TODO Auto-generated method stub
-
   }
 
   /**
@@ -192,7 +188,6 @@ public class VGIPlugin
     public void actionPerformed(ActionEvent arg0) {
       LoadFlickRFrame frame = new LoadFlickRFrame();
       frame.setVisible(true);
-
     }
 
     public LoadFlickRAction() {
@@ -208,55 +203,12 @@ public class VGIPlugin
    * @author GTouya
    * 
    */
-  class LoadFlickRFilesAction extends AbstractAction {
+  class LoadFlickRFrame extends JFrame
+      implements ActionListener, ChangeListener {
 
     /**
     * 
     */
-    private static final long serialVersionUID = 1L;
-
-    @Override
-    public void actionPerformed(ActionEvent arg0) {
-      JFileChooser chooser = new JFileChooser();
-      chooser.setMultiSelectionEnabled(true);
-      int returnVal = chooser.showOpenDialog(null);
-
-      if (returnVal == JFileChooser.APPROVE_OPTION) {
-
-        File[] files = chooser.getSelectedFiles();
-        FlickRXmlLoader loader = new FlickRXmlLoader(FLICKR_API_KEY,
-            FLICKR_API_SECRET, proxyHost, new Integer(proxyPort));
-        List<FlickRFeature> features;
-        try {
-          features = loader.getPhotosFromXmlFiles(files);
-
-          // create the road feature collection from the selected features
-          IFeatureCollection<FlickRFeature> photos = new FT_FeatureCollection<>();
-          FeatureType ft = new FeatureType();
-          ft.setGeometryType(IPoint.class);
-          photos.setFeatureType(ft);
-          photos.addAll(features);
-
-          // put photos in a new layer
-          putPhotosInLayer(photos);
-          System.out.println(photos.size() + " loaded photos");
-        } catch (SAXException | IOException | ParserConfigurationException e) {
-          e.printStackTrace();
-        }
-      }
-    }
-
-    public LoadFlickRFilesAction() {
-      this.putValue(Action.SHORT_DESCRIPTION,
-          "Load FlickR data from XML files and add as a new layer");
-      this.putValue(Action.NAME, "Load FlickR data from XML");
-    }
-  }
-
-  class LoadFlickRFrame extends JFrame
-      implements ActionListener, ChangeListener {
-
-    /****/
     private static final long serialVersionUID = 1L;
 
     private JSpinner spinLongmin, spinLongmax, spinLatmin, spinLatmax,
@@ -388,8 +340,10 @@ public class VGIPlugin
       ft.setGeometryType(IPoint.class);
       photos.setFeatureType(ft);
 
-      FlickRLoader loader = new FlickRLoader(FLICKR_API_KEY, FLICKR_API_SECRET,
-          proxyHost, new Integer(proxyPort));
+      FlickRLoader loader = new FlickRLoader(FLICKR_API_KEY, FLICKR_API_SECRET);
+      if (proxyPort != null)
+        loader = new FlickRLoader(FLICKR_API_KEY, FLICKR_API_SECRET, proxyHost,
+            new Integer(proxyPort));
       try {
         List<FlickRFeature> features = loader.getPhotosFromExtent(
             (Double) spinLatmin.getValue(), (Double) spinLatmax.getValue(),
@@ -408,39 +362,35 @@ public class VGIPlugin
       System.out.println(photos.size() + " photos loaded");
 
       // put the photos in a new layer
-      putPhotosInLayer(photos);
+      ProjectFrame pFrame = application.getMainFrame()
+          .getSelectedProjectFrame();
+      Layer layer = pFrame.getSld().createLayer(FLICKR_LAYER, IPoint.class,
+          Color.RED);
+      // create the layer style
+      Style rawStyle = new UserStyle();
+      FeatureTypeStyle ftStyle = new FeatureTypeStyle();
+      rawStyle.getFeatureTypeStyles().add(ftStyle);
+      Rule rule = new Rule();
+      ftStyle.getRules().add(rule);
+      Color color = Color.RED;
+      PointSymbolizer symbolizer = new PointSymbolizer();
+      symbolizer.setGeometryPropertyName("geom");
+      symbolizer.setUnitOfMeasure(Symbolizer.PIXEL);
+      Graphic graphic = new Graphic();
+      Mark mark = new Mark();
+      mark.setWellKnownName("circle");
+      Fill fill = new Fill();
+      fill.setColor(color);
+      mark.setFill(fill);
+      graphic.getMarks().add(mark);
+      symbolizer.setGraphic(graphic);
+      rule.getSymbolizers().add(symbolizer);
+      layer.getStyles().add(rawStyle);
+      IPopulation<IFeature> pop = new Population<>(FLICKR_LAYER);
+      pop.addAll(photos);
+      pFrame.getSld().getDataSet().addPopulation(pop);
+      pFrame.getSld().add(layer);
     }
-  }
-
-  private void putPhotosInLayer(IFeatureCollection<FlickRFeature> photos) {
-    ProjectFrame pFrame = application.getMainFrame().getSelectedProjectFrame();
-    Layer layer = pFrame.getSld().createLayer(FLICKR_LAYER, IPoint.class,
-        Color.RED);
-    // create the layer style
-    Style rawStyle = new UserStyle();
-    FeatureTypeStyle ftStyle = new FeatureTypeStyle();
-    rawStyle.getFeatureTypeStyles().add(ftStyle);
-    Rule rule = new Rule();
-    ftStyle.getRules().add(rule);
-    Color color = Color.RED;
-    PointSymbolizer symbolizer = new PointSymbolizer();
-    symbolizer.setGeometryPropertyName("geom");
-    symbolizer.setUnitOfMeasure(Symbolizer.PIXEL);
-    Graphic graphic = new Graphic();
-    Mark mark = new Mark();
-    mark.setWellKnownName("circle");
-    Fill fill = new Fill();
-    fill.setColor(color);
-    mark.setFill(fill);
-    graphic.getMarks().add(mark);
-    symbolizer.setGraphic(graphic);
-    rule.getSymbolizers().add(symbolizer);
-    layer.getStyles().add(rawStyle);
-
-    IPopulation<IFeature> pop = new Population<>(FLICKR_LAYER);
-    pop.addAll(photos);
-    pFrame.getSld().getDataSet().addPopulation(pop);
-    pFrame.getSld().add(layer);
   }
 
   /**
@@ -686,7 +636,6 @@ public class VGIPlugin
     public void actionPerformed(ActionEvent arg0) {
       LoadTwitterFrame frame = new LoadTwitterFrame();
       frame.setVisible(true);
-
     }
 
     public LoadTwitterAction() {
@@ -713,7 +662,6 @@ public class VGIPlugin
     public void actionPerformed(ActionEvent arg0) {
       ExportFlickRFrame frame = new ExportFlickRFrame();
       frame.setVisible(true);
-
     }
 
     public ExportFlickRAction() {
@@ -740,8 +688,9 @@ public class VGIPlugin
           System.out.println("Connection to " + url + " established");
 
           // store the features
-          for (IFeature feat : application.getMainFrame()
-              .getSelectedProjectFrame()
+          for (
+
+          IFeature feat : application.getMainFrame().getSelectedProjectFrame()
               .getLayer(comboLayers.getSelectedItem().toString())
               .getFeatureCollection()) {
             if (feat instanceof FlickRFeature) {
@@ -752,12 +701,10 @@ public class VGIPlugin
           System.out.println("problem connecting to DB");
           e1.printStackTrace();
         }
-
         this.dispose();
       } else {
         this.dispose();
       }
-
     }
 
     public ExportFlickRFrame() throws HeadlessException {
@@ -860,7 +807,6 @@ public class VGIPlugin
       btnPanel.add(okBtn);
       btnPanel.add(cancelBtn);
       btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.X_AXIS));
-
       this.getContentPane().add(connectionPanel);
       this.getContentPane().add(Box.createVerticalGlue());
       this.getContentPane().add(btnPanel);
@@ -961,9 +907,10 @@ public class VGIPlugin
           System.out.println("problem during export");
           e1.printStackTrace();
         }
-
         this.dispose();
-      } else {
+      } else
+
+      {
         this.dispose();
       }
 
@@ -1072,7 +1019,6 @@ public class VGIPlugin
       btnPanel.add(okBtn);
       btnPanel.add(cancelBtn);
       btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.X_AXIS));
-
       this.getContentPane().add(connectionPanel);
       this.getContentPane().add(Box.createVerticalGlue());
       this.getContentPane().add(btnPanel);
@@ -1246,7 +1192,9 @@ public class VGIPlugin
         try {
           stat = connection.createStatement();
           stat.executeQuery(queryPlace);
-        } catch (SQLException e) {
+        } catch (
+
+        SQLException e) {
           // do nothing
           e.printStackTrace();
         }
@@ -1393,7 +1341,6 @@ public class VGIPlugin
       FeatureType ft = new FeatureType();
       ft.setGeometryType(IPoint.class);
       photos.setFeatureType(ft);
-
       PanoramioLoader loader = new PanoramioLoader(proxyHost,
           new Integer(proxyPort));
       try {

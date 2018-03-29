@@ -80,8 +80,7 @@ public class OrientedBoundingBox {
 	
 	private void computeOrientedBoundingBox(IGeometry geom){
 
-		IMultiSurface<IOrientableSurface> lOS = (IMultiSurface<IOrientableSurface>) RoofDetection.detectRoof(geom,
-				0.2, false);
+		IMultiSurface<? extends IOrientableSurface> lOS =  RoofDetection.detectRoof(geom, 0.2, false);
 
 		if (lOS == null || lOS.size() == 0) {
 			return;

@@ -19,34 +19,33 @@ import fr.ign.cogit.geoxygene.contrib.graphe.IGraphLinkableFeature;
 import fr.ign.cogit.geoxygene.contrib.graphe.INode;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
+import fr.ign.cogit.geoxygene.osm.importexport.OSMResource;
+import fr.ign.cogit.geoxygene.osm.schema.OSMDefaultFeature;
 import fr.ign.cogit.geoxygene.osm.schema.OSMFeature;
 
 public class OSMContributor implements INode {
 
-	private IFeatureCollection<OSMFeature> contributions;
+	private IFeatureCollection<OSMDefaultFeature> contributions;
+	private Set<OSMResource> resource = new HashSet<OSMResource>();
 	private String name;
 	private int id;
-	private int nbOfContributions;
-	private int nbOfweekendContributions;
-	private int nbOfweekContributions;
-	private int nbOfDayTimeContributions;
-	private int nbOfNightTimeContributions;
-	private int nbOfCreatedObjects;
-	private int nbOfDayRecord;
+	// private int nbContributions = 0;
+
 	private IFeatureCollection<DefaultFeature> activityAreas;
 
-	public OSMContributor(IFeatureCollection<OSMFeature> contributions, String name, int id) {
+	public OSMContributor(IFeatureCollection<OSMDefaultFeature> contributions, String name, int id) {
 		super();
 		this.contributions = contributions;
 		this.name = name;
 		this.id = id;
+		// this.setNbTotalChgst(getNbChgsetTotal(this.id));
 	}
 
-	public IFeatureCollection<OSMFeature> getContributions() {
+	public IFeatureCollection<OSMDefaultFeature> getContributions() {
 		return contributions;
 	}
 
-	public void setContributions(IFeatureCollection<OSMFeature> contributions) {
+	public void setContributions(IFeatureCollection<OSMDefaultFeature> contributions) {
 		this.contributions = contributions;
 	}
 
@@ -66,8 +65,25 @@ public class OSMContributor implements INode {
 		this.id = id;
 	}
 
-	public void addContribution(OSMFeature contribution) {
+	public Set<OSMResource> getResource() {
+		return this.resource;
+	}
+
+	public void addContribution(OSMDefaultFeature contribution) {
 		this.getContributions().add(contribution);
+	}
+
+	/**
+	 * Ajoute la contribution à la liste des resources du contributeur et met à
+	 * jour les attributs de création, modification, suppression, d'édition de
+	 * node/way/relation. Les attributs portant sur les changesets du
+	 * contributeur ne sont pas calculés
+	 * 
+	 * @param contribution
+	 *            de type OSMResource
+	 */
+	public void addContribution(OSMResource contribution) {
+		this.resource.add(contribution);
 	}
 
 	public int nbGPScontribution() {
@@ -80,14 +96,6 @@ public class OSMContributor implements INode {
 		return nbGPScontrib;
 	}
 
-	public int getNbOfDayRecord() {
-		return nbOfDayRecord;
-	}
-
-	public void setNbOfDayRecord(int nbOfDayRecord) {
-		this.nbOfDayRecord = nbOfDayRecord;
-	}
-
 	public int getNbOfCreatedObjects() {
 		int nbOfCreatedObjects = 0;
 		for (OSMFeature obj : contributions) {
@@ -95,10 +103,6 @@ public class OSMContributor implements INode {
 				nbOfCreatedObjects++;
 		}
 		return nbOfCreatedObjects;
-	}
-
-	public void setNbOfCreatedObjects(int nbOfCreatedObjects) {
-		this.nbOfCreatedObjects = nbOfCreatedObjects;
 	}
 
 	public Collection<OSMFeature> getWeekEndContributions() {
@@ -203,17 +207,17 @@ public class OSMContributor implements INode {
 	 * @param contributions
 	 * @return
 	 */
-	public static Collection<OSMContributor> findContributors(Collection<OSMFeature> contributions) {
+	public static Collection<OSMContributor> findContributors(Collection<OSMDefaultFeature> contributions) {
 		Map<Integer, OSMContributor> contributors = new HashMap<>();
 
-		for (OSMFeature obj : contributions) {
+		for (OSMDefaultFeature obj : contributions) {
 			Integer userId = obj.getUid();
 			if (contributors.keySet().contains(userId)) {
 				OSMContributor contributor = contributors.get(userId);
 				contributor.addContribution(obj);
 			} else {
 				// create a new contributor
-				IFeatureCollection<OSMFeature> objs = new FT_FeatureCollection<>();
+				IFeatureCollection<OSMDefaultFeature> objs = new FT_FeatureCollection<>();
 				objs.add(obj);
 				OSMContributor newUser = new OSMContributor(objs, obj.getContributor(), obj.getUid());
 				contributors.put(userId, newUser);
@@ -258,46 +262,6 @@ public class OSMContributor implements INode {
 		} else if (!name.equals(other.name))
 			return false;
 		return true;
-	}
-
-	public int getNbOfContributions() {
-		return nbOfContributions;
-	}
-
-	public void setNbOfContributions(int nbOfContributions) {
-		this.nbOfContributions = nbOfContributions;
-	}
-
-	public int getNbOfweekendContributions() {
-		return nbOfweekendContributions;
-	}
-
-	public void setNbOfweekendContributions(int nbOfweekendContributions) {
-		this.nbOfweekendContributions = nbOfweekendContributions;
-	}
-
-	public int getNbOfweekContributions() {
-		return nbOfweekContributions;
-	}
-
-	public void setNbOfweekContributions(int nbOfweekContributions) {
-		this.nbOfweekContributions = nbOfweekContributions;
-	}
-
-	public int getNbOfDayTimeContributions() {
-		return nbOfDayTimeContributions;
-	}
-
-	public void setNbOfDayTimeContributions(int nbOfDayTimeContributions) {
-		this.nbOfDayTimeContributions = nbOfDayTimeContributions;
-	}
-
-	public int getNbOfNightTimeContributions() {
-		return nbOfNightTimeContributions;
-	}
-
-	public void setNbOfNightTimeContributions(int nbOfNightTimeContributions) {
-		this.nbOfNightTimeContributions = nbOfNightTimeContributions;
 	}
 
 	@Override
@@ -436,8 +400,29 @@ public class OSMContributor implements INode {
 		return activityAreas;
 	}
 
-	public void setActivityAreas(IFeatureCollection<DefaultFeature> activityAreas) {
-		this.activityAreas = activityAreas;
+	public int getNbContributions() {
+		return this.resource.size();
+	}
+
+	public void setActivityAreas(IFeatureCollection<DefaultFeature> denseActivityCollection) {
+		this.activityAreas = denseActivityCollection;
+	}
+
+	public int getNbDayTimeContributions() {
+		return this.getDaytimeContributions().size();
+	}
+
+	public int getNbNightTimeContributions() {
+		return this.getNbContributions() - this.getNbDayTimeContributions();
+	}
+
+	public int getNbWeekContributions() {
+		return this.getWeekContributions().size();
+	}
+
+	public int getNbWeekendContributions() {
+		// TODO Auto-generated method stub
+		return this.getNbContributions() - this.getNbWeekContributions();
 	}
 
 }

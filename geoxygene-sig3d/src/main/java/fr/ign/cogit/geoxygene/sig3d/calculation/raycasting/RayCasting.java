@@ -55,7 +55,9 @@ public class RayCasting {
 	/**
 	 * Epsilon pour arrondir les zéro
 	 */
-	public static double EPSILON = 0.1;
+	public static double EPSILON = 0.000001;
+	
+	public static double EPSILON_INSIDE_POLYGON = 0.01;
 
 	public static int TYPE_FIRST_POINT_INTERSECTED = 0;
 	public static int TYPE_POINT_ALL_INTERSECTION = 1;
@@ -69,7 +71,7 @@ public class RayCasting {
 	// Rajoute une vérification supplémentaire
 	// Permet de considérer comme intersection des points qui
 	// Touchent presque les arrêtes (distance < EPSILON)
-	public static boolean CHECK_IS_ON_EDGE = false;
+	public static boolean CHECK_IS_ON_EDGE = true;
 
 	private GM_Solid solGenerated = null;
 	private GM_Polygon polGenerated = null;
@@ -1004,7 +1006,7 @@ public class RayCasting {
  
   
     
-    boolean inside = (Math.abs(angleTotal)  > RayCasting.EPSILON);// && ((Math.abs(angleTotal) - Math.PI*2)> RayCasting.EPSILON)  ;// && (Math.abs(angleTotal) < (2 * Math.PI - RayCasting.EPSILON)) ;
+    boolean inside = (Math.abs(angleTotal)  > RayCasting.EPSILON_INSIDE_POLYGON);// && ((Math.abs(angleTotal) - Math.PI*2)> RayCasting.EPSILON)  ;// && (Math.abs(angleTotal) < (2 * Math.PI - RayCasting.EPSILON)) ;
     
     
 
@@ -1035,9 +1037,10 @@ public class RayCasting {
 
 			v1.normalise();
 			v2.normalise();
+			
+			double prodScalaire = v1.prodScalaire(v2); 
 
-			if ((v1.prodScalaire(v2) <= -1 + RayCasting.EPSILON)
-					|| (Math.abs(v1.prodScalaire(v2)) < RayCasting.EPSILON)) {
+			if ((prodScalaire <= -1 + RayCasting.EPSILON)) {
 
 				return true;
 			}

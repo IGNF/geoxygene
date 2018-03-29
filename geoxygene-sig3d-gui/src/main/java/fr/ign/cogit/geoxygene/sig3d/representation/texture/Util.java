@@ -193,8 +193,7 @@ public class Util {
 				IDirectPosition dpMin = Util.pointMin(lPoints);
 
 				// Nombres de points de la contribution
-				int n = lPoints.size();
-
+			
 				Vecteur axe = vect.prodVectoriel(new Vecteur(0, 0, 1));
 
 				if (axe.norme() < 0.1) {
@@ -213,7 +212,7 @@ public class Util {
 
 				Vecteur vectProject = axe.prodVectoriel(vect);
 
-				for (int j = 0; j < n; j++) {
+				for (int j = 0; j < tabpoints.length; j++) {
 					// On complète le tableau de points
 					IDirectPosition dp = lPoints.get(j);
 					Point3f point = new Point3f((float) dp.getX(), (float) dp.getY(), (float) dp.getZ());

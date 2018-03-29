@@ -1,8 +1,6 @@
 package fr.ign.cogit.geoxygene.osm.contributor;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import org.jgrapht.graph.ClassBasedEdgeFactory;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
@@ -44,15 +42,9 @@ public class LabeledEdges {
 		DirectedWeightedMultigraph<Long, RelationshipEdge> graph = new DirectedWeightedMultigraph<Long, RelationshipEdge>(
 				new ClassBasedEdgeFactory<Long, RelationshipEdge>(RelationshipEdge.class));
 		LoadFromPostGIS loader = new LoadFromPostGIS("localhost", "5432", "paris", "postgres", "postgres");
-		List<Double> bbox = new ArrayList<Double>();
-		bbox.add(2.3322);
-		bbox.add(48.8489);
-		bbox.add(2.3634);
-		bbox.add(48.8627);
-		List<String> timespan = new ArrayList<String>();
-		timespan.add("2014-01-01");
-		timespan.add("2014-01-02");
-		loader.selectNodes(bbox, timespan);
+		Double[] bbox = { 2.3322, 48.8489, 2.3634, 48.8627 };
+		String[] timespan = { "2014-01-01", "2014-01-02" };
+		loader.getEvolutionVisibleNode(bbox, timespan);
 		// loader.selectWays(bbox, timespan);
 		HashMap<Long, OSMObject> nodeOSMObjects = IntrinsicAssessment.nodeContributionSummary(loader.myJavaObjects);
 		// HashMap<Long, OSMObject> wayOSMObjects =

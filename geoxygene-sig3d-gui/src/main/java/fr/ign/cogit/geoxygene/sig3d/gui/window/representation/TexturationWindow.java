@@ -313,7 +313,7 @@ public class TexturationWindow extends JDialog implements ActionListener {
       for (int i = 0; i < nbFeat; i++) {
         IFeature feat = this.featColl.get(i);
 
-        if (feat.getGeom().dimension() > 1) {
+        if (feat!=null&&!feat.getGeom().isEmpty()&&feat.getGeom().dimension() > 1) {
           // On associe la texture à l'objet
           feat.setRepresentation(new TexturedSurface(feat, tex, longueur,
               hauteur));

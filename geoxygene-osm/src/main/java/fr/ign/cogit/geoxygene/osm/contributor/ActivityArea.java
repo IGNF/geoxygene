@@ -76,8 +76,9 @@ public class ActivityArea {
 
 	/**
 	 * @param nodeList
-	 *            corresponds to the list of nodes contributed by a contributor
-	 * @return hull is a multipolygon of the contributor's activity areas
+	 *            : list of nodes authored by a contributor
+	 * @return hull : multipolygon corresponding to the contributor's activity
+	 *         areas
 	 **/
 	public static IGeometry getActivityAreas(List<OSMResource> nodeList, double threshold) throws Exception {
 		IFeatureCollection<IFeature> ftcolPoints = new FT_FeatureCollection<IFeature>();
@@ -219,7 +220,6 @@ public class ActivityArea {
 				if (!r.getString("hstore_to_json").toString().equalsIgnoreCase("{}")) {
 					try {
 						JSONObject obj = new JSONObject(r.getString("hstore_to_json"));
-						myOsmResource.setNbTags(obj.names().length());
 						for (int i = 0; i < obj.names().length(); i++) {
 							String key = obj.names().getString(i);
 							String value = obj.getString(key);

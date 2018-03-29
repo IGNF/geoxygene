@@ -27,6 +27,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -57,6 +58,7 @@ import javax.swing.JTextField;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.TransformerException;
 
+import org.apache.commons.collections.Unmodifiable;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -132,6 +134,7 @@ import fr.ign.cogit.geoxygene.osm.quality.spatialrelations.MotorJuncQualityAsses
 import fr.ign.cogit.geoxygene.osm.quality.spatialrelations.SchoolQualityAssessment;
 import fr.ign.cogit.geoxygene.osm.quality.spatialrelations.StationQualityAssessment;
 import fr.ign.cogit.geoxygene.osm.quality.spatialrelations.StoreQualityAssessment;
+import fr.ign.cogit.geoxygene.osm.schema.OSMDefaultFeature;
 import fr.ign.cogit.geoxygene.osm.schema.OSMFeature;
 import fr.ign.cogit.geoxygene.osm.util.I18N;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
@@ -1424,9 +1427,12 @@ public class OSMPlugin
           features.add((OSMFeature) obj);
       }
 
+      //changing to supertype for findContributors, hackish way
+      Collection<OSMDefaultFeature> df = (Collection<OSMDefaultFeature>)(Collection<?>) features;
+
       // get the contributors from the contributions
       Collection<OSMContributor> contributors = OSMContributor
-          .findContributors(features);
+          .findContributors(df);
       System.out.println(contributors.size() + " contributors found");
 
       Collection<DefaultFeature> contributorFeats = new HashSet<>();
@@ -1514,9 +1520,12 @@ public class OSMPlugin
           features.add((OSMFeature) obj);
       }
 
+      //changing to supertype for findContributors, hackish way
+      Collection<OSMDefaultFeature> df = (Collection<OSMDefaultFeature>)(Collection<?>) features;
+      
       // get the contributors from the contributions
       Collection<OSMContributor> contributors = OSMContributor
-          .findContributors(features);
+          .findContributors(df);
       System.out.println(contributors.size() + " contributors found");
       String layerName = contribName + "_contributions";
 
@@ -1606,9 +1615,12 @@ public class OSMPlugin
           features.add((OSMFeature) obj);
       }
 
+      //changing to supertype for findContributors, hackish way
+      Collection<OSMDefaultFeature> df = (Collection<OSMDefaultFeature>)(Collection<?>) features;
+
       // get the contributors from the contributions
       Collection<OSMContributor> contributors = OSMContributor
-          .findContributors(features);
+          .findContributors(df);
       System.out.println(contributors.size() + " contributors found");
       String layerName = contribName + "_contributions";
       String layerNameWeek = layerName + "_week";
