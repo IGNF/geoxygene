@@ -25,6 +25,7 @@ import javax.swing.JOptionPane;
 
 import fr.ign.cogit.cartagen.algorithms.block.deletion.BuildingDeletionOverlap;
 import fr.ign.cogit.cartagen.algorithms.block.displacement.BuildingDisplacementRandom;
+import fr.ign.cogit.cartagen.algorithms.polygon.LiOpenshawSimplification;
 import fr.ign.cogit.cartagen.algorithms.polygon.RaposoSimplification;
 import fr.ign.cogit.cartagen.algorithms.polygon.Skeletonize;
 import fr.ign.cogit.cartagen.algorithms.polygon.Spinalize;
@@ -130,6 +131,31 @@ public class AlgorithmsMenu extends JMenu {
       }
     });
     mLineSimplif.add(mRaposo);
+    JMenuItem mLiOpenshaw = new JMenuItem("Li-Openshaw simplification");
+    mLiOpenshaw.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent arg0) {
+        GeOxygeneApplication appli = CartAGenPlugin.getInstance()
+            .getApplication();
+        double cellSize = Double.valueOf(JOptionPane.showInputDialog(
+            "size (in meters) of the cell (only one vertex is retained per cell)"));
+        for (IFeature feat : SelectionUtil.getSelectedObjects(appli)) {
+          IGeometry geom = feat.getGeom();
+          LiOpenshawSimplification algo = new LiOpenshawSimplification(true,
+              cellSize);
+          if (geom instanceof ILineString) {
+            ILineString generalised = algo.simplify((ILineString) geom);
+            if (generalised != null)
+              feat.setGeom(generalised);
+          } else if (geom instanceof IPolygon) {
+            IPolygon generalised = algo.simplify((IPolygon) geom);
+            if (generalised != null)
+              feat.setGeom(generalised);
+          }
+        }
+      }
+    });
+    mLineSimplif.add(mLiOpenshaw);
     JMenuItem mSmoothing = new JMenuItem("Gaussian Smoothing");
     mSmoothing.addActionListener(new ActionListener() {
       @Override
