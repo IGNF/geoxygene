@@ -59,9 +59,12 @@ public class BuildingAssessment {
 
 					nodes = loader.getNodes(vertices, timestamp);
 
-					if (OsmGeometryConversion.convertOSMPolygonToLambert93((OSMWay) b.getGeom(), nodes).dimension() < 2)
-						throw new NumberPointsException(
-								"Way #" + b.getId() + " est composé de " + nodes.size() + "nodes");
+					// if
+					// (OsmGeometryConversion.convertOSMPolygonToLambert93((OSMWay)
+					// b.getGeom(), nodes).dimension() < 2)
+					// throw new NumberPointsException(
+					// "Way #" + b.getId() + " est composé de " + nodes.size() +
+					// "nodes");
 
 					OSMDefaultFeature feature = new OSMDefaultFeature(b.getContributeur(),
 							OsmGeometryConversion.convertOSMPolygonToLambert93((OSMWay) b.getGeom(), nodes), b.getId(),
@@ -156,7 +159,7 @@ public class BuildingAssessment {
 	 *         the ratio intersected area/area, the number of touched objects,
 	 *         the ratio length touched/length
 	 */
-	public Object[] getTopologyMetric(Collection<IFeature> features, IFeature f) {
+	public Object[] getTopologyMetric(IFeature f, Collection<IFeature> features) {
 		int nbIntersects = 0;
 		int nbTouches = 0;
 		Double ratioIntersect = 0.0;
@@ -179,7 +182,7 @@ public class BuildingAssessment {
 
 	}
 
-	public static void toCSV(Map<Long, Object[]> indicatorList, File file) throws IOException {
+	public static void toCSV(Map<Long, Set<Object>> indicatorList, File file) throws IOException {
 		FileWriter fileWriter = new FileWriter(file);
 		String FILE_HEADER = "id,uid,n_tags,building_value,source,"
 				+ "perimeter,area,shortest_length,median_length,elongation,convexity,compacity,area_mbr,"
@@ -189,9 +192,9 @@ public class BuildingAssessment {
 		try {
 			for (Long id : indicatorList.keySet()) {
 				fileWriter.append(String.valueOf(id));
-				for (int i = 0; i < indicatorList.get(id).length; i++) {
+				for (int i = 0; i < indicatorList.get(id).size(); i++) {
 					fileWriter.append(COMMA_DELIMITER);
-					fileWriter.append(String.valueOf(indicatorList.get(id)[i]));
+					fileWriter.append(String.valueOf(indicatorList.get(id).toArray()[i]));
 				}
 				fileWriter.append(NEW_LINE_SEPARATOR);
 			}
