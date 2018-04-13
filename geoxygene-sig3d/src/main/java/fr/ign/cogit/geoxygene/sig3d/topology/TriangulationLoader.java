@@ -34,24 +34,50 @@ public class TriangulationLoader {
 
   public static TriangulationJTS generate(
       IMultiSurface<? extends IOrientableSurface> iMS) {
-    
-    // On triangule la surface
-    TriangulationJTS triJTS = new TriangulationJTS("TriangulationJTS");
+	  
+	  return generateFromList(iMS.getList());
 
-    
-    
-    for(IOrientableSurface surf : iMS){
-      List<List<Noeud>> lNoeudOut = generateNode((IPolygon) surf);
-
-
-
-      triJTS.getPopNoeuds().addAll(lNoeudOut.get(0));
-      triJTS.getPopArcs().addAll(generateArc(lNoeudOut.get(1), lNoeudOut.get(2)));
-    }
-
-    
-    return triJTS;
   }
+  
+  public static TriangulationJTS generateFromList(List<? extends IOrientableSurface> iMS) {
+	    
+	    // On triangule la surface
+	    TriangulationJTS triJTS = new TriangulationJTS("TriangulationJTS");
+
+	    
+	    
+	    for(IOrientableSurface surf : iMS){
+	      List<List<Noeud>> lNoeudOut = generateNode((IPolygon) surf);
+
+
+
+	      triJTS.getPopNoeuds().addAll(lNoeudOut.get(0));
+	      triJTS.getPopArcs().addAll(generateArc(lNoeudOut.get(1), lNoeudOut.get(2)));
+	    }
+
+	    
+	    return triJTS;
+  }
+  
+  
+  public static TriangulationJTS generateFromSurface(IOrientableSurface surf) {
+	    
+	    // On triangule la surface
+	    TriangulationJTS triJTS = new TriangulationJTS("TriangulationJTS");
+
+	    
+
+	      List<List<Noeud>> lNoeudOut = generateNode((IPolygon) surf);
+
+
+
+	      triJTS.getPopNoeuds().addAll(lNoeudOut.get(0));
+	      triJTS.getPopArcs().addAll(generateArc(lNoeudOut.get(1), lNoeudOut.get(2)));
+	 
+
+	    
+	    return triJTS;
+}
 
   private static List<List<Noeud>> generateNode(IPolygon surf) {
     List<List<Noeud>> lNoeudOut = new ArrayList<List<Noeud>>();
