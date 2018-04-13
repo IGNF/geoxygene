@@ -54,7 +54,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
  */
 public class EquiSurfaceDistribution {
 
-  private List<IOrientableSurface> lTriangles = new ArrayList<IOrientableSurface>();
+  private List<ITriangle> lTriangles = new ArrayList<ITriangle>();
 
   // Il s'agit des aires cumulés des différents triangles
   // airesCumulees[i] = somme des ieme premiers triangles
@@ -63,16 +63,15 @@ public class EquiSurfaceDistribution {
 
   public EquiSurfaceDistribution(IGeometry geom) {
 
-    lTriangles = FromGeomToSurface.convertGeom(geom);
 
-    initTri();
+    initTri(FromGeomToSurface.convertGeom(geom));
     initSamp();
   }
 
   // Initialisation avant le calcul de la fonction de caractérisation
-  private void initTri() {
+  private void initTri(List<IOrientableSurface> list) {
 
-    boolean b = Util.containOnlyTriangleFaces(lTriangles);
+    boolean b = Util.containOnlyTriangleFaces(list);
 
     if (b) {
 
@@ -95,7 +94,7 @@ public class EquiSurfaceDistribution {
         }
 
       } else {
-        lTriangles = new ArrayList<IOrientableSurface>();
+        lTriangles = new ArrayList<ITriangle>();
         lTriangles.addAll(lTrianglesTemp);
       }
 

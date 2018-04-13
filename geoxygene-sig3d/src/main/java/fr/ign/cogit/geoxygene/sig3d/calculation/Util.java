@@ -11,6 +11,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISolid;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
+import fr.ign.cogit.geoxygene.sig3d.convert.geom.FromPolygonToTriangle;
 import fr.ign.cogit.geoxygene.sig3d.equation.ApproximatedPlanEquation;
 import fr.ign.cogit.geoxygene.sig3d.equation.PlanEquation;
 import fr.ign.cogit.geoxygene.sig3d.util.MathConstant;
@@ -342,7 +343,7 @@ public abstract class Util {
    * @param lS
    * @return
    */
-  public static boolean containOnlyTriangleFaces(List<IOrientableSurface> lS) {
+  public static boolean containOnlyTriangleFaces(List<? extends IOrientableSurface> lS) {
 
     int nbSurf = lS.size();
 
@@ -373,8 +374,14 @@ public abstract class Util {
    * @return
    */
   public static double volumeTriangulatedSolid(ISolid sol) {
+	  
+	 List<ITriangle> lTriangles =  FromPolygonToTriangle.convertAndTriangle(sol.getFacesList());
+	 
+	 if(lTriangles == null) {
+		 return -1;
+	 }
 
-    return Util.volumeUnderSurface(sol.getFacesList());
+    return Util.volumeUnderSurface(lTriangles);
 
   }
 
@@ -383,7 +390,7 @@ public abstract class Util {
    * @param lOS
    * @return
    */
-  public static double volumeUnderSurface(List<? extends IOrientableSurface> lOS) {
+  public static double volumeUnderSurface(List<? extends ITriangle> lOS) {
 
     int nbContrib = lOS.size();
     double volume1 = 0;
@@ -408,7 +415,14 @@ public abstract class Util {
    */
   public static double aireTriangulatedSolid(GM_Solid sol) {
 
-    return Util.areaTriangulatedSurface(sol.getFacesList());
+	  
+	 List<ITriangle> lTriangles =  FromPolygonToTriangle.convertAndTriangle(sol.getFacesList());
+	 
+	 if(lTriangles == null) {
+		 return -1;
+	 }
+	 
+    return Util.areaTriangulatedSurface(lTriangles);
 
   }
 
@@ -417,7 +431,7 @@ public abstract class Util {
    * @param lOS
    * @return
    */
-  public static double areaTriangulatedSurface(List<IOrientableSurface> lOS) {
+  public static double areaTriangulatedSurface(List<? extends ITriangle> lOS) {
 
     int nbContrib = lOS.size();
     double aire1 = 0;

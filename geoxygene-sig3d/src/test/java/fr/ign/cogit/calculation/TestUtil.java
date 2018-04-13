@@ -550,7 +550,7 @@ public class TestUtil extends TestCase {
 		log.info("Test for method to know if a list contains only triangular surfaces");
 
 		// Creating list of surfaces
-		ArrayList<IOrientableSurface> AS = new ArrayList<IOrientableSurface>();
+		ArrayList<ITriangle> AS = new ArrayList<ITriangle>();
 
 		// Surface 1 : triangle
 		DirectPositionList dpl1 = new DirectPositionList();
@@ -567,7 +567,7 @@ public class TestUtil extends TestCase {
 		dpl2.add(new DirectPosition(1,0,1));
 		dpl2.add(new DirectPosition(1,0,2));
 		GM_LineString line2 = new GM_LineString(dpl2);
-		GM_Polygon surface2 = new GM_Polygon(line2);
+		ITriangle surface2 = new GM_Triangle(line2);
 
 		// Filling surface list
 		AS.add(surface1);
@@ -582,7 +582,7 @@ public class TestUtil extends TestCase {
 		// Adding polygon triangle
 		dpl2.remove(3);
 		line2 = new GM_LineString(dpl2);
-		surface2 = new GM_Polygon(line2);
+		surface2 = new GM_Triangle(line2);
 		AS.add(surface2);
 
 		// Recovering result
@@ -633,7 +633,7 @@ public class TestUtil extends TestCase {
 		log.info("Test for method to compute volume under a surface");
 
 		// Creating list of surfaces
-		ArrayList<IOrientableSurface> AS = new ArrayList<IOrientableSurface>();
+		ArrayList<ITriangle> AS = new ArrayList<ITriangle>();
 
 		// Random parameters
 		double triangleSize = Math.random()*100;
@@ -683,7 +683,7 @@ public class TestUtil extends TestCase {
 		log.info("Test for method to volume under an empty surface list");
 
 		// Creating list of surfaces
-		ArrayList<IOrientableSurface> AS = new ArrayList<IOrientableSurface>();
+		ArrayList<ITriangle> AS = new ArrayList<ITriangle>();
 
 		// Processing volume under surface
 		double v = Util.volumeUnderSurface(AS);
@@ -702,7 +702,7 @@ public class TestUtil extends TestCase {
 		log.info("Test for method to compute volume under an negatively oriented surfaces");
 
 		// Creating list of surfaces
-		ArrayList<IOrientableSurface> AS = new ArrayList<IOrientableSurface>();
+		ArrayList<ITriangle> AS = new ArrayList<ITriangle>();
 
 		// Random parameters
 		double triangleSize = Math.random()*100;
