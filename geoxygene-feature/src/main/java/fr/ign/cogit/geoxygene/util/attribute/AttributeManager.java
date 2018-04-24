@@ -31,6 +31,7 @@ import java.util.Arrays;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.SchemaDefaultFeature;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
@@ -69,7 +70,14 @@ public class AttributeManager {
       feat.setFeatureType(new FeatureType());
 
       ft = (FeatureType) feat.getFeatureType();
-      ft.setGeometryType(feat.getGeom().getClass());
+    
+    }
+    
+    if(ft.getGeometryType() == null) {
+    	IGeometry geom = feat.getGeom();
+    	if(geom != null) {
+    		  ft.setGeometryType(geom.getClass());
+    	}
     }
 
     GF_AttributeType attType = (feat.getFeatureType())
