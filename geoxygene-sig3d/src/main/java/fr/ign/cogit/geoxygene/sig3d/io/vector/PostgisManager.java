@@ -677,6 +677,17 @@ public class PostgisManager {
 			conn = DriverManager.getConnection(url, user, pw);
 
 			Statement s = conn.createStatement();
+			
+
+			ResultSet rExist = s.executeQuery(
+					"SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='" + table + "'"+ " AND table_schema = '"+schema+"'");
+			
+			
+			if(! rExist.next()) {
+				
+				return saveGeometricTable(host, port, database, schema, table, user, pw, featColl, false);
+			}
+
 
 			IFeature feat = featColl.get(0);
 
@@ -1110,11 +1121,14 @@ public class PostgisManager {
 				} else {
 					s.close();
 					conn.close();
-					throw new Exception(Messages.getString("Sauvegarde.TableExist"));
+					
 
 				}
 
 			}
+			
+			
+			
 			// On sait qu'il n'y a plus de table de type nom table
 			// On crée la table
 			String sqlCreat = "create table \"" + schema+"\".\""+table + "\"();";
