@@ -30,10 +30,18 @@ public class ProfileBasicStats {
 		Double[] heightsTab = new Double[heights.size()];
 		heightsTab = heights.toArray(heightsTab);
 		Arrays.sort(heightsTab);
+		
 		if (heightsTab.length % 2 == 0)
 			med = ((double) heightsTab[heightsTab.length / 2] + (double) heightsTab[heightsTab.length / 2 - 1]) / 2;
 		else
 			med = (double) heightsTab[heightsTab.length / 2];
+		
+		
+		for(Double d: heightsTab) {
+			std = Math.pow(d - moy, 2) / heightsTab.length;
+		}
+		
+		std = Math.sqrt(std);
 
 	}
 
