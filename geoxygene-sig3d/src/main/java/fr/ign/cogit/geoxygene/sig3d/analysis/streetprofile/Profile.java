@@ -805,6 +805,7 @@ public class Profile {
 		if(side == SIDE.UPSIDE) {
 			if(lHeightUpper == null) {
 				fillListHeight();
+				System.out.println("size " + lHeightUpper.size() + " end " + end);
 			}
 			
 			return lHeightUpper.subList(begin, end);
@@ -827,12 +828,13 @@ public class Profile {
 	}
 
 	public List<Double> getHeightAlongRoad(SIDE side) {
+		
 		return getHeightAlongRoad(side, 0, nbP);
 
 	}
 	
-	private static List<Double> lHeightUpper = null;
-	private static List<Double> lHeightDowner = null;
+	private  List<Double> lHeightUpper = null;
+	private  List<Double> lHeightDowner = null;
 	
 	private  void fillListHeight() {
 		
