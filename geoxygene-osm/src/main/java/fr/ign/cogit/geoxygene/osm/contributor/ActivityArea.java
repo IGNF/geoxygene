@@ -41,15 +41,17 @@ public class ActivityArea {
 	public static String dbPwd = "postgres";
 
 	public static void main(String[] args) throws Exception {
-		List<Double> bbox = new ArrayList<Double>();
-		bbox.add(2.3250);
-		bbox.add(48.8350);
-		bbox.add(2.3700);
-		bbox.add(48.8800);
+		// List<Double> bbox = new ArrayList<Double>();
+		// bbox.add(2.3250);
+		// bbox.add(48.8350);
+		// bbox.add(2.3700);
+		// bbox.add(48.8800);
+		Double[] bbox = { 2.3250, 48.8350, 2.3700, 48.8800 };
 
-		List<String> timespan = new ArrayList<String>();
-		timespan.add("2013-01-01");
-		timespan.add("2015-01-01");
+		// List<String> timespan = new ArrayList<String>();
+		// timespan.add("2013-01-01");
+		// timespan.add("2015-01-01");
+		String[] timespan = { "2013-01-01", "2015-01-01" };
 		List<OSMResource> osmNodeList1556219 = selectNodesByUid((long) 1556219, bbox, timespan);
 		List<OSMResource> osmNodeList17286 = selectNodesByUid((long) 138059, bbox, timespan);
 		IGeometry aggregatedAreas1556219 = getActivityAreas(osmNodeList1556219, 1000);
@@ -190,13 +192,12 @@ public class ActivityArea {
 	 *            contributor's ID
 	 * @throws Exception
 	 */
-	public static List<OSMResource> selectNodesByUid(Long uid, List<Double> bbox, List<String> timespan)
-			throws Exception {
+	public static List<OSMResource> selectNodesByUid(Long uid, Double[] bbox, String[] timespan) throws Exception {
 		List<OSMResource> uidNodeList = new ArrayList<OSMResource>();
 		String query = "SELECT idnode, id, uid, vnode, changeset, username, datemodif, hstore_to_json(tags), lat, lon FROM node WHERE uid = "
-				+ uid + " AND node.geom && ST_MakeEnvelope(" + bbox.get(0).toString() + "," + bbox.get(1).toString()
-				+ "," + bbox.get(2).toString() + "," + bbox.get(3).toString() + ", 4326) AND datemodif >= \'"
-				+ timespan.get(0).toString() + "\' AND datemodif <= \'" + timespan.get(1).toString() + "\';";
+				+ uid + " AND node.geom && ST_MakeEnvelope(" + bbox[0].toString() + "," + bbox[1].toString() + ","
+				+ bbox[2].toString() + "," + bbox[3].toString() + ", 4326) AND datemodif >= \'" + timespan[0].toString()
+				+ "\' AND datemodif <= \'" + timespan[1].toString() + "\';";
 
 		java.sql.Connection conn;
 		try {

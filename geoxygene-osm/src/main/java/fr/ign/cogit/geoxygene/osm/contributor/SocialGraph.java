@@ -19,6 +19,7 @@ import java.util.Set;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
+import org.threeten.extra.Interval;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -28,12 +29,13 @@ import fr.ign.cogit.geoxygene.osm.importexport.OSMObject;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMResource;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMWay;
 import fr.ign.cogit.geoxygene.osm.importexport.metrics.IntrinsicAssessment;
+import fr.ign.cogit.geoxygene.osm.importexport.postgis.LoadFromPostGIS;
 
 public class SocialGraph<V, E> {
 	// private static Logger LOGGER = Logger.getLogger(SocialGraph.class);
 	public static String host = "localhost";
 	public static String port = "5432";
-	public static String dbName = "paris";
+	public static String dbName = "idf";
 	public static String dbUser = "postgres";
 	public static String dbPwd = "postgres";
 	private static double factor = 4;
@@ -733,8 +735,113 @@ public class SocialGraph<V, E> {
 		}
 	}
 
+	public static SimpleWeightedGraph<Long, DefaultWeightedEdge> createCoTemporalGraph(
+			HashMap<Long, OSMContributor> myOSMContributors, String[] timespan) throws Exception {
+		SimpleWeightedGraph<Long, DefaultWeightedEdge> g = new SimpleWeightedGraph<Long, DefaultWeightedEdge>(
+				DefaultWeightedEdge.class);
+		// Assign changeset dates for each user
+		assignChangesets(myOSMContributors, timespan);
+		List<OSMContributor> myContributorList = new ArrayList<OSMContributor>();
+		for (OSMContributor contributor : myOSMContributors.values()) {
+			myContributorList.add(contributor);
+		}
+		// Parse contributor list
+		for (int i = 0; i < myContributorList.size() - 1; i++) {
+			List<Interval> changesetsCurrentContributor = myContributorList.get(i).getChangesetDates();
+			if (changesetsCurrentContributor == null)
+				continue;
+			if (!g.containsVertex((long) myContributorList.get(i).getId()))
+				g.addVertex((long) myContributorList.get(i).getId());
+
+			// Parcourt les contributeurs suivants de la liste
+			for (int j = i + 1; j < myOSMContributors.size(); j++) {
+				if (!g.containsVertex((long) myContributorList.get(j).getId()))
+					g.addVertex((long) myContributorList.get(j).getId());
+
+				List<Interval> changesetsNextContributor = myContributorList.get(j).getChangesetDates();
+				if (changesetsNextContributor == null)
+					continue;
+				double totalDistance = 0;
+				double totalIntersection = 0;
+				double totalUnion = 0;
+				// Parcourt changesets du contributeur courant
+				for (int u = 0; u < changesetsCurrentContributor.size(); u++) {
+					Interval currentChangeset = changesetsCurrentContributor.get(u);
+					totalUnion += currentChangeset.toDuration().getSeconds();
+
+					// Parcourt les changesets du contributeur suivant
+					for (int v = 0; v < changesetsNextContributor.size(); v++) {
+						Interval nextChangeset = changesetsNextContributor.get(v);
+
+						// Calcul de la distance surfacique s'il y a
+						// intersection
+						if (currentChangeset.overlaps(nextChangeset)) {
+
+							System.out.println("Changeset : " + currentChangeset.getStart().toString() + " - "
+									+ currentChangeset.getEnd().toString());
+							System.out.println("Changeset : " + nextChangeset.getStart().toString() + " - "
+									+ nextChangeset.getEnd().toString());
+							System.out.println("Intersection = "
+									+ currentChangeset.intersection(nextChangeset).getStart().toString() + " - "
+									+ currentChangeset.intersection(nextChangeset).getEnd().toString());
+							totalIntersection += currentChangeset.intersection(nextChangeset).toDuration().getSeconds();
+							System.out.println("Intersection : "
+									+ currentChangeset.intersection(nextChangeset).toDuration().getSeconds()
+									+ " secondes");
+
+							// Ajoute la différence de nextChangeset avec
+							// currentChangeset (qui a été ajouté intialement)
+							if (currentChangeset.encloses(nextChangeset) || nextChangeset.encloses(currentChangeset))
+								continue;
+							if (currentChangeset.contains(nextChangeset.getStart())
+									&& !currentChangeset.contains(nextChangeset.getEnd()))
+								totalUnion += Interval.of(currentChangeset.getEnd(), nextChangeset.getEnd())
+										.toDuration().getSeconds();
+							if (!currentChangeset.contains(nextChangeset.getStart())
+									&& currentChangeset.contains(nextChangeset.getEnd()))
+								totalUnion += Interval.of(nextChangeset.getStart(), nextChangeset.getStart())
+										.toDuration().getSeconds();
+						} else { // Cas où les deux intervalles sont disjoints
+							totalUnion += nextChangeset.toDuration().getSeconds();
+
+						}
+					}
+
+				}
+				if (totalUnion > 0)
+					totalDistance = 1 - totalIntersection / totalUnion;
+				if (totalDistance > 0 && totalDistance < 1) {
+					DefaultWeightedEdge e = g.addEdge((long) myContributorList.get(i).getId(),
+							(long) myContributorList.get(j).getId());
+					g.setEdgeWeight(e, 1 / totalDistance);
+
+					System.out.println("Poids de l'arc créé entre " + myContributorList.get(i).getId() + " et "
+							+ myContributorList.get(j).getId() + " : " + (1 / totalDistance));
+
+				}
+
+			}
+		}
+
+		return g;
+	}
+
+	/**
+	 * Computes for each OSMContributor of the input list of contributors the
+	 * changesets
+	 **/
+	public static void assignChangesets(HashMap<Long, OSMContributor> myOSMContributors, String[] timespan)
+			throws Exception {
+		LoadFromPostGIS loader = new LoadFromPostGIS(SocialGraph.host, SocialGraph.port, SocialGraph.dbName,
+				SocialGraph.dbUser, SocialGraph.dbPwd);
+		for (Long uid : myOSMContributors.keySet()) {
+			List<Interval> changesets = loader.getChangesets(uid, timespan);
+			myOSMContributors.get(uid).setChangesetDates(changesets);
+		}
+	}
+
 	public static SimpleWeightedGraph<Long, DefaultWeightedEdge> createCoLocationGraph(
-			HashMap<Long, OSMContributor> myOSMContributors, List<Double> bbox, List<String> timespan, double threshold)
+			HashMap<Long, OSMContributor> myOSMContributors, Double[] bbox, String[] timespan, double threshold)
 			throws Exception {
 		SimpleWeightedGraph<Long, DefaultWeightedEdge> g = new SimpleWeightedGraph<Long, DefaultWeightedEdge>(
 				DefaultWeightedEdge.class);
@@ -751,6 +858,7 @@ public class SocialGraph<V, E> {
 				continue;
 			if (!g.containsVertex((long) myContributorList.get(i).getId()))
 				g.addVertex((long) myContributorList.get(i).getId());
+
 			// Parcourt les contributeurs suivants de la liste
 			for (int j = i + 1; j < myOSMContributors.size(); j++) {
 				if (!g.containsVertex((long) myContributorList.get(j).getId()))
@@ -759,36 +867,35 @@ public class SocialGraph<V, E> {
 				if (areaNextContributor == null)
 					continue;
 				double totalDistance = 0;
+				double totalIntersection = 0;
+				double totalUnion = 0;
 				// Parcourt les zones d'activité du contributeur courant
 				for (int u = 0; u < areaCurrentContributor.size(); u++) {
 					IGeometry currentZone = areaCurrentContributor.get(u).getGeom();
+
+					totalUnion += currentZone.area();
 					// Parcourt les zones d'activité du contributeur suivant
-					for (int v = 0; v < areaCurrentContributor.size(); v++) {
-						IGeometry nextZone = areaCurrentContributor.get(v).getGeom();
+					for (int v = 0; v < areaNextContributor.size(); v++) {
+						IGeometry nextZone = areaNextContributor.get(v).getGeom();
+
 						// Calcul de la distance surfacique s'il y a
 						// intersection
 						if (currentZone.intersects(nextZone)) {
-							double union = currentZone.union(nextZone).area();
-							double intersection = currentZone.intersection(nextZone).area();
-							double distance = 1 - intersection / union;
-							totalDistance += distance;
+							totalIntersection += currentZone.intersection(nextZone).area();
+							totalUnion += nextZone.difference(currentZone).area();
+
+						} else {
+							totalUnion += nextZone.area();
 						}
 					}
 
 				}
-				if (totalDistance > 0) {
-					// double union =
-					// areaCurrentContributor.union(areaNextContributor).area();
-					// double intersection =
-					// areaCurrentContributor.intersection(areaNextContributor).area();
-					// double distance = 1 - intersection / union;
+				if (totalUnion > 0)
+					totalDistance = 1 - totalIntersection / totalUnion;
+				if (totalDistance < 1) {
 					DefaultWeightedEdge e = g.addEdge((long) myContributorList.get(i).getId(),
 							(long) myContributorList.get(j).getId());
 					g.setEdgeWeight(e, 1 / totalDistance);
-					// if (distance > 0)
-					// g.setEdgeWeight(e, 1 / distance);
-					// else
-					// g.setEdgeWeight(e, Double.POSITIVE_INFINITY);
 				}
 
 			}
@@ -801,8 +908,8 @@ public class SocialGraph<V, E> {
 	 * Computes for each OSMContributor of the input list of contributors the
 	 * activity areas
 	 **/
-	public static void assignActivityAreas(HashMap<Long, OSMContributor> myOSMContributors, List<Double> bbox,
-			List<String> timespan, double threshold) throws Exception {
+	public static void assignActivityAreas(HashMap<Long, OSMContributor> myOSMContributors, Double[] bbox,
+			String[] timespan, double threshold) throws Exception {
 		for (Long uid : myOSMContributors.keySet()) {
 			List<OSMResource> uidNodes = ActivityArea.selectNodesByUid(uid, bbox, timespan);
 			IGeometry uidArea = ActivityArea.getActivityAreas(uidNodes, threshold);

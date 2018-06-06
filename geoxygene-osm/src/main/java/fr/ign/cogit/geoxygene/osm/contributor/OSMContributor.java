@@ -6,8 +6,11 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.threeten.extra.Interval;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -32,6 +35,7 @@ public class OSMContributor implements INode {
 	// private int nbContributions = 0;
 
 	private IFeatureCollection<DefaultFeature> activityAreas;
+	private List<Interval> changesetDates;
 
 	public OSMContributor(IFeatureCollection<OSMDefaultFeature> contributions, String name, int id) {
 		super();
@@ -423,6 +427,14 @@ public class OSMContributor implements INode {
 	public int getNbWeekendContributions() {
 		// TODO Auto-generated method stub
 		return this.getNbContributions() - this.getNbWeekContributions();
+	}
+
+	public List<Interval> getChangesetDates() {
+		return changesetDates;
+	}
+
+	public void setChangesetDates(List<Interval> changesetDates) {
+		this.changesetDates = changesetDates;
 	}
 
 }
