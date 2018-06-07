@@ -735,6 +735,36 @@ public class SocialGraph<V, E> {
 		}
 	}
 
+	public static DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> createSuppressionGraph(
+			Set<OSMResource> myJavaObjects) {
+		DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> g = new DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge>(
+				DefaultWeightedEdge.class);
+		for (OSMResource r : myJavaObjects) {
+			Long nodeIni = (long) r.getUid();
+			if (!g.containsVertex(nodeIni))
+				g.addVertex((long) r.getUid());
+
+			OSMResource previous = getPreviousVersion(myJavaObjects, r);
+			if (previous == null)
+				continue;
+			if (!previous.isVisible()) {
+				Long nodeFin = (long) previous.getUid();
+				if (!g.containsVertex(nodeFin))
+					g.addVertex(nodeFin);
+
+				if (!g.containsEdge(nodeIni, nodeFin)) {
+					DefaultWeightedEdge e = g.addEdge(nodeIni, nodeFin);
+					g.setEdgeWeight(e, 1);
+				} else {
+					DefaultWeightedEdge e = g.getEdge(nodeIni, nodeFin);
+					g.setEdgeWeight(e, g.getEdgeWeight(e) + 1);
+				}
+			}
+		}
+
+		return g;
+	}
+
 	public static SimpleWeightedGraph<Long, DefaultWeightedEdge> createCoTemporalGraph(
 			HashMap<Long, OSMContributor> myOSMContributors, String[] timespan) throws Exception {
 		SimpleWeightedGraph<Long, DefaultWeightedEdge> g = new SimpleWeightedGraph<Long, DefaultWeightedEdge>(
