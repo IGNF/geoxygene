@@ -36,6 +36,7 @@ public class OSMContributor implements INode {
 
 	private IFeatureCollection<DefaultFeature> activityAreas;
 	private List<Interval> changesetDates;
+	private Boolean[] temporalActivityPerWeek;
 
 	public OSMContributor(IFeatureCollection<OSMDefaultFeature> contributions, String name, int id) {
 		super();
@@ -435,6 +436,14 @@ public class OSMContributor implements INode {
 
 	public void setChangesetDates(List<Interval> changesetDates) {
 		this.changesetDates = changesetDates;
+	}
+
+	public Boolean[] getTemporalActivityPerWeek() {
+		return temporalActivityPerWeek;
+	}
+
+	public void setTemporalActivityPerWeek(Boolean[] temporalActivityPerWeek) {
+		this.temporalActivityPerWeek = temporalActivityPerWeek;
 	}
 
 }

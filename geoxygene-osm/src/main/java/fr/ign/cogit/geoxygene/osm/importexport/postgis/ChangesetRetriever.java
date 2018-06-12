@@ -132,8 +132,9 @@ public class ChangesetRetriever {
 	public String getChangesetValues(Long changesetID) {
 		StringBuffer value = new StringBuffer();
 		try {
-			String urlAPI = "http://api.openstreetmap.org/api/0.6/changeset/" + changesetID
+			String urlAPI = "https://api.openstreetmap.org/api/0.6/changeset/" + changesetID
 					+ "?include_discussion=true";
+			System.out.println(urlAPI);
 			Document xml = SQLDBPreAnonymization.getDataFromAPI(urlAPI);
 			Node osm = xml.getFirstChild();
 			Element changeset = (Element) osm.getChildNodes().item(1);

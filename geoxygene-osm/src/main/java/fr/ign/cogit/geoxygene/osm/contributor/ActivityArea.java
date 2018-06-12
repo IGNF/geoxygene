@@ -54,12 +54,12 @@ public class ActivityArea {
 		String[] timespan = { "2013-01-01", "2015-01-01" };
 		List<OSMResource> osmNodeList1556219 = selectNodesByUid((long) 1556219, bbox, timespan);
 		List<OSMResource> osmNodeList17286 = selectNodesByUid((long) 138059, bbox, timespan);
-		IGeometry aggregatedAreas1556219 = getActivityAreas(osmNodeList1556219, 1000);
-		IGeometry aggregatedAreas17286 = getActivityAreas(osmNodeList17286, 1000);
+		IGeometry aggregatedAreas1556219 = getActivityAreas(osmNodeList1556219, 1000, "2154");
+		IGeometry aggregatedAreas17286 = getActivityAreas(osmNodeList17286, 1000, "2154");
 		IFeatureCollection<DefaultFeature> denseActivityAreas17286 = getDenseActivityAreas(aggregatedAreas17286,
-				osmNodeList17286, 4);
+				osmNodeList17286, 4, "2154");
 		IFeatureCollection<DefaultFeature> denseActivityAreas1556219 = getDenseActivityAreas(aggregatedAreas1556219,
-				osmNodeList1556219, 4);
+				osmNodeList1556219, 4, "2154");
 		System.out.println("intersection ? "
 				+ denseActivityAreas17286.get(0).getGeom().intersects(denseActivityAreas1556219.get(0).getGeom()));
 		System.out.println("aire intersectée ? " + denseActivityAreas17286.get(0).getGeom()
@@ -82,7 +82,8 @@ public class ActivityArea {
 	 * @return hull : multipolygon corresponding to the contributor's activity
 	 *         areas
 	 **/
-	public static IGeometry getActivityAreas(List<OSMResource> nodeList, double threshold) throws Exception {
+	public static IGeometry getActivityAreas(List<OSMResource> nodeList, double threshold, String epsg)
+			throws Exception {
 		IFeatureCollection<IFeature> ftcolPoints = new FT_FeatureCollection<IFeature>();
 		// On parcourt la liste des nodes (d'un contributeur donné) et on
 		// l'ajoute à la collection de IFeature
@@ -92,6 +93,8 @@ public class ActivityArea {
 			double longitude = ((OSMNode) resource.getGeom()).getLongitude();
 
 			IPoint ipoint = new GM_Point(CRSConversion.wgs84ToLambert93(latitude, longitude));
+			if (!epsg.equals("2154"))
+				ipoint = (IPoint) CRSConversion.changeCRS(ipoint, "2154", epsg, true, true);
 			DefaultFeature point = new DefaultFeature(ipoint);
 
 			System.out.println(i + ") " + point.getGeom().coord());
@@ -134,7 +137,7 @@ public class ActivityArea {
 	}
 
 	public static IFeatureCollection<DefaultFeature> getDenseActivityAreas(IGeometry hull, List<OSMResource> nodeList,
-			int nbPoints) throws Exception {
+			int nbPoints, String epsg) throws Exception {
 		IFeatureCollection<DefaultFeature> denseActivityAreas = new FT_FeatureCollection<DefaultFeature>();
 		FeatureType ftArea = new FeatureType();
 		ftArea.setGeometryType(IPolygon.class);
@@ -147,6 +150,8 @@ public class ActivityArea {
 			double longitude = ((OSMNode) resource.getGeom()).getLongitude();
 
 			IPoint ipoint = new GM_Point(CRSConversion.wgs84ToLambert93(latitude, longitude));
+			if (!epsg.equals("2154"))
+				ipoint = (IPoint) CRSConversion.changeCRS(ipoint, "2154", epsg, true, true);
 
 			nodes.add(new GM_Point(ipoint.getPosition()));
 		}

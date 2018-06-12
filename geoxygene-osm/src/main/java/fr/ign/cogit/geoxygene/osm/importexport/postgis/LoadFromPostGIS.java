@@ -167,7 +167,8 @@ public class LoadFromPostGIS {
 			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
 			String query = "SELECT created_at, closed_at FROM changeset WHERE " + "uid = " + uid
-					+ " AND created_at >= '" + timespan[0] + "' AND closed_at < '" + timespan[1] + "'";
+					+ " AND created_at >= '" + timespan[0] + "' AND closed_at < '" + timespan[1]
+					+ "' ORDER BY created_at";
 
 			ResultSet r = s.executeQuery(query);
 			System.out.println("------- Query Executed -------");
@@ -183,10 +184,12 @@ public class LoadFromPostGIS {
 					Instant endInstant = null;
 					beginInstant = beginDate.toInstant();
 					endInstant = endDate.toInstant();
-					System.out.println(
-							"Date to instant (begin) : " + beginDate.toString() + " -> " + beginInstant.toString());
-					System.out
-							.println("Date to instant (end) : " + endDate.toString() + " -> " + endInstant.toString());
+					// System.out.println(
+					// "Date to instant (begin) : " + beginDate.toString() + "
+					// -> " + beginInstant.toString());
+					// System.out
+					// .println("Date to instant (end) : " + endDate.toString()
+					// + " -> " + endInstant.toString());
 					if (beginInstant.isBefore(endInstant)) {
 						Interval interval = Interval.of(beginInstant, endInstant);
 						changesets.add(interval);

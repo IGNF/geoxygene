@@ -9,7 +9,9 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,6 +32,7 @@ import fr.ign.cogit.geoxygene.osm.importexport.OSMResource;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMWay;
 import fr.ign.cogit.geoxygene.osm.importexport.metrics.IntrinsicAssessment;
 import fr.ign.cogit.geoxygene.osm.importexport.postgis.LoadFromPostGIS;
+import fr.ign.cogit.geoxygene.util.DateTime;
 
 public class SocialGraph<V, E> {
 	// private static Logger LOGGER = Logger.getLogger(SocialGraph.class);
@@ -765,12 +768,25 @@ public class SocialGraph<V, E> {
 		return g;
 	}
 
+	/**
+	 * Graphe de co-temporalité - Solution "buffer temporel" : comme les
+	 * changesets des contributeurs durent souvent quelques secondes, on
+	 * regroupe ensemble les changesets qui se succèdent en moins d'une heure.
+	 * Puis on calcule la distance temporelle (à la manière de la distance
+	 * surfacique) pour pondérer les arcs.
+	 * 
+	 * @param myOSMContributors
+	 * @param timespan
+	 * @return
+	 * @throws Exception
+	 */
 	public static SimpleWeightedGraph<Long, DefaultWeightedEdge> createCoTemporalGraph(
 			HashMap<Long, OSMContributor> myOSMContributors, String[] timespan) throws Exception {
 		SimpleWeightedGraph<Long, DefaultWeightedEdge> g = new SimpleWeightedGraph<Long, DefaultWeightedEdge>(
 				DefaultWeightedEdge.class);
 		// Assign changeset dates for each user
 		assignChangesets(myOSMContributors, timespan);
+
 		List<OSMContributor> myContributorList = new ArrayList<OSMContributor>();
 		for (OSMContributor contributor : myOSMContributors.values()) {
 			myContributorList.add(contributor);
@@ -807,17 +823,8 @@ public class SocialGraph<V, E> {
 						// intersection
 						if (currentChangeset.overlaps(nextChangeset)) {
 
-							System.out.println("Changeset : " + currentChangeset.getStart().toString() + " - "
-									+ currentChangeset.getEnd().toString());
-							System.out.println("Changeset : " + nextChangeset.getStart().toString() + " - "
-									+ nextChangeset.getEnd().toString());
-							System.out.println("Intersection = "
-									+ currentChangeset.intersection(nextChangeset).getStart().toString() + " - "
-									+ currentChangeset.intersection(nextChangeset).getEnd().toString());
 							totalIntersection += currentChangeset.intersection(nextChangeset).toDuration().getSeconds();
-							System.out.println("Intersection : "
-									+ currentChangeset.intersection(nextChangeset).toDuration().getSeconds()
-									+ " secondes");
+							System.out.println("Intersection cumulée : " + totalIntersection + " secondes");
 
 							// Ajoute la différence de nextChangeset avec
 							// currentChangeset (qui a été ajouté intialement)
@@ -840,11 +847,12 @@ public class SocialGraph<V, E> {
 				}
 				if (totalUnion > 0)
 					totalDistance = 1 - totalIntersection / totalUnion;
-				if (totalDistance > 0 && totalDistance < 1) {
+				if (totalDistance != 0 && totalDistance != 1.0) {
 					DefaultWeightedEdge e = g.addEdge((long) myContributorList.get(i).getId(),
 							(long) myContributorList.get(j).getId());
 					g.setEdgeWeight(e, 1 / totalDistance);
-
+					System.out.println("Intersection cumulée : " + totalIntersection + " secondes - Union cumulée = "
+							+ totalUnion + " secondes");
 					System.out.println("Poids de l'arc créé entre " + myContributorList.get(i).getId() + " et "
 							+ myContributorList.get(j).getId() + " : " + (1 / totalDistance));
 
@@ -857,8 +865,66 @@ public class SocialGraph<V, E> {
 	}
 
 	/**
-	 * Computes for each OSMContributor of the input list of contributors the
-	 * changesets
+	 * Graphe de co-temporalité - Solution "rasterisée": on relie les
+	 * contributeurs ayant participé la même semaine. Le poids des arcs
+	 * quantifie le nombre de semaines en commun entre deux contributeurs
+	 * 
+	 * @param myOSMContributors
+	 * @param timespan
+	 * @return
+	 * @throws Exception
+	 */
+	public static SimpleWeightedGraph<Long, DefaultWeightedEdge> createCoTemporalGraph2(
+			HashMap<Long, OSMContributor> myOSMContributors, String[] timespan) throws Exception {
+		SimpleWeightedGraph<Long, DefaultWeightedEdge> g = new SimpleWeightedGraph<Long, DefaultWeightedEdge>(
+				DefaultWeightedEdge.class);
+		// Assign changeset dates for each user
+		assignChangesets(myOSMContributors, timespan);
+		// Make temporal activity
+		makeUsersTemporalActivity(myOSMContributors, timespan);
+
+		List<OSMContributor> myContributorList = new ArrayList<OSMContributor>();
+		for (OSMContributor contributor : myOSMContributors.values()) {
+			myContributorList.add(contributor);
+		}
+		// Parse contributor list
+		for (int i = 0; i < myContributorList.size() - 1; i++) {
+
+			if (!g.containsVertex((long) myContributorList.get(i).getId()))
+				g.addVertex((long) myContributorList.get(i).getId());
+
+			Boolean[] temporalActivityCurrentUser = myContributorList.get(i).getTemporalActivityPerWeek();
+
+			for (int j = i + 1; j < myOSMContributors.size(); j++) {
+
+				if (!g.containsVertex((long) myContributorList.get(j).getId()))
+					g.addVertex((long) myContributorList.get(j).getId());
+
+				Boolean[] temporalActivityNextUser = myContributorList.get(j).getTemporalActivityPerWeek();
+
+				int nbCommonWeeks = 0;
+				for (int k = 0; k < temporalActivityNextUser.length; k++)
+					if (temporalActivityCurrentUser[k] == temporalActivityNextUser[k])
+						nbCommonWeeks++;
+				if (nbCommonWeeks > 0) {
+					// Crée l'arc
+					DefaultWeightedEdge e = g.addEdge((long) myContributorList.get(i).getId(),
+							(long) myContributorList.get(j).getId());
+					g.setEdgeWeight(e, nbCommonWeeks);
+
+				}
+
+			}
+
+		}
+
+		return g;
+	}
+
+	/**
+	 * Assigne à chaque contributeur l'intervalle de ses changesets. Pour
+	 * regrouper les petits changesets successifs, on applique une fermeture
+	 * (opérateur morphologique dilatation + érosion) sur les intervalles
 	 **/
 	public static void assignChangesets(HashMap<Long, OSMContributor> myOSMContributors, String[] timespan)
 			throws Exception {
@@ -866,17 +932,80 @@ public class SocialGraph<V, E> {
 				SocialGraph.dbUser, SocialGraph.dbPwd);
 		for (Long uid : myOSMContributors.keySet()) {
 			List<Interval> changesets = loader.getChangesets(uid, timespan);
+
+			// Fermeture sur un offset en minutes
+			Long offset = 60L * 24 * 7;
+			for (Interval interval : changesets)
+				DateTime.buffer(interval, offset, ChronoUnit.MINUTES); // Dilatation
+			// Union
+			List<Interval> bufferedChangesets = DateTime.unionConnectedInterval(changesets);
+			for (Interval interval : bufferedChangesets)
+				DateTime.buffer(interval, -offset, ChronoUnit.MINUTES);// Erosion
+
 			myOSMContributors.get(uid).setChangesetDates(changesets);
 		}
 	}
 
+	/**
+	 * Rasterize the temporal activity of each contributor OSM regarding their
+	 * changesets
+	 * 
+	 * @param myOSMContributors
+	 * @param timespan
+	 * @return Une map qui, pour chaque contributeur, attribue une table de
+	 *         booléens dont le nombre de cellules correspond au nombre de
+	 *         semaines dans l'intervalle timespan en entrée. Si le contributeur
+	 *         a contribué dans une semaine, la cellue vaut TRUE, FALSE sinon.
+	 * @throws ParseException
+	 */
+	public static void makeUsersTemporalActivity(HashMap<Long, OSMContributor> myOSMContributors, String[] timespan)
+			throws ParseException {
+		// Number of weeks in timespan
+		int nbWeeks = DateTime.getWeeksBetween(timespan[0], timespan[1], "yyyy-MM-dd");
+		int beginYear = DateTime.getYear(timespan[0], "yyyy-MM-dd");
+		int nbWeeksBeginYear = DateTime.getNbWeeksInYear(timespan[0], "yyyy-MM-dd");
+
+		// Parse contributors' list
+		for (OSMContributor c : myOSMContributors.values()) {
+			Boolean[] weekActivity = new Boolean[nbWeeks];
+			Arrays.fill(weekActivity, Boolean.FALSE);
+			System.out.println("weekActivity length = " + weekActivity.length);
+
+			// Parse contributor's changesets
+			for (Interval changeset : c.getChangesetDates()) {
+				// Get week of year
+				int w = DateTime.getWeekOfYear(changeset.getStart().toString(), "yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+				// Get year
+				int y = DateTime.getYear(changeset.getStart().toString(), "yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+				if (y < beginYear)
+					continue;
+
+				// Get tempActivity's position to be set to TRUE
+				int pos = w - 1 + nbWeeksBeginYear * (y - beginYear);
+				System.out.println("pos = " + w + "- 1 " + " + " + nbWeeksBeginYear + "*(" + y + "-" + beginYear + ")");
+				int changesetWeekDuration = DateTime.getNbOfWeeks(changeset.getStart().toString(),
+						changeset.getEnd().toString(), "yyyy-MM-dd'T'HH:mm:ss'Z'");
+				for (int i = pos; i <= pos + changesetWeekDuration; i++) {
+					if (i >= weekActivity.length)
+						break;
+					System.out.println("i = " + i);
+
+					weekActivity[i] = true;
+				}
+			}
+			c.setTemporalActivityPerWeek(weekActivity);
+		}
+	}
+
 	public static SimpleWeightedGraph<Long, DefaultWeightedEdge> createCoLocationGraph(
-			HashMap<Long, OSMContributor> myOSMContributors, Double[] bbox, String[] timespan, double threshold)
-			throws Exception {
+			HashMap<Long, OSMContributor> myOSMContributors, Double[] bbox, String[] timespan, double threshold,
+			String epsg) throws Exception {
 		SimpleWeightedGraph<Long, DefaultWeightedEdge> g = new SimpleWeightedGraph<Long, DefaultWeightedEdge>(
 				DefaultWeightedEdge.class);
 		// Remplit pour chaque OSMContributor l'attribut ActivityAreas
-		assignActivityAreas(myOSMContributors, bbox, timespan, threshold);
+		assignActivityAreas(myOSMContributors, bbox, timespan, threshold, epsg);
 		List<OSMContributor> myContributorList = new ArrayList<OSMContributor>();
 		for (OSMContributor contributor : myOSMContributors.values()) {
 			myContributorList.add(contributor);
@@ -927,10 +1056,8 @@ public class SocialGraph<V, E> {
 							(long) myContributorList.get(j).getId());
 					g.setEdgeWeight(e, 1 / totalDistance);
 				}
-
 			}
 		}
-
 		return g;
 	}
 
@@ -939,12 +1066,12 @@ public class SocialGraph<V, E> {
 	 * activity areas
 	 **/
 	public static void assignActivityAreas(HashMap<Long, OSMContributor> myOSMContributors, Double[] bbox,
-			String[] timespan, double threshold) throws Exception {
+			String[] timespan, double threshold, String epsg) throws Exception {
 		for (Long uid : myOSMContributors.keySet()) {
 			List<OSMResource> uidNodes = ActivityArea.selectNodesByUid(uid, bbox, timespan);
-			IGeometry uidArea = ActivityArea.getActivityAreas(uidNodes, threshold);
+			IGeometry uidArea = ActivityArea.getActivityAreas(uidNodes, threshold, epsg);
 			IFeatureCollection<DefaultFeature> denseActivityCollection = ActivityArea.getDenseActivityAreas(uidArea,
-					uidNodes, 5);
+					uidNodes, 5, epsg);
 			myOSMContributors.get(uid).setActivityAreas(denseActivityCollection);
 		}
 	}
@@ -953,8 +1080,8 @@ public class SocialGraph<V, E> {
 	 * Warning: use writeColocationGraph2CSV to export colocation graphs into
 	 * CSV files.
 	 */
-	public static void writeGraph2CSV(DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> usegraph, File file)
-			throws IOException {
+	public static void writeGraph2CSV(DefaultDirectedWeightedGraph<Long, DefaultWeightedEdge> usegraph, File file,
+			Long offset) throws IOException {
 		CSVWriter writer = new CSVWriter(new FileWriter(file), ';');
 		// System.out.println("écriture du fichier csv");
 		// write header
@@ -965,9 +1092,9 @@ public class SocialGraph<V, E> {
 		writer.writeNext(line);
 		for (DefaultWeightedEdge e : usegraph.edgeSet()) {
 			line = new String[3];
-			line[0] = String.valueOf(usegraph.getEdgeSource(e).longValue() + (long) 111);
+			line[0] = String.valueOf(usegraph.getEdgeSource(e).longValue() + offset);
 			System.out.println(usegraph.getEdgeSource(e));
-			line[1] = String.valueOf(usegraph.getEdgeTarget(e).longValue() + (long) 111);
+			line[1] = String.valueOf(usegraph.getEdgeTarget(e).longValue() + offset);
 			System.out.println(usegraph.getEdgeTarget(e));
 			line[2] = String.valueOf(usegraph.getEdgeWeight(e));
 			System.out.println(usegraph.getEdgeWeight(e));
@@ -977,7 +1104,7 @@ public class SocialGraph<V, E> {
 	}
 
 	public static void writeSimpleWeightedGraph2CSV(SimpleWeightedGraph<Long, DefaultWeightedEdge> colocationgraph,
-			File file) throws IOException {
+			File file, Long offset) throws IOException {
 		CSVWriter writer = new CSVWriter(new FileWriter(file), ';');
 		// write header
 		String[] line = new String[4];
@@ -988,8 +1115,8 @@ public class SocialGraph<V, E> {
 		writer.writeNext(line);
 		for (DefaultWeightedEdge e : colocationgraph.edgeSet()) {
 			line = new String[4];
-			line[0] = String.valueOf(colocationgraph.getEdgeSource(e).longValue() + (long) 111);
-			line[1] = String.valueOf(colocationgraph.getEdgeTarget(e).longValue() + (long) 111);
+			line[0] = String.valueOf(colocationgraph.getEdgeSource(e).longValue() + offset);
+			line[1] = String.valueOf(colocationgraph.getEdgeTarget(e).longValue() + offset);
 			line[2] = String.valueOf(colocationgraph.getEdgeWeight(e));
 			line[3] = "undirected";
 			writer.writeNext(line);

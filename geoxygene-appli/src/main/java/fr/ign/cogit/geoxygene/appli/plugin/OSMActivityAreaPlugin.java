@@ -403,7 +403,7 @@ public class OSMActivityAreaPlugin implements ProjectFramePlugin, GeOxygeneAppli
 			// Loads contributor's activity area
 			IGeometry actArea = null;
 			try {
-				actArea = ActivityArea.getActivityAreas(osmContributorResource, 1000);
+				actArea = ActivityArea.getActivityAreas(osmContributorResource, 1000, "2154");
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
