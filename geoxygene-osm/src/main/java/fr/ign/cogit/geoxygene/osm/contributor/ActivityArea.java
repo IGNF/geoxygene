@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -30,6 +31,7 @@ import fr.ign.cogit.geoxygene.osm.importexport.OSMResource;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
+import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
 import twitter4j.JSONException;
 import twitter4j.JSONObject;
 
@@ -74,6 +76,21 @@ public class ActivityArea {
 		System.out.println("intersection =" + intersection);
 		double distSurfacique = 1 - intersection / union;
 		System.out.println("distance surfacique ? " + distSurfacique);
+
+		// Make multipolygons
+		System.out.println("********** Multipolygones *************");
+		IGeometry multipolygone1 = getDenseActivityAreas2(aggregatedAreas17286, osmNodeList17286, 4, "2154");
+		IGeometry multipolygone2 = getDenseActivityAreas2(aggregatedAreas1556219, osmNodeList1556219, 4, "2154");
+		System.out.println("aire 1 =" + multipolygone1.area());
+		System.out.println("aire 2 =" + multipolygone2.area());
+
+		intersection = multipolygone1.intersection(multipolygone2).area();
+		union = multipolygone1.union(multipolygone2).area();
+		System.out.println("union =" + union);
+		System.out.println("intersection =" + intersection);
+
+		distSurfacique = 1 - intersection / union;
+		System.out.println("distance surfacique ? " + distSurfacique);
 	}
 
 	/**
@@ -93,10 +110,14 @@ public class ActivityArea {
 			double longitude = ((OSMNode) resource.getGeom()).getLongitude();
 
 			IPoint ipoint = new GM_Point(CRSConversion.wgs84ToLambert93(latitude, longitude));
+			System.out.println("**** Projection Lambert 93 **** ");
+			System.out.println("X = " + ipoint.getPosition().getX() + "m -- Y = " + ipoint.getPosition().getY() + "m");
+
 			if (!epsg.equals("2154"))
 				ipoint = (IPoint) CRSConversion.changeCRS(ipoint, "2154", epsg, true, true);
 			DefaultFeature point = new DefaultFeature(ipoint);
 
+			System.out.println("**** Projection EPSG:" + epsg + " **** ");
 			System.out.println(i + ") " + point.getGeom().coord());
 			ftcolPoints.add(point);
 			i++;
@@ -182,6 +203,57 @@ public class ActivityArea {
 	}
 
 	/**
+	 * A utiliser si on veut manipuler les zones d'activités d'un contributeur
+	 * comme un multipolygone (ex : graphe de co-location)
+	 */
+	public static IGeometry getDenseActivityAreas2(IGeometry hull, List<OSMResource> nodeList, int nbPoints,
+			String epsg) throws Exception {
+		IGeometry denseActivityAreas = null;
+		List<IGeometry> list = new ArrayList<IGeometry>();
+		FeatureType ftArea = new FeatureType();
+		ftArea.setGeometryType(IPolygon.class);
+
+		IMultiPoint nodes = new GM_MultiPoint();
+
+		for (OSMResource resource : nodeList) {
+			double latitude = ((OSMNode) resource.getGeom()).getLatitude();
+			double longitude = ((OSMNode) resource.getGeom()).getLongitude();
+
+			IPoint ipoint = new GM_Point(CRSConversion.wgs84ToLambert93(latitude, longitude));
+			if (!epsg.equals("2154"))
+				ipoint = (IPoint) CRSConversion.changeCRS(ipoint, "2154", epsg, true, true);
+
+			nodes.add(new GM_Point(ipoint.getPosition()));
+		}
+		System.out.println("(hull instanceof IMultiSurface<?>) " + (hull instanceof IMultiSurface<?>));
+		System.out.println("(hull instanceof IPolygon) " + (hull instanceof IPolygon));
+		System.out.println("(hull instanceof ISurface) " + (hull instanceof ISurface));
+
+		if (hull instanceof IMultiSurface<?>)
+			for (IPolygon simple : ((IMultiSurface<IPolygon>) hull)) {
+				System.out.println("Nodes intersects simple " + nodes.intersects(simple));
+				System.out.println("Nodes touches simple " + nodes.touches(simple));
+				System.out.println("Nodes relates simple " + nodes.relate(simple));
+				System.out.println("Nodes intersection simple " + nodes.intersection(simple).numPoints());
+				boolean remove = false;
+				if (simple == null)
+					continue;
+				System.out.println("aire de la zone =" + simple.area() + "m carrés");
+				if (nodes.intersects(simple))
+					if (nodes.intersection(simple).numPoints() < nbPoints)
+						remove = true;
+				if (!remove)
+					list.add(simple);
+			}
+		else if (hull instanceof ISurface)
+			list.add(hull);
+
+		denseActivityAreas = JtsAlgorithms.union(list);
+
+		return denseActivityAreas;
+	}
+
+	/**
 	 * Retrieves OSM nodes from a PostGIS database according to spatiotemporal
 	 * and uid parameters
 	 * 
@@ -200,9 +272,9 @@ public class ActivityArea {
 	public static List<OSMResource> selectNodesByUid(Long uid, Double[] bbox, String[] timespan) throws Exception {
 		List<OSMResource> uidNodeList = new ArrayList<OSMResource>();
 		String query = "SELECT idnode, id, uid, vnode, changeset, username, datemodif, hstore_to_json(tags), lat, lon FROM node WHERE uid = "
-				+ uid + " AND node.geom && ST_MakeEnvelope(" + bbox[0].toString() + "," + bbox[1].toString() + ","
-				+ bbox[2].toString() + "," + bbox[3].toString() + ", 4326) AND datemodif >= \'" + timespan[0].toString()
-				+ "\' AND datemodif <= \'" + timespan[1].toString() + "\';";
+				+ uid + " AND lon >= " + bbox[0] + " AND lat>= " + bbox[1] + " AND lon<= " + bbox[2] + " AND lat<= "
+				+ bbox[3] + "AND datemodif >= \'" + timespan[0].toString() + "\' AND datemodif <= \'"
+				+ timespan[1].toString() + "\';";
 
 		java.sql.Connection conn;
 		try {
@@ -253,6 +325,20 @@ public class ActivityArea {
 			throw e;
 		}
 		return uidNodeList;
+	}
+
+	/**
+	 * 
+	 * A utiliser dans le cas multiplexe
+	 */
+	public static List<OSMResource> selectNodesByUid(Long uid, Set<OSMResource> nodeList) throws Exception {
+		List<OSMResource> uidNodeList = new ArrayList<OSMResource>();
+		for (OSMResource r : nodeList)
+			if (Long.valueOf(r.getUid()).equals(uid))
+				uidNodeList.add(r);
+		System.out.println("uidNodeList = " + uidNodeList.size());
+		return uidNodeList;
+
 	}
 
 }

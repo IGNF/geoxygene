@@ -16,11 +16,11 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.graphe.IEdge;
 import fr.ign.cogit.geoxygene.contrib.graphe.IGraph;
 import fr.ign.cogit.geoxygene.contrib.graphe.IGraphLinkableFeature;
 import fr.ign.cogit.geoxygene.contrib.graphe.INode;
-import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMResource;
 import fr.ign.cogit.geoxygene.osm.schema.OSMDefaultFeature;
@@ -34,7 +34,7 @@ public class OSMContributor implements INode {
 	private int id;
 	// private int nbContributions = 0;
 
-	private IFeatureCollection<DefaultFeature> activityAreas;
+	private IGeometry activityAreas;
 	private List<Interval> changesetDates;
 	private Boolean[] temporalActivityPerWeek;
 
@@ -401,7 +401,7 @@ public class OSMContributor implements INode {
 		return null;
 	}
 
-	public IFeatureCollection<DefaultFeature> getActivityAreas() {
+	public IGeometry getActivityAreas() {
 		return activityAreas;
 	}
 
@@ -409,7 +409,7 @@ public class OSMContributor implements INode {
 		return this.resource.size();
 	}
 
-	public void setActivityAreas(IFeatureCollection<DefaultFeature> denseActivityCollection) {
+	public void setActivityAreas(IGeometry denseActivityCollection) {
 		this.activityAreas = denseActivityCollection;
 	}
 

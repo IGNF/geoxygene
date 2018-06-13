@@ -119,7 +119,8 @@ public class GraphAnalysis {
 	}
 
 	/**
-	 * creates the adjacency matrix of a simple weighted graph
+	 * creates the adjacency matrix of a simple weighted graph in the case of a
+	 * multiplex model
 	 **/
 	public static double[][] createSimpleAdjacencyMatrix(SimpleWeightedGraph<Long, DefaultWeightedEdge> simpleG,
 			double threshold) {
@@ -138,6 +139,37 @@ public class GraphAnalysis {
 				adj[j][k] = 1;
 				adj[k][j] = 1;
 			}
+		}
+		return adj;
+	}
+
+	/**
+	 * creates the adjacency matrix of a simple weighted graph (use this method
+	 * for a multiplex case)
+	 **/
+	public static double[][] createLayerAdjacencyMatrix(SimpleWeightedGraph<Long, DefaultWeightedEdge> simpleG,
+			double threshold, HashMap<Long, Integer> contributorIndex) {
+		// HashMap<Long, Integer> contributorIndex = contributorIndex(simpleG);
+		// Crée une matrice de taille nbContributeurs x nbContributeurs
+		// initialisés à zéro par défaut
+		double[][] adj = new double[simpleG.vertexSet().size()][simpleG.vertexSet().size()];
+		for (DefaultWeightedEdge e : simpleG.edgeSet()) {
+			Long nodeI = simpleG.getEdgeSource(e);
+			Long nodeF = simpleG.getEdgeTarget(e);
+			double w = simpleG.getEdgeWeight(e);
+			// Remplit la matrice symétrique
+			try {
+				int j = contributorIndex.get(nodeI);
+				int k = contributorIndex.get(nodeF);
+				if (w >= threshold) {
+					adj[j][k] = 1;
+					adj[k][j] = 1;
+				}
+			} catch (NullPointerException exception) {
+				continue;
+
+			}
+
 		}
 		return adj;
 	}
@@ -197,6 +229,21 @@ public class GraphAnalysis {
 		HashMap<Long, Integer> contributorIndex = new HashMap<Long, Integer>();
 		int i = 0;
 		for (Long v : simpleG.vertexSet()) {
+			contributorIndex.put(v, i);
+			i++;
+		}
+		return contributorIndex;
+	}
+
+	/**
+	 * Indicate the index of each contributor in the adjacency matrix. HashMap
+	 * key : contributor ID HashMap - value : adjacency matrix index. Use this
+	 * method for a multiplex model
+	 */
+	public static HashMap<Long, Integer> contributorIndexForMultiplex(HashMap<Long, OSMContributor> myContributors) {
+		HashMap<Long, Integer> contributorIndex = new HashMap<Long, Integer>();
+		int i = 0;
+		for (Long v : myContributors.keySet()) {
 			contributorIndex.put(v, i);
 			i++;
 		}
