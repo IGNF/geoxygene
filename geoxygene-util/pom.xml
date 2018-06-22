@@ -12,7 +12,7 @@
 
 	<artifactId>geoxygene-util</artifactId>
 	<packaging>jar</packaging>
-	
+
 	<name>geoxygene-util</name>
 
 	<properties>
@@ -87,29 +87,43 @@
 			<artifactId>vecmath</artifactId>
 			<version>1.3.1</version>
 		</dependency>
-		
-        <dependency>
-            <groupId>com.jhlabs</groupId>
-            <artifactId>filters</artifactId>
-            <version>2.0.235-1</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.jeval</groupId>
-            <artifactId>jeval</artifactId>
-            <version>0.9.4</version>
-        </dependency>
+
+		<dependency>
+			<groupId>com.jhlabs</groupId>
+			<artifactId>filters</artifactId>
+			<version>2.0.235-1</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.jeval</groupId>
+			<artifactId>jeval</artifactId>
+			<version>0.9.4</version>
+		</dependency>
 
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
-		
-<dependency>
-  <groupId>org.threeten</groupId>
-  <artifactId>threeten-extra</artifactId>
-  <version>1.3.2</version>
-</dependency>
-		
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jaxb</groupId>
+			<artifactId>jaxb-runtime</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>activation</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.threeten</groupId>
+			<artifactId>threeten-extra</artifactId>
+			<version>1.3.2</version>
+		</dependency>
+
 	</dependencies>
 
 </project>
