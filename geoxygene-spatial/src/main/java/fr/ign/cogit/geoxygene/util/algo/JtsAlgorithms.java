@@ -19,40 +19,13 @@
 
 package fr.ign.cogit.geoxygene.util.algo;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.TreeSet;
-
-import javax.swing.event.EventListenerList;
-
-import org.apache.log4j.Logger;
-
 import com.vividsolutions.jts.algorithm.CGAlgorithms;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.CoordinateFilter;
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineSegment;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.operation.buffer.BufferOp;
 import com.vividsolutions.jts.operation.buffer.BufferParameters;
 import com.vividsolutions.jts.operation.distance.DistanceOp;
 import com.vividsolutions.jts.operation.union.CascadedPolygonUnion;
 import com.vividsolutions.jts.simplify.DouglasPeuckerSimplifier;
-
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
@@ -66,6 +39,12 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
+import org.apache.log4j.Logger;
+
+import javax.swing.event.EventListenerList;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.*;
 
 /**
  * Appel des methodes JTS sur des GM_Object. cf.
@@ -82,7 +61,7 @@ import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
  */
 
 public class JtsAlgorithms implements GeomAlgorithms {
-  static Logger logger = Logger.getLogger(JtsAlgorithms.class.getName());
+  private static Logger logger = Logger.getLogger(JtsAlgorithms.class.getName());
 
   public JtsAlgorithms() {
   }
@@ -686,17 +665,13 @@ public class JtsAlgorithms implements GeomAlgorithms {
       final double tz) {
     try {
       Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
-      CoordinateFilter translateCoord = new CoordinateFilter() {
-        @Override
-        public void filter(Coordinate coord) {
-          coord.x += tx;
-          coord.y += ty;
-          coord.z += tz;
-        }
+      CoordinateFilter translateCoord = coord -> {
+        coord.x += tx;
+        coord.y += ty;
+        coord.z += tz;
       };
       jtsGeom.apply(translateCoord);
-      IGeometry result = JtsGeOxygene.makeGeOxygeneGeom(jtsGeom);
-      return result;
+      return JtsGeOxygene.makeGeOxygeneGeom(jtsGeom);
     } catch (Exception e) {
       JtsAlgorithms.logger
           .error(I18N.getString("JtsAlgorithms.TranslateError")); //$NON-NLS-1$
@@ -736,7 +711,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
    */
   public static IGeometry union(List<? extends IGeometry> listeGeometries) {
     try {
-      List<Polygon> lpoly = new ArrayList<Polygon>();
+      List<Polygon> lpoly = new ArrayList<>();
       for (IGeometry g : listeGeometries) {
         lpoly.add((Polygon) JtsGeOxygene.makeJtsGeom(g));
       }
@@ -746,7 +721,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
       // Continuer pour les autres types de géométries
     }
 
-    List<Geometry> listeGeometriesJts = new ArrayList<Geometry>(0);
+    List<Geometry> listeGeometriesJts = new ArrayList<>(0);
     for (IGeometry geom : listeGeometries) {
       try {
         listeGeometriesJts.add(JtsGeOxygene.makeJtsGeom(geom));
@@ -1435,8 +1410,6 @@ public class JtsAlgorithms implements GeomAlgorithms {
    * @param line the reference {@link LineString}
    * @param orientationIndex orientation of the offset curve to build
    * @param distance offset distance
-   * @param tolerance tolerance used to determine on which side of the
-   *          linestring a point lies
    * @return the offsetcurve
    */
   private static ILineString getOffsetCurveFromRing(LineString ring,
@@ -1588,7 +1561,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
   public static int orientationIndex(Coordinate c, LineString line,
       double tolerance) {
     double distanceMin = line.distance(line.getFactory().createPoint(c));
-    List<Integer> orientations = new ArrayList<Integer>();
+    List<Integer> orientations = new ArrayList<>();
     int previousOrientation = 0;
     Coordinate previousCoordinate = null;
     for (int i = 0; i < line.getNumPoints() - 1; i++) {
@@ -1610,22 +1583,22 @@ public class JtsAlgorithms implements GeomAlgorithms {
               // orientation
               if (previousCoordinate != null
                   && orientation != previousOrientation) {
-                orientations.add(new Integer(-CGAlgorithms.orientationIndex(
-                    previousCoordinate, coordinate1, coordinate2)));
+                orientations.add(-CGAlgorithms.orientationIndex(
+                        previousCoordinate, coordinate1, coordinate2));
               } else {
-                orientations.add(new Integer(orientation));
+                orientations.add(orientation);
               }
             } else {
               // the closest point is the second point but there
               // is no next iteration
               if (closestPoint.equals2D(coordinate2)
                   && i == line.getNumPoints() - 2) {
-                orientations.add(new Integer(orientation));
+                orientations.add(orientation);
               }
             }
           } else {
             // the closest coordinate is not on the line
-            orientations.add(new Integer(orientation));
+            orientations.add(orientation);
           }
           previousCoordinate = coordinate1;
           previousOrientation = orientation;

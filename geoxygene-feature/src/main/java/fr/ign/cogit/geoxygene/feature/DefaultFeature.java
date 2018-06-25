@@ -102,11 +102,11 @@ public class DefaultFeature extends AbstractFeature {
       Object attribute = original.getAttribute(i);
       if (Double.class.isAssignableFrom(attribute.getClass())) {
         Double n = (Double) attribute;
-        this.attributes[i] = new Double(n);
+        this.attributes[i] = Double.valueOf(n.doubleValue());
       }
       if (Integer.class.isAssignableFrom(attribute.getClass())) {
         Integer n = (Integer) attribute;
-        this.attributes[i] = new Integer(n);
+        this.attributes[i] = Integer.valueOf(n.intValue());
       }
       if (String.class.isAssignableFrom(attribute.getClass())) {
         String n = (String) attribute;

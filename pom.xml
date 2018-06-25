@@ -56,7 +56,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<jts.version>1.13</jts.version>
+		<jts.version>1.14.0</jts.version>
 		<log4j.version>1.2.16</log4j.version>
 		<geotools.version>19.1</geotools.version>
 		<jfreechart.version>1.0.13</jfreechart.version>
@@ -322,7 +322,6 @@
 				<configuration>
 					<compilerVersion>1.8</compilerVersion>
 					<source>1.8</source>
-					<complianceLevel>1.8</complianceLevel>
 					<target>1.8</target>
 				</configuration>
 			</plugin>
@@ -692,7 +691,7 @@
 		<dependencies>
 			<dependency>
 				<groupId>com.vividsolutions</groupId>
-				<artifactId>jts</artifactId>
+				<artifactId>jts-core</artifactId>
 				<version>${jts.version}</version>
 			</dependency>
 

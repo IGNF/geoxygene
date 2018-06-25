@@ -208,7 +208,7 @@ public abstract class Distances {
 
     while (itPts.hasNext()) {
       point = itPts.next();
-      dist = Distances.distance(point, p.getPosition());
+      dist = point.distance(p.getPosition());
       if (dist > distmax) {
         distmax = dist;
       }
@@ -262,7 +262,7 @@ public abstract class Distances {
     if ((nb % 2) == 0) {
       return distances.get(nb / 2);
     } else {
-      int round = new Double(Math.ceil(nb / 2)).intValue();
+      int round = Double.valueOf(Math.ceil(nb / 2)).intValue();
       return (distances.get(round) + distances.get(round - 1)) / 2;
     }
   }
@@ -289,7 +289,7 @@ public abstract class Distances {
     if ((nb % 2) == 0) {
       return distances.get(nb / 2);
     } else {
-      int round = new Double(Math.ceil(nb / 2)).intValue();
+      int round = Double.valueOf(Math.ceil(nb / 2)).intValue();
       return (distances.get(round) + distances.get(round - 1)) / 2;
     }
   }

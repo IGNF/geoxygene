@@ -306,12 +306,8 @@ public abstract class AbstractFeature implements IFeature {
     IFeature feature = null;
     try {
       Class<?> theClass = Class.forName(featureType.getNomClasse());
-      feature = (IFeature) theClass.newInstance();
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
-    } catch (InstantiationException e) {
-      e.printStackTrace();
-    } catch (IllegalAccessException e) {
+      feature = (IFeature) theClass.getConstructor().newInstance();
+    } catch (Exception e) {
       e.printStackTrace();
     }
     return feature;

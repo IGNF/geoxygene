@@ -602,7 +602,7 @@ public abstract class Operateurs {
 			listePointsEchant.add(point1);
 			point2 = listePoints.get(j);
 			longTronc = point1.distance(point2);
-			fseg = new Double(longTronc / pas);
+			fseg = longTronc / pas;
 			nseg = fseg.intValue();
 			u1 = new Vecteur(point1, point2);
 			for (i = 0; i < nseg - 1; i++) {
@@ -640,7 +640,7 @@ public abstract class Operateurs {
 			listePointsEchant.add(point1);
 			point2 = listePoints.get(j);
 			longTronc = point1.distance(point2);
-			fseg = new Double(longTronc / pas);
+			fseg = longTronc / pas;
 			nseg = fseg.intValue();
 			double epsilonPas = 0;
 			if (nseg != 0) {
@@ -1557,7 +1557,7 @@ public abstract class Operateurs {
 		for (int j = 1; j < list.size(); j++) {
 			IDirectPosition nextPoint = list.get(j);
 			double length = prevPoint.distance(nextPoint);
-			Double fseg = new Double(length / maxDistance);
+			Double fseg = length / maxDistance;
 			int nseg = fseg.intValue();
 			// make sure the distance between the resulting points is smaller
 			// than

@@ -439,8 +439,8 @@ public class ImgUtil {
     Color[] foregrounds = new Color[totalSize];
     double widthReal = envelope.width() / scale;
     double heightReal = envelope.length() / scale;
-    int width = new Double(widthReal).intValue();
-    int height = new Double(heightReal).intValue();
+    int width = Double.valueOf(widthReal).intValue();
+    int height = Double.valueOf(heightReal).intValue();
     System.out.println("Envelope " + envelope.width() + " x "
         + envelope.length());
     System.out.println("Envelope out " + width + " x " + height);
