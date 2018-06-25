@@ -19,33 +19,8 @@
 
 package fr.ign.cogit.geoxygene.contrib.appariement.surfaces;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.log4j.Logger;
-import org.geotools.data.DataUtilities;
-import org.geotools.data.DefaultTransaction;
-import org.geotools.data.FeatureStore;
-import org.geotools.data.Transaction;
-import org.geotools.data.shapefile.ShapefileDataStore;
-import org.geotools.feature.DefaultFeatureCollection;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureCollections;
-import org.geotools.feature.SchemaException;
-import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
-
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -69,6 +44,22 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
+import org.apache.log4j.Logger;
+import org.geotools.data.DataUtilities;
+import org.geotools.data.DefaultTransaction;
+import org.geotools.data.FeatureStore;
+import org.geotools.data.Transaction;
+import org.geotools.data.shapefile.ShapefileDataStore;
+import org.geotools.feature.DefaultFeatureCollection;
+import org.geotools.feature.SchemaException;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+
+import java.io.File;
+import java.io.IOException;
+import java.sql.Time;
+import java.util.*;
 
 /**
  * Appariement de surfaces. Processus défini dans la thèse de Atef Bel Hadj Ali
@@ -276,17 +267,17 @@ public abstract class AppariementSurfaces {
   public static EnsembleDeLiens rechercheRegroupementsOptimaux(EnsembleDeLiens liensPreApp,
       IFeatureCollection<? extends IFeature> popRef,
       IFeatureCollection<? extends IFeature> popComp, ParametresAppSurfaces param) {
-    List<Groupe> groupesGardes = new ArrayList<Groupe>();
+    List<Groupe> groupesGardes = new ArrayList<>();
     // on crée les liens n-m (groupes connexes du graphe des liens)
     CarteTopo grapheDesLiens = liensPreApp.transformeEnCarteTopo(popRef, popComp);
     Groupe groupeTotal = grapheDesLiens.getPopGroupes().nouvelElement();
     groupeTotal.setListeArcs(grapheDesLiens.getListeArcs());
     groupeTotal.setListeNoeuds(grapheDesLiens.getListeNoeuds());
-    List<IOrientableSurface> listRef = new ArrayList<IOrientableSurface>(popRef.size());
+    List<IOrientableSurface> listRef = new ArrayList<>(popRef.size());
     for (IFeature f : popRef) {
       listRef.add((IOrientableSurface) f.getGeom());
     }
-    List<IOrientableSurface> listComp = new ArrayList<IOrientableSurface>(popComp.size());
+    List<IOrientableSurface> listComp = new ArrayList<>(popComp.size());
     for (IFeature f : popComp) {
       listComp.add((IOrientableSurface) f.getGeom());
     }
@@ -316,10 +307,10 @@ public abstract class AppariementSurfaces {
       }
       // pour les groupes n-m, on va essayer d'enlever des arcs
       // mais on garde à coup sûr les liens avec suffisament de recouvremnt
-      List<Arc> arcsEnlevables = new ArrayList<Arc>(groupeConnexe.getListeArcs());
-      List<Arc> arcsNonEnlevables = new ArrayList<Arc>();
-      Set<IOrientableSurface> geomRef = new HashSet<IOrientableSurface>();
-      Set<IOrientableSurface> geomComp = new HashSet<IOrientableSurface>();
+      List<Arc> arcsEnlevables = new ArrayList<>(groupeConnexe.getListeArcs());
+      List<Arc> arcsNonEnlevables = new ArrayList<>();
+      Set<IOrientableSurface> geomRef = new HashSet<>();
+      Set<IOrientableSurface> geomComp = new HashSet<>();
       for (Arc arc : arcsEnlevables) {
         Lien lienArc = (Lien) arc.getCorrespondant(0);
         if (lienArc.getEvaluation() > param.pourcentage_intersection_sur) {
@@ -333,9 +324,9 @@ public abstract class AppariementSurfaces {
         }
       }
       if (AppariementSurfaces.LOGGER.isDebugEnabled()) {
-        IMultiSurface<IOrientableSurface> aggrRef = new GM_MultiSurface<IOrientableSurface>();
+        IMultiSurface<IOrientableSurface> aggrRef = new GM_MultiSurface<>();
         aggrRef.addAll(geomRef);
-        IMultiSurface<IOrientableSurface> aggrComp = new GM_MultiSurface<IOrientableSurface>();
+        IMultiSurface<IOrientableSurface> aggrComp = new GM_MultiSurface<>();
         aggrComp.addAll(geomComp);
         AppariementSurfaces.LOGGER
             .debug("Ref = " + aggrRef + " " + new Time(System.currentTimeMillis())); //$NON-NLS-1$
@@ -352,14 +343,14 @@ public abstract class AppariementSurfaces {
         AppariementSurfaces.LOGGER
             .debug("Combinaisons de " + arcsEnlevables.size() + " arcs sur " + groupeConnexe.getListeArcs().size() + " " + new Time(System.currentTimeMillis())); //$NON-NLS-1$
       }
-      List<List<Arc>> combinaisons = Ensemble.combinaisons(new ArrayList<Arc>(arcsEnlevables));
+      List<List<Arc>> combinaisons = Ensemble.combinaisons(new ArrayList<>(arcsEnlevables));
       if (AppariementSurfaces.LOGGER.isDebugEnabled()) {
         AppariementSurfaces.LOGGER.debug(combinaisons.size()
             + " combinaisons trouvées " + new Time(System.currentTimeMillis())); //$NON-NLS-1$
       }
       double distSurfMin = 2; // cas de distance surfacique à minimiser
       double distExacMax = 0; // cas de completude / exactitude à maximiser
-      List<Arc> arcsDuGroupeEnlevesFinal = new ArrayList<Arc>();
+      List<Arc> arcsDuGroupeEnlevesFinal = new ArrayList<>();
       int comb = 0;
       long start = System.currentTimeMillis();
       for (List<Arc> arcsDuGroupeEnleves : combinaisons) { // boucle sur les combinaisons possibles
@@ -432,7 +423,7 @@ public abstract class AppariementSurfaces {
           lienGroupe.addObjetComp(feat);
         }
         // nettoyage de la carteTopo créée
-        noeud.setCorrespondants(new ArrayList<IFeature>(0));
+        noeud.setCorrespondants(new ArrayList<>(0));
       }
       lienGroupe.setArcs(groupeConnexe.getListeArcs());
     }
@@ -447,9 +438,12 @@ public abstract class AppariementSurfaces {
    * MESURE NON SATISFAISANTE POUR LIENS N-M : moyenne entre parties connexes
    * <p>
    * A REVOIR
-   * @param store 
-   * @param storeComp 
+   * @param groupe
+   * @param popRef
+   * @param popComp
+   * @param param
    */
+  @SuppressWarnings("unchecked")
   private static double mesureEvaluationGroupe(Groupe groupe, IFeatureCollection<?> popRef,
       IFeatureCollection<?> popComp, ParametresAppSurfaces param) {
     /*
@@ -502,8 +496,8 @@ public abstract class AppariementSurfaces {
       }
       // IMultiSurface<IOrientableSurface> geomRef = new GM_MultiSurface<IOrientableSurface>();
       // IMultiSurface<IOrientableSurface> geomComp = new GM_MultiSurface<IOrientableSurface>();
-      List<IOrientableSurface> listRef = new ArrayList<IOrientableSurface>();
-      List<IOrientableSurface> listComp = new ArrayList<IOrientableSurface>();
+      List<IOrientableSurface> listRef = new ArrayList<>();
+      List<IOrientableSurface> listComp = new ArrayList<>();
       for (Noeud noeud : groupeConnnexe.getListeNoeuds()) {
         IFeature feat = noeud.getCorrespondant(0);
         // if ( feat.getPopulation()==popRef ) geomRef.add(feat.getGeom());
@@ -517,8 +511,8 @@ public abstract class AppariementSurfaces {
       }
       IGeometry unionRef = JtsAlgorithms.union(listRef);
       IGeometry unionComp = JtsAlgorithms.union(listComp);
-      IMultiSurface<IOrientableSurface> geomRef = new GM_MultiSurface<IOrientableSurface>();
-      IMultiSurface<IOrientableSurface> geomComp = new GM_MultiSurface<IOrientableSurface>();
+      IMultiSurface<IOrientableSurface> geomRef = new GM_MultiSurface<>();
+      IMultiSurface<IOrientableSurface> geomComp = new GM_MultiSurface<>();
       if (unionRef instanceof IMultiSurface<?>) {
         geomRef = (IMultiSurface<IOrientableSurface>) unionRef;
       } else {
@@ -551,7 +545,7 @@ public abstract class AppariementSurfaces {
    */
   public static void ajoutPetitesSurfaces(EnsembleDeLiens liens, IFeatureCollection<?> popRef,
       IFeatureCollection<?> popComp, ParametresAppSurfaces param) {
-    Set<IFeature> objetsRefLies = new HashSet<IFeature>();
+    Set<IFeature> objetsRefLies = new HashSet<>();
     if (!popRef.hasSpatialIndex()) {
       if (AppariementSurfaces.LOGGER.isDebugEnabled()) {
         AppariementSurfaces.LOGGER
@@ -667,7 +661,7 @@ public abstract class AppariementSurfaces {
       if (persistant) {
         DataSet.db.makePersistent(lien);
       }
-      GM_Aggregate<IGeometry> geomLien = new GM_Aggregate<IGeometry>();
+      GM_Aggregate<IGeometry> geomLien = new GM_Aggregate<>();
       lien.setGeom(geomLien);
       for (Arc arc : lien.getArcs()) {
         Lien l = (Lien) arc.getCorrespondant(0);
@@ -738,14 +732,14 @@ public abstract class AppariementSurfaces {
     for (Lien feature : liens) {
       for (Arc edge : feature.getArcs()) {
         Lien l = (Lien) edge.getCorrespondant(0);
-        List<Object> liste = new ArrayList<Object>(5);
+        List<Object> liste = new ArrayList<>(5);
         IFeature source = l.getObjetsRef().get(0);
         IFeature target = l.getObjetsComp().get(0);
         IDirectPosition sourcePosition = source.getGeom().centroid();
         IDirectPosition targetPosition = target.getGeom().centroid();
         liste.add(factory.createLineString(new Coordinate[]{new Coordinate(sourcePosition.getX(), sourcePosition.getY()), new Coordinate(targetPosition.getX(), targetPosition.getY())}));
-        liste.add(new Integer(linkId));
-        liste.add(new Integer(edgeId));
+        liste.add(linkId);
+        liste.add(edgeId);
         liste.add(source.getAttribute("buildingId"));
         liste.add(target.getAttribute("buildingId"));
         liste.add(feature.getEvaluation());

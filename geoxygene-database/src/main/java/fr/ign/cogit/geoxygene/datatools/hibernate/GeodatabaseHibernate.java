@@ -3,34 +3,7 @@
  */
 package fr.ign.cogit.geoxygene.datatools.hibernate;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Serializable;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.internal.SessionImpl;
-import org.hibernate.metadata.ClassMetadata;
-import org.hibernate.persister.entity.AbstractEntityPersister;
-import org.hibernate.spatial.criterion.SpatialRestrictions;
-import org.hibernate.tool.hbm2ddl.SchemaExport;
-import org.hibernate.tool.schema.TargetType;
-
 import com.vividsolutions.jts.geom.GeometryFactory;
-
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
@@ -41,6 +14,21 @@ import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
+import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.Transaction;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.internal.SessionImpl;
+import org.hibernate.metadata.ClassMetadata;
+import org.hibernate.persister.entity.AbstractEntityPersister;
+import org.hibernate.spatial.criterion.SpatialRestrictions;
+import org.hibernate.tool.hbm2ddl.SchemaExport;
+import org.hibernate.tool.schema.TargetType;
+
+import java.io.*;
+import java.sql.Connection;
+import java.util.*;
 
 /**
  * @author Julien Perret
@@ -263,7 +251,7 @@ public class GeodatabaseHibernate implements Geodatabase {
 		// build the output feature list
 		T result = null;
 		try {
-			result = featureListClass.newInstance();
+			result = featureListClass.getConstructor().newInstance();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -350,7 +338,7 @@ public class GeodatabaseHibernate implements Geodatabase {
 
 		T result = null;
 		try {
-			result = featureListClass.newInstance();
+			result = featureListClass.getConstructor().newInstance();
 		} catch (Exception e) {
 			GeodatabaseHibernate.logger
 					.error("Impossible de créer une nouvelle instance de la classe " + featureListClass.getName());

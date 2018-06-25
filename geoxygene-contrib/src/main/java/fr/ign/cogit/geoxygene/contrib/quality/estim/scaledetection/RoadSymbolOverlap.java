@@ -94,10 +94,8 @@ public class RoadSymbolOverlap extends AbstractScaleDetection {
      * les unes des autres dans un réseau routier afin d'évaluer l'empatement
      * maximum possible du jeu de données à partir des arcs entrants ou sortants
      * de ces intersections proches.
-     * @param carteTopo
-     * @param context
      */
-
+    @SuppressWarnings("unchecked")
     public void execute() {
 
         // double tailleBuffer = this.getSymbolSize()*this.getScale()/1000;

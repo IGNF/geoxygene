@@ -569,7 +569,7 @@ public class Arc extends ElementCarteTopo {
     while (true) {
       // ajout de l'arc en cours au cycle...
       arcsDuCycle.add(arcEnCours);
-      orientationsDuCycle.add(new Boolean(sensEnCours));
+      orientationsDuCycle.add(sensEnCours);
 
       if (sensEnCours) { // arc dans le bon sens
         for (i = 0; i < arcEnCours.getGeometrie().sizeControlPoint() - 1; i++) {
@@ -645,7 +645,7 @@ public class Arc extends ElementCarteTopo {
     while (true) {
       // ajout de l'arc en cours au cycle...
       arcsDuCycle.add(arcEnCours);
-      orientationsDuCycle.add(new Boolean(sensEnCours));
+      orientationsDuCycle.add(sensEnCours);
       if (sensEnCours) { // arc dans le bon sens
         for (i = 0; i < arcEnCours.getGeometrie().sizeControlPoint() - 1; i++) {
           contourPoints.add(arcEnCours.getGeometrie().getControlPoint(i));
@@ -706,7 +706,7 @@ public class Arc extends ElementCarteTopo {
     while (true) {
       // ajout de l'arc en cours au cycle...
       arcsDuCycle.add(arcEnCours);
-      orientationsDuCycle.add(new Boolean(sensEnCours));
+      orientationsDuCycle.add(sensEnCours);
       if (sensEnCours) { // arc dans le bon sens
         for (int i = 0; i < arcEnCours.getGeometrie().sizeControlPoint() - 1; i++) {
           contourPoints.add(arcEnCours.getGeometrie().getControlPoint(i));

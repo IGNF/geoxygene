@@ -132,7 +132,7 @@ public class ConclusionIntervals {
       for (String name : startPoint.keySet()) {
         double val = 0.5 * (endPoint.get(name).doubleValue()
             + startPoint.get(name).doubleValue());
-        this.representative.put(name, new Double(val));
+        this.representative.put(name, val);
       }
       this.conclusion = conclusion;
     }
@@ -156,7 +156,7 @@ public class ConclusionIntervals {
       for (String name : startPoint.keySet()) {
         double val = 0.5 * (this.endPoint.get(name).doubleValue()
             + startPoint.get(name).doubleValue());
-        this.representative.put(name, new Double(val));
+        this.representative.put(name, val);
       }
     }
 
@@ -187,7 +187,7 @@ public class ConclusionIntervals {
       for (String nom : this.startPoint.keySet()) {
         double val = 0.5 * (endPoint.get(nom).doubleValue()
             + this.startPoint.get(nom).doubleValue());
-        this.representative.put(nom, new Double(val));
+        this.representative.put(nom, val);
       }
     }
 

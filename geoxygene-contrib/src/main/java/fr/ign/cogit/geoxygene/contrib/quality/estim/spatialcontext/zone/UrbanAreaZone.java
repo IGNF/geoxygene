@@ -77,6 +77,7 @@ public class UrbanAreaZone {
      * Create urban areas from a road network
      * @param jddRoads
      */
+    @SuppressWarnings("unchecked")
     public void createAreasFromRoads(IFeatureCollection<IFeature> jddRoads) {
 
         IFeatureCollection<IFeature> jddLsRoads = new FT_FeatureCollection<IFeature>();
@@ -104,6 +105,7 @@ public class UrbanAreaZone {
         IGeometry union = JtsAlgorithms.union(list);
 
         // retirer les trous
+        assert union != null;
         union = union.buffer(-seuilBuffer);
         union = union.buffer(2 * seuilBuffer);
         union = union.buffer(-2 * seuilBuffer);

@@ -277,19 +277,18 @@ public class ReflectionUtil {
                         try {
                             // Try to create an instance of the object
                             Object o = Class
-                                    .forName(pckgname + "." + classname)
-                                    .newInstance();
+                                    .forName(pckgname + "." + classname).getConstructor().newInstance();
                             if (baseClass.isAssignableFrom(o.getClass())) {
                                 implementations.add(classname);
                             }
-                        } catch (ClassNotFoundException cnfex) {
+                        } catch (Exception cnfex) {
                             System.err.println(cnfex);
-                        } catch (InstantiationException iex) {
-                            // We try to instantiate an interface
-                            // or an object that does not have a
-                            // default constructor
-                        } catch (IllegalAccessException iaex) {
-                            // The class is not public
+//                        } catch (InstantiationException iex) {
+//                            // We try to instantiate an interface
+//                            // or an object that does not have a
+//                            // default constructor
+//                        } catch (IllegalAccessException iaex) {
+//                            // The class is not public
                         }
                     }
                 }

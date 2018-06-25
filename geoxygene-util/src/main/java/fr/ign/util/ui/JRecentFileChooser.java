@@ -27,10 +27,11 @@
 
 package fr.ign.util.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileSystemView;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -38,20 +39,6 @@ import java.awt.event.KeyListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.DefaultListModel;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListCellRenderer;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.filechooser.FileSystemView;
-
-import org.apache.log4j.Logger;
 
 /**
  * @author JeT
@@ -61,8 +48,8 @@ import org.apache.log4j.Logger;
 public class JRecentFileChooser extends JFileChooser implements
         ListSelectionListener, ActionListener {
 
-    private static final Logger logger = Logger
-            .getLogger(JRecentFileChooser.class.getName()); // logger
+//    private static final Logger logger = Logger
+//            .getLogger(JRecentFileChooser.class.getName()); // logger
 
     private static final long serialVersionUID = -3866423372204857275L;
     private static final Color selectionBackgroundColor = new Color(0.7f, 0.7f,
@@ -71,10 +58,8 @@ public class JRecentFileChooser extends JFileChooser implements
     private static final Color backgroundColor = Color.white;
     private static final Color validDirectoryForegroundColor = Color.black;
     private static final Color invalidDirectoryForegroundColor = Color.red;
-    private JList recentList = null;
-    private DefaultListModel lm = null; // mutable list model for JList
-
-    private JPanel recentPanel = null;
+    private JList<File> recentList;
+    private DefaultListModel<File> lm; // mutable list model for JList
 
     /**
      * 
@@ -85,8 +70,8 @@ public class JRecentFileChooser extends JFileChooser implements
     }
 
     /**
-     * @param currentDirectory
-     * @param fsv
+     * @param currentDirectory current
+     * @param fsv view
      */
     public JRecentFileChooser(File currentDirectory, FileSystemView fsv) {
         super(currentDirectory, fsv);
@@ -94,7 +79,7 @@ public class JRecentFileChooser extends JFileChooser implements
     }
 
     /**
-     * @param currentDirectory
+     * @param currentDirectory current
      */
     public JRecentFileChooser(File currentDirectory) {
         super(currentDirectory);
@@ -102,7 +87,7 @@ public class JRecentFileChooser extends JFileChooser implements
     }
 
     /**
-     * @param fsv
+     * @param fsv view
      */
     public JRecentFileChooser(FileSystemView fsv) {
         super(fsv);
@@ -110,8 +95,8 @@ public class JRecentFileChooser extends JFileChooser implements
     }
 
     /**
-     * @param currentDirectoryPath
-     * @param fsv
+     * @param currentDirectoryPath current
+     * @param fsv view
      */
     public JRecentFileChooser(String currentDirectoryPath, FileSystemView fsv) {
         super(currentDirectoryPath, fsv);
@@ -119,7 +104,7 @@ public class JRecentFileChooser extends JFileChooser implements
     }
 
     /**
-     * @param currentDirectoryPath
+     * @param currentDirectoryPath current
      */
     public JRecentFileChooser(String currentDirectoryPath) {
         super(currentDirectoryPath);
@@ -138,10 +123,8 @@ public class JRecentFileChooser extends JFileChooser implements
      * @return the list of recent directories
      */
     public List<String> getRecentDirectories() {
-        ArrayList<String> recents = new ArrayList<String>();
-        for (int n = 0; n < this.lm.getSize(); n++) {
-            recents.add(((File) this.lm.getElementAt(n)).getAbsolutePath());
-        }
+        List<String> recents = new ArrayList<>();
+        for (int n = 0; n < this.lm.getSize(); n++) recents.add(this.lm.getElementAt(n).getAbsolutePath());
         return recents;
     }
 
@@ -150,19 +133,14 @@ public class JRecentFileChooser extends JFileChooser implements
      */
     public void setRecentDirectories(List<File> directories) {
         this.lm.removeAllElements();
-        ArrayList<File> recents = new ArrayList<File>();
-        for (int n = 0; n < directories.size(); n++) {
-            this.lm.addElement(directories.get(n));
-        }
+        for (File directory : directories) this.lm.addElement(directory);
     }
 
     /**
      * add a directory to the list of recent directories
      */
     public void addRecentDirectories(File directory) {
-        if (!this.lm.contains(directory)) {
-            this.lm.addElement(directory);
-        }
+        if (!this.lm.contains(directory)) this.lm.addElement(directory);
     }
 
     /**
@@ -173,11 +151,11 @@ public class JRecentFileChooser extends JFileChooser implements
     }
 
     private void initializeGUI() {
-        this.recentPanel = new JPanel(new BorderLayout());
+        JPanel recentPanel = new JPanel(new BorderLayout());
         // this.recentPanel.setBorder(BorderFactory
         // .createBevelBorder(BevelBorder.LOWERED));
-        this.lm = new DefaultListModel();
-        this.recentList = new JList(this.lm);
+        this.lm = new DefaultListModel<>();
+        this.recentList = new JList<>(this.lm);
         this.recentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         this.recentList.setCellRenderer(new CellRendererFile());
         this.recentList.addKeyListener(new KeyListener() {
@@ -202,16 +180,16 @@ public class JRecentFileChooser extends JFileChooser implements
 
             }
         });
-        this.recentPanel.add(new JScrollPane(this.recentList),
+        recentPanel.add(new JScrollPane(this.recentList),
                 BorderLayout.CENTER);
-        this.recentPanel.add(new JLabel("previous"), BorderLayout.NORTH);
-        this.setAccessory(this.recentPanel);
+        recentPanel.add(new JLabel("previous"), BorderLayout.NORTH);
+        this.setAccessory(recentPanel);
         this.recentList.addListSelectionListener(this);
         this.addActionListener(this);
-        this.recentPanel.setPreferredSize(new Dimension(200, 0));
+        recentPanel.setPreferredSize(new Dimension(200, 0));
     }
 
-    private static class CellRendererFile implements ListCellRenderer {
+    private static class CellRendererFile implements ListCellRenderer<File> {
 
         private final JLabel label = new JLabel();
 
@@ -224,9 +202,8 @@ public class JRecentFileChooser extends JFileChooser implements
         }
 
         @Override
-        public Component getListCellRendererComponent(JList list, Object value,
+        public Component getListCellRendererComponent(JList<? extends File> list, File file,
                 int index, boolean isSelected, boolean cellHasFocus) {
-            File file = (File) value;
             if (file == null) {
                 this.label.setText("null");
                 return this.label;
@@ -253,7 +230,7 @@ public class JRecentFileChooser extends JFileChooser implements
 
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        File selectedRecent = (File) this.recentList.getSelectedValue();
+        File selectedRecent = this.recentList.getSelectedValue();
         this.setCurrentDirectory(selectedRecent);
     }
 

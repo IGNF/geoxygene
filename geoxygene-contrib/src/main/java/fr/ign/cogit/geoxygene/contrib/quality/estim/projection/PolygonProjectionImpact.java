@@ -38,6 +38,7 @@ public class PolygonProjectionImpact extends AbstractProjectionImpact {
     /**
      * Execute projection error estimation for polygons
      */
+    @SuppressWarnings("unchecked")
     public void execute() {
 
         IFeatureCollection<IFeature> jddIn = this.getJddAEvaluer();
