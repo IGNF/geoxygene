@@ -36,7 +36,7 @@ import fr.ign.cogit.geoxygene.sig3d.util.MathConstant;
 
 public class CG_StyleGenerator {
 
-	public static boolean LOAD_TEXTURE = false;
+	public static boolean LOAD_TEXTURE = true;
 
 	public static List<CG_X3DMaterial> lMaterial = new ArrayList<CG_X3DMaterial>();
 	public static List<Appearance> lAppearance = new ArrayList<Appearance>();

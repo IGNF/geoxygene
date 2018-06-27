@@ -3,6 +3,7 @@ package fr.ign.cogit.geoxygene.osm.importexport.metrics;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import fr.ign.cogit.geoxygene.osm.importexport.OSMObject;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMResource;
@@ -18,11 +19,11 @@ public class OSMObjectAssessment {
 		return object.getContributions().size();
 	}
 
-	public static HashSet<Integer> getUIDList(OSMObject object) {
-		HashSet<Integer> uidList = new HashSet<Integer>();
+	public static Set<Integer> getUIDList(OSMObject object) {
+		Set<Integer> uidList = new HashSet<Integer>(); // A set does not allow
+														// duplication
 		for (OSMResource r : object.getContributions())
-			if (!uidList.contains(r.getUid()))
-				uidList.add(r.getUid());
+			uidList.add(r.getUid());
 		return uidList;
 	}
 
@@ -81,6 +82,36 @@ public class OSMObjectAssessment {
 		return nbTagEdition;
 	}
 
+	public static Integer getNbTagAddition(OSMObject object) {
+		int nbTagAddition = 0;
+		List<OSMResource> contributions = object.getContributions();
+		// On ne peut rien dire sur la contribution à la position i = 0
+		for (int i = 1; i < object.getContributions().size(); i++) {
+			if (contributions.get(i - 1).getVersion() == contributions.get(i).getVersion() - 1)
+				// On se place dans le cas où les deux contributions se
+				// succèdent au niveau du numéro de version
+				if (OSMResourceQualityAssessment.isTagCreation(contributions.get(i).getTags(),
+						contributions.get(i - 1).getTags()))
+					nbTagAddition++;
+		}
+		return nbTagAddition;
+	}
+
+	public static Integer getNbTagDelete(OSMObject object) {
+		int nbTagDelete = 0;
+		List<OSMResource> contributions = object.getContributions();
+		// On ne peut rien dire sur la contribution à la position i = 0
+		for (int i = 1; i < object.getContributions().size(); i++) {
+			if (contributions.get(i - 1).getVersion() == contributions.get(i).getVersion() - 1)
+				// On se place dans le cas où les deux contributions se
+				// succèdent au niveau du numéro de version
+				if (OSMResourceQualityAssessment.isTagDelete(contributions.get(i).getTags(),
+						contributions.get(i - 1).getTags()))
+					nbTagDelete++;
+		}
+		return nbTagDelete;
+	}
+
 	/**
 	 * 
 	 * @param object
@@ -114,7 +145,8 @@ public class OSMObjectAssessment {
 	 * @return OSMNode, OSMWay or OSMRelation
 	 */
 	public static String getGeomPrimitiveName(OSMObject object) {
-		return object.getPrimitiveGeomOSM().getClass().getSimpleName();
+		return object.getContributions().get(0).getGeom().getClass().getSimpleName();
+		// return object.getPrimitiveGeomOSM().getClass().getSimpleName();
 	}
 
 	/**

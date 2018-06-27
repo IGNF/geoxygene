@@ -400,8 +400,8 @@ public class EnsembleDeLiens extends Population<Lien> {
       for (k = j; k < liens.size(); k++) {
         if (objetTest.equals(objetsComp.get(k)) && j != k) {
           liens.get(j).addObjetRef(objetsRef.get(k));
-          if (!remove.contains(new Integer(k))) {
-            remove.add(new Integer(k));
+          if (!remove.contains(k)) {
+            remove.add(k);
           }
         }
       }

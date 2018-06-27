@@ -8,7 +8,7 @@ public class OSMObject {
 	// private List<OSMFeature> contributions;
 	private List<OSMResource> contributions;
 	private long osmId;
-	public List<List<Long>> wayComposition;
+	public List<List<Long>> wayComposition = new ArrayList<List<Long>>();
 	private String primitiveGeomOSM;
 
 	public long getOsmId() {

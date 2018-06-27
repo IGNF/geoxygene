@@ -26,7 +26,21 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.0.2</version>
+				<configuration>
+					<excludes>
+						<exclude>**/demo3d/**</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			
+		</plugins>
+	</build>
 
 	<profiles>
 		<!-- Tests under Linux 32bits -->

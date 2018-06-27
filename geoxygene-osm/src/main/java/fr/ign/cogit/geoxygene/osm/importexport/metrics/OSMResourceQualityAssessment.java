@@ -356,13 +356,18 @@ public class OSMResourceQualityAssessment {
 	 * @return true if the values of the former tags have been changed
 	 */
 	public static boolean isTagModification(OSMResource resource, OSMResource former) {
-		Iterator<String> it = resource.getTags().keySet().iterator();
-		while (it.hasNext()) {
-			String key = it.next();
-			if (!former.getTags().get(key).equals(resource.getTags().get(key)))
-				return true;
+		try {
+			Iterator<String> it = resource.getTags().keySet().iterator();
+			while (it.hasNext()) {
+				String key = it.next();
+				if (!former.getTags().get(key).equals(resource.getTags().get(key)))
+					return true;
+			}
+			return false;
+		} catch (NullPointerException e) {
+			return false;
+
 		}
-		return false;
 	}
 
 	/**

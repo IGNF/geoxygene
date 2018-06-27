@@ -386,8 +386,12 @@ public class OSMActivityAreaPlugin implements ProjectFramePlugin, GeOxygeneAppli
 			List<OSMResource> osmContributorResource = null;
 			// Loads contributor's node contributions
 			try {
-				osmContributorResource = ActivityArea.selectNodesByUid(Long.parseLong(txtUid.getText()), bbox,
-						timespan);
+				Double[] bboxArray = new Double[bbox.size()];
+				bboxArray = bbox.toArray(bboxArray);
+				String[] timespanArray = new String[timespan.size()];
+				timespanArray = timespan.toArray(timespanArray);
+				osmContributorResource = ActivityArea.selectNodesByUid(Long.parseLong(txtUid.getText()), bboxArray,
+						timespanArray);
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -399,7 +403,7 @@ public class OSMActivityAreaPlugin implements ProjectFramePlugin, GeOxygeneAppli
 			// Loads contributor's activity area
 			IGeometry actArea = null;
 			try {
-				actArea = ActivityArea.getActivityAreas(osmContributorResource, 1000);
+				actArea = ActivityArea.getActivityAreas(osmContributorResource, 1000, "2154");
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

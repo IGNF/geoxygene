@@ -67,8 +67,8 @@ public final class SliderWithSpinner extends JPanel {
      *            non-null pointer (ownership: callee)
      * @param orientation
      *            orientation of the slider: either
-     *            {@link javax.swing.SwingConstants.VERTICAL} or
-     *            {@link javax.swing.SwingConstants.HORIZONTAL}.
+     *             javax.swing.SwingConstants.VERTICAL or
+     *             javax.swing.SwingConstants.HORIZONTAL.
      * @param drawLabels
      *            Specifies whether to draw labels on the slider. If
      *            <code>true</code>, numeric labels will be put at the minimum
@@ -115,14 +115,6 @@ public final class SliderWithSpinner extends JPanel {
      * 
      * @param model
      *            non-null pointer (ownership: callee)
-     * @param orientation
-     *            orientation of the slider: either
-     *            {@link javax.swing.SwingConstants.VERTICAL} or
-     *            {@link javax.swing.SwingConstants.HORIZONTAL}.
-     * @param drawLabels
-     *            Specifies whether to draw labels on the slider. If
-     *            <code>true</code>, numeric labels will be put at the minimum
-     *            nad the maximum values.
      */
     public SliderWithSpinner(SliderWithSpinnerModel model) {
         this(model, SwingConstants.HORIZONTAL, false);
@@ -171,9 +163,9 @@ public final class SliderWithSpinner extends JPanel {
 
         if (drawLabels) {
             Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
-            labelTable.put(new Integer(model.getMinimum()), new JLabel(
+            labelTable.put(model.getMinimum(), new JLabel(
                     ((Integer) model.getMinimum()).toString()));
-            labelTable.put(new Integer(model.getMaximum()), new JLabel(
+            labelTable.put(model.getMaximum(), new JLabel(
                     ((Integer) model.getMaximum()).toString()));
             slider.setLabelTable(labelTable);
             slider.setPaintLabels(true);
@@ -223,7 +215,7 @@ public final class SliderWithSpinner extends JPanel {
             public void setValue(Object value) {
                 double v = ((Double) value / SliderWithSpinnerModel.this.precision);
                 SliderWithSpinnerModel.this.boundedRangeModel
-                        .setValue(new Integer((int) v));
+                        .setValue((int) v);
             }
 
             @Override

@@ -66,7 +66,7 @@ public class SpatialFilter3D {
 	 */
 	public static IFeatureCollection<IFeature> selectIncluded(IFeatureCollection<IFeature> featIn,
 			IFeatureCollection<IFeature> featCut) {
-		featIn.initSpatialIndex(Tiling.class, false);
+	
 
 		if (featIn == null || featIn.isEmpty()) {
 			return null;
@@ -157,7 +157,7 @@ public class SpatialFilter3D {
 
 		IFeatureCollection<IFeature> featureOut = new FT_FeatureCollection<IFeature>();
 		
-		featIn.initSpatialIndex(Tiling.class, false);
+		
 
 		int nbElem1 = featIn.size();
 

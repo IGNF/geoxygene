@@ -30,7 +30,6 @@ package fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
-
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
@@ -53,9 +52,9 @@ public class LineDensification {
   /**
    * Puts x vertices in the line where x is the length divided by the step
    * parameter. Be careful, this method does not preserve the initial vertices!
-   * @param ls
-   * @param step
-   * @return
+   * @param ls linestring
+   * @param step step
+   * @return densified linestring
    */
   public static LineString densification(LineString ls, double step) {
 
@@ -117,9 +116,7 @@ public class LineDensification {
       ILineString densExt = densification(poly.exteriorLineString(), pas);
       poly_ = new GM_Polygon(densExt);
       for (IRing ring : poly.getInterior()) {
-        ILineString densRing = densification((ILineString) ring.getPrimitive(),
-            pas);
-        poly_.addInterior(new GM_Ring(densRing));
+        poly_.addInterior(new GM_Ring(densification((ILineString) ring.getPrimitive(), pas)));
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -139,9 +136,9 @@ public class LineDensification {
    * The line is densified with at least a vertex every step. When original
    * segments are shorter than step, they are kept as they are. All initial
    * vertices are preserved.
-   * @param ls
-   * @param step
-   * @return
+   * @param ls linestring
+   * @param step step
+   * @return densified linestring
    */
   public static ILineString densification2(ILineString ls, double step) {
     IDirectPositionList pts = new DirectPositionList();
@@ -156,7 +153,7 @@ public class LineDensification {
         continue;
       }
       // arrived here, vertices have to be added
-      int nbAdded = new Double(Math.floor(dist / step)).intValue();
+      int nbAdded = Double.valueOf(Math.floor(dist / step)).intValue();
       for (int j = 0; j < nbAdded; j++) {
         // compute the coordinates of the new point
         double length1 = (j + 1) * step;
@@ -178,8 +175,8 @@ public class LineDensification {
    * The polygon ring is densified with at least a vertex every step. When
    * original segments are shorter than step, they are kept as they are. All
    * initial vertices are preserved.
-   * @param ls
-   * @param step
+   * @param poly polygon
+   * @param pas step
    * @return
    */
   public static IPolygon densification2(IPolygon poly, double pas) {
@@ -202,8 +199,8 @@ public class LineDensification {
    * The geometry is densified with at least a vertex every step. When original
    * segments are shorter than step, they are kept as they are. All initial
    * vertices are preserved.
-   * @param ls
-   * @param step
+   * @param geom geometry
+   * @param pas step
    * @return
    */
   public static IGeometry densification2(IGeometry geom, double pas) {

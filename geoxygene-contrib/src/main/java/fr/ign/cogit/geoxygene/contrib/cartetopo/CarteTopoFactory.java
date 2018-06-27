@@ -72,7 +72,7 @@ public class CarteTopoFactory {
    * creations.
    * <p>
    * Création d'une CarteTopo à partir d'une FT_FeatureCollection et d'un nom.
-   * @see #newCarteTopo(String, IFeatureCollection, double)
+   * @see #newCarteTopo(String, IFeatureCollection, double, boolean)
    * @param name name of the topo map
    * @param collection collection de features
    * @return a topological map
@@ -86,7 +86,7 @@ public class CarteTopoFactory {
    * used for node creation as well as for topology and planar map creations.
    * <p>
    * Création d'une CarteTopo à partir d'une FT_FeatureCollection.
-   * @see #newCarteTopo(String, IFeatureCollection, double)
+   * @see #newCarteTopo(String, IFeatureCollection, double, boolean)
    * @param collection collection de features
    * @return a topological map
    */

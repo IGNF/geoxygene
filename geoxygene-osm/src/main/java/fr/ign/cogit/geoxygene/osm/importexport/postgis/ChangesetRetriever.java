@@ -132,8 +132,9 @@ public class ChangesetRetriever {
 	public String getChangesetValues(Long changesetID) {
 		StringBuffer value = new StringBuffer();
 		try {
-			String urlAPI = "http://api.openstreetmap.org/api/0.6/changeset/" + changesetID
+			String urlAPI = "https://api.openstreetmap.org/api/0.6/changeset/" + changesetID
 					+ "?include_discussion=true";
+			System.out.println(urlAPI);
 			Document xml = SQLDBPreAnonymization.getDataFromAPI(urlAPI);
 			Node osm = xml.getFirstChild();
 			Element changeset = (Element) osm.getChildNodes().item(1);
@@ -352,10 +353,6 @@ public class ChangesetRetriever {
 						lat = osmObj.getAttribute("lat");
 
 					}
-
-					// System.out.println(primitive + " " + id + " " + version +
-					// " " + timestamp);
-
 					// Fetch tags and members
 					NodeList tagsAndMembers = osmObj.getChildNodes();
 					// System.out.println(tagsAndMembers.getLength());
@@ -417,7 +414,7 @@ public class ChangesetRetriever {
 	 */
 	public void updateChangeSetTable(String tablename) {
 		try {
-			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			// ResultSet r = s.executeQuery("SELECT DISTINCT changeset FROM " +
 			// tablename);
 
@@ -439,7 +436,7 @@ public class ChangesetRetriever {
 				// Au bout de 100 valeurs on met à jour la base de données
 				if (values.size() >= 100) {
 					insertIntoChangeset(values);
-					values.clear();
+					values = new HashSet<String>();
 				}
 
 			}

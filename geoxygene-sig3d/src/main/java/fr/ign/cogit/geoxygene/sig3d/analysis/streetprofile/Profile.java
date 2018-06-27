@@ -794,32 +794,78 @@ public class Profile {
 	
 	public List<Double> getHeightAlongRoad(SIDE side, int begin, int end) {
 		
-		
-		List<Double> heights = new ArrayList<>();
+
 
 		if (pproj == null) {
 			logger.error("Erreur : profile is not generated");
-			return heights;
+			return null;
 		}
-
-		for (int i = begin; i < end; i++) {
-
-			IFeatureCollection<IFeature> iFeatureCollTemp = this.getPointAtXstep(i * this.getXYStep(), side);
-
-			heights.add(iFeatureCollTemp.size() * this.getZStep());
-
+		
+		
+		if(side == SIDE.UPSIDE) {
+			if(lHeightUpper == null) {
+				fillListHeight();
+				System.out.println("size " + lHeightUpper.size() + " end " + end);
+			}
+			
+			return lHeightUpper.subList(begin, end);
+			
+			
+		}else if(side == SIDE.DOWNSIDE) {
+			if(lHeightDowner == null) {
+				fillListHeight();
+			}
+			
+			return lHeightDowner.subList(begin, end);
+			
 		}
+		
 
-		return heights;
+
+		return null;
 		
 		
 	}
 
 	public List<Double> getHeightAlongRoad(SIDE side) {
+		
 		return getHeightAlongRoad(side, 0, nbP);
 
 	}
 	
+	private  List<Double> lHeightUpper = null;
+	private  List<Double> lHeightDowner = null;
+	
+	private  void fillListHeight() {
+		
+		
+		lHeightUpper = new ArrayList<>();
+		lHeightDowner = new ArrayList<>();
+		
+		int nbPoints = this.getNumberOfPoints();
+		for(int i =0; i  < nbPoints; i++) {
+			
+			IFeatureCollection<IFeature> iFeatureCollTemp = this.getPointAtXstep(i * this.getXYStep(), SIDE.UPSIDE);
+
+			lHeightUpper.add(iFeatureCollTemp.size() * this.getZStep());
+			
+			
+			
+			
+			
+			
+			iFeatureCollTemp = this.getPointAtXstep(i * this.getXYStep(), SIDE.DOWNSIDE);
+
+			lHeightDowner.add(iFeatureCollTemp.size() * this.getZStep());
+			
+			
+			
+		}
+		
+		
+		
+		
+	}
 	
 	
 	

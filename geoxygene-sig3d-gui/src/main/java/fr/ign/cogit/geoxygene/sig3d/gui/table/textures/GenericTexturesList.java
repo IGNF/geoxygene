@@ -38,6 +38,7 @@ public class GenericTexturesList extends JCheckBox {
   /**
    * JCheckBox permettant de représenter les textures chargées dans le manager
    */
+  @SuppressWarnings("unchecked")
   public GenericTexturesList() {
     super();
     this.model = new GenericTexturesListModel();

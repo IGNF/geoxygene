@@ -149,7 +149,7 @@ public class Calculation3D {
 
       tet.tetraedriseWithConstraint(true);
 
-      List<IOrientableSurface> lf = tet.getTriangles();
+      List<ITriangle> lf = tet.getTriangles();
 
       int nbTriangle = lf.size();
 
@@ -241,7 +241,7 @@ public class Calculation3D {
 
       tet.tetraedriseWithConstraint(true);
 
-      List<IOrientableSurface> lf = tet.getTriangles();
+      List<ITriangle> lf = tet.getTriangles();
 
       int nbTriangle = lf.size();
 

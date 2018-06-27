@@ -1,28 +1,13 @@
 package fr.ign.cogit.geoxygene.distance;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
-
-import javax.swing.JFrame;
-
-import org.math.plot.Plot2DPanel;
-
 import com.vividsolutions.jts.algorithm.CGAlgorithms;
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Polygon;
-
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
-import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
-import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
+
+import java.util.*;
 
 /**
  * Implementation of
@@ -43,8 +28,8 @@ public class PolygonTurningSimilarity {
   /**
    * Compute floor(log_base2(x))
    */
-  static int ilog2(int x) {
-    return new Double(Math.floor(Math.log10(x) / Math.log10(2.0))).intValue();
+  private static int ilog2(int x) {
+    return Double.valueOf(Math.floor(Math.log10(x) / Math.log10(2.0))).intValue();
   }
 
   /**
@@ -69,7 +54,7 @@ public class PolygonTurningSimilarity {
    * @param p a polygon
    * @return a turning rep representing the given polygon
    */
-  public static TurnRep poly_to_turn_rep(Polygon p) {
+  private static TurnRep poly_to_turn_rep(Polygon p) {
     TurnRep t = new TurnRep();
 
     LineString ring = p.getExteriorRing();
@@ -135,7 +120,7 @@ public class PolygonTurningSimilarity {
    * @param g turning rep of the second polygon
    * @return Initialized values
    */
-  public static InitVals init_vals(TurnRep f, TurnRep g) {
+  private static InitVals init_vals(TurnRep f, TurnRep g) {
     int i, n; /* loop params */
     int fi, gi; /* disconts that bound current strip */
     double ht0, slope; /* per paper */
@@ -234,7 +219,7 @@ public class PolygonTurningSimilarity {
    * @param g turning rep of the second polygon
    * @return number of events
    */
-  public static int reinit_interval(TurnRep f, TurnRep g) {
+  private static int reinit_interval(TurnRep f, TurnRep g) {
     return f.leg.size() * g.leg.size()
         / (Math.min(f.leg.size(), g.leg.size()) * ilog2(g.leg.size()));
   }
@@ -247,22 +232,16 @@ public class PolygonTurningSimilarity {
    * then inserts the event due to the *next* f discontinuity associated with
    * the same g discontinuity (unless this event would have t>1).
    */
-  private Queue<Event> event = new PriorityQueue<Event>(1000,
-      new Comparator<Event>() {
-        @Override
-        public int compare(Event o1, Event o2) {
-          return Double.compare(o1.t, o2.t);
-        }
-      });
+  private Queue<Event> event = new PriorityQueue<>(1000, Comparator.comparingDouble(o -> o.t));
 
   /**
    * Insert a new event in the heap.
    * @param f turning rep of the first polygon
    * @param g turning rep of the second polygon
-   * @param fi
-   * @param gi
+   * @param fi see paper
+   * @param gi see paper
    */
-  void add_event(TurnRep f, TurnRep g, int fi, int gi) {
+  private void add_event(TurnRep f, TurnRep g, int fi, int gi) {
     double t = f.s(fi) - g.s(gi);
     if (t > 1) {
       return;
@@ -274,9 +253,8 @@ public class PolygonTurningSimilarity {
    * Remove the event of min t from the heap and return it.
    * @return the event of min t from the heap
    */
-  Event next_event() {
-    Event next = this.event.poll();
-    return next;
+  private Event next_event() {
+    return this.event.poll();
   }
 
   /**
@@ -293,7 +271,7 @@ public class PolygonTurningSimilarity {
    * @param f turning rep of the first polygon
    * @param g turning rep of the second polygon
    */
-  void init_events(TurnRep f, TurnRep g) {
+  private void init_events(TurnRep f, TurnRep g) {
     int fi, gi;
     this.event.clear();
     /*
@@ -318,16 +296,16 @@ public class PolygonTurningSimilarity {
    * theta* and event associated with the minimum.
    * @param f turning rep of the first polygon
    * @param g turning rep of the second polygon
-   * @param hc0_init
-   * @param slope_init
-   * @param alpha
-   * @param d_update
+   * @param hc0_init see paper
+   * @param slope_init see paper
+   * @param alpha see paper
+   * @param d_update see paper
    * @return a set of result values including the minimum value of the integral
    *         term of the metric, the theta* and the event associated with the
    *         minimum
    */
-  Result h_t0min(TurnRep f, TurnRep g, double hc0_init, double slope_init,
-      double alpha, int d_update) {
+  private Result h_t0min(TurnRep f, TurnRep g, double hc0_init, double slope_init,
+                         double alpha, int d_update) {
     int left_to_update; /* # disconts left until update */
     double metric2, min_metric2; /* d^2 and d^2_min thus far */
     double theta_star, min_theta_star; /* theta* and theta*_min thus far */
@@ -425,7 +403,7 @@ public class PolygonTurningSimilarity {
     Result result = pts.h_t0min(turnRep1, turnRep2, vals.ht0, vals.slope,
         vals.alpha,
         PolygonTurningSimilarity.reinit_interval(turnRep1, turnRep2));
-    double metric = result.h_t0min;
+    double metric = result.getH_t0min();
     return metric < 0 ? 0 : Math.sqrt(metric);
   }
 
@@ -450,7 +428,7 @@ class Leg {
  */
 class TurnRep {
   double total_len;
-  List<Leg> leg = new ArrayList<Leg>();
+  List<Leg> leg = new ArrayList<>();
 
   double len(int i) {
     return this.leg.get(i % this.leg.size()).len;
@@ -467,9 +445,9 @@ class TurnRep {
 
   @Override
   public String toString() {
-    String result = "TurnRep " + this.total_len + ", (";
+    StringBuilder result = new StringBuilder("TurnRep " + this.total_len + ", (");
     for (Leg l : this.leg) {
-      result += l + ", ";
+      result.append(l).append(", ");
     }
     return result.substring(0, result.length() - 2) + ")";
   }
@@ -482,7 +460,7 @@ class Event {
   double t; /* "f shift" parameter of the event */
   int fi, gi; /* pointers into turn reps f and g */
 
-  public Event(double t_, int fi_, int gi_) {
+  Event(double t_, int fi_, int gi_) {
     this.t = t_;
     this.fi = fi_;
     this.gi = gi_;
@@ -495,7 +473,7 @@ class Event {
 }
 
 class InitVals {
-  public InitVals(double ht0_, double slope_, double alpha_) {
+  InitVals(double ht0_, double slope_, double alpha_) {
     this.ht0 = ht0_;
     this.slope = slope_;
     this.alpha = alpha_;
@@ -516,9 +494,30 @@ class Result {
     this.slope_err = slope_err1;
   }
 
-  double h_t0min;
-  double theta_star;
-  Event e;
-  double hc0_err;
-  double slope_err;
+  public double getH_t0min() {
+    return h_t0min;
+  }
+
+  private double h_t0min;
+
+  public double getTheta_star() {
+    return theta_star;
+  }
+
+  public Event getE() {
+    return e;
+  }
+
+  public double getHc0_err() {
+    return hc0_err;
+  }
+
+  public double getSlope_err() {
+    return slope_err;
+  }
+
+  private double theta_star;
+  private Event e;
+  private double hc0_err;
+  private double slope_err;
 }

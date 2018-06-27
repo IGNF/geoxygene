@@ -2169,7 +2169,7 @@ public class CarteTopo extends DataSet {
         pilePoints.add(premierPoint);
         pileListesPoints.add(listePoints);
         pileArcs.add(arcCourant);
-        pileOrientations.add(new Boolean(sensEnCours));
+        pileOrientations.add(sensEnCours);
         arcOriente = aGauche ? arcCourant.arcPrecedentFin()
             : arcCourant.arcSuivantFin();
       } else { // arc dans le sens inverse
@@ -2229,7 +2229,7 @@ public class CarteTopo extends DataSet {
         pilePoints.add(premierPoint);
         pileListesPoints.add(listePoints);
         pileArcs.add(arcCourant);
-        pileOrientations.add(new Boolean(sensEnCours));
+        pileOrientations.add(sensEnCours);
         arcOriente = aGauche ? arcCourant.arcPrecedentDebut()
             : arcCourant.arcSuivantDebut();
       }
@@ -2950,7 +2950,7 @@ public class CarteTopo extends DataSet {
         for (ILineString l : lines) {
           CarteTopo.logger.debug(l);
           try {
-            Arc edge = this.getPopArcs().getClasse().newInstance();// new
+            Arc edge = this.getPopArcs().getClasse().getConstructor().newInstance();// new
                                                                    // Arc();//
             // this.getPopArcs().nouvelElement(l);
             int id = Population.getIdNouvelElement() + 1;
@@ -2970,9 +2970,7 @@ public class CarteTopo extends DataSet {
             edge.setNoeudFin(nodes.iterator().next());
             edge.setCorrespondants(currentEdge.getCorrespondants());
             edgesToAdd.add(edge);
-          } catch (InstantiationException e) {
-            e.printStackTrace();
-          } catch (IllegalAccessException e) {
+          } catch (Exception e) {
             e.printStackTrace();
           }
         }
@@ -3010,7 +3008,7 @@ public class CarteTopo extends DataSet {
               .distance(currentPoint.toGM_Point()) > distance
               && edge.getNoeudFin().getGeometrie()
                   .distance(currentPoint.toGM_Point()) > distance) {
-            points.add(new Integer(i));
+            points.add(i);
             break;
           }
         }

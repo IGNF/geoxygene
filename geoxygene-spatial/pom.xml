@@ -49,7 +49,8 @@
 		</dependency>
 		<dependency>
 			<groupId>com.vividsolutions</groupId>
-			<artifactId>jts</artifactId>
+			<artifactId>jts-core</artifactId>
+			<version>${jts.version}</version>
 		</dependency>
         <!--  igetdb.sourceforge pas dispo, je mets celui dispo sur maven central -->
 		<!-- <dependency> -->

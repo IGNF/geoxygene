@@ -86,7 +86,7 @@ public class GM_OrientableSurface extends GM_OrientablePrimitive implements
   @Override
   public IOrientableSurface getNegative() {
     try {
-      IOrientableSurface clone = this.getClass().newInstance();
+      IOrientableSurface clone = this.getClass().getConstructor().newInstance();
       int n = this.getPrimitive().sizePatch();
       if (n > 0) {
         for (int i = 0; i < n; i++) {
@@ -95,9 +95,7 @@ public class GM_OrientableSurface extends GM_OrientablePrimitive implements
         }
       }
       return clone;
-    } catch (InstantiationException e) {
-      e.printStackTrace();
-    } catch (IllegalAccessException e) {
+    } catch (Exception e) {
       e.printStackTrace();
     }
     return null;
