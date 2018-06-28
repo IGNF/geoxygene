@@ -130,6 +130,65 @@ public class LoadFromPostGIS {
 	}
 
 	/**
+	 * Récupère les coordonnées de limites administratives (Version généralisée
+	 * de getCityBoundary au département, ou au pays)
+	 * 
+	 * @param placeName
+	 *            : nom d'une ville, d'un département, d'un pays, d'un village,
+	 *            etc..
+	 * @param timestamp
+	 * @return
+	 * @throws Exception
+	 */
+	public Double[] getBoundary(String placeName, String timestamp, String adminLevel) throws Exception {
+		java.sql.Connection conn;
+		try {
+			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
+			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			String query = "SELECT idrel FROM  relation WHERE tags -> 'boundary' = 'administrative' ANd tags->'admin_level'='"
+					+ adminLevel + "' " + "AND tags-> 'name'='" + placeName + "' AND datemodif <= '" + timestamp
+					+ "' ORDER BY vrel DESC LIMIT 1;";
+			ResultSet r = s.executeQuery(query);
+			// Get relation members
+			Long idrel = null;
+			while (r.next()) {
+				idrel = r.getLong("idrel");
+			}
+			System.out.println("idrel = " + idrel);
+
+			query = "DROP TABLE IF EXISTS enveloppe ;"
+					+ "CREATE TABLE enveloppe (lon_min numeric DEFAULT 180,lat_min numeric DEFAULT 90,lon_max numeric DEFAULT -180,lat_max numeric DEFAULT -90);"
+					+ "INSERT INTO enveloppe VALUES (180, 90, -180 ,-90);";
+			query += "SELECT relation_boundary(" + idrel + ", '" + timestamp + "');"; // run
+																						// first
+																						// pgScript
+																						// "relation_boundary.sql"
+			s.execute(query);
+			query = "SELECT * FROM enveloppe LIMIT 1;";
+			ResultSet r1 = s.executeQuery(query);
+			Double xmin = null, ymin = null, xmax = null, ymax = null;
+			while (r1.next()) {
+				xmin = r1.getDouble("lon_min");
+				ymin = r1.getDouble("lat_min");
+				xmax = r1.getDouble("lon_max");
+				ymax = r1.getDouble("lat_max");
+				System.out.println(xmin);
+				System.out.println(ymin);
+				System.out.println(xmax);
+				System.out.println(ymax);
+			}
+
+			Double[] borders = { xmin, ymin, xmax, ymax };
+			s.close();
+			conn.close();
+			return borders;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
 	 * Creates a new set of OSMResource data which contain at least one of the
 	 * input key tags
 	 * 
