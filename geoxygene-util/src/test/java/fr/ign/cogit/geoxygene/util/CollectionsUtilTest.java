@@ -46,4 +46,37 @@ public class CollectionsUtilTest {
     Assert.assertTrue(CollectionsUtil.getEditDistance2Lists(list1, list5) == 2);
   }
 
+  @Test
+  public void testGetJaroWinklerDistance2Lists() {
+    List<Integer> list1 = new ArrayList<Integer>();
+    list1.add(1);
+    list1.add(2);
+    list1.add(3);
+    List<Integer> list2 = new ArrayList<Integer>();
+    list2.add(1);
+    list2.add(2);
+    list2.add(3);
+    List<Integer> list3 = new ArrayList<Integer>();
+    list3.add(2);
+    list3.add(2);
+    list3.add(3);
+    List<Integer> list4 = new ArrayList<Integer>();
+    list4.add(2);
+    list4.add(1);
+    list4.add(3);
+    List<Integer> list5 = new ArrayList<Integer>();
+    list5.add(2);
+    list5.add(1);
+    list5.add(2);
+
+    Assert.assertTrue(
+        CollectionsUtil.getJaroWinklerDistance2Lists(list1, list2, 0.1) == 0.0);
+    Assert.assertTrue(CollectionsUtil.getJaroWinklerDistance2Lists(list1, list3,
+        0.1) == 0.22222222222222232);
+    Assert.assertTrue(CollectionsUtil.getJaroWinklerDistance2Lists(list1, list4,
+        0.1) == 0.44444444444444453);
+    Assert.assertTrue(
+        CollectionsUtil.getJaroWinklerDistance2Lists(list1, list5, 0.1) == 1.0);
+  }
+
 }
