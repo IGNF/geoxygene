@@ -167,6 +167,10 @@ public class SpatialFilter3D {
 			IGeometry geom = feat1.getGeom();
 
 			IDirectPositionList dpl = geom.coord();
+			
+			if(dpl.isEmpty()) {
+				continue;
+			}
 
 			Iterator<IFeature> itF = featCut.select(dpl.get(0), 0.1).iterator();
 
