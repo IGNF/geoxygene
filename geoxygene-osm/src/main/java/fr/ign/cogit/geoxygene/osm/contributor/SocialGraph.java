@@ -117,18 +117,16 @@ public class SocialGraph<V, E> {
 		}
 		// Add edges
 		for (OSMObject osmObject : myOSMObjects.values()) {
-			// On se restreint à la collaboration sur les noeuds seulement pour
-			// l'instant
-			if (osmObject.getContributions().get(0).getGeom().getClass().getSimpleName().equals("OSMWay"))
-				continue;
 			int lastContributionRange = osmObject.getContributions().size() - 1;
 			for (int i = lastContributionRange; i > 0; i--) {
+				if (!osmObject.getContributions().get(i).isVisible())
+					continue; // On ne s'intéresse pas à la suppression
+				// N.B.: en revanche on prend en compte le cas de revert
+				// d'objets supprimés en objets visibles
 				Long nodeIni = (long) osmObject.getContributions().get(i).getUid();
 				Long nodeFin = (long) osmObject.getContributions().get(i - 1).getUid();
 				boolean egalite = nodeIni.equals(nodeFin);
-				// if (egalite)
-				// continue;
-				// else {
+
 				if (!egalite) {
 					if (!g.containsEdge(nodeIni, nodeFin)) {
 						// g.addEdge(nodeIni, nodeFin);

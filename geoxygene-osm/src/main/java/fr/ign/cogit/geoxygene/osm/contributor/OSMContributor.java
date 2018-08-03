@@ -1,7 +1,9 @@
 package fr.ign.cogit.geoxygene.osm.contributor;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -23,6 +25,8 @@ import fr.ign.cogit.geoxygene.contrib.graphe.IGraphLinkableFeature;
 import fr.ign.cogit.geoxygene.contrib.graphe.INode;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMResource;
+import fr.ign.cogit.geoxygene.osm.importexport.metrics.OSMResourceComparator;
+import fr.ign.cogit.geoxygene.osm.importexport.metrics.OSMResourceQualityAssessment;
 import fr.ign.cogit.geoxygene.osm.schema.OSMDefaultFeature;
 import fr.ign.cogit.geoxygene.osm.schema.OSMFeature;
 
@@ -444,6 +448,46 @@ public class OSMContributor implements INode {
 
 	public void setTemporalActivityPerWeek(Boolean[] temporalActivityPerWeek) {
 		this.temporalActivityPerWeek = temporalActivityPerWeek;
+	}
+
+	@SuppressWarnings("finally")
+	public int getNbWeeksActivity() {
+		int nbWeeks = 0;
+		// Les resources doivent être dans l'ordre chornologiques
+		List<OSMResource> resourceList = new ArrayList<OSMResource>(this.resource);
+		Collections.sort(resourceList, new OSMResourceComparator());
+		Date firstContributionDate = (resourceList.get(0).getDate());
+		Date lastContributionDate = (resourceList.get(this.resource.size() - 1)).getDate();
+		Calendar c1 = new GregorianCalendar();
+		Calendar c2 = new GregorianCalendar();
+
+		c1.setTime(firstContributionDate);
+		c2.setTime(lastContributionDate);
+
+		for (int year = c1.get(Calendar.YEAR); year <= c2.get(Calendar.YEAR); year++) {
+			Set<OSMResource> resourceByYear = new HashSet<OSMResource>();
+			for (OSMResource r : this.resource) {
+				Date contributionDate = r.getDate();
+				Calendar c = new GregorianCalendar();
+				c.setTime(contributionDate);
+				if (c.get(Calendar.YEAR) == year)
+					resourceByYear.add(r);
+			}
+			nbWeeks += OSMResourceQualityAssessment.countWeeks(resourceByYear);
+		}
+
+		try {
+			System.out.println(1 / nbWeeks);
+		} catch (ArithmeticException e) {
+			System.out.println("Division par zero : " + e.getMessage());
+			System.out.println("*** Date de chaque OSMResource ***");
+			for (OSMResource r : this.resource) {
+				System.out.println(r.getDate().toString());
+			}
+		} finally {
+			return nbWeeks;
+		}
+
 	}
 
 }

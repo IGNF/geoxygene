@@ -712,8 +712,11 @@ public class BuildingAssessment {
 			conn = DriverManager.getConnection(url, loader.dbUser, loader.dbPwd);
 			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			String query = "SELECT " + columns;
-			query += " FROM indicators." + city + "_normalized_with_vandalism WHERE v_contrib IS NOT NULL";
-			// System.out.println(query);
+			query += " FROM indicators." + city + "_normalized_with_vandalism " + "WHERE v_contrib IS NOT NULL";
+			// query += " FROM indicators." + city
+			// + "_normalized_with_vandalism_without_moderators WHERE v_contrib
+			// IS NOT NULL";
+			System.out.println(query);
 			ResultSet r = s.executeQuery(query);
 			ResultSetMetaData rsmd = r.getMetaData();
 
