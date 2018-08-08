@@ -105,7 +105,7 @@ public class Scheduler implements Runnable {
   /**
    * Deactivate the scheduler
    */
-  public void desactivate() {
+  public void deactivate() {
     this.stop = true;
   }
 

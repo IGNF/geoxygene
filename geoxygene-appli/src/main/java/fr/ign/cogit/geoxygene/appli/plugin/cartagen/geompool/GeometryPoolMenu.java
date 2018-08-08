@@ -195,7 +195,8 @@ public class GeometryPoolMenu extends JMenu {
         for (IFeature feat : CartAGenPlugin.getInstance().getApplication()
             .getMainFrame().getSelectedProjectFrame().getLayerViewPanel()
             .getSelectedFeatures()) {
-          geometryPool.addFeatureToGeometryPool(feat, defaultColor);
+          IGeometry geom = (IGeometry) feat.getGeom().clone();
+          geometryPool.addFeatureToGeometryPool(geom, defaultColor, 2);
         }
       } else {
         CartAGenDoc.getInstance().getCurrentDataset().getGeometryPool()
@@ -207,8 +208,9 @@ public class GeometryPoolMenu extends JMenu {
           if (!(feat instanceof IGeneObj)) {
             continue;
           }
+          IGeometry geom = (IGeometry) feat.getGeom().clone();
           CartAGenDoc.getInstance().getCurrentDataset().getGeometryPool()
-              .addFeatureToGeometryPool(feat, defaultColor);
+              .addFeatureToGeometryPool(geom, defaultColor, 2);
         }
       }
       CartAGenPlugin.getInstance().getApplication().getMainFrame()

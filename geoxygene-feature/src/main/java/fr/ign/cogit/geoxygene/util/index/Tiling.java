@@ -69,9 +69,9 @@ public class Tiling<Feat extends IFeature> implements SpatialIndex<Feat> {
   public List<Object> getParametres() {
     List<Object> param = new ArrayList<Object>(0);
     param.add(Tiling.class);
-    param.add(new Boolean(this.automaticUpdate));
+    param.add(this.automaticUpdate);
     param.add(new GM_Envelope(this.xmin, this.xmax, this.ymin, this.ymax));
-    param.add(new Integer(this.size));
+    param.add(this.size);
     return param;
   }
 
@@ -168,8 +168,8 @@ public class Tiling<Feat extends IFeature> implements SpatialIndex<Feat> {
       for (int j = 0; j < this.size; j++) {
         if (this.index[i][j].contains(feat)) {
           List<Integer> couple = new ArrayList<Integer>(0);
-          couple.add(new Integer(i));
-          couple.add(new Integer(j));
+          couple.add(i);
+          couple.add(j);
           result.add(couple);
         }
       }
@@ -481,7 +481,7 @@ public class Tiling<Feat extends IFeature> implements SpatialIndex<Feat> {
    * 
    */
   public Tiling(IFeatureCollection<Feat> fc, Boolean automaticUpd) {
-    this(fc, automaticUpd, new Integer(Tiling.nbDallesXY(fc)));
+    this(fc, automaticUpd, Tiling.nbDallesXY(fc));
   }
 
   /**

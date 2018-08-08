@@ -241,7 +241,7 @@ public class GM_Polygon extends GM_SurfacePatch implements IPolygon {
     this.interpolation = "planar"; //$NON-NLS-1$
     List<IDirectPosition> points = new ArrayList<IDirectPosition>();
     boolean flag3D = true;
-    Double D = new Double(env.getLowerCorner().getZ());
+    Double D = env.getLowerCorner().getZ();
     if (D.isNaN()) {
       flag3D = false;
     }

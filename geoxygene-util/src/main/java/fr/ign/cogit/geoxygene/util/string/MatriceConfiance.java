@@ -55,7 +55,7 @@ public class MatriceConfiance {
       for (int i = 0; i < this.nbRows; i++) {
         sum += this.values[i][j];
       }
-      sumList.add(new Double(sum));
+      sumList.add(sum);
     }
     return sumList;
   }

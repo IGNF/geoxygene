@@ -23,16 +23,18 @@ public class ProfilePatternDetector {
 	public int getPatternMinLength() {
 		return patternMinLength;
 	}
-	
-	public HashMap<Integer,List<Pattern>> patternDetector(Profile p, Profile.SIDE s) {
-		return patternDetector(p,s,2);
+
+	public HashMap<Integer, List<Pattern>> patternDetector(Profile p, Profile.SIDE s) {
+		return patternDetector(p, s, 2, 1, 500, 10);
 	}
 
-	public HashMap<Integer,List<Pattern>> patternDetector(Profile p, Profile.SIDE s, double threshold) {
+	public HashMap<Integer, List<Pattern>> patternDetector(Profile p, Profile.SIDE s, double threshold,
+			int numberOfMinimalRepeat, int maxPatternLength, int maxRepeat) {
 
-		//Integer = repeatLength; ListPattern contains best correlation
-		// (positive and negatiive and correlation other provided threshol in positive and negative)
-		HashMap<Integer,List<Pattern>> patternsMap = new HashMap<>();
+		// Integer = repeatLength; ListPattern contains best correlation
+		// (positive and negatiive and correlation other provided threshol in positive
+		// and negative)
+		HashMap<Integer, List<Pattern>> patternsMap = new HashMap<>();
 
 		if (this.patternMinLength < 1) {
 			return patternsMap;
@@ -46,62 +48,61 @@ public class ProfilePatternDetector {
 		for (int i = 0; i < profileLength - this.getPatternMinLength(); i++) {
 
 			// Parcourt de la longueur de pattern
-			int longueurMaxPattern = (profileLength - i) / 2;
+			int longueurMaxPattern = Math.min(maxPatternLength, (profileLength - i) / 2);
+
 			logger.debug("Max pattern length" + longueurMaxPattern);
 
 			for (int patternLength = patternMinLength; patternLength < longueurMaxPattern; patternLength++) {
 
 				// Parcourt de la longueur max du pattern à considérer
-				int numberOfMaxReapeat = (profileLength - i) / patternLength;
+				int numberOfMaxReapeat = Math.min(maxRepeat, (profileLength - i) / patternLength);
 
 				logger.debug("Max pattern repeat" + numberOfMaxReapeat);
 
-				for (int repeat = 1; repeat < numberOfMaxReapeat; repeat++) {
+				for (int repeat = numberOfMinimalRepeat; repeat < numberOfMaxReapeat; repeat++) {
 					// Calcul du pattern
 					Pattern patternCalculated = calculateCorrelation(p, i, repeat, patternLength, s);
 					if (patternCalculated != null) {
-						
+
 						int repeatCalculated = patternCalculated.getRepeat();
-						
+
 						List<Pattern> lP = patternsMap.get(repeatCalculated);
-						
-						if(lP == null){
+
+						if (lP == null) {
 							lP = new ArrayList<>();
 							patternsMap.put(repeatCalculated, lP);
 						}
-						
-						//0 or 1 element we add it
-						if(lP.size() == 1  ||lP.isEmpty()){
+
+						// 0 or 1 element we add it
+						if (lP.size() == 1 || lP.isEmpty()) {
 							lP.add(patternCalculated);
 							Collections.sort(lP);
 							continue;
 						}
-						
-						
-						//List with more than 2 elements
+
+						// List with more than 2 elements
 						double calculatedCorrelationValue = patternCalculated.getCorrelationScore();
-						//IS it the smallest ?
-						if(calculatedCorrelationValue < lP.get(0).getCorrelationScore()){
+						// IS it the smallest ?
+						if (calculatedCorrelationValue < lP.get(0).getCorrelationScore()) {
 							lP.add(0, patternCalculated);
-							if(Math.abs(lP.get(1).getCorrelationScore()) < threshold){
+							if (Math.abs(lP.get(1).getCorrelationScore()) < threshold) {
 								lP.remove(1);
 							}
 						}
-						
-						
-						//IS it the biggest ?
-						if(calculatedCorrelationValue > lP.get(lP.size()-1).getCorrelationScore()){
+
+						// IS it the biggest ?
+						if (calculatedCorrelationValue > lP.get(lP.size() - 1).getCorrelationScore()) {
 							lP.add(patternCalculated);
-							if(Math.abs(lP.get(lP.size()-2).getCorrelationScore()) < threshold){
-								lP.remove(lP.size()-2);
+							if (Math.abs(lP.get(lP.size() - 2).getCorrelationScore()) < threshold) {
+								lP.remove(lP.size() - 2);
 							}
 						}
-						
-						if(Math.abs(calculatedCorrelationValue) > threshold){
+
+						if (Math.abs(calculatedCorrelationValue) > threshold) {
 							lP.add(patternCalculated);
 							Collections.sort(lP);
 						}
-						
+
 					}
 
 				}
@@ -110,7 +111,6 @@ public class ProfilePatternDetector {
 
 		}
 
-	
 		return patternsMap;
 
 	}

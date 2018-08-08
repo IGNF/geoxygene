@@ -139,7 +139,7 @@ public class ShapefileReader implements Runnable {
 
   /**
    * Utilisée pour lancer le chargement asynchrone.
-   * @see #ShapefileReader(String, String, DataSet, boolean)
+   * @see #ShapefileReader(String, String, IDataSet, boolean)
    */
   public void read() {
     new Thread(this).start();
@@ -337,7 +337,7 @@ public class ShapefileReader implements Runnable {
       type.setMemberName(memberName);
       type.setValueType(valueType);
       newFeatureType.addFeatureAttribute(type);
-      attLookup.put(new Integer(i), new String[] { nomField, memberName });
+      attLookup.put(i, new String[] { nomField, memberName });
       ShapefileReader.logger.log(Level.FINE,
           I18N.getString("ShapefileReader.AddingAttribute") + i //$NON-NLS-1$
               + " = " + nomField); //$NON-NLS-1$

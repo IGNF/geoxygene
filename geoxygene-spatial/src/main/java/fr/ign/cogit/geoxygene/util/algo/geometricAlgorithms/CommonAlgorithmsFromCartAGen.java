@@ -274,7 +274,7 @@ public class CommonAlgorithmsFromCartAGen {
    * Split the given line in two new polylines at a given point that is not
    * necessarily a vertex. The point has to be on the line given a tolerance.
    * @param line
-   * @param newVertex
+   * @param splitVertex
    * @param tolerance a tolerance to deal with rounding approximations.
    * @return a two-dimension array with the splitted lines.
    */
@@ -1115,7 +1115,8 @@ public class CommonAlgorithmsFromCartAGen {
    * Get the distance along the line between the first vertex and the vertex at
    * the given index.
    * @param line
-   * @param index
+   * @param index1
+   * @param index2
    * @return
    */
   public static double getLineDistanceBetweenIndexes(ILineString line,
@@ -1142,7 +1143,8 @@ public class CommonAlgorithmsFromCartAGen {
    * vertices). The first point has to be before the second point in the line
    * order.
    * @param line
-   * @param index
+   * @param pt1
+   * @param pt2
    * @return
    */
   public static ILineString getSubLine(ILineString line, IDirectPosition pt1,
@@ -1241,9 +1243,9 @@ public class CommonAlgorithmsFromCartAGen {
       return lengths.get(lengths.size() / 2);
     else {
       double before = lengths
-          .get(new Double(Math.floor(lengths.size() / 2)).intValue() - 1);
+          .get(Double.valueOf(Math.floor(lengths.size() / 2)).intValue() - 1);
       double after = lengths
-          .get(new Double(Math.floor(lengths.size() / 2)).intValue());
+          .get(Double.valueOf(Math.floor(lengths.size() / 2)).intValue());
       return (after + before) / 2.0;
     }
   }
@@ -1406,7 +1408,6 @@ public class CommonAlgorithmsFromCartAGen {
    * Get the longest segment that can be traced inside a polygon in a given
    * orientation.
    * @param polygon
-   * @param orientation
    * @return
    * @throws Exception
    */

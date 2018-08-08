@@ -123,12 +123,12 @@ public class SchemaDefaultFeature extends SchemaConceptuelJeu {
           // je mets la géométrie nommée "geom" dans la case 0
           if (results.getMetaData().getColumnName(i).equals("geom")) { //$NON-NLS-1$
             tabNoms[0] = "geom"; //$NON-NLS-1$
-            this.attLookup.put(new Integer(0), tabNoms);
+            this.attLookup.put(0, tabNoms);
           }
           // puis les autres attributs dans les cases à partir de 1
           if ((!results.getMetaData().getColumnName(i).equals("geom")) & (!results.getMetaData().getColumnName(i).equals("cogitid"))) { //$NON-NLS-1$ //$NON-NLS-2$
             tabNoms[0] = results.getMetaData().getColumnName(i);
-            this.attLookup.put(new Integer(i), tabNoms);
+            this.attLookup.put(i, tabNoms);
           }
         }
       } catch (SQLException e) {
@@ -140,7 +140,7 @@ public class SchemaDefaultFeature extends SchemaConceptuelJeu {
       for (int i = 0; i < this.attLookup.size(); i++) {
         System.out
             .println(i
-                + " = " + this.attLookup.get(new Integer(i))[0] + " - " + this.attLookup.get(new Integer(i))[1]); //$NON-NLS-1$ //$NON-NLS-2$
+                + " = " + this.attLookup.get(i)[0] + " - " + this.attLookup.get(i)[1]); //$NON-NLS-1$ //$NON-NLS-2$
       }
     } else {
       System.out.println("je ne sais pas encore charger le schéma " + //$NON-NLS-1$

@@ -46,8 +46,8 @@ public class ChangesetRetriever {
 		this.setDbUser(dbUser);
 		this.setDbPwd(dbPwd);
 
-		String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
-		conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
+		this.url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
+		conn = DriverManager.getConnection(this.url, this.dbUser, this.dbPwd);
 		System.out.println("Connexion réussie !");
 	}
 
@@ -85,7 +85,7 @@ public class ChangesetRetriever {
 	 */
 	public void insertIntoChangeset(Set<String> values) throws Exception {
 		try {
-
+			conn = DriverManager.getConnection(this.url, this.dbUser, this.dbPwd);
 			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			// System.out.println(changesetID);
 			StringBuffer insertQuery = new StringBuffer();
@@ -110,7 +110,7 @@ public class ChangesetRetriever {
 
 	public void insertOneRow(String value) throws Exception {
 		try {
-
+			conn = DriverManager.getConnection(this.url, this.dbUser, this.dbPwd);
 			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			// System.out.println(changesetID);
 			StringBuffer insertQuery = new StringBuffer();
@@ -120,10 +120,10 @@ public class ChangesetRetriever {
 			insertQuery.append(";");
 			// System.out.println(insertQuery.toString());
 			s.executeQuery(insertQuery.toString());
-			s.close();
-			conn.close();
+			// s.close();
+			// conn.close();
 		} catch (Exception e) {
-			throw e;
+			// throw e;
 
 		}
 
@@ -132,8 +132,9 @@ public class ChangesetRetriever {
 	public String getChangesetValues(Long changesetID) {
 		StringBuffer value = new StringBuffer();
 		try {
-			String urlAPI = "http://api.openstreetmap.org/api/0.6/changeset/" + changesetID
+			String urlAPI = "https://api.openstreetmap.org/api/0.6/changeset/" + changesetID
 					+ "?include_discussion=true";
+			System.out.println(urlAPI);
 			Document xml = SQLDBPreAnonymization.getDataFromAPI(urlAPI);
 			Node osm = xml.getFirstChild();
 			Element changeset = (Element) osm.getChildNodes().item(1);
@@ -196,6 +197,7 @@ public class ChangesetRetriever {
 	 */
 	public boolean isInChangesetTable(Long changesetID) throws Exception {
 		try {
+			conn = DriverManager.getConnection(this.url, this.dbUser, this.dbPwd);
 			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			ResultSet r = s.executeQuery("SELECT 1 FROM changeset WHERE changesetid = " + changesetID);
 			if (r.next())
@@ -312,6 +314,18 @@ public class ChangesetRetriever {
 
 	}
 
+	public ResultSet executeQuery(String query) {
+		ResultSet r = null;
+		try {
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			r = s.executeQuery(query);
+		} catch (Exception e) {
+			// throw e;
+		}
+		return r;
+
+	}
+
 	/**
 	 * Get all the data from a changeset (using OSM API)
 	 * 
@@ -352,10 +366,6 @@ public class ChangesetRetriever {
 						lat = osmObj.getAttribute("lat");
 
 					}
-
-					// System.out.println(primitive + " " + id + " " + version +
-					// " " + timestamp);
-
 					// Fetch tags and members
 					NodeList tagsAndMembers = osmObj.getChildNodes();
 					// System.out.println(tagsAndMembers.getLength());
@@ -417,7 +427,7 @@ public class ChangesetRetriever {
 	 */
 	public void updateChangeSetTable(String tablename) {
 		try {
-			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			// ResultSet r = s.executeQuery("SELECT DISTINCT changeset FROM " +
 			// tablename);
 
@@ -439,7 +449,7 @@ public class ChangesetRetriever {
 				// Au bout de 100 valeurs on met à jour la base de données
 				if (values.size() >= 100) {
 					insertIntoChangeset(values);
-					values.clear();
+					values = new HashSet<String>();
 				}
 
 			}
@@ -515,6 +525,64 @@ public class ChangesetRetriever {
 		for (OSMResource r : contributions)
 			changesets.add(r.getChangeSet());
 		return changesets;
+	}
+
+	/**
+	 * 
+	 * @param changesetIDs
+	 *            : les IDs des changesets
+	 * @return les coordonnées moyennes {lon mix, lat min, lon max, lat max}
+	 *         représentant l'étendue moyenne des changesets en entrée
+	 * @throws Exception
+	 */
+	public Double[] getChangesetsMeanExtent(Set<Integer> changesetIDs) throws Exception {
+		conn = DriverManager.getConnection(this.url, this.dbUser, this.dbPwd);
+		Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		Double mean_lon_min = 0.0;
+		Double mean_lat_min = 0.0;
+		Double mean_lon_max = 0.0;
+		Double mean_lat_max = 0.0;
+
+		String query = "SELECT lon_min, lat_min, lon_max, lat_max FROM changeset WHERE changesetid  = ANY(ARRAY["
+				+ changesetIDs.toString().replaceAll("\\[|\\]", "").replaceAll(" ", "") + "])";
+		ResultSet r = s.executeQuery(query);
+		int nbRow = 0;
+		while (r.next()) {
+			mean_lon_min += r.getDouble("lon_min");
+			mean_lat_min += r.getDouble("lat_min");
+			mean_lon_max += r.getDouble("lon_max");
+			mean_lat_max += r.getDouble("lat_max");
+			nbRow++;
+		}
+
+		if (nbRow == 0) { // Cas où les changesets ne sont pas dans la BDD
+			Set<String> values = new HashSet<String>();
+			for (Integer changesetid : changesetIDs) {
+				String value = this.getChangesetValues(Long.valueOf(changesetid));
+				values.add(value);
+			}
+			this.insertIntoChangeset(values);
+		}
+
+		// Et on relance la requête
+		r = s.executeQuery(query);
+		while (r.next()) {
+			mean_lon_min += r.getDouble("lon_min");
+			mean_lat_min += r.getDouble("lat_min");
+			mean_lon_max += r.getDouble("lon_max");
+			mean_lat_max += r.getDouble("lat_max");
+			nbRow++;
+		}
+		s.close();
+		conn.close();
+		mean_lon_min /= nbRow;
+		mean_lat_min /= nbRow;
+		mean_lon_max /= nbRow;
+		mean_lat_max /= nbRow;
+
+		Double[] meanCoordinates = { mean_lon_min, mean_lat_min, mean_lon_max, mean_lat_max };
+
+		return meanCoordinates;
 	}
 
 	/**

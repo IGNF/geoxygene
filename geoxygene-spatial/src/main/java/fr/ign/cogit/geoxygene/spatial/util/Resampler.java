@@ -17,7 +17,7 @@ public class Resampler {
    *        a linestring
    * @param maxDistance
    *        maximum distance between 2 consecutive points
-   * @return
+   * @return resampled linestring
    */
   public static ILineString resample(ILineString ls, double maxDistance) {
     IDirectPositionList list = ls.coord();
@@ -42,11 +42,11 @@ public class Resampler {
     for (int j = 1; j < list.size(); j++) {
       IDirectPosition nextPoint = list.get(j);
       double length = prevPoint.distance(nextPoint);
-      Double fseg = new Double(length / maxDistance);
+      Double fseg = length / maxDistance;
       int nseg = fseg.intValue();
       // make sure the distance between the resulting points is smaller than
       // maxDistance
-      if (fseg.doubleValue() > nseg) {
+      if (fseg > nseg) {
         nseg++;
       }
       // compute the actual distance between the resampled points

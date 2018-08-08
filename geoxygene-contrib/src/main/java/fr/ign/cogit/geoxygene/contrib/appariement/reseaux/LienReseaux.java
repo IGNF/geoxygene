@@ -410,6 +410,7 @@ public class LienReseaux extends Lien {
      * Methode créant une géométrie au lien 1-1 en reliant les deux objets
      * concerné par un simple trait.
      */
+    @SuppressWarnings("unchecked")
     public static IGeometry creeGeometrieLienSimple(IFeature obj1, IFeature obj2) {
     
         // POINT - POINT
@@ -422,9 +423,8 @@ public class LienReseaux extends Lien {
             
             IPoint point1 = (IPoint) obj1.getGeom();
             points.add(point1.getPosition());
-            
-            ILineString ligne = new GM_LineString(points);
-            return ligne;
+
+            return new GM_LineString(points);
         }
         
         // POINT - LIGNE
@@ -437,9 +437,8 @@ public class LienReseaux extends Lien {
             
             ILineString ligne1 = (ILineString) obj1.getGeom();
             points.add(Operateurs.projection(DP2, ligne1));
-            
-            ILineString ligne = new GM_LineString(points);
-            return ligne;
+
+            return new GM_LineString(points);
         }
         
         // LIGNE - POINT
@@ -452,9 +451,8 @@ public class LienReseaux extends Lien {
             
             IPoint point1 = (IPoint) obj1.getGeom();
             points.add(point1.getPosition());
-            
-            ILineString ligne = new GM_LineString(points);
-            return ligne;
+
+            return new GM_LineString(points);
         }
         
         // LIGNE - LIGNE
@@ -467,9 +465,8 @@ public class LienReseaux extends Lien {
             
             ILineString ligne1 = (ILineString) obj1.getGeom();
             points.add(Operateurs.projection(DP2, ligne1));
-            
-            ILineString ligne = new GM_LineString(points);
-            return ligne;
+
+            return new GM_LineString(points);
         }
         
         // POINT - MULTILIGNE

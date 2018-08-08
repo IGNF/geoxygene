@@ -304,7 +304,7 @@ public class Groupe extends ElementCarteTopo {
       angle = new Angle(arc.getCoord().get(0), arc.getCoord().get(1));
       arcs.add(arc);
       angles.add(angle);
-      orientations.add(new Boolean(false));
+      orientations.add(Boolean.FALSE);
     }
     // recherche de l'angle de départ de chaque arc entrant
     itArcs = arcsEntrants.iterator();
@@ -314,7 +314,7 @@ public class Groupe extends ElementCarteTopo {
           .getCoord().get(arc.getCoord().size() - 2));
       arcs.add(arc);
       angles.add(angle);
-      orientations.add(new Boolean(true));
+      orientations.add(Boolean.TRUE);
     }
     // classement des arcs
     while (!arcs.isEmpty()) {

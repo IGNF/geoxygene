@@ -47,7 +47,7 @@ public class CurveSimilarity {
 
   /**
    * Compute the turning angle function for a polygonal curve.
-   * @param l
+   * @param l linestring
    * @return
    */
   public static double[][] turningFunction(ILineString l) {
@@ -124,7 +124,7 @@ public class CurveSimilarity {
       gline.addControlPoint(new DirectPosition(g[0][i], g[1][i]));
     }
     //now we find all the m*n critical points on [0;1]
-    List<Double> criticalValues = new ArrayList<Double>();
+    List<Double> criticalValues = new ArrayList<>();
     for(IDirectPosition pf : fline.coord()){
       for(IDirectPosition pg : gline.coord()){
         if(pf.getX() >= pg.getX()){
@@ -169,19 +169,11 @@ public class CurveSimilarity {
     ArrayList<Double> shifts = new ArrayList<Double>();
     for (int i = 1; i < g[0].length; i++) {
       for (int j = 1; j < f[0].length; j++) {
-        Double shift = new Double(f[0][j] - g[0][i]);
+        Double shift = f[0][j] - g[0][i];
         shifts.add(shift);
       }
     }
-    Collections.sort(shifts, new Comparator<Double>() {
-
-      @Override
-      public int compare(Double o1, Double o2) {
-        return (Math.abs(o1.doubleValue()) == Math.abs(o2.doubleValue())) ? 0
-            : (Math.abs(o1.doubleValue()) < Math.abs(o2.doubleValue())) ? -1
-                : 1;
-      }
-    });
+    shifts.sort(Comparator.comparingDouble(o -> Math.abs(o.doubleValue())));
     List<ArrayList<Double>> H = CurveSimilarity.turningSimilarityStrips(f, g);
 
     double hci = 0.0;
@@ -226,11 +218,11 @@ public class CurveSimilarity {
    * <p>
    * Compute the n+m stripes between the tunring functions f and g. <br/>
    * We assume that the given turning functions are well formed (accordingly to
-   * {@link turningFunction })
+   * {@link #turningFunction(ILineString)}})
    * </p>
-   * 
+   *
    * See Artkin & al., An efficiently computable metric for comparing polygonal
-   * shapes, IEEE vol 13 n°3, 1991
+   * shapes, IEEE vol 13 n&deg;3, 1991
    * @param f
    * @param g
    * @return an array containing, in this order, Rgg, Rff, Rgf, Rfg
@@ -254,17 +246,11 @@ public class CurveSimilarity {
         merged.add(pt);
       fl2.addControlPoint(new DirectPosition(g[0][i + 1], g[1][i]));
     }
-    Collections.sort(merged, new Comparator<DirectPosition>() {
-
-      @Override
-      public int compare(DirectPosition o1, DirectPosition o2) {
-        return (o1.getX() == o2.getX()) ? 0 : (o1.getX() < o2.getX()) ? -1 : 1;
-      }
-    });
-    ArrayList<Double> rgg = new ArrayList<Double>();
-    ArrayList<Double> rff = new ArrayList<Double>();
-    ArrayList<Double> rgf = new ArrayList<Double>();
-    ArrayList<Double> rfg = new ArrayList<Double>();
+    merged.sort(Comparator.comparingDouble(DirectPosition::getX));
+    ArrayList<Double> rgg = new ArrayList<>();
+    ArrayList<Double> rff = new ArrayList<>();
+    ArrayList<Double> rgf = new ArrayList<>();
+    ArrayList<Double> rfg = new ArrayList<>();
 
     for (int i = 0; i < merged.size() - 1; i++) {
       int pt1InF = fl1.coord().getList().indexOf(merged.get(i));

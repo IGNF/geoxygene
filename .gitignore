@@ -5,3 +5,5 @@
 /bin/
 /geoxygene-appli/geoxygene-configuration.xml
 .Rhistory
+*.iml
+.idea

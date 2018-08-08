@@ -28,10 +28,16 @@ public class TestOBBBlockDecomposition {
 		IFeatureCollection<IFeature> featColl = ShapefileReader
 				.read(getClass().getClassLoader().getResource("parcelDecomposition/parcelle.shp").toString());
 
+		
+		if(featColl == null) {
+			System.out.println("------C'est nul");
+		}
+		
+		
 		IPolygon pol = (IPolygon) FromGeomToSurface.convertGeom(featColl.get(0).getGeom()).get(0);
 
-		double maximalArea = 100;
-		double maximalWidth = 20;
+		double maximalArea = 200;
+		double maximalWidth = 40;
 		RandomGenerator rng = new MersenneTwister(42);
 		double epsilon = 0;
 		double noise = 10;

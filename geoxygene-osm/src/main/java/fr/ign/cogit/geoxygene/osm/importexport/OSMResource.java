@@ -3,6 +3,7 @@ package fr.ign.cogit.geoxygene.osm.importexport;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +19,7 @@ public class OSMResource {
 	private int changeSet, version;
 	private long id;
 	private int uid;
-	private HashMap<String, String> tags;
+	private Map<String, String> tags;
 	private Date date;
 	private boolean visible;
 
@@ -104,7 +105,7 @@ public class OSMResource {
 		return tags;
 	}
 
-	public void setTags(HashMap<String, String> tags) {
+	public void setTags(Map<String, String> tags) {
 		this.tags = tags;
 	}
 
@@ -158,6 +159,21 @@ public class OSMResource {
 		this.version = version;
 		this.date = date;
 		tags = new HashMap<String, String>();
+	}
+
+	public OSMResource(String contributeur, PrimitiveGeomOSM geom, String id, String changeSet, String version,
+			String uid, String date, String visible) {
+		this.contributeur = contributeur;
+		this.geom = geom;
+		this.id = Long.valueOf(id);
+		this.changeSet = Integer.valueOf(changeSet);
+		this.version = Integer.valueOf(version);
+		this.uid = Integer.valueOf(uid);
+		this.visible = (visible.equals("false") ? false : true);
+		Instant instant = Instant.parse(date);
+		Date d = Date.from(instant);
+		this.date = d;
+
 	}
 
 	public void addTag(String cle, String valeur) {

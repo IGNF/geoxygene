@@ -68,6 +68,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
  * @author Eric Grosso
  * @author Arnaud Lafragueta
  * @author Julien Perret
+ * @author Mickaël Brasebin
  */
 public abstract class Operateurs {
 	private static Logger logger = Logger.getLogger(Operateurs.class.getName());
@@ -152,9 +153,9 @@ public abstract class Operateurs {
 	}
 
 	/**
-	 * Projection du point sur la polyligne. En théorie, il peut y avoir
-	 * plusieurs points projetés, mais dans ce cas cette méthode n'en renvoie
-	 * qu'un seul (le premier dans le sens de parcours de la ligne).
+	 * Projection du point sur la polyligne. En théorie, il peut y avoir plusieurs
+	 * points projetés, mais dans ce cas cette méthode n'en renvoie qu'un seul (le
+	 * premier dans le sens de parcours de la ligne).
 	 * <p>
 	 * English: Projects M on thelineString.
 	 */
@@ -179,11 +180,11 @@ public abstract class Operateurs {
 	}
 
 	/**
-	 * Projection du point sur la polyligne et insertion du point projeté dans
-	 * la ligne.
+	 * Projection du point sur la polyligne et insertion du point projeté dans la
+	 * ligne.
 	 * <P>
-	 * English: Projects M on the lineString and return the line with the
-	 * projected point inserted.
+	 * English: Projects M on the lineString and return the line with the projected
+	 * point inserted.
 	 */
 	public static ILineString projectionEtInsertion(IDirectPosition point, ILineString line) {
 		IDirectPositionList points = line.coord();
@@ -193,22 +194,22 @@ public abstract class Operateurs {
 	}
 
 	/**
-	 * Projection du point sur la polyligne et insertion du point projeté dans
-	 * la ligne.
+	 * Projection du point sur la polyligne et insertion du point projeté dans la
+	 * ligne.
 	 * <p>
-	 * English: Projects M on the lineString and return the line with the
-	 * projected point inserted.
+	 * English: Projects M on the lineString and return the line with the projected
+	 * point inserted.
 	 */
 	public static void projectAndInsert(IDirectPosition point, List<IDirectPosition> points) {
 		projectAndInsertWithPosition(point, points);
 	}
 
 	/**
-	 * Projection du point sur la polyligne et insertion du point projeté dans
-	 * la ligne, et retourne la position de l'ajout
+	 * Projection du point sur la polyligne et insertion du point projeté dans la
+	 * ligne, et retourne la position de l'ajout
 	 * <p>
-	 * English: Projects M on the lineString and return the line with the
-	 * projected point inserted.
+	 * English: Projects M on the lineString and return the line with the projected
+	 * point inserted.
 	 */
 	public static int projectAndInsertWithPosition(IDirectPosition point, List<IDirectPosition> points) {
 		if (points.size() < 2) {
@@ -232,11 +233,11 @@ public abstract class Operateurs {
 	}
 
 	/**
-	 * Projection du point sur la polyligne et insertion du point projeté dans
-	 * la ligne.
+	 * Projection du point sur la polyligne et insertion du point projeté dans la
+	 * ligne.
 	 * <p>
-	 * English: Projects M on the lineString and return the line with the
-	 * projected point inserted.
+	 * English: Projects M on the lineString and return the line with the projected
+	 * point inserted.
 	 */
 	public static void projectAndInsertAll(IDirectPosition point, List<IDirectPosition> points) {
 		if (points.size() < 2) {
@@ -258,8 +259,8 @@ public abstract class Operateurs {
 	 * l'aggregat ne contient que des GM_Point et GM_LineString.
 	 * 
 	 * <p>
-	 * En théorie, il peut y avoir plusieurs points projetés, mais dans ce cas
-	 * cette méthode n'en renvoie qu'un seul.
+	 * En théorie, il peut y avoir plusieurs points projetés, mais dans ce cas cette
+	 * méthode n'en renvoie qu'un seul.
 	 * <p>
 	 * English: Projects M on the agregate.
 	 */
@@ -342,7 +343,7 @@ public abstract class Operateurs {
 	public static IDirectPosition pointEnAbscisseCurviligne(IMultiCurve<? extends ILineString> multiLs,
 			double abscisse) {
 
-		if (abscisse < 0 || abscisse > multiLs.length() ) {
+		if (abscisse < 0 || abscisse > multiLs.length()) {
 			return null;
 		}
 
@@ -399,12 +400,11 @@ public abstract class Operateurs {
 	}
 
 	/**
-	 * Premiers points intermédiaires de la ligne ls, situés à moins de la
-	 * longueur curviligne passée en paramètre du point initial. Renvoie null si
-	 * la longueur est négative. Renvoie le premier point si et seulement si la
-	 * longueur est 0. Renvoie tous les points si la longueur est supérieure à
-	 * la longueur de la ligne NB: les points sont renvoyés dans l'ordre en
-	 * partant du premier point.
+	 * Premiers points intermédiaires de la ligne ls, situés à moins de la longueur
+	 * curviligne passée en paramètre du point initial. Renvoie null si la longueur
+	 * est négative. Renvoie le premier point si et seulement si la longueur est 0.
+	 * Renvoie tous les points si la longueur est supérieure à la longueur de la
+	 * ligne NB: les points sont renvoyés dans l'ordre en partant du premier point.
 	 * <p>
 	 * English: First points of the line.
 	 */
@@ -428,13 +428,12 @@ public abstract class Operateurs {
 	}
 
 	/**
-	 * Derniers points intermédiaires de la ligne ls, situés à moins de la
-	 * longueur curviligne passée en paramètre du point final. Renvoie null si
-	 * la longueur est négative. Renvoie le dernier point seulement si la
-	 * longueur est 0. Renvoie tous les points si la longueur est supérieure à
-	 * la longueur de la ligne. NB: les points sont renvoyés dans l'ordre en
-	 * partant du dernier point (ordre inverse par rapport à la géométrie
-	 * initiale).
+	 * Derniers points intermédiaires de la ligne ls, situés à moins de la longueur
+	 * curviligne passée en paramètre du point final. Renvoie null si la longueur
+	 * est négative. Renvoie le dernier point seulement si la longueur est 0.
+	 * Renvoie tous les points si la longueur est supérieure à la longueur de la
+	 * ligne. NB: les points sont renvoyés dans l'ordre en partant du dernier point
+	 * (ordre inverse par rapport à la géométrie initiale).
 	 * <p>
 	 * English: Last points of the line.
 	 */
@@ -462,8 +461,8 @@ public abstract class Operateurs {
 	// Mesures sur un polygone
 	// ////////////////////////////////////////////////////////////////////
 	/**
-	 * Barycentre 2D (approximatif). Il est défini comme le barycentre des
-	 * points intermédiaires du contour, ce qui est très approximatif
+	 * Barycentre 2D (approximatif). Il est défini comme le barycentre des points
+	 * intermédiaires du contour, ce qui est très approximatif
 	 * <p>
 	 * English: Center of the points of the polygon.
 	 */
@@ -490,8 +489,8 @@ public abstract class Operateurs {
 	// Offset d'une ligne (décalage)
 	// ////////////////////////////////////////////////////////////////////
 	/**
-	 * Calcul d'un offset direct (demi-buffer d'une ligne, ou décalage à
-	 * gauche). Le paramètre offset est la taille du décalage.
+	 * Calcul d'un offset direct (demi-buffer d'une ligne, ou décalage à gauche). Le
+	 * paramètre offset est la taille du décalage.
 	 * <p>
 	 * English: shift of a line on the left
 	 */
@@ -534,8 +533,8 @@ public abstract class Operateurs {
 	}
 
 	/**
-	 * Calcul d'un offset indirect (demi-buffer d'une ligne, ou décalage à
-	 * droite). Le paramètre offset est la taille du décalage.
+	 * Calcul d'un offset indirect (demi-buffer d'une ligne, ou décalage à droite).
+	 * Le paramètre offset est la taille du décalage.
 	 * <p>
 	 * English: shift of a line on the right
 	 */
@@ -581,10 +580,10 @@ public abstract class Operateurs {
 	// Echantillonage
 	// ////////////////////////////////////////////////////////////////////
 	/**
-	 * Méthode pour suréchantillonner une GM_LineString. Des points
-	 * intermédiaires écartés du pas sont ajoutés sur chaque segment de la ligne
-	 * ls, à partir du premier point de chaque segment. (voir aussi
-	 * echantillonePasVariable pour une autre méthode )
+	 * Méthode pour suréchantillonner une GM_LineString. Des points intermédiaires
+	 * écartés du pas sont ajoutés sur chaque segment de la ligne ls, à partir du
+	 * premier point de chaque segment. (voir aussi echantillonePasVariable pour une
+	 * autre méthode )
 	 * <p>
 	 * English: Resampling of a line
 	 */
@@ -602,7 +601,7 @@ public abstract class Operateurs {
 			listePointsEchant.add(point1);
 			point2 = listePoints.get(j);
 			longTronc = point1.distance(point2);
-			fseg = new Double(longTronc / pas);
+			fseg = longTronc / pas;
 			nseg = fseg.intValue();
 			u1 = new Vecteur(point1, point2);
 			for (i = 0; i < nseg - 1; i++) {
@@ -618,11 +617,33 @@ public abstract class Operateurs {
 	}
 
 	/**
-	 * Méthode pour suréchantillonner une GM_LineString. A l'inverse de la
-	 * méthode "echantillone", le pas d'echantillonage diffère sur chaque
-	 * segment de manière à ce que l'on échantillone chaque segment en
-	 * différents mini-segments tous de même longueur. Le pas en entrée est le
-	 * pas maximum autorisé.
+	 * Méthode pour suréchantillonner une GM_LineString. Contrairement à la méthode
+	 * echantillonne,seuls les points échantillonnés sont conservés pour garantir un
+	 * écartement régulier (en termes d'abscicesse curviligne) English: Resampling
+	 * of a line
+	 */
+	public static ILineString echantilloneSansPreservation(ILineString ls, double pas) {
+
+		IDirectPositionList listePoints = new DirectPositionList();
+		double length = ls.length();
+
+		int nbPoint = (int) (length / pas);
+
+		for (int i = 0; i < nbPoint; i++) {
+
+			IDirectPosition dp = Operateurs.pointEnAbscisseCurviligne(ls, i * pas);
+			listePoints.add(dp);
+
+		}
+
+		return new GM_LineString(listePoints);
+	}
+
+	/**
+	 * Méthode pour suréchantillonner une GM_LineString. A l'inverse de la méthode
+	 * "echantillone", le pas d'echantillonage diffère sur chaque segment de manière
+	 * à ce que l'on échantillone chaque segment en différents mini-segments tous de
+	 * même longueur. Le pas en entrée est le pas maximum autorisé.
 	 * <p>
 	 * English : Resampling of a line
 	 */
@@ -640,7 +661,7 @@ public abstract class Operateurs {
 			listePointsEchant.add(point1);
 			point2 = listePoints.get(j);
 			longTronc = point1.distance(point2);
-			fseg = new Double(longTronc / pas);
+			fseg = longTronc / pas;
 			nseg = fseg.intValue();
 			double epsilonPas = 0;
 			if (nseg != 0) {
@@ -661,8 +682,8 @@ public abstract class Operateurs {
 	}
 
 	/**
-	 * Renvoie le point translaté de P avec le vecteur V; Contrairement au
-	 * "move" de DirectPosition, on ne deplace pas le point P
+	 * Renvoie le point translaté de P avec le vecteur V; Contrairement au "move" de
+	 * DirectPosition, on ne deplace pas le point P
 	 * <p>
 	 * English : Shift of a point
 	 */
@@ -676,13 +697,11 @@ public abstract class Operateurs {
 	/**
 	 * Mise bout à bout de plusieurs GM_LineString pour constituer une nouvelle
 	 * GM_LineString La liste en entrée contient des GM_LineString. La polyligne
-	 * créée commence sur l'extrémité libre de la première polyligne de la
-	 * liste.
+	 * créée commence sur l'extrémité libre de la première polyligne de la liste.
 	 * <p>
 	 * English: Combination of lines.
 	 * 
-	 * @param geometries
-	 *            : Linestrings à fusionner
+	 * @param geometries : Linestrings à fusionner
 	 */
 	public static ILineString compileArcs(List<ILineString> geometries) {
 		if (Operateurs.logger.isDebugEnabled()) {
@@ -697,16 +716,13 @@ public abstract class Operateurs {
 	/**
 	 * Mise bout à bout de plusieurs GM_LineString pour constituer une nouvelle
 	 * GM_LineString La liste en entrée contient des GM_LineString. La polyligne
-	 * créée commence sur l'extrémité libre de la première polyligne de la
-	 * liste.
+	 * créée commence sur l'extrémité libre de la première polyligne de la liste.
 	 * <p>
 	 * English: Combination of lines.
 	 * 
-	 * @param geometries
-	 *            : Linestrings à fusionner
-	 * @param tolerance
-	 *            :distance minimale à laquelle on considère 2 points
-	 *            superposés.
+	 * @param geometries : Linestrings à fusionner
+	 * @param tolerance  :distance minimale à laquelle on considère 2 points
+	 *                   superposés.
 	 */
 	public static ILineString compileArcs(List<ILineString> geometries, double tolerance) {
 		Operateurs.logger.debug("compile geometries");
@@ -774,8 +790,8 @@ public abstract class Operateurs {
 	}
 
 	/**
-	 * Compile connected lines into a single ILineString geometry given an
-	 * unordered collection of lines.
+	 * Compile connected lines into a single ILineString geometry given an unordered
+	 * collection of lines.
 	 * 
 	 * @param geometries
 	 * @param tolerance
@@ -869,21 +885,16 @@ public abstract class Operateurs {
 	}
 
 	/**
-	 * Version plus robuste mais aussi potentiellement faussée de
-	 * l'intersection. Si JTS plante au calcul d'intersection, on filtre les
-	 * surfaces avec Douglas et Peucker, progressivement avec 10 seuils entre
-	 * min et max.
+	 * Version plus robuste mais aussi potentiellement faussée de l'intersection. Si
+	 * JTS plante au calcul d'intersection, on filtre les surfaces avec Douglas et
+	 * Peucker, progressivement avec 10 seuils entre min et max.
 	 * <p>
 	 * English: Robust intersection of objects (to bypass JTS bugs).
 	 * 
-	 * @param A
-	 *            a geometry
-	 * @param B
-	 *            another geometry
-	 * @param min
-	 *            minimum threshold for Douglas-Peucker algorithm
-	 * @param max
-	 *            maximum threshold for Douglas-Peucker algorithm
+	 * @param A   a geometry
+	 * @param B   another geometry
+	 * @param min minimum threshold for Douglas-Peucker algorithm
+	 * @param max maximum threshold for Douglas-Peucker algorithm
 	 * @return the intersection of geometries A and B
 	 */
 	public static IGeometry intersectionRobuste(IGeometry A, IGeometry B, double min, double max) {
@@ -912,9 +923,9 @@ public abstract class Operateurs {
 	}
 
 	/**
-	 * Version plus robuste mais aussi potentiellement faussée de l'union. Si
-	 * JTS plante au calcul d'union, on filtre les surfaces avec Douglas et
-	 * Peucker, progressivement avec 10 seuils entre min et max.
+	 * Version plus robuste mais aussi potentiellement faussée de l'union. Si JTS
+	 * plante au calcul d'union, on filtre les surfaces avec Douglas et Peucker,
+	 * progressivement avec 10 seuils entre min et max.
 	 * <p>
 	 * English: Robust union of objects (to bypass JTS bugs).
 	 */
@@ -945,10 +956,10 @@ public abstract class Operateurs {
 	// Regression linéaire
 	// ////////////////////////////////////////////////////////////////////
 	/**
-	 * Methode qui donne l'angle (radians) par rapport à l'axe des x de la
-	 * droite passant au mieux au milieu d'un nuage de points (regression par
-	 * moindres carrés). Cet angle (défini à pi près) est entre 0 et pi.
-	 * English: Linear approximation.
+	 * Methode qui donne l'angle (radians) par rapport à l'axe des x de la droite
+	 * passant au mieux au milieu d'un nuage de points (regression par moindres
+	 * carrés). Cet angle (défini à pi près) est entre 0 et pi. English: Linear
+	 * approximation.
 	 */
 	public static Angle directionPrincipale(IDirectPositionList listePts) {
 		Angle ang = new Angle();
@@ -1007,11 +1018,11 @@ public abstract class Operateurs {
 	/**
 	 * Methode qui donne l'angle dans [0,2*pi[ par rapport à l'axe des x, de la
 	 * droite orientée passant au mieux au milieu d'un nuage de points ordonnés
-	 * (regression par moindres carrés). L'ordre des points en entrée est
-	 * important, c'est lui qui permet de donner l'angle à 2.pi près. Exemple:
-	 * la liste des points peut correspondre à n points d'un arc, l'angle
-	 * représente alors l'orientation générale de ces points, en prenant le
-	 * premier pour point de départ.
+	 * (regression par moindres carrés). L'ordre des points en entrée est important,
+	 * c'est lui qui permet de donner l'angle à 2.pi près. Exemple: la liste des
+	 * points peut correspondre à n points d'un arc, l'angle représente alors
+	 * l'orientation générale de ces points, en prenant le premier pour point de
+	 * départ.
 	 * <p>
 	 * English: Linear approximation.
 	 */
@@ -1078,20 +1089,17 @@ public abstract class Operateurs {
 	// Divers
 	// ////////////////////////////////////////////////////////////////////
 	/**
-	 * Teste si 2 <code>DirectPosition</code>s ont les mêmes coordonnées. Le
-	 * test est effectué en 3D :
+	 * Teste si 2 <code>DirectPosition</code>s ont les mêmes coordonnées. Le test
+	 * est effectué en 3D :
 	 * <ul>
 	 * <li>si le premier point n'a pas de Z, le second ne doit pas en avoir pour
 	 * être égal.
-	 * <li>si le premier point possède un Z, sa valeur est comparée au Z du
-	 * second.
+	 * <li>si le premier point possède un Z, sa valeur est comparée au Z du second.
 	 * </ul>
 	 * English: Tests the equality of geometries in 3D
 	 * 
-	 * @param pt1
-	 *            une position
-	 * @param pt2
-	 *            une position
+	 * @param pt1 une position
+	 * @param pt2 une position
 	 * @return vrai si les deux <code>DirectPosition</code>s ont les mêmes
 	 *         coordonnées.
 	 */
@@ -1101,14 +1109,12 @@ public abstract class Operateurs {
 	}
 
 	/**
-	 * Teste si 2 <code>DirectPosition</code>s ont les mêmes coordonnées. Le
-	 * test est effectué en 2D : aucun Z n'est considéré. English: Tests the
-	 * equality of geometries in 2D
+	 * Teste si 2 <code>DirectPosition</code>s ont les mêmes coordonnées. Le test
+	 * est effectué en 2D : aucun Z n'est considéré. English: Tests the equality of
+	 * geometries in 2D
 	 * 
-	 * @param pt1
-	 *            une position
-	 * @param pt2
-	 *            une position
+	 * @param pt1 une position
+	 * @param pt2 une position
 	 * @return vrai si les deux <code>DirectPosition</code>s ont les mêmes
 	 *         coordonnées en 2D.
 	 */
@@ -1127,8 +1133,7 @@ public abstract class Operateurs {
 
 	/**
 	 * Teste la présence d'un DirectPosition (égalité 2D) dans une
-	 * DirectPositionList. Renvoie -1 si le directPosition n'est pas dans la
-	 * liste
+	 * DirectPositionList. Renvoie -1 si le directPosition n'est pas dans la liste
 	 * <p>
 	 * English: tests if the line contains the point (in 2D)
 	 */
@@ -1146,8 +1151,7 @@ public abstract class Operateurs {
 
 	/**
 	 * Teste la présence d'un DirectPosition (égalité 3D) dans une
-	 * DirectPositionList. Renvoie -1 si le directPosition n'est pas dans la
-	 * liste
+	 * DirectPositionList. Renvoie -1 si le directPosition n'est pas dans la liste
 	 * <p>
 	 * English: tests if the line contains the point (in 3D)
 	 */
@@ -1164,8 +1168,8 @@ public abstract class Operateurs {
 	}
 
 	/**
-	 * Attribue par interpolation un Z aux points d'une ligne en connaissant le
-	 * Z des extrémités.
+	 * Attribue par interpolation un Z aux points d'une ligne en connaissant le Z
+	 * des extrémités.
 	 * <p>
 	 * English: Z interpolation.
 	 */
@@ -1192,9 +1196,9 @@ public abstract class Operateurs {
 	}
 
 	/**
-	 * Fusionne les surfaces adjacentes d'une population. NB: quand X objets
-	 * sont fusionés, un des objets (au hasard) est gardé avec ses attributs et
-	 * sa géométrie est remplacée par celle fusionée.
+	 * Fusionne les surfaces adjacentes d'une population. NB: quand X objets sont
+	 * fusionés, un des objets (au hasard) est gardé avec ses attributs et sa
+	 * géométrie est remplacée par celle fusionée.
 	 * <p>
 	 * English: aggregation of surfaces
 	 */
@@ -1273,12 +1277,12 @@ public abstract class Operateurs {
 	}
 
 	/**
-	 * Surface d'un polygone (trous non gérés). Utile pour pallier aux
-	 * déficiences de JTS qui n'accèpte pas les géométries dégénérées.
+	 * Surface d'un polygone (trous non gérés). Utile pour pallier aux déficiences
+	 * de JTS qui n'accèpte pas les géométries dégénérées.
 	 * <p>
-	 * Le calcul est effectué dans un repère local centré sur le premier point
-	 * de la surface, ce qui est utile pour minimiser les erreurs de calcul si
-	 * on manipule de grandes coordonnées).
+	 * Le calcul est effectué dans un repère local centré sur le premier point de la
+	 * surface, ce qui est utile pour minimiser les erreurs de calcul si on manipule
+	 * de grandes coordonnées).
 	 * <p>
 	 * English: surface of a polygon
 	 */
@@ -1321,10 +1325,8 @@ public abstract class Operateurs {
 	/**
 	 * Compute the surface defined by 2 lineStrings.
 	 * 
-	 * @param lineString1
-	 *            line1
-	 * @param lineString2
-	 *            line2
+	 * @param lineString1 line1
+	 * @param lineString2 line2
 	 * @return a polygon
 	 */
 	public static IPolygon surfaceFromLineStrings(ILineString lineString1, ILineString lineString2) {
@@ -1399,8 +1401,7 @@ public abstract class Operateurs {
 	 * linestrings soient connexes. L'algorithme comment par remettre les
 	 * linestrings dans l'ordre et dans le même sens.
 	 * 
-	 * @param linestringList
-	 *            ensemble de LineStrings
+	 * @param linestringList ensemble de LineStrings
 	 * @return fusion de LineStrings
 	 */
 	public static ILineString union(List<ILineString> linestringList) {
@@ -1414,11 +1415,9 @@ public abstract class Operateurs {
 	 * linestrings soient connexes. L'algorithme comment par remettre les
 	 * linestrings dans l'ordre et dans le même sens.
 	 * 
-	 * @param linestringList
-	 *            ensemble de LineStrings
-	 * @param tolerance
-	 *            la distance à laquelle on considère que deux points sont
-	 *            superposés.
+	 * @param linestringList ensemble de LineStrings
+	 * @param tolerance      la distance à laquelle on considère que deux points
+	 *                       sont superposés.
 	 * @return fusion de LineStrings
 	 */
 	public static ILineString union(List<ILineString> linestringList, double tolerance) {
@@ -1493,10 +1492,12 @@ public abstract class Operateurs {
 				i = -1;
 			}
 		}
-		
-		if(! linestringList.isEmpty()){
-			Operateurs.logger.warn("WARNING. All input lines are not used to produce the output merged line (unused lines = " + linestringList.size()+")");
-		
+
+		if (!linestringList.isEmpty()) {
+			Operateurs.logger
+					.warn("WARNING. All input lines are not used to produce the output merged line (unused lines = "
+							+ linestringList.size() + ")");
+
 		}
 		return lineStringCourante;
 	}
@@ -1527,10 +1528,8 @@ public abstract class Operateurs {
 	 * <p>
 	 * English: Resampling of a line.
 	 * 
-	 * @param ls
-	 *            a linestring
-	 * @param maxDistance
-	 *            maximum distance between 2 consecutive points
+	 * @param ls          a linestring
+	 * @param maxDistance maximum distance between 2 consecutive points
 	 * @return
 	 */
 	public static ILineString resampling(ILineString ls, double maxDistance) {
@@ -1543,10 +1542,8 @@ public abstract class Operateurs {
 	 * <p>
 	 * English: Resampling of a line.
 	 * 
-	 * @param list
-	 *            a IDirectPositionList
-	 * @param maxDistance
-	 *            maximum distance between 2 consecutive points
+	 * @param list        a IDirectPositionList
+	 * @param maxDistance maximum distance between 2 consecutive points
 	 * @return a resampled IDirectPositionList
 	 * @see IDirectPositionList
 	 */
@@ -1557,7 +1554,7 @@ public abstract class Operateurs {
 		for (int j = 1; j < list.size(); j++) {
 			IDirectPosition nextPoint = list.get(j);
 			double length = prevPoint.distance(nextPoint);
-			Double fseg = new Double(length / maxDistance);
+			Double fseg = length / maxDistance;
 			int nseg = fseg.intValue();
 			// make sure the distance between the resulting points is smaller
 			// than

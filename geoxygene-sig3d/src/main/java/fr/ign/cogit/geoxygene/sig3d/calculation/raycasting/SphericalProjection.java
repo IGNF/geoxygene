@@ -148,6 +148,7 @@ public class SphericalProjection {
 		nbPoly = this.featsToProject.size();
 
 		for (int i = 0; i < nbPoly; i++) {
+	
 
 			IPolygon poly = this.calculAngle((GM_Polygon) polyVisible.get(i), 2.0);
 
@@ -160,7 +161,7 @@ public class SphericalProjection {
 				try{
 					poly = (IPolygon) poly.buffer(0.001);
 				}catch(Exception e){
-					System.out.println( "Polygon invalid : " + poly);
+					logger.info("Polygon invalid : " + poly);
 				}
 				
 
@@ -215,7 +216,13 @@ public class SphericalProjection {
 
 		for (int i = 0; i < nbPoly; i++) {
 
-			lOS.addAll(this.cut((GM_Polygon) polyVisible.get(i)));
+			
+			List<IPolygon> lPolygon = this.cut((GM_Polygon) polyVisible.get(i));
+	
+			lOS.addAll(lPolygon);
+			
+			
+		
 
 		}
 
@@ -228,12 +235,12 @@ public class SphericalProjection {
 	 * @param poly
 	 * @return
 	 */
-	public List<GM_Polygon> cut(GM_Polygon poly) {
+	public List<IPolygon> cut(GM_Polygon poly) {
 		// On traite les points de l'extérieur
 		IDirectPositionList dplExteriori = poly.getExterior().coord();
 		Box3D b = new Box3D(dplExteriori);
 
-		List<GM_Polygon> lP = new ArrayList<GM_Polygon>(1);
+		List<IPolygon> lP = new ArrayList<>(1);
 
 		if (b.getLLDP().getX() > this.centre.getX() || b.getURDP().getX() < this.centre.getX()
 				|| b.getURDP().getY() < this.centre.getY()) {
@@ -288,8 +295,14 @@ public class SphericalProjection {
 			}
 
 			double lambda = (dpPred.getX() - this.centre.getX()) / (dp.getX() - this.centre.getX());
+			
+			if(Double.isNaN(lambda) || Double.isInfinite(lambda)){
+				 lambda = (dpPred.getY() - this.centre.getY()) / (dp.getY() - this.centre.getY());
+			}
 			double y = (dpPred.getY() - lambda * dp.getY()) / (1 - lambda);
 			double z = (dpPred.getZ() - lambda * dp.getZ()) / (1 - lambda);
+			
+	
 
 			DirectPosition dpInterG = new DirectPosition(this.centre.getX() - SphericalProjection.EPSILON, y, z);
 			DirectPosition dpInterD = new DirectPosition(this.centre.getX() + SphericalProjection.EPSILON, y, z);

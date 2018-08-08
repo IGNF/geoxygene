@@ -315,32 +315,32 @@ public class Comparaison {
     if (affichage) {
       System.out.println(I18N.getString("Comparaison.GlobalNetworkComparison")); //$NON-NLS-1$
     }
-    resultats.add(new Double(longTotal1));
+    resultats.add(longTotal1);
     if (affichage) {
       System.out
           .println(I18N.getString("Comparaison.TotalEdgeLengthNetwork1") + Math.round(longTotal1 / 1000)); //$NON-NLS-1$
     }
-    resultats.add(new Double(longPrisEnCompte1));
+    resultats.add(longPrisEnCompte1);
     if (affichage) {
       System.out
           .println(I18N.getString("Comparaison.TotalEdgeLengthNetwork1Used") + Math.round(longPrisEnCompte1 / 1000)); //$NON-NLS-1$
     }
-    resultats.add(new Double(longTotal2));
+    resultats.add(longTotal2);
     if (affichage) {
       System.out
           .println(I18N.getString("Comparaison.TotalEdgeLengthNetwork2") + Math.round(longTotal2 / 1000)); //$NON-NLS-1$
     }
-    resultats.add(new Double(nbArcsTotal1));
+    resultats.add((double) nbArcsTotal1);
     if (affichage) {
       System.out
           .println(I18N.getString("Comparaison.NumberOfEdgesNetwork1") + nbArcsTotal1); //$NON-NLS-1$
     }
-    resultats.add(new Double(nbArcsPrisEnCompte1));
+    resultats.add((double) nbArcsPrisEnCompte1);
     if (affichage) {
       System.out
           .println(I18N.getString("Comparaison.NumberOfEdgesNetwork1Used") + nbArcsPrisEnCompte1); //$NON-NLS-1$
     }
-    resultats.add(new Double(nbArcsTotal2));
+    resultats.add((double) nbArcsTotal2);
     if (affichage) {
       System.out
           .println(I18N.getString("Comparaison.NumberOfEdgesNetwork2") + nbArcsTotal2); //$NON-NLS-1$
@@ -352,27 +352,27 @@ public class Comparaison {
     if (affichage) {
       System.out.println(I18N.getString("Comparaison.DeviationEstimation")); //$NON-NLS-1$
     }
-    resultats.add(new Double(vTotal.getX()));
+    resultats.add(vTotal.getX());
     if (affichage) {
       System.out
           .println(I18N.getString("Comparaison.SystematicXBias") + vTotal.getX()); //$NON-NLS-1$
     }
-    resultats.add(new Double(vTotal.getY()));
+    resultats.add(vTotal.getY());
     if (affichage) {
       System.out
           .println(I18N.getString("Comparaison.SystematicYBias") + vTotal.getY()); //$NON-NLS-1$
     }
-    resultats.add(new Double(ecartTotal));
+    resultats.add(ecartTotal);
     if (affichage) {
       System.out
           .println(I18N.getString("Comparaison.AverageDeviation") + ecartTotal); //$NON-NLS-1$
     }
-    resultats.add(new Double(ecartQuadratiqueTotal));
+    resultats.add(ecartQuadratiqueTotal);
     if (affichage) {
       System.out
           .println(I18N.getString("Comparaison.QuadraticAverageDeviation") + ecartQuadratiqueTotal); //$NON-NLS-1$
     }
-    resultats.add(new Double(ecartTypeArcs));
+    resultats.add(ecartTypeArcs);
     if (affichage) {
       System.out
           .println(I18N.getString("Comparaison.StandardDeviation") + ecartTypeArcs); //$NON-NLS-1$

@@ -3,6 +3,7 @@ package fr.ign.cogit.geoxygene.sig3d.analysis.streetprofile;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -49,16 +50,16 @@ public class Profile {
 
 	public enum SIDE {
 		UPSIDE("UP"), DOWNSIDE("DOWN"), BOTH("BOTH");
-		
-	    private final String fieldDescription;
 
-	    private SIDE(String value) {
-	        fieldDescription = value;
-	    }
+		private final String fieldDescription;
 
-	    public String toString() {
-	        return fieldDescription;
-	    }
+		private SIDE(String value) {
+			fieldDescription = value;
+		}
+
+		public String toString() {
+			return fieldDescription;
+		}
 	}
 
 	private static Logger logger = Logger.getLogger(Profile.class);
@@ -66,7 +67,6 @@ public class Profile {
 	// ---------------------------------- ATTRIBUTS
 	// ----------------------------------
 
-	
 	private Hashtable<Double, IFeatureCollection<IFeature>> pointsByX;
 	// Paramètres
 
@@ -297,14 +297,11 @@ public class Profile {
 	/**
 	 * Constructeur avec les paramètres de base (de la demo)
 	 * 
-	 * @param roadsProfiled
-	 *            la route à partir de laquelle le profil est calculé
-	 * @param buildings
-	 *            batiments pour lesquels le profil est calculé
-	 * @param parcels
-	 *            parcelles sur lesquelles se trouvent les bâtiments. Lors du
-	 *            calcul de profil on ne considère que la parcelle la plus
-	 *            proche
+	 * @param roadsProfiled la route à partir de laquelle le profil est calculé
+	 * @param buildings     batiments pour lesquels le profil est calculé
+	 * @param parcels       parcelles sur lesquelles se trouvent les bâtiments. Lors
+	 *                      du calcul de profil on ne considère que la parcelle la
+	 *                      plus proche
 	 */
 	public Profile(IFeatureCollection<? extends IFeature> roadsProfiled,
 			IFeatureCollection<? extends IFeature> buildings, IFeatureCollection<? extends IFeature> parcels) {
@@ -319,18 +316,13 @@ public class Profile {
 	 * Constructeur initialisant le paramètre YProjectionShifting à zMin - 2.
 	 * (Espace de 4 m entre les deux parties de la voirie)
 	 * 
-	 * @param roadsProfiled
-	 *            la route à partir de laquelle le profil est calculé
-	 * @param buildings
-	 *            batiments pour lesquels le profil est calculé
-	 * @param parcels
-	 *            parcelles sur lesquelles se trouvent les bâtiments. Lors du
-	 *            calcul de profil on ne considère que la parcelle la plus
-	 *            proche
-	 * @param zMin
-	 *            altitude minimale pour le calcul du profil
-	 * @param zMax
-	 *            altitude maximale pour le calcul du profil
+	 * @param roadsProfiled la route à partir de laquelle le profil est calculé
+	 * @param buildings     batiments pour lesquels le profil est calculé
+	 * @param parcels       parcelles sur lesquelles se trouvent les bâtiments. Lors
+	 *                      du calcul de profil on ne considère que la parcelle la
+	 *                      plus proche
+	 * @param zMin          altitude minimale pour le calcul du profil
+	 * @param zMax          altitude maximale pour le calcul du profil
 	 */
 	public Profile(IFeatureCollection<? extends IFeature> roadsProfiled,
 			IFeatureCollection<? extends IFeature> buildings, IFeatureCollection<? extends IFeature> parcels,
@@ -347,22 +339,15 @@ public class Profile {
 	 * Constructeur initialisant le paramètre YProjectionShifting à zMin - 2.
 	 * (Espace de 4 m entre les deux parties de la voirie)
 	 * 
-	 * @param roadsProfiled
-	 *            la route à partir de laquelle le profil est calculé
-	 * @param buildings
-	 *            batiments pour lesquels le profil est calculé
-	 * @param parcels
-	 *            parcelles sur lesquelles se trouvent les bâtiments. Lors du
-	 *            calcul de profil on ne considère que la parcelle la plus
-	 *            proche
-	 * @param zMin
-	 *            altitude minimale pour le calcul du profil
-	 * @param zMax
-	 *            altitude maximale pour le calcul du profil
-	 * @param stepXY
-	 *            pas le long de la route choisie
-	 * @param stepZ
-	 *            pas en z pour les lancers de rayons
+	 * @param roadsProfiled la route à partir de laquelle le profil est calculé
+	 * @param buildings     batiments pour lesquels le profil est calculé
+	 * @param parcels       parcelles sur lesquelles se trouvent les bâtiments. Lors
+	 *                      du calcul de profil on ne considère que la parcelle la
+	 *                      plus proche
+	 * @param zMin          altitude minimale pour le calcul du profil
+	 * @param zMax          altitude maximale pour le calcul du profil
+	 * @param stepXY        pas le long de la route choisie
+	 * @param stepZ         pas en z pour les lancers de rayons
 	 */
 	public Profile(IFeatureCollection<? extends IFeature> roadsProfiled,
 			IFeatureCollection<? extends IFeature> buildings, IFeatureCollection<? extends IFeature> parcels,
@@ -468,8 +453,6 @@ public class Profile {
 
 		logger.info("Number of roads : " + roadsProfiled.size());
 
-		IFeatureCollection<IFeature> coll_points = new FT_FeatureCollection<IFeature>();
-
 		// La collection des vecteurs normaux que l'on souhaite afficher
 
 		featOrthoColl = new FT_FeatureCollection<IFeature>();
@@ -501,213 +484,12 @@ public class Profile {
 			return;
 		}
 
-		 nbP = dpl.size();
-
-		int counter = 0;
+		nbP = dpl.size();
 
 		// Boucles sur les points échantillonnés
 
-	
+		IntStream.rangeClosed(0, nbP-1).parallel().forEach(x -> this.calculateForOnePoint(x, dpl));
 
-		for (int i = 0; i < nbP; i++) {
-
-			// Mise-à-jour du compteur
-			counter = i * 100 / nbP;
-
-			// Le point que l'on traite A
-			IDirectPosition dpPred = dpl.get(i);
-			coll_points.add(new DefaultFeature(new GM_Point(dpPred)));
-
-			// Le point suivant B
-			IDirectPosition dpSuiv;
-
-			// Vecteur AB
-			Vecteur vLine;
-			if (i == nbP - 1) {
-
-				dpSuiv = dpl.get(i - 1);
-				vLine = new Vecteur(dpSuiv, dpPred);
-
-			} else {
-
-				dpSuiv = dpl.get(i + 1);
-				vLine = new Vecteur(dpPred, dpSuiv);
-
-			}
-
-			vLine.normalise();
-
-			// Vecteur vertical
-			Vecteur vZ = new Vecteur(0, 0, 1);
-
-			// Le vecteur orthogonal à la route
-			Vecteur vOrtho = vLine.prodVectoriel(vZ);
-			Vecteur vOrtho1 = vOrtho.multConstante(longCut);
-			Vecteur vOrtho2 = vOrtho.multConstante(-longCut);
-
-			// Récupération des deux points translatés
-			IDirectPosition dpOrtho1 = vOrtho1.translate(dpPred);
-			IDirectPosition dpOrtho2 = vOrtho2.translate(dpPred);
-
-			// Génération de la liste des sommets pour créer une ligne
-
-			IDirectPositionList dplLineS = new DirectPositionList();
-			IDirectPositionList dplLineS1 = new DirectPositionList();
-
-			dplLineS.add(dpPred);
-			dplLineS.add(dpOrtho2);
-
-			dplLineS1.add(dpPred);
-			dplLineS1.add(dpOrtho1);
-
-			// Création de la ligne à partir d'une liste de sommets
-			ILineString ls = new GM_LineString(dplLineS);
-			ILineString ls1 = new GM_LineString(dplLineS1);
-
-			// Création d'une entité pour afficher avec la géométrie de la ligne
-			if (displayInit) {
-				featOrthoColl.add(new DefaultFeature(ls));
-				featOrthoColl.add(new DefaultFeature(ls1));
-			}
-
-			double X = i * pas;
-
-			// Petite optimisation : 0 on n'a pas croisé d'intersection 1 on en
-			// a
-			// croisé 2 on en croise plus, il n'y en a plus
-			int stat1 = 0;
-			int stat2 = 0;
-
-			IFeatureCollection<IFeature> batiPP = null;
-			IFeatureCollection<IFeature> batiPP1 = null;
-
-			if (parcelle == null || parcelle.isEmpty()) {
-				batiPP = BuildingProfileTools.batimentPProcheNoParcel(ls, bati, dpPred, buildingRoofs);
-				batiPP1 = BuildingProfileTools.batimentPProcheNoParcel(ls1, bati, dpPred, buildingRoofs);
-			} else {
-				batiPP = BuildingProfileTools.batimentPProche(parcelle, ls, bati, dpPred, buildingRoofs);
-				batiPP1 = BuildingProfileTools.batimentPProche(parcelle, ls1, bati, dpPred, buildingRoofs);
-			}
-
-			if (batiPP == null) {
-				stat1 = 2;
-			}
-			if (batiPP1 == null) {
-				stat2 = 2;
-			}
-
-			logger.info(counter + " %");
-
-			IDirectPosition pointz;
-
-			double altz;
-
-			for (altz = altZMin; altz < altZMax; altz = altz + pasZ) {
-
-				pointz = new DirectPosition(dpPred.getX(), dpPred.getY(), altz);
-
-				double Y1 = altz - diff2DRep;
-				double Y2 = -altz + diff2DRep;
-
-				// trouver le batiment le pp proche
-
-				if (batiPP != null) {
-
-					IFeature pointbati2 = BuildingProfileTools.intersectionPProche(new LineEquation(pointz, vOrtho2),
-							batiPP, pointz);
-
-					if (pointbati2 != null) {
-
-						double distance = Double.parseDouble(pointbati2.getAttribute("Distance").toString());
-
-						if (distance <= longCut) {
-							buildingSide1.add(pointbati2);
-
-							IDirectPosition ptproj = new DirectPosition();
-							ptproj.setCoordinate(X, Y1);
-							IFeature ftP = (new DefaultFeature(new GM_Point(ptproj)));
-
-							// Ajout de l'attribut distance)
-							Object O = pointbati2.getAttribute("Distance");
-							AttributeManager.addAttribute(ftP, BuildingProfileParameters.NAM_ATT_DISTANCE, O, "Double");
-							Object Ox = X;
-							AttributeManager.addAttribute(ftP, BuildingProfileParameters.NAM_ATT_X, Ox, "Double");
-							Object Oy = Y1;
-							AttributeManager.addAttribute(ftP, BuildingProfileParameters.NAM_ATT_Y, Oy, "Double");
-							Object Oid = pointbati2.getAttribute(BuildingProfileParameters.ID);
-							AttributeManager.addAttribute(ftP, BuildingProfileParameters.ID, Oid, "Double");
-							pproj.add(ftP);
-							stat1 = 1;
-						} else {
-
-							if (stat1 == 1) {
-
-								stat1 = 2;
-
-							}
-						}
-
-					} else {
-
-						if (stat1 == 1) {
-
-							stat1 = 2;
-
-						}
-
-					}
-				}
-
-				if (batiPP1 != null) {
-
-					IFeature pointbati1 = BuildingProfileTools.intersectionPProche(new LineEquation(pointz, vOrtho1),
-							batiPP1, pointz);
-
-					if (pointbati1 != null) {
-
-						double distance = Double.parseDouble(pointbati1.getAttribute("Distance").toString());
-
-						if (distance <= longCut) {
-
-							buildingSide2.add(pointbati1);
-							IDirectPosition ptproj1 = new DirectPosition();
-							ptproj1.setCoordinate(X, Y2);
-
-							IFeature ftP1 = (new DefaultFeature(new GM_Point(ptproj1)));
-							Object O1 = pointbati1.getAttribute("Distance");
-							AttributeManager.addAttribute(ftP1, BuildingProfileParameters.NAM_ATT_DISTANCE, O1,
-									"Double");
-							Object Ox1 = X;
-							AttributeManager.addAttribute(ftP1, BuildingProfileParameters.NAM_ATT_X, Ox1, "Double");
-							Object Oy1 = Y2;
-							AttributeManager.addAttribute(ftP1, BuildingProfileParameters.NAM_ATT_Y, Oy1, "Double");
-							Object Oid1 = pointbati1.getAttribute(BuildingProfileParameters.ID);
-							AttributeManager.addAttribute(ftP1, BuildingProfileParameters.ID, Oid1, "Double");
-							pproj.add(ftP1);
-							stat1 = 1;
-
-						} else {
-							if (stat2 == 1) {
-
-								stat2 = 2;
-
-							}
-						}
-
-					} else {
-
-						if (stat2 == 1) {
-
-							stat2 = 2;
-
-						}
-
-					}
-				}
-
-				// à rectifier une fois que altzini à été initialisé
-			}
-		}
 
 		if (!displayInit) {
 			logger.info("-------------------------------------------");
@@ -718,6 +500,204 @@ public class Profile {
 
 	}
 
+	private void calculateForOnePoint(int i, IDirectPositionList dpl) {
+
+		// Mise-à-jour du compteur
+		int counter = i * 100 / nbP;
+
+		// Le point que l'on traite A
+		IDirectPosition dpPred = dpl.get(i);
+
+		// Le point suivant B
+		IDirectPosition dpSuiv;
+
+		// Vecteur AB
+		Vecteur vLine;
+		if (i == nbP - 1) {
+
+			dpSuiv = dpl.get(i - 1);
+			vLine = new Vecteur(dpSuiv, dpPred);
+
+		} else {
+
+			dpSuiv = dpl.get(i + 1);
+			vLine = new Vecteur(dpPred, dpSuiv);
+
+		}
+
+		vLine.normalise();
+
+		// Vecteur vertical
+		Vecteur vZ = new Vecteur(0, 0, 1);
+
+		// Le vecteur orthogonal à la route
+		Vecteur vOrtho = vLine.prodVectoriel(vZ);
+		Vecteur vOrtho1 = vOrtho.multConstante(longCut);
+		Vecteur vOrtho2 = vOrtho.multConstante(-longCut);
+
+		// Récupération des deux points translatés
+		IDirectPosition dpOrtho1 = vOrtho1.translate(dpPred);
+		IDirectPosition dpOrtho2 = vOrtho2.translate(dpPred);
+
+		// Génération de la liste des sommets pour créer une ligne
+
+		IDirectPositionList dplLineS = new DirectPositionList();
+		IDirectPositionList dplLineS1 = new DirectPositionList();
+
+		dplLineS.add(dpPred);
+		dplLineS.add(dpOrtho2);
+
+		dplLineS1.add(dpPred);
+		dplLineS1.add(dpOrtho1);
+
+		// Création de la ligne à partir d'une liste de sommets
+		ILineString ls = new GM_LineString(dplLineS);
+		ILineString ls1 = new GM_LineString(dplLineS1);
+
+		// Création d'une entité pour afficher avec la géométrie de la ligne
+		if (displayInit) {
+			featOrthoColl.add(new DefaultFeature(ls));
+			featOrthoColl.add(new DefaultFeature(ls1));
+		}
+
+		double X = i * pas;
+
+		// Petite optimisation : 0 on n'a pas croisé d'intersection 1 on en
+		// a
+		// croisé 2 on en croise plus, il n'y en a plus
+		int stat1 = 0;
+		int stat2 = 0;
+
+		IFeatureCollection<IFeature> batiPP = null;
+		IFeatureCollection<IFeature> batiPP1 = null;
+
+		if (parcelle == null || parcelle.isEmpty()) {
+			batiPP = BuildingProfileTools.batimentPProcheNoParcel(ls, bati, dpPred, buildingRoofs);
+			batiPP1 = BuildingProfileTools.batimentPProcheNoParcel(ls1, bati, dpPred, buildingRoofs);
+		} else {
+			batiPP = BuildingProfileTools.batimentPProche(parcelle, ls, bati, dpPred, buildingRoofs);
+			batiPP1 = BuildingProfileTools.batimentPProche(parcelle, ls1, bati, dpPred, buildingRoofs);
+		}
+
+		if (batiPP == null) {
+			stat1 = 2;
+		}
+		if (batiPP1 == null) {
+			stat2 = 2;
+		}
+
+		logger.info(counter + " %");
+
+		IDirectPosition pointz;
+
+		double altz;
+
+		for (altz = altZMin; altz < altZMax; altz = altz + pasZ) {
+
+			pointz = new DirectPosition(dpPred.getX(), dpPred.getY(), altz);
+
+			double Y1 = altz - diff2DRep;
+			double Y2 = -altz + diff2DRep;
+
+			// trouver le batiment le pp proche
+
+			if (batiPP != null) {
+
+				IFeature pointbati2 = BuildingProfileTools.intersectionPProche(new LineEquation(pointz, vOrtho2),
+						batiPP, pointz);
+
+				if (pointbati2 != null) {
+
+					double distance = Double.parseDouble(pointbati2.getAttribute("Distance").toString());
+
+					if (distance <= longCut) {
+						buildingSide1.add(pointbati2);
+
+						IDirectPosition ptproj = new DirectPosition();
+						ptproj.setCoordinate(X, Y1);
+						IFeature ftP = (new DefaultFeature(new GM_Point(ptproj)));
+
+						// Ajout de l'attribut distance)
+						Object O = pointbati2.getAttribute("Distance");
+						AttributeManager.addAttribute(ftP, BuildingProfileParameters.NAM_ATT_DISTANCE, O, "Double");
+						Object Ox = X;
+						AttributeManager.addAttribute(ftP, BuildingProfileParameters.NAM_ATT_X, Ox, "Double");
+						Object Oy = Y1;
+						AttributeManager.addAttribute(ftP, BuildingProfileParameters.NAM_ATT_Y, Oy, "Double");
+						Object Oid = pointbati2.getAttribute(BuildingProfileParameters.ID);
+						AttributeManager.addAttribute(ftP, BuildingProfileParameters.ID, Oid, "Double");
+						pproj.add(ftP);
+						stat1 = 1;
+					} else {
+
+						if (stat1 == 1) {
+
+							stat1 = 2;
+
+						}
+					}
+
+				} else {
+
+					if (stat1 == 1) {
+
+						stat1 = 2;
+
+					}
+
+				}
+			}
+
+			if (batiPP1 != null) {
+
+				IFeature pointbati1 = BuildingProfileTools.intersectionPProche(new LineEquation(pointz, vOrtho1),
+						batiPP1, pointz);
+
+				if (pointbati1 != null) {
+
+					double distance = Double.parseDouble(pointbati1.getAttribute("Distance").toString());
+
+					if (distance <= longCut) {
+
+						buildingSide2.add(pointbati1);
+						IDirectPosition ptproj1 = new DirectPosition();
+						ptproj1.setCoordinate(X, Y2);
+
+						IFeature ftP1 = (new DefaultFeature(new GM_Point(ptproj1)));
+						Object O1 = pointbati1.getAttribute("Distance");
+						AttributeManager.addAttribute(ftP1, BuildingProfileParameters.NAM_ATT_DISTANCE, O1, "Double");
+						Object Ox1 = X;
+						AttributeManager.addAttribute(ftP1, BuildingProfileParameters.NAM_ATT_X, Ox1, "Double");
+						Object Oy1 = Y2;
+						AttributeManager.addAttribute(ftP1, BuildingProfileParameters.NAM_ATT_Y, Oy1, "Double");
+						Object Oid1 = pointbati1.getAttribute(BuildingProfileParameters.ID);
+						AttributeManager.addAttribute(ftP1, BuildingProfileParameters.ID, Oid1, "Double");
+						pproj.add(ftP1);
+						stat1 = 1;
+
+					} else {
+						if (stat2 == 1) {
+
+							stat2 = 2;
+
+						}
+					}
+
+				} else {
+
+					if (stat2 == 1) {
+
+						stat2 = 2;
+
+					}
+
+				}
+			}
+
+			// à rectifier une fois que altzini à été initialisé
+		}
+	}
+
 	////////////////////////
 	//// EXPORT METHODE
 	///////////////////////
@@ -725,8 +705,7 @@ public class Profile {
 	/**
 	 * Méthode de sauvegarde des points projetés
 	 * 
-	 * @param output
-	 *            le shapefile dans lequel les points sont projetés
+	 * @param output le shapefile dans lequel les points sont projetés
 	 */
 	public void exportPoints(String output) {
 
@@ -742,10 +721,8 @@ public class Profile {
 	/**
 	 * Export sous forme d'un cercle des points
 	 * 
-	 * @param output
-	 *            le shapefile en sortie
-	 * @param radius
-	 *            le rayon
+	 * @param output le shapefile en sortie
+	 * @param radius le rayon
 	 */
 	public void exportAsCircle(String output, double radius) {
 
@@ -790,93 +767,108 @@ public class Profile {
 		return iFeatureCollOut;
 
 	}
-	
-	
+
 	public List<Double> getHeightAlongRoad(SIDE side, int begin, int end) {
-		
-		
-		List<Double> heights = new ArrayList<>();
 
 		if (pproj == null) {
 			logger.error("Erreur : profile is not generated");
-			return heights;
+			return null;
 		}
 
-		for (int i = begin; i < end; i++) {
+		if (side == SIDE.UPSIDE) {
+			if (lHeightUpper == null) {
+				fillListHeight();
+				System.out.println("size " + lHeightUpper.size() + " end " + end);
+			}
 
-			IFeatureCollection<IFeature> iFeatureCollTemp = this.getPointAtXstep(i * this.getXYStep(), side);
+			return lHeightUpper.subList(begin, end);
 
-			heights.add(iFeatureCollTemp.size() * this.getZStep());
+		} else if (side == SIDE.DOWNSIDE) {
+			if (lHeightDowner == null) {
+				fillListHeight();
+			}
+
+			return lHeightDowner.subList(begin, end);
 
 		}
 
-		return heights;
-		
-		
+		return null;
+
 	}
 
 	public List<Double> getHeightAlongRoad(SIDE side) {
+
 		return getHeightAlongRoad(side, 0, nbP);
 
 	}
-	
-	
-	
-	
-	private void initializeHashTable(){
-		
-		
+
+	private List<Double> lHeightUpper = null;
+	private List<Double> lHeightDowner = null;
+
+	private void fillListHeight() {
+
+		lHeightUpper = new ArrayList<>();
+		lHeightDowner = new ArrayList<>();
+
+		int nbPoints = this.getNumberOfPoints();
+		for (int i = 0; i < nbPoints; i++) {
+
+			IFeatureCollection<IFeature> iFeatureCollTemp = this.getPointAtXstep(i * this.getXYStep(), SIDE.UPSIDE);
+
+			lHeightUpper.add(iFeatureCollTemp.size() * this.getZStep());
+
+			iFeatureCollTemp = this.getPointAtXstep(i * this.getXYStep(), SIDE.DOWNSIDE);
+
+			lHeightDowner.add(iFeatureCollTemp.size() * this.getZStep());
+
+		}
+
+	}
+
+	private void initializeHashTable() {
+
 		pointsByX = new Hashtable<>();
-		
+
 		for (IFeature feat : this.pproj) {
 			double x = Double.parseDouble(feat.getAttribute(BuildingProfileParameters.NAM_ATT_X).toString());
-			
-			if(! pointsByX.containsKey(x)){
+
+			if (!pointsByX.containsKey(x)) {
 				pointsByX.put(x, new FT_FeatureCollection<>());
 			}
 			pointsByX.get(x).add(feat);
-			
+
 		}
 	}
-	
 
 	// Get the points at the X value
 	public IFeatureCollection<IFeature> getPointAtXstep(double xValue, SIDE side) {
 
-		
-		
-		
 		IFeatureCollection<IFeature> iFeatureCollOut = new FT_FeatureCollection<>();
 
 		if (pproj == null) {
 			logger.error("Erreur : profile is not generated");
 			return iFeatureCollOut;
 		}
-		
 
-		if(pointsByX == null){
+		if (pointsByX == null) {
 			initializeHashTable();
 		}
-		
+
 		IFeatureCollection<IFeature> featCollTemp = pointsByX.get(xValue);
-		
+
 		if (side.equals(SIDE.BOTH)) {
 			return featCollTemp;
-			
+
 		}
 
-		
-		if(featCollTemp == null ||featCollTemp.isEmpty()){
+		if (featCollTemp == null || featCollTemp.isEmpty()) {
 			return iFeatureCollOut;
 		}
-		
 
 		for (IFeature feat : featCollTemp) {
 
-	
 			double y = Double.parseDouble(feat.getAttribute(BuildingProfileParameters.NAM_ATT_Y).toString());
-			
-			
+
 			if (side.equals(SIDE.UPSIDE) && y > 0) {
 				iFeatureCollOut.add(feat);
 			} else if (side.equals(SIDE.DOWNSIDE) && y < 0) {

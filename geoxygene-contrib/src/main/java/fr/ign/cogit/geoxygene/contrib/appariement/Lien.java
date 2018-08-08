@@ -367,7 +367,7 @@ public class Lien extends DefaultFeature {
       final double pas) {
     double long1, long2;
     int nbTirets;
-    GM_MultiCurve<IOrientableCurve> tirets = new GM_MultiCurve<IOrientableCurve>();
+    GM_MultiCurve<IOrientableCurve> tirets = new GM_MultiCurve<>();
     ILineString tiret;
     IDirectPosition pt1, pt2;
     int i;
@@ -400,7 +400,7 @@ public class Lien extends DefaultFeature {
       final ILineString linestring, final IPoint point, final double pas) {
     double long1;
     int nbTirets;
-    GM_MultiCurve<IOrientableCurve> tirets = new GM_MultiCurve<IOrientableCurve>();
+    GM_MultiCurve<IOrientableCurve> tirets = new GM_MultiCurve<>();
     ILineString tiret;
     IDirectPosition pt1, pt2;
     int i;
@@ -427,9 +427,8 @@ public class Lien extends DefaultFeature {
    * @return link geometry
    */
   public static ILineString tiret(final ILineString linestring1, final ILineString linestring2) {
-    GM_LineString tiret = new GM_LineString(Operateurs.milieu(linestring1), Operateurs
+    return new GM_LineString(Operateurs.milieu(linestring1), Operateurs
         .milieu(linestring2));
-    return tiret;
   }
 
   /**
@@ -440,8 +439,7 @@ public class Lien extends DefaultFeature {
    * @return link geometry
    */
   public static ILineString tiret(final ILineString linestring, final IPoint point) {
-    GM_LineString tiret = new GM_LineString(Operateurs.milieu(linestring), point.getPosition());
-    return tiret;
+    return new GM_LineString(Operateurs.milieu(linestring), point.getPosition());
   }
 
   /**
@@ -458,7 +456,7 @@ public class Lien extends DefaultFeature {
       final double pas) {
     double long1;
     int nbTirets;
-    GM_MultiCurve<IOrientableCurve> tirets = new GM_MultiCurve<IOrientableCurve>();
+    GM_MultiCurve<IOrientableCurve> tirets = new GM_MultiCurve<>();
     ILineString tiret;
     IDirectPosition pt1, pt2;
     int i;
@@ -491,7 +489,7 @@ public class Lien extends DefaultFeature {
       final double pas) {
     double long1;
     int nbTirets;
-    GM_MultiCurve<IOrientableCurve> tirets = new GM_MultiCurve<IOrientableCurve>();
+    GM_MultiCurve<IOrientableCurve> tirets = new GM_MultiCurve<>();
     ILineString tiret;
     IDirectPosition pt1, pt2;
     int i;
@@ -521,8 +519,7 @@ public class Lien extends DefaultFeature {
       final ILineString linestring2) {
     IDirectPosition milieu = Operateurs.milieu(linestring1);
     IDirectPosition projete = Operateurs.projection(milieu, linestring2);
-    GM_LineString tiret = new GM_LineString(milieu, projete);
-    return tiret;
+    return new GM_LineString(milieu, projete);
   }
 
   /**
@@ -536,8 +533,7 @@ public class Lien extends DefaultFeature {
       final IAggregate<IGeometry> aggegat) {
     IDirectPosition milieu = Operateurs.milieu(linestring);
     IDirectPosition projete = Operateurs.projection(milieu, aggegat);
-    GM_LineString tiret = new GM_LineString(milieu, projete);
-    return tiret;
+    return new GM_LineString(milieu, projete);
   }
 
   /**
@@ -550,8 +546,7 @@ public class Lien extends DefaultFeature {
       final ILineString linestring) {
     IDirectPosition pt = point.getPosition();
     IDirectPosition projete = Operateurs.projection(pt, linestring);
-    GM_LineString tiret = new GM_LineString(pt, projete);
-    return tiret;
+    return new GM_LineString(pt, projete);
   }
 
   /**
@@ -564,8 +559,7 @@ public class Lien extends DefaultFeature {
       final IAggregate<IGeometry> aggregat) {
     IDirectPosition pt = point.getPosition();
     IDirectPosition projete = Operateurs.projection(pt, aggregat);
-    GM_LineString tiret = new GM_LineString(pt, projete);
-    return tiret;
+    return new GM_LineString(pt, projete);
   }
 
   /**
@@ -586,14 +580,14 @@ public class Lien extends DefaultFeature {
    */
   public final void setGeometrieReseaux(final boolean tirets, final double pas) {
     Iterator<IFeature> itObjRef, itObjComp;
-    IGeometry geomRef = null, geomComp = null;
+    IGeometry geomRef, geomComp;
     boolean refPoint;
     IGeometry buffer;
     IPoint centroide;
     ILineString ligne;
     IMultiCurve<IOrientableCurve> lignes;
 
-    GM_Aggregate<IGeometry> geomLien = new GM_Aggregate<IGeometry>();
+    GM_Aggregate<IGeometry> geomLien = new GM_Aggregate<>();
     itObjRef = this.getObjetsRef().iterator();
     while (itObjRef.hasNext()) {
       // determination du côté ref
@@ -613,7 +607,7 @@ public class Lien extends DefaultFeature {
 
       // cas "1 noeud ref --> d'autres choses": 1 tiret + 1 buffer
       if (refPoint) {
-        GM_Aggregate<IGeometry> groupe = new GM_Aggregate<IGeometry>();
+        GM_Aggregate<IGeometry> groupe = new GM_Aggregate<>();
         itObjComp = this.getObjetsComp().iterator();
         while (itObjComp.hasNext()) {
           // determination du côté comp
@@ -629,7 +623,7 @@ public class Lien extends DefaultFeature {
       }
 
       // cas "1 arc ref --> d'autres choses": des tirets
-      GM_Aggregate<IGeometry> aggr = new GM_Aggregate<IGeometry>();
+      GM_Aggregate<IGeometry> aggr = new GM_Aggregate<>();
       itObjComp = this.getObjetsComp().iterator();
       while (itObjComp.hasNext()) {
         // determination du côté comp
@@ -652,13 +646,14 @@ public class Lien extends DefaultFeature {
   // ////////////////////////////////////////////////////
   // POUR LES LIENS VERS DES SURFACES
   // ////////////////////////////////////////////////////
+  @SuppressWarnings("unchecked")
   private static IMultiSurface<IOrientableSurface> buildUnionGeometry(List<IFeature> list) {
-    List<IOrientableSurface> listRef = new ArrayList<IOrientableSurface>();
+    List<IOrientableSurface> listRef = new ArrayList<>();
     for (IFeature feat : list) {
       listRef.add((IOrientableSurface) feat.getGeom());
     }
     IGeometry unionRef = JtsAlgorithms.union(listRef);
-    IMultiSurface<IOrientableSurface> geomRef = new GM_MultiSurface<IOrientableSurface>();
+    IMultiSurface<IOrientableSurface> geomRef = new GM_MultiSurface<>();
     if (unionRef instanceof IMultiSurface) {
       geomRef = (IMultiSurface<IOrientableSurface>) unionRef;
     } else {

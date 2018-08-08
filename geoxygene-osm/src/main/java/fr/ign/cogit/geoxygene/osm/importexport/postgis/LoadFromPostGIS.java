@@ -16,6 +16,7 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -26,6 +27,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.threeten.extra.Interval;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import fr.ign.cogit.geoxygene.osm.anonymization.db.SQLDBPreAnonymization;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMNode;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMRelation;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMRelation.RoleMembre;
@@ -122,6 +130,65 @@ public class LoadFromPostGIS {
 	}
 
 	/**
+	 * Récupère les coordonnées de limites administratives (Version généralisée
+	 * de getCityBoundary au département, ou au pays)
+	 * 
+	 * @param placeName
+	 *            : nom d'une ville, d'un département, d'un pays, d'un village,
+	 *            etc..
+	 * @param timestamp
+	 * @return
+	 * @throws Exception
+	 */
+	public Double[] getBoundary(String placeName, String timestamp, String adminLevel) throws Exception {
+		java.sql.Connection conn;
+		try {
+			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
+			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			String query = "SELECT idrel FROM  relation WHERE tags -> 'boundary' = 'administrative' ANd tags->'admin_level'='"
+					+ adminLevel + "' " + "AND tags-> 'name'='" + placeName + "' AND datemodif <= '" + timestamp
+					+ "' ORDER BY vrel DESC LIMIT 1;";
+			ResultSet r = s.executeQuery(query);
+			// Get relation members
+			Long idrel = null;
+			while (r.next()) {
+				idrel = r.getLong("idrel");
+			}
+			System.out.println("idrel = " + idrel);
+
+			query = "DROP TABLE IF EXISTS enveloppe ;"
+					+ "CREATE TABLE enveloppe (lon_min numeric DEFAULT 180,lat_min numeric DEFAULT 90,lon_max numeric DEFAULT -180,lat_max numeric DEFAULT -90);"
+					+ "INSERT INTO enveloppe VALUES (180, 90, -180 ,-90);";
+			query += "SELECT relation_boundary(" + idrel + ", '" + timestamp + "');"; // run
+																						// first
+																						// pgScript
+																						// "relation_boundary.sql"
+			s.execute(query);
+			query = "SELECT * FROM enveloppe LIMIT 1;";
+			ResultSet r1 = s.executeQuery(query);
+			Double xmin = null, ymin = null, xmax = null, ymax = null;
+			while (r1.next()) {
+				xmin = r1.getDouble("lon_min");
+				ymin = r1.getDouble("lat_min");
+				xmax = r1.getDouble("lon_max");
+				ymax = r1.getDouble("lat_max");
+				System.out.println(xmin);
+				System.out.println(ymin);
+				System.out.println(xmax);
+				System.out.println(ymax);
+			}
+
+			Double[] borders = { xmin, ymin, xmax, ymax };
+			s.close();
+			conn.close();
+			return borders;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
 	 * Creates a new set of OSMResource data which contain at least one of the
 	 * input key tags
 	 * 
@@ -140,6 +207,65 @@ public class LoadFromPostGIS {
 			}
 		}
 		return filteredData;
+	}
+
+	/**
+	 * Gets created_at and closed_at attributes from table changeset for a given
+	 * uid
+	 * 
+	 * @param uid
+	 * @param timespan
+	 * @throws Exception
+	 */
+	public List<Interval> getChangesets(Long uid, String[] timespan) throws Exception {
+		List<Interval> changesets = new ArrayList<Interval>();
+		java.sql.Connection conn;
+		try {
+			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
+			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+			String query = "SELECT created_at, closed_at FROM changeset WHERE " + "uid = " + uid
+					+ " AND created_at >= '" + timespan[0] + "' AND closed_at < '" + timespan[1]
+					+ "' ORDER BY created_at";
+
+			ResultSet r = s.executeQuery(query);
+			System.out.println("------- Query Executed -------");
+			DateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssX");
+
+			while (r.next()) {
+				Date beginDate = null;
+				Date endDate = null;
+				try {
+					beginDate = formatDate.parse(r.getString("created_at"));
+					endDate = formatDate.parse(r.getString("closed_at"));
+					Instant beginInstant = null;
+					Instant endInstant = null;
+					beginInstant = beginDate.toInstant();
+					endInstant = endDate.toInstant();
+					// System.out.println(
+					// "Date to instant (begin) : " + beginDate.toString() + "
+					// -> " + beginInstant.toString());
+					// System.out
+					// .println("Date to instant (end) : " + endDate.toString()
+					// + " -> " + endInstant.toString());
+					if (beginInstant.isBefore(endInstant)) {
+						Interval interval = Interval.of(beginInstant, endInstant);
+						changesets.add(interval);
+					}
+
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+
+			}
+			s.close();
+			conn.close();
+			// return invisible;
+		} catch (Exception e) {
+			throw e;
+		}
+		return changesets;
 	}
 
 	/**
@@ -187,7 +313,8 @@ public class LoadFromPostGIS {
 			// System.out.println("outer.size() = " + outer.size());
 			if (outer.size() != 1)
 				continue;
-			System.out.println(" Outer member ID = " + outer.get(0).getRef());
+			// System.out.println(" Outer member ID = " +
+			// outer.get(0).getRef());
 			if (indexedWays.keySet().contains(outer.get(0).getRef())) {
 				System.out.println("Relation " + rel.getId() + " est dans la ville ");
 				latestBuildings.remove(outer.get(0).getRef());
@@ -365,8 +492,9 @@ public class LoadFromPostGIS {
 		}
 	}
 
-	public Set<OSMResource> getNodes(List<Long> nodes, String timestamp) throws Exception {
-		Set<OSMResource> nodeSet = new HashSet<OSMResource>();
+	public List<OSMResource> getNodes(List<Long> nodes, String timestamp) throws Exception {
+		List<OSMResource> nodeSet = new ArrayList<OSMResource>();
+		OSMResource firstResource = null;
 
 		java.sql.Connection conn;
 		try {
@@ -376,21 +504,102 @@ public class LoadFromPostGIS {
 
 			for (int i = 0; i < nodes.size() - 1; i++) {
 				Long id = nodes.get(i);
+
 				String vmax = "(SELECT max(vnode) AS max FROM node WHERE id = " + id + " AND datemodif <= '" + timestamp
 						+ "')";
+				System.out.println("Node ID" + id + ", vmax : " + vmax);
 				String query = "SELECT node.idnode, node.id,node.uid,node.vnode, node.changeset, node.username, node.datemodif, hstore_to_json(node.tags), node.visible, node.lon, node.lat "
 						+ "FROM node WHERE id = " + id + " AND vnode = " + vmax;
 				ResultSet r = s.executeQuery(query);
-				while (r.next())
-					nodeSet.add(this.writeNode(r));
-			}
+				if (r.next() == false) {
+					s.close();
+					conn.close();
+					return null;
+					// OSMResource n = getNodeFromAPI(id, timestamp);
+					// nodeSet.add(n);
+					// if (i == 0)
+					// firstResource = n;
 
+					// TODO : mettre à jour la base de donnée à partir d'un
+					// OSMResource
+					// continue;
+				} else {
+					do {
+						OSMResource n = this.writeNode(r);
+						nodeSet.add(n);
+						if (i == 0)
+							firstResource = n;
+					} while (r.next());
+				}
+
+			}
 			s.close();
 			conn.close();
+			nodeSet.add(firstResource);
 			return nodeSet;
 		} catch (Exception e) {
 			throw e;
 		}
+	}
+
+	public OSMResource getNodeFromAPI(Long nodeID, String date) {
+		OSMResource r = null;
+		try {
+			String urlAPI = "http://api.openstreetmap.org/api/0.6/node/" + nodeID + "/history";
+			Document xml = SQLDBPreAnonymization.getDataFromAPI(urlAPI);
+			Node osm = xml.getFirstChild();
+			NodeList versions = osm.getChildNodes();
+			for (int i = 1; i < versions.getLength(); i++) {
+				if (versions.item(i).getNodeType() == Node.ELEMENT_NODE) {
+					Element contrib = (Element) versions.item(i);
+
+					// Fetch metadata
+					System.out.println("Getfrom API node #" + nodeID + ", latest version before" + date + "...");
+					// String primitive = contrib.getTagName();
+					String id = contrib.getAttribute("id");
+					String version = contrib.getAttribute("version");
+					String changeset = contrib.getAttribute("changeset");
+					String timestamp = contrib.getAttribute("timestamp");
+					if (Instant.parse(timestamp).isAfter(Instant.parse(date)))
+						break;
+					String visible = contrib.getAttribute("visible");
+					String user = contrib.getAttribute("user");
+					String uid = contrib.getAttribute("uid");
+					String lon = "";
+					String lat = "";
+					if (visible.equals("false")) {
+						r = new OSMResource(user, new OSMNode(-2000.0, -2000.0), id, changeset, version, uid, timestamp,
+								visible);
+						continue;
+					}
+					// if (primitive.equals("node")) {
+					lon = contrib.getAttribute("lon");
+					lat = contrib.getAttribute("lat");
+					r = new OSMResource(user, new OSMNode(Double.valueOf(lat), Double.valueOf(lon)), id, changeset,
+							version, uid, timestamp, visible);
+					// }
+
+					// System.out.println(primitive + " " + id + " " + version +
+					// " " + timestamp);
+
+					// Fetch tags
+					NodeList tags = contrib.getChildNodes();
+					for (int j = 1; j < tags.getLength(); j++) {
+						if (tags.item(j).getNodeType() == Node.ELEMENT_NODE) {
+							Element child = (Element) tags.item(j);
+							if (child.getNodeName().equals("tag")) {
+								r.addTag(child.getAttribute("k"), child.getAttribute("v"));
+							}
+						}
+					}
+
+				}
+			}
+			return r;
+		} catch (NullPointerException e) {
+			System.out.println("See node ID : " + nodeID);
+		}
+		return r;
 	}
 
 	/**
@@ -448,7 +657,7 @@ public class LoadFromPostGIS {
 			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
 			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
 			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			// Query the evolution of all buildings which where selected at
+			// Query the evolution of all nodes which where selected at
 			// timespan[0] until timespan[1]
 			String uniqueNodeQuery = "SELECT DISTINCT ON (id) * FROM node WHERE lon >= " + borders[0] + " AND lat>= "
 					+ borders[1] + " AND lon<= " + borders[2] + " AND lat<= " + borders[3]
@@ -464,7 +673,7 @@ public class LoadFromPostGIS {
 			System.out.println("------- Query Executed -------");
 			writeOSMResource(r, "node");
 
-			// Query the buildings that were created inside timespan and all the
+			// Query the nodes that were created inside timespan and all the
 			// versions which fall between this time interval
 			String createdNodes = "SELECT DISTINCT ON (id) * FROM node WHERE lon >= " + borders[0] + " AND lat>="
 					+ borders[1] + " AND lon<=" + borders[2] + " AND lat<=" + borders[3]
@@ -501,14 +710,87 @@ public class LoadFromPostGIS {
 			ResultSet r = s.executeQuery(query);
 			System.out.println("------- Query Executed -------");
 			OSMResource way = null;
-			while (r.next())
-				way = writeWay(r);
+			if (r.next() == false) {
+				way = getWayFromAPI(id, timestamp);
+			} else {
+				do {
+					way = writeWay(r);
+				} while (r.next());
+			}
+			// while (r.next())
+			// way = writeWay(r);
 			s.close();
 			conn.close();
 			return way;
 		} catch (Exception e) {
 			throw e;
 		}
+	}
+
+	public OSMResource getWayFromAPI(Long wayID, String vway) {
+		OSMResource r = null;
+		try {
+			String urlAPI = "http://api.openstreetmap.org/api/0.6/way/" + wayID + "/history";
+			Document xml = SQLDBPreAnonymization.getDataFromAPI(urlAPI);
+			Node osm = xml.getFirstChild();
+			NodeList versions = osm.getChildNodes();
+			for (int i = 1; i < versions.getLength(); i++) {
+				if (versions.item(i).getNodeType() == Node.ELEMENT_NODE) {
+					Element contrib = (Element) versions.item(i);
+					if (!contrib.getAttribute("version").equals(wayID))
+						continue;
+					// Fetch metadata
+					// String primitive = contrib.getTagName();
+					String id = contrib.getAttribute("id");
+					String version = contrib.getAttribute("version");
+					String changeset = contrib.getAttribute("changeset");
+					String timestamp = contrib.getAttribute("timestamp");
+					String visible = contrib.getAttribute("visible");
+					String user = contrib.getAttribute("user");
+					String uid = contrib.getAttribute("uid");
+
+					if (visible.equals("false")) {
+						r = new OSMResource(user, new OSMWay(new ArrayList<Long>()), id, changeset, version, uid,
+								timestamp, visible);
+						continue;
+					}
+
+					// Fetch tags and nodes
+					NodeList tagsAndNodes = contrib.getChildNodes();
+					ArrayList<Long> nodeComposition = new ArrayList<Long>();
+					int tagindex = 1;
+					// Get node composition
+					for (int j = 1; j < tagsAndNodes.getLength(); j++) {
+						if (tagsAndNodes.item(j).getNodeType() == Node.ELEMENT_NODE) {
+							Element child = (Element) tagsAndNodes.item(j);
+							if (child.getNodeName().equals("nd")) {
+								nodeComposition.add(Long.valueOf(child.getAttribute("ref")));
+							} else {
+								tagindex = j;
+								break;
+							}
+
+						}
+					}
+					r = new OSMResource(user, new OSMWay(nodeComposition), id, changeset, version, uid, timestamp,
+							visible);
+					// Get tags
+					for (int k = tagindex; k < tagsAndNodes.getLength(); k++) {
+						if (tagsAndNodes.item(k).getNodeType() == Node.ELEMENT_NODE) {
+							Element child = (Element) tagsAndNodes.item(k);
+							if (child.getNodeName().equals("tag")) {
+								r.addTag(child.getAttribute("k"), child.getAttribute("v"));
+							}
+						}
+					}
+				}
+
+			}
+			return r;
+		} catch (NullPointerException e) {
+			System.out.println("See way ID : " + wayID);
+		}
+		return r;
 	}
 
 	/**
@@ -571,14 +853,14 @@ public class LoadFromPostGIS {
 			// Query PostGIS table way : select ways that are created within
 			// timespan
 			String queryCreatedWays = "SELECT way.id,way.uid,way.vway, way.changeset, way.username, way.datemodif, hstore_to_json(way.tags), way.visible,way.composedof FROM way "
-					+ "WHERE vway = 1 AND datemodif > '" + timespan[0] + "' AND datemodif <= '" + timespan[1]
+					+ "WHERE vway = 1 AND datemodif >= '" + timespan[0] + "' AND datemodif <= '" + timespan[1]
 					+ "' AND lon_min >= " + borders[0] + " AND lat_min>=" + borders[1] + " AND lon_max<=" + borders[2]
 					+ " AND lat_max<=" + borders[3];
 			r = s.executeQuery(queryCreatedWays);
 			while (r.next())
 				waySet.add(this.writeWay(r));
 			// Query the created ways' evolution until end date
-			queryCreatedWays = "SELECT id FROM way " + "WHERE vway = 1 AND datemodif > '" + timespan[0]
+			queryCreatedWays = "SELECT id FROM way " + "WHERE vway = 1 AND datemodif >= '" + timespan[0]
 					+ "' AND datemodif <= '" + timespan[1] + "' AND lon_min >= " + borders[0] + " AND lat_min>="
 					+ borders[1] + " AND lon_max<=" + borders[2] + " AND lat_max<=" + borders[3];
 			query = "SELECT way.id,way.uid,way.vway, way.changeset, way.username, way.datemodif, hstore_to_json(way.tags), way.visible,way.composedof FROM way, ("
@@ -1197,6 +1479,56 @@ public class LoadFromPostGIS {
 			System.out.println("writeRelationMember(r)");
 			return osmRelMb;
 		}
+	}
+
+	public OSMResource writeRelation(ResultSet r, List<OsmRelationMember> members) throws Exception {
+		// Get date
+		DateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssX");
+		Date date = null;
+		try {
+			date = formatDate.parse(r.getString("datemodif"));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		String user = r.getString("username");
+		Long id = r.getLong("id");
+		Integer changeset = r.getInt("changeset");
+		Integer vrel = r.getInt("vrel");
+		Integer uid = r.getInt("uid");
+		// Récupère le type de relation (MULTIPOLYGON ou NON_DEF)
+		TypeRelation relType = getRelationType(r);
+		PrimitiveGeomOSM myRelation = new OSMRelation(relType, members);
+
+		// Creates a new OSMResource
+		OSMResource myOsmResource = new OSMResource(user, myRelation, id, changeset, vrel, uid, date);
+		// Visible : peut être null
+		myOsmResource.setVisible(r.getBoolean("visible"));
+		String hstoreToJson = r.getString("hstore_to_json");
+		// Add tags if exist
+		if (!hstoreToJson.toString().equalsIgnoreCase("{}")) {
+			try {
+				JSONObject obj = new JSONObject(hstoreToJson);
+				for (int i = 0; i < obj.names().length(); i++) {
+					String key = obj.names().getString(i);
+					String value = obj.getString(key);
+					System.out.println(" Ajout du tag {" + key + ", " + value + "}");
+					myOsmResource.addTag(key, value);
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		System.out.println("Java object created ! " + "\nid = " + myOsmResource.getId() + "\nusername = "
+				+ myOsmResource.getContributeur() + "     uid = " + myOsmResource.getUid() + "\nvrel = "
+				+ myOsmResource.getVersion() + "\ndate = " + myOsmResource.getDate() + "   Changeset = "
+				+ myOsmResource.getChangeSet());
+		// this.myJavaRelations.add(myOsmResource);
+
+		System.out.println("-------------------------------------------");
+		return myOsmResource;
+
 	}
 
 	public OSMResource writeRelation(ResultSet r) throws Exception {

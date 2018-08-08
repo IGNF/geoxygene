@@ -19,17 +19,6 @@
 
 package fr.ign.cogit.geoxygene.feature;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
-
-import org.apache.log4j.Logger;
-
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.event.FeatureCollectionEvent;
@@ -49,6 +38,11 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
+import org.apache.log4j.Logger;
+
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+import java.util.*;
 
 /**
  * Collection (liste) de IFeature. Peut porter un index spatial.
@@ -432,7 +426,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
       this.spatialindex = (SpatialIndex<Feat>) spatialIndexClass
           .getConstructor(
               new Class[] { IFeatureCollection.class, Boolean.class })
-          .newInstance(new Object[] { this, new Boolean(automaticUpdate) });
+          .newInstance(new Object[] { this, automaticUpdate});
       this.isIndexed = true;
     } catch (Exception e) {
       FT_FeatureCollection.logger
@@ -456,7 +450,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
               new Class[] { IFeatureCollection.class, Boolean.class,
                   Integer.class })
           .newInstance(
-              new Object[] { this, new Boolean(automaticUpdate), new Integer(i) });
+              new Object[] { this, automaticUpdate, i });
       this.isIndexed = true;
     } catch (Exception e) {
       FT_FeatureCollection.logger
@@ -479,8 +473,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
           .getConstructor(
               new Class[] { IFeatureCollection.class, Boolean.class,
                   IEnvelope.class, Integer.class }).newInstance(
-              new Object[] { this, new Boolean(automaticUpdate), enveloppe,
-                  new Integer(i) });
+              new Object[] { this, automaticUpdate, enveloppe, i });
       this.isIndexed = true;
     } catch (Exception e) {
       FT_FeatureCollection.logger

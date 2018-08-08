@@ -1,25 +1,32 @@
 package fr.ign.cogit.geoxygene.osm.contributor;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.threeten.extra.Interval;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.graphe.IEdge;
 import fr.ign.cogit.geoxygene.contrib.graphe.IGraph;
 import fr.ign.cogit.geoxygene.contrib.graphe.IGraphLinkableFeature;
 import fr.ign.cogit.geoxygene.contrib.graphe.INode;
-import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMResource;
+import fr.ign.cogit.geoxygene.osm.importexport.metrics.OSMResourceComparator;
+import fr.ign.cogit.geoxygene.osm.importexport.metrics.OSMResourceQualityAssessment;
 import fr.ign.cogit.geoxygene.osm.schema.OSMDefaultFeature;
 import fr.ign.cogit.geoxygene.osm.schema.OSMFeature;
 
@@ -31,7 +38,9 @@ public class OSMContributor implements INode {
 	private int id;
 	// private int nbContributions = 0;
 
-	private IFeatureCollection<DefaultFeature> activityAreas;
+	private IGeometry activityAreas;
+	private List<Interval> changesetDates;
+	private Boolean[] temporalActivityPerWeek;
 
 	public OSMContributor(IFeatureCollection<OSMDefaultFeature> contributions, String name, int id) {
 		super();
@@ -396,7 +405,7 @@ public class OSMContributor implements INode {
 		return null;
 	}
 
-	public IFeatureCollection<DefaultFeature> getActivityAreas() {
+	public IGeometry getActivityAreas() {
 		return activityAreas;
 	}
 
@@ -404,7 +413,7 @@ public class OSMContributor implements INode {
 		return this.resource.size();
 	}
 
-	public void setActivityAreas(IFeatureCollection<DefaultFeature> denseActivityCollection) {
+	public void setActivityAreas(IGeometry denseActivityCollection) {
 		this.activityAreas = denseActivityCollection;
 	}
 
@@ -423,6 +432,62 @@ public class OSMContributor implements INode {
 	public int getNbWeekendContributions() {
 		// TODO Auto-generated method stub
 		return this.getNbContributions() - this.getNbWeekContributions();
+	}
+
+	public List<Interval> getChangesetDates() {
+		return changesetDates;
+	}
+
+	public void setChangesetDates(List<Interval> changesetDates) {
+		this.changesetDates = changesetDates;
+	}
+
+	public Boolean[] getTemporalActivityPerWeek() {
+		return temporalActivityPerWeek;
+	}
+
+	public void setTemporalActivityPerWeek(Boolean[] temporalActivityPerWeek) {
+		this.temporalActivityPerWeek = temporalActivityPerWeek;
+	}
+
+	@SuppressWarnings("finally")
+	public int getNbWeeksActivity() {
+		int nbWeeks = 0;
+		// Les resources doivent être dans l'ordre chornologiques
+		List<OSMResource> resourceList = new ArrayList<OSMResource>(this.resource);
+		Collections.sort(resourceList, new OSMResourceComparator());
+		Date firstContributionDate = (resourceList.get(0).getDate());
+		Date lastContributionDate = (resourceList.get(this.resource.size() - 1)).getDate();
+		Calendar c1 = new GregorianCalendar();
+		Calendar c2 = new GregorianCalendar();
+
+		c1.setTime(firstContributionDate);
+		c2.setTime(lastContributionDate);
+
+		for (int year = c1.get(Calendar.YEAR); year <= c2.get(Calendar.YEAR); year++) {
+			Set<OSMResource> resourceByYear = new HashSet<OSMResource>();
+			for (OSMResource r : this.resource) {
+				Date contributionDate = r.getDate();
+				Calendar c = new GregorianCalendar();
+				c.setTime(contributionDate);
+				if (c.get(Calendar.YEAR) == year)
+					resourceByYear.add(r);
+			}
+			nbWeeks += OSMResourceQualityAssessment.countWeeks(resourceByYear);
+		}
+
+		try {
+			System.out.println(1 / nbWeeks);
+		} catch (ArithmeticException e) {
+			System.out.println("Division par zero : " + e.getMessage());
+			System.out.println("*** Date de chaque OSMResource ***");
+			for (OSMResource r : this.resource) {
+				System.out.println(r.getDate().toString());
+			}
+		} finally {
+			return nbWeeks;
+		}
+
 	}
 
 }

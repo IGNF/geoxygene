@@ -19,36 +19,26 @@
 
 package fr.ign.cogit.geoxygene.schema.util.persistance;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
+import fr.ign.cogit.geoxygene.api.feature.type.FC_FeatureAttributeValue;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.*;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.SchemaConceptuelProduit;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import fr.ign.cogit.geoxygene.api.feature.type.FC_FeatureAttributeValue;
-import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
-import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AssociationRole;
-import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AssociationType;
-import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
-import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
-import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.SchemaConceptuelJeu;
-import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.SchemaConceptuelProduit;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class ParserSchemaConceptuel {
 
@@ -113,7 +103,7 @@ public class ParserSchemaConceptuel {
             featureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType();
             // featureType.setTypeName(((Element)currentElement.getElementsByTagName("name").item(0)).get);
 
-            featureType.setId(new Integer(fType.getAttribute("id")).intValue());
+            featureType.setId(Integer.parseInt(fType.getAttribute("id")));
 
             featureType.setTypeName(fType.getElementsByTagName("typeName")
                 .item(0).getFirstChild().getNodeValue());
@@ -129,8 +119,7 @@ public class ParserSchemaConceptuel {
             for (int j = 0; j < listAttrib.getLength(); j++) {
               aType = (Element) listAttrib.item(j);
               featureAttribute = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.AttributeType();
-              featureAttribute.setId(new Integer(aType.getAttribute("id"))
-                  .intValue());
+              featureAttribute.setId(Integer.parseInt(aType.getAttribute("id")));
               featureAttribute.setMemberName(aType
                   .getElementsByTagName("memberName").item(0).getFirstChild()
                   .getNodeValue());
@@ -153,8 +142,7 @@ public class ParserSchemaConceptuel {
             asType = (Element) currentNode;
             featureAssociation = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.AssociationType();
 
-            featureAssociation.setId(new Integer(asType.getAttribute("id"))
-                .intValue());
+            featureAssociation.setId(Integer.parseInt(asType.getAttribute("id")));
             featureAssociation.setTypeName(asType
                 .getElementsByTagName("typeName").item(0).getFirstChild()
                 .getNodeValue());
@@ -166,8 +154,7 @@ public class ParserSchemaConceptuel {
             for (int j = 0; j < listAttrib.getLength(); j++) {
               aType = (Element) listAttrib.item(j);
               featureAttribute = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.AttributeType();
-              featureAttribute.setId(new Integer(aType.getAttribute("id"))
-                  .intValue());
+              featureAttribute.setId(Integer.parseInt(aType.getAttribute("id")));
               featureAttribute.setMemberName(aType
                   .getElementsByTagName("memberName").item(0).getFirstChild()
                   .getNodeValue());
@@ -189,8 +176,7 @@ public class ParserSchemaConceptuel {
               eRole = (Element) listRoles.item(j);
               associationRole = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.AssociationRole();
               // System.out.println("id role = "+eRole.getAttribute("id"));
-              associationRole.setId(new Integer(eRole.getAttribute("id"))
-                  .intValue());
+              associationRole.setId(Integer.parseInt(eRole.getAttribute("id")));
               associationRole.setMemberName(eRole
                   .getElementsByTagName("memberName").item(0).getFirstChild()
                   .getNodeValue());
@@ -205,8 +191,8 @@ public class ParserSchemaConceptuel {
               // je cherche le feature type associé
               // idFt =
               // eRole.getElementsByTagName("idFeatureType").item(0).getNodeValue()).intValue();
-              idFt = new Integer(eRole.getElementsByTagName("featureTypeId")
-                  .item(0).getFirstChild().getNodeValue()).intValue();
+              idFt = Integer.parseInt(eRole.getElementsByTagName("featureTypeId")
+                      .item(0).getFirstChild().getNodeValue());
               for (int k = 0; k < schemaCible.getFeatureTypes().size(); k++) {
                 ft = (fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType) schemaCible
                     .getFeatureTypes().get(k);
@@ -279,7 +265,7 @@ public class ParserSchemaConceptuel {
             featureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType();
             // featureType.setTypeName(((Element)currentElement.getElementsByTagName("name").item(0)).get);
 
-            featureType.setId(new Integer(fType.getAttribute("id")).intValue());
+            featureType.setId(Integer.parseInt(fType.getAttribute("id")));
 
             featureType.setTypeName(fType.getElementsByTagName("typeName")
                 .item(0).getFirstChild().getNodeValue());
@@ -295,8 +281,7 @@ public class ParserSchemaConceptuel {
             for (int j = 0; j < listAttrib.getLength(); j++) {
               aType = (Element) listAttrib.item(j);
               featureAttribute = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.AttributeType();
-              featureAttribute.setId(new Integer(aType.getAttribute("id"))
-                  .intValue());
+              featureAttribute.setId(Integer.parseInt(aType.getAttribute("id")));
               featureAttribute.setMemberName(aType
                   .getElementsByTagName("memberName").item(0).getFirstChild()
                   .getNodeValue());
@@ -319,8 +304,7 @@ public class ParserSchemaConceptuel {
             asType = (Element) currentNode;
             featureAssociation = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.AssociationType();
 
-            featureAssociation.setId(new Integer(asType.getAttribute("id"))
-                .intValue());
+            featureAssociation.setId(Integer.parseInt(asType.getAttribute("id")));
             featureAssociation.setTypeName(asType
                 .getElementsByTagName("typeName").item(0).getFirstChild()
                 .getNodeValue());
@@ -332,8 +316,7 @@ public class ParserSchemaConceptuel {
             for (int j = 0; j < listAttrib.getLength(); j++) {
               aType = (Element) listAttrib.item(j);
               featureAttribute = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.AttributeType();
-              featureAttribute.setId(new Integer(aType.getAttribute("id"))
-                  .intValue());
+              featureAttribute.setId(Integer.parseInt(aType.getAttribute("id")));
               featureAttribute.setMemberName(aType
                   .getElementsByTagName("memberName").item(0).getFirstChild()
                   .getNodeValue());
@@ -355,8 +338,7 @@ public class ParserSchemaConceptuel {
               eRole = (Element) listRoles.item(j);
               associationRole = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.AssociationRole();
               // System.out.println("id role = "+eRole.getAttribute("id"));
-              associationRole.setId(new Integer(eRole.getAttribute("id"))
-                  .intValue());
+              associationRole.setId(Integer.parseInt(eRole.getAttribute("id")));
               associationRole.setMemberName(eRole
                   .getElementsByTagName("memberName").item(0).getFirstChild()
                   .getNodeValue());
@@ -371,8 +353,8 @@ public class ParserSchemaConceptuel {
               // je cherche le feature type associé
               // idFt =
               // eRole.getElementsByTagName("idFeatureType").item(0).getNodeValue()).intValue();
-              idFt = new Integer(eRole.getElementsByTagName("featureTypeId")
-                  .item(0).getFirstChild().getNodeValue()).intValue();
+              idFt = Integer.parseInt(eRole.getElementsByTagName("featureTypeId")
+                  .item(0).getFirstChild().getNodeValue());
               for (int k = 0; k < schemaCible.getFeatureTypes().size(); k++) {
                 ft = (fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType) schemaCible
                     .getFeatureTypeI(k);
@@ -446,7 +428,7 @@ public class ParserSchemaConceptuel {
             featureType = new FeatureType();
             // featureType.setTypeName(((Element)currentElement.getElementsByTagName("name").item(0)).get);
 
-            featureType.setId(new Integer(fType.getAttribute("id")).intValue());
+            featureType.setId(Integer.parseInt(fType.getAttribute("id")));
 
             featureType.setTypeName(fType.getElementsByTagName("typeName")
                 .item(0).getFirstChild().getNodeValue());
@@ -462,8 +444,7 @@ public class ParserSchemaConceptuel {
             for (int j = 0; j < listAttrib.getLength(); j++) {
               aType = (Element) listAttrib.item(j);
               featureAttribute = new AttributeType();
-              featureAttribute.setId(new Integer(aType.getAttribute("id"))
-                  .intValue());
+              featureAttribute.setId(Integer.parseInt(aType.getAttribute("id")));
               featureAttribute.setMemberName(aType
                   .getElementsByTagName("memberName").item(0).getFirstChild()
                   .getNodeValue());
@@ -486,8 +467,7 @@ public class ParserSchemaConceptuel {
             asType = (Element) currentNode;
             featureAssociation = new AssociationType();
 
-            featureAssociation.setId(new Integer(asType.getAttribute("id"))
-                .intValue());
+            featureAssociation.setId(Integer.parseInt(asType.getAttribute("id")));
             featureAssociation.setTypeName(asType
                 .getElementsByTagName("typeName").item(0).getFirstChild()
                 .getNodeValue());
@@ -499,8 +479,7 @@ public class ParserSchemaConceptuel {
             for (int j = 0; j < listAttrib.getLength(); j++) {
               aType = (Element) listAttrib.item(j);
               featureAttribute = new AttributeType();
-              featureAttribute.setId(new Integer(aType.getAttribute("id"))
-                  .intValue());
+              featureAttribute.setId(Integer.parseInt(aType.getAttribute("id")));
               featureAttribute.setMemberName(aType
                   .getElementsByTagName("memberName").item(0).getFirstChild()
                   .getNodeValue());
@@ -522,8 +501,7 @@ public class ParserSchemaConceptuel {
               eRole = (Element) listRoles.item(j);
               associationRole = new AssociationRole();
               // System.out.println("id role = "+eRole.getAttribute("id"));
-              associationRole.setId(new Integer(eRole.getAttribute("id"))
-                  .intValue());
+              associationRole.setId(Integer.parseInt(eRole.getAttribute("id")));
               associationRole.setMemberName(eRole
                   .getElementsByTagName("memberName").item(0).getFirstChild()
                   .getNodeValue());
@@ -538,8 +516,8 @@ public class ParserSchemaConceptuel {
               // je cherche le feature type associé
               // idFt =
               // eRole.getElementsByTagName("idFeatureType").item(0).getNodeValue()).intValue();
-              idFt = new Integer(eRole.getElementsByTagName("featureTypeId")
-                  .item(0).getFirstChild().getNodeValue()).intValue();
+              idFt = Integer.parseInt(eRole.getElementsByTagName("featureTypeId")
+                  .item(0).getFirstChild().getNodeValue());
               for (int k = 0; k < schemaCible.getFeatureTypes().size(); k++) {
                 ft = (FeatureType) schemaCible.getFeatureTypes().get(k);
                 if (ft.getId() == idFt) {
@@ -607,7 +585,7 @@ public class ParserSchemaConceptuel {
             featureType = new FeatureType();
             // featureType.setTypeName(((Element)currentElement.getElementsByTagName("name").item(0)).get);
 
-            featureType.setId(new Integer(fType.getAttribute("id")).intValue());
+            featureType.setId(Integer.parseInt(fType.getAttribute("id")));
 
             featureType.setTypeName(fType.getElementsByTagName("typeName")
                 .item(0).getFirstChild().getNodeValue());
@@ -623,8 +601,7 @@ public class ParserSchemaConceptuel {
             for (int j = 0; j < listAttrib.getLength(); j++) {
               aType = (Element) listAttrib.item(j);
               featureAttribute = new AttributeType();
-              featureAttribute.setId(new Integer(aType.getAttribute("id"))
-                  .intValue());
+              featureAttribute.setId(Integer.parseInt(aType.getAttribute("id")));
               featureAttribute.setMemberName(aType
                   .getElementsByTagName("memberName").item(0).getFirstChild()
                   .getNodeValue());
@@ -647,8 +624,7 @@ public class ParserSchemaConceptuel {
             asType = (Element) currentNode;
             featureAssociation = new AssociationType();
 
-            featureAssociation.setId(new Integer(asType.getAttribute("id"))
-                .intValue());
+            featureAssociation.setId(Integer.parseInt(asType.getAttribute("id")));
             featureAssociation.setTypeName(asType
                 .getElementsByTagName("typeName").item(0).getFirstChild()
                 .getNodeValue());
@@ -660,8 +636,7 @@ public class ParserSchemaConceptuel {
             for (int j = 0; j < listAttrib.getLength(); j++) {
               aType = (Element) listAttrib.item(j);
               featureAttribute = new AttributeType();
-              featureAttribute.setId(new Integer(aType.getAttribute("id"))
-                  .intValue());
+              featureAttribute.setId(Integer.parseInt(aType.getAttribute("id")));
               featureAttribute.setMemberName(aType
                   .getElementsByTagName("memberName").item(0).getFirstChild()
                   .getNodeValue());
@@ -683,8 +658,7 @@ public class ParserSchemaConceptuel {
               eRole = (Element) listRoles.item(j);
               associationRole = new AssociationRole();
               // System.out.println("id role = "+eRole.getAttribute("id"));
-              associationRole.setId(new Integer(eRole.getAttribute("id"))
-                  .intValue());
+              associationRole.setId(Integer.parseInt(eRole.getAttribute("id")));
               associationRole.setMemberName(eRole
                   .getElementsByTagName("memberName").item(0).getFirstChild()
                   .getNodeValue());
@@ -699,8 +673,8 @@ public class ParserSchemaConceptuel {
               // je cherche le feature type associé
               // idFt =
               // eRole.getElementsByTagName("idFeatureType").item(0).getNodeValue()).intValue();
-              idFt = new Integer(eRole.getElementsByTagName("featureTypeId")
-                  .item(0).getFirstChild().getNodeValue()).intValue();
+              idFt = Integer.parseInt(eRole.getElementsByTagName("featureTypeId")
+                  .item(0).getFirstChild().getNodeValue());
               for (int k = 0; k < schemaCible.getFeatureTypes().size(); k++) {
                 ft = (FeatureType) schemaCible.getFeatureTypes().get(k);
                 if (ft.getId() == idFt) {

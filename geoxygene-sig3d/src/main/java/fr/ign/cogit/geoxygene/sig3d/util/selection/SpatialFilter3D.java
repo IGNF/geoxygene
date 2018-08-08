@@ -66,7 +66,7 @@ public class SpatialFilter3D {
 	 */
 	public static IFeatureCollection<IFeature> selectIncluded(IFeatureCollection<IFeature> featIn,
 			IFeatureCollection<IFeature> featCut) {
-		featIn.initSpatialIndex(Tiling.class, false);
+	
 
 		if (featIn == null || featIn.isEmpty()) {
 			return null;
@@ -156,7 +156,13 @@ public class SpatialFilter3D {
       IFeatureCollection<IFeature> featIn,
       IFeatureCollection<IFeature> featCut) {
 
+<<<<<<< HEAD
     IFeatureCollection<IFeature> featureOut = new FT_FeatureCollection<IFeature>();
+=======
+		IFeatureCollection<IFeature> featureOut = new FT_FeatureCollection<IFeature>();
+		
+		
+>>>>>>> d5f1c52915887f6894fe0f608b85910d7ce8a81f
 
     featIn.initSpatialIndex(Tiling.class, false);
 
@@ -165,7 +171,15 @@ public class SpatialFilter3D {
     bouclei: for (int i = 0; i < nbElem1; i++) {
       IFeature feat1 = featIn.get(i);
 
+<<<<<<< HEAD
       IGeometry geom = feat1.getGeom();
+=======
+			IDirectPositionList dpl = geom.coord();
+			
+			if(dpl.isEmpty()) {
+				continue;
+			}
+>>>>>>> d5f1c52915887f6894fe0f608b85910d7ce8a81f
 
       IDirectPositionList dpl = geom.coord();
      

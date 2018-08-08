@@ -91,11 +91,17 @@ public class OSMContributorAssessment {
 		return nbCrea;
 	}
 
+	/**
+	 * Count the number of contributions of a collection that are not a creation
+	 * nor a delete
+	 * 
+	 */
 	public static Integer getNbModification(Collection<OSMResource> contributions) {
 		int k = 0;
 		for (OSMResource r : contributions)
 			if (r.getVersion() > 1)
-				k++;
+				if (r.isVisible())
+					k++;
 		return k;
 	}
 
@@ -199,7 +205,8 @@ public class OSMContributorAssessment {
 	public static Integer getTotalChgsetCount(Integer uid) throws NullPointerException {
 		int nbChgsetTot = 0;
 		try {
-			String urlAPI = "http://api.openstreetmap.org/api/0.6/user/" + uid;
+			String urlAPI = "https://api.openstreetmap.org/api/0.6/user/" + uid;
+			System.out.println(urlAPI);
 			Document xml = SQLDBPreAnonymization.getDataFromAPI(urlAPI);
 
 			Node osm = xml.getFirstChild();
@@ -225,7 +232,7 @@ public class OSMContributorAssessment {
 	 */
 	public static Integer getNbBlockReceived(Integer uid) throws NullPointerException {
 		try {
-			String urlAPI = "http://api.openstreetmap.org/api/0.6/user/" + uid;
+			String urlAPI = "https://api.openstreetmap.org/api/0.6/user/" + uid;
 			Document xml = SQLDBPreAnonymization.getDataFromAPI(urlAPI);
 			Node osm = xml.getFirstChild();
 			Element user = (Element) osm.getChildNodes().item(1);
