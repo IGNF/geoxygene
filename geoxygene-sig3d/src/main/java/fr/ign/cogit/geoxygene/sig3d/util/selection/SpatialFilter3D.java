@@ -152,49 +152,53 @@ public class SpatialFilter3D {
 	 *            the faetures
 	 * @return a collection with selected features from featIn
 	 */
-	public static IFeatureCollection<IFeature> selectIntersected(IFeatureCollection<IFeature> featIn,
-	IFeatureCollection<IFeature> featCut) {
+  public static IFeatureCollection<IFeature> selectIntersected(
+      IFeatureCollection<IFeature> featIn,
+      IFeatureCollection<IFeature> featCut) {
 
-		IFeatureCollection<IFeature> featureOut = new FT_FeatureCollection<IFeature>();
-		
-		featIn.initSpatialIndex(Tiling.class, false);
+    IFeatureCollection<IFeature> featureOut = new FT_FeatureCollection<IFeature>();
 
-		int nbElem1 = featIn.size();
+    featIn.initSpatialIndex(Tiling.class, false);
 
-		bouclei: for (int i = 0; i < nbElem1; i++) {
-			IFeature feat1 = featIn.get(i);
+    int nbElem1 = featIn.size();
 
-			IGeometry geom = feat1.getGeom();
+    bouclei: for (int i = 0; i < nbElem1; i++) {
+      IFeature feat1 = featIn.get(i);
 
-			IDirectPositionList dpl = geom.coord();
+      IGeometry geom = feat1.getGeom();
 
-			Iterator<IFeature> itF = featCut.select(dpl.get(0), 0.1).iterator();
+      IDirectPositionList dpl = geom.coord();
+     
+      if (!dpl.isEmpty()) {
+       
+        Iterator<IFeature> itF = featCut.select(dpl.get(0), 0.1).iterator();
 
-			int nbP = dpl.size();
+        int nbP = dpl.size();
 
-			bwhile: while (itF.hasNext()) {
+        bwhile: while (itF.hasNext()) {
 
-				IFeature featTemp = itF.next();
-				IGeometry geomTemp = featTemp.getGeom();
-				for (int j = 1; j < nbP; j++) {
+          IFeature featTemp = itF.next();
+          IGeometry geomTemp = featTemp.getGeom();
+          for (int j = 1; j < nbP; j++) {
 
-					IPoint p = new GM_Point(dpl.get(j));
+            IPoint p = new GM_Point(dpl.get(j));
 
-					if (!geomTemp.contains(p)) {
-						continue bwhile;
-					}
+            if (!geomTemp.contains(p)) {
+              continue bwhile;
+            }
 
-				}
+          }
 
-				// Tous les points sont dans le polygone, on ne l'ajoute pas
-				featureOut.add(feat1);
-				continue bouclei;
+          // Tous les points sont dans le polygone, on ne l'ajoute pas
+          featureOut.add(feat1);
+          continue bouclei;
 
-			}
+        }
+      }
 
-		}
-		
-		return featureOut;
-	}
+    }
+
+    return featureOut;
+  }
 
 }
