@@ -205,7 +205,8 @@ public class OSMContributorAssessment {
 	public static Integer getTotalChgsetCount(Integer uid) throws NullPointerException {
 		int nbChgsetTot = 0;
 		try {
-			String urlAPI = "http://api.openstreetmap.org/api/0.6/user/" + uid;
+			String urlAPI = "https://api.openstreetmap.org/api/0.6/user/" + uid;
+			System.out.println(urlAPI);
 			Document xml = SQLDBPreAnonymization.getDataFromAPI(urlAPI);
 
 			Node osm = xml.getFirstChild();
@@ -231,7 +232,7 @@ public class OSMContributorAssessment {
 	 */
 	public static Integer getNbBlockReceived(Integer uid) throws NullPointerException {
 		try {
-			String urlAPI = "http://api.openstreetmap.org/api/0.6/user/" + uid;
+			String urlAPI = "https://api.openstreetmap.org/api/0.6/user/" + uid;
 			Document xml = SQLDBPreAnonymization.getDataFromAPI(urlAPI);
 			Node osm = xml.getFirstChild();
 			Element user = (Element) osm.getChildNodes().item(1);

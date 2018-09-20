@@ -657,7 +657,7 @@ public class LoadFromPostGIS {
 			String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbName;
 			conn = DriverManager.getConnection(url, this.dbUser, this.dbPwd);
 			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			// Query the evolution of all buildings which where selected at
+			// Query the evolution of all nodes which where selected at
 			// timespan[0] until timespan[1]
 			String uniqueNodeQuery = "SELECT DISTINCT ON (id) * FROM node WHERE lon >= " + borders[0] + " AND lat>= "
 					+ borders[1] + " AND lon<= " + borders[2] + " AND lat<= " + borders[3]
@@ -673,7 +673,7 @@ public class LoadFromPostGIS {
 			System.out.println("------- Query Executed -------");
 			writeOSMResource(r, "node");
 
-			// Query the buildings that were created inside timespan and all the
+			// Query the nodes that were created inside timespan and all the
 			// versions which fall between this time interval
 			String createdNodes = "SELECT DISTINCT ON (id) * FROM node WHERE lon >= " + borders[0] + " AND lat>="
 					+ borders[1] + " AND lon<=" + borders[2] + " AND lat<=" + borders[3]
@@ -853,14 +853,14 @@ public class LoadFromPostGIS {
 			// Query PostGIS table way : select ways that are created within
 			// timespan
 			String queryCreatedWays = "SELECT way.id,way.uid,way.vway, way.changeset, way.username, way.datemodif, hstore_to_json(way.tags), way.visible,way.composedof FROM way "
-					+ "WHERE vway = 1 AND datemodif > '" + timespan[0] + "' AND datemodif <= '" + timespan[1]
+					+ "WHERE vway = 1 AND datemodif >= '" + timespan[0] + "' AND datemodif <= '" + timespan[1]
 					+ "' AND lon_min >= " + borders[0] + " AND lat_min>=" + borders[1] + " AND lon_max<=" + borders[2]
 					+ " AND lat_max<=" + borders[3];
 			r = s.executeQuery(queryCreatedWays);
 			while (r.next())
 				waySet.add(this.writeWay(r));
 			// Query the created ways' evolution until end date
-			queryCreatedWays = "SELECT id FROM way " + "WHERE vway = 1 AND datemodif > '" + timespan[0]
+			queryCreatedWays = "SELECT id FROM way " + "WHERE vway = 1 AND datemodif >= '" + timespan[0]
 					+ "' AND datemodif <= '" + timespan[1] + "' AND lon_min >= " + borders[0] + " AND lat_min>="
 					+ borders[1] + " AND lon_max<=" + borders[2] + " AND lat_max<=" + borders[3];
 			query = "SELECT way.id,way.uid,way.vway, way.changeset, way.username, way.datemodif, hstore_to_json(way.tags), way.visible,way.composedof FROM way, ("

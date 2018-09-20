@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import au.com.bytecode.opencsv.CSVWriter;
@@ -31,66 +32,34 @@ public class ContributorAssessment {
 	 * @return a hashmap containing all OSM contributors indexed by their uid
 	 * @throws Exception
 	 */
+	// Delimiter used in CSV file
+	private static final String COMMA_DELIMITER = ",";
+	private static final String NEW_LINE_SEPARATOR = "\n";
+
+	public static String FILE_HEADER = "";
+
 	public static HashMap<Long, OSMContributor> contributorSummary(Set<OSMResource> myJavaObjects) throws Exception {
-		// Fills only the keys of myContributors hashmap
-		// HashMap<Long, OSMContributor> myContributors =
-		// osmContributorsInit(myJavaObjects);
+
 		HashMap<Long, OSMContributor> myContributors = new HashMap<Long, OSMContributor>();
 		// Parcourt myJavaObjects et associe à chaque contributeur ses
 		// contributions
 		Iterator<OSMResource> it = myJavaObjects.iterator();
 		while (it.hasNext()) {
 			OSMResource contribution = it.next();
-			// Pour l'instant: remplit on ne considère que les contributions de
-			// type node
-			if (contribution.getGeom().getClass().getSimpleName().equals("OSMNode")) {
-				Long uid = (long) contribution.getUid();
-				String username = contribution.getContributeur();
-				if (!myContributors.containsKey(uid)) {
-					// Ajout d'un nouveau contributeur dans la liste et
-					// initialise
-					// avec l'objet parcouru
-					myContributors.put(uid, new OSMContributor(new FT_FeatureCollection<OSMDefaultFeature>(), username,
-							uid.intValue()));
-					myContributors.get(uid).addContribution(contribution);
-				} else {
-					// Ajoute l'objet parcouru dans les contributions du
-					// contributeur existant
-					OSMDefaultFeature feature = OSMResource2OSMFeature(contribution, myJavaObjects);
-					myContributors.get(uid).addContribution(feature);
-					myContributors.get(uid).addContribution(contribution);
 
-				}
-			}
+			Long uid = (long) contribution.getUid();
+			String username = contribution.getContributeur();
+			if (!myContributors.containsKey(uid))
+				myContributors.put(uid,
+						new OSMContributor(new FT_FeatureCollection<OSMDefaultFeature>(), username, uid.intValue()));
+
+			OSMDefaultFeature feature = OSMResource2OSMFeature(contribution, myJavaObjects);
+			myContributors.get(uid).addContribution(feature);
+			myContributors.get(uid).addContribution(contribution);
 
 		}
-
-		// Iterator<Long> contributorsIDs = myContributors.keySet().iterator();
-		// while (contributorsIDs.hasNext()) {
-		// long currentUID = contributorsIDs.next();
-		// List<OSMFeature> contributionList =
-		// fillcontributionList(currentUID, myJavaObjects);
-		// for (OSMFeature contribution : contributionList)
-		// myContributors.get(currentUID).addContribution(contribution);
-
-		/** Calcul des indicateurs **/
-		// int nbOfContributions =
-		// myContributors.get(currentUID).getContributions().size();
-		// int nbOfDayTimeContributions =
-		// myContributors.get(currentUID).getDaytimeContributions().size();
-		// int nbOfNightTimeContributions =
-		// myContributors.get(currentUID).getNighttimeContributions().size();
-		// int nbOfweekContributions =
-		// myContributors.get(currentUID).getWeekContributions().size();
-		// int nbOfweekendContributions =
-		// myContributors.get(currentUID).getWeekEndContributions().size();
-		// myContributors.get(currentUID).setNbOfContributions(nbOfContributions);
-		// myContributors.get(currentUID).setNbOfDayTimeContributions(nbOfDayTimeContributions);
-		// myContributors.get(currentUID).setNbOfNightTimeContributions(nbOfNightTimeContributions);
-		// myContributors.get(currentUID).setNbOfweekContributions(nbOfweekContributions);
-		// myContributors.get(currentUID).setNbOfweekendContributions(nbOfweekendContributions);
-		// }
 		return myContributors;
+
 	}
 
 	public static List<OSMFeature> fillcontributionList(Long currentUID, Set<OSMResource> myJavaObjects)
@@ -211,5 +180,32 @@ public class ContributorAssessment {
 			writer.writeNext(line);
 		}
 		writer.close();
+	}
+
+	public static void toCSV(Map<Long, Object[]> indicatorList, File file) throws IOException {
+		FileWriter fileWriter = new FileWriter(file);
+		fileWriter.append(FILE_HEADER.toString());
+		fileWriter.append(NEW_LINE_SEPARATOR);
+		try {
+			for (Long id : indicatorList.keySet()) {
+				fileWriter.append(String.valueOf(id));
+				for (int i = 0; i < indicatorList.get(id).length; i++) {
+					fileWriter.append(COMMA_DELIMITER);
+					fileWriter.append(String.valueOf(indicatorList.get(id)[i]));
+				}
+				fileWriter.append(NEW_LINE_SEPARATOR);
+			}
+		} catch (Exception e) {
+			System.out.println("Erreur d'écriture");
+			e.printStackTrace();
+		} finally {
+			try {
+				fileWriter.flush();
+				fileWriter.close();
+			} catch (IOException e) {
+				System.out.println("Error while flushing/closing fileWriter !!!");
+				e.printStackTrace();
+			}
+		}
 	}
 }

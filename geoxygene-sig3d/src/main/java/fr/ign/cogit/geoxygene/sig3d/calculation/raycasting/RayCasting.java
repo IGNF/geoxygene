@@ -55,7 +55,7 @@ public class RayCasting {
 	/**
 	 * Epsilon pour arrondir les zéro
 	 */
-	public static double EPSILON = 0.000001;
+	public static double EPSILON = 0.01;
 	
 	public static double EPSILON_INSIDE_POLYGON = 0.01;
 
@@ -1412,4 +1412,34 @@ public class RayCasting {
 	public SphericalProjection getSphericalProjection() {
 		return this.sphericalProjection;
 	}
+	
+	public IFeature prepareRayCastingRecords( IFeature currentFeature) {
+
+		IFeature feat = null;
+		try {
+			feat = currentFeature.cloneGeom();
+		} catch (CloneNotSupportedException e) {
+
+			e.printStackTrace();
+		}
+
+		IndicatorVisu Iv = new IndicatorVisu(this);
+
+		AttributeManager.addAttribute(feat, "miniRadDis", Iv.getMinimalRadialDistance(), "Double");
+		AttributeManager.addAttribute(feat, "maxRadDis", Iv.getMaximalRadialDistance(), "Double");
+		AttributeManager.addAttribute(feat, "avgRadDis", Iv.getMoyRadialDistance(), "Double");
+		AttributeManager.addAttribute(feat, "varRadDis", Iv.getVarianceRadialDistance(), "Double");
+		AttributeManager.addAttribute(feat, "mnRDis2D", Iv.getMaximalRadialDistance2D(), "Double");
+		AttributeManager.addAttribute(feat, "avgRDis2D", Iv.getMoyRadialDistance2D(), "Double");
+		AttributeManager.addAttribute(feat, "openess", Iv.getOpeness(), "Double");
+		AttributeManager.addAttribute(feat, "ratioSph", Iv.getRatioSphere(), "Double");
+		AttributeManager.addAttribute(feat, "visSkySurf", Iv.getVisibleSkySurface(), "Double");
+		AttributeManager.addAttribute(feat, "visVol", Iv.getVisibleVolume(), "Double");
+		AttributeManager.addAttribute(feat, "visVolRa", Iv.getVisibleVolumeRatio(), "Double");
+		AttributeManager.addAttribute(feat, "solPeri", Iv.getSolidPerimeter(), "Double");
+
+		return feat;
+
+	}
+
 }

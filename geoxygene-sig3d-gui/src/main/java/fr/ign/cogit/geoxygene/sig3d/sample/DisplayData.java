@@ -8,6 +8,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.sig3d.gui.MainWindow;
+import fr.ign.cogit.geoxygene.sig3d.representation.sample.ObjectCartoon;
 import fr.ign.cogit.geoxygene.sig3d.semantic.Map3D;
 import fr.ign.cogit.geoxygene.sig3d.semantic.VectorLayer;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
@@ -42,7 +43,7 @@ public class DisplayData {
    * @return un GM_Solid en forme de cube
    */
   public static GM_Solid createCube() {
-    // On crée les 6 sommets du cube
+    // On crée les 8 sommets du cube
     DirectPosition p1 = new DirectPosition(0, 0, 0);
     DirectPosition p2 = new DirectPosition(120, 0, 0);
     DirectPosition p3 = new DirectPosition(120, 0, 120);
@@ -148,26 +149,28 @@ public class DisplayData {
     // On utilise le constructeur permettant d'utiliser une représentation
     // standard pour chaque entité - Pas besoin d'attacher à la main une
     // représentation par entité
+    
+    /*
     VectorLayer couche = new VectorLayer(featColl,// la collection qui
         // constituera la
         // couche
         "Cube", // Le nom de la couche
         true, // Indique qu'une couleur déterminée sera appliquée
         Color.orange, // La couleur à appliquer
-        1, // Le coefficient d'opacité
+        0.5, // Le coefficient d'opacité
         true// Indique que l'on souhaite une représentation solide et
     // non filaire
-    );
+    );*/
 
     // ///Manière compliquée
 
-    /*
-     * for(IFeature featTemp:featColl ){
-     * 
-     * featTemp.setRepresentation(new ObjectCartoon(featTemp, Color.pink)); }
-     */
-
-    // VectorLayer couche = new VectorLayer(featColl,"Cube");
+    
+     for(IFeature featTemp:featColl ){
+     
+    featTemp.setRepresentation(new ObjectCartoon(featTemp, Color.pink)); 
+     }
+     
+     VectorLayer couche = new VectorLayer(featColl,"Cube");
 
     // On ajoute la couche à la carte
     carte.addLayer(couche);

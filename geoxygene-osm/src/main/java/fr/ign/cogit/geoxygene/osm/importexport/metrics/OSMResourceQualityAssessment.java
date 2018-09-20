@@ -51,6 +51,18 @@ public class OSMResourceQualityAssessment {
 
 	}
 
+	public static int countWeeks(Set<OSMResource> oneYearContributions) {
+		Set<Integer> weekNumbers = new HashSet<Integer>();
+		for (OSMResource r : oneYearContributions) {
+			Date contributionDate = r.getDate();
+			Calendar c = new GregorianCalendar();
+			c.setTime(contributionDate);
+			int weekOfYear = c.get(Calendar.WEEK_OF_YEAR);
+			weekNumbers.add(weekOfYear);
+		}
+		return weekNumbers.size();
+	}
+
 	/**
 	 * Group OSM contributions by object
 	 * 
@@ -618,7 +630,7 @@ public class OSMResourceQualityAssessment {
 		this.myRelOSMObjects = myRelOSMObjects;
 	}
 
-	public void writeOSMObjectCSV(String filename, Long anonymValue) throws IOException {
+	public void writeOSMObjectCSV(String filename) throws IOException {
 		CSVWriter writer = new CSVWriter(new FileWriter(filename), ';');
 		// System.out.println("écriture du fichier csv");
 		// write header
@@ -627,7 +639,8 @@ public class OSMResourceQualityAssessment {
 
 		for (OSMObject obj : this.myOSMObjects.values()) {
 			for (OSMResource r : obj.getContributions()) {
-				String[] row = { String.valueOf(r.getId()), String.valueOf(r.getVersion()), String.valueOf(r.getUid()),
+				String[] row = { String.valueOf(r.getId()), String.valueOf(r.getVersion()),
+						String.valueOf(r.getChangeSet()), String.valueOf(r.getUid()),
 						String.valueOf(r.getContributeur()), String.valueOf(r.getDate()), String.valueOf(r.isVisible()),
 						String.valueOf(r.getGeom().getClass().getSimpleName()), String.valueOf(r.getSource()) };
 				writer.writeNext(row);

@@ -53,9 +53,6 @@ public class LoaderCityGML {
 		Context.CITY_GML_CONTEXT = context;
 
 		CityGMLReader reader = LoaderCityGML.getCityGMLInputFactory().createCityGMLReader(f);
-
-		//System.out.println(reader.hasNext());
-
 		CityGML citygml = reader.nextFeature();
 
 		CG_CityModel cityModel = new CG_CityModel((CityModel) citygml);
