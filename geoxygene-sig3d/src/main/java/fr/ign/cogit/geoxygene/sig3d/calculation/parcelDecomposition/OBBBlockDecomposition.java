@@ -42,7 +42,6 @@ public class OBBBlockDecomposition {
 	private double maximalArea, maximalWidth;
 	private RandomGenerator rng;
 	private double epsilon;
-	private double noise;
 	IPolygon p;
 
 	/**
@@ -60,8 +59,7 @@ public class OBBBlockDecomposition {
 	 * @param noise
 	 *            : the variety of parcel decomposition
 	 */
-	public OBBBlockDecomposition(IPolygon p, double maximalArea, double maximalWidth, RandomGenerator rng, double epsilon,
-			double noise) {
+	public OBBBlockDecomposition(IPolygon p, double maximalArea, double maximalWidth, RandomGenerator rng, double epsilon) {
 		super();
 
 		this.maximalArea = maximalArea;
@@ -69,7 +67,6 @@ public class OBBBlockDecomposition {
 		this.rng = rng;
 		this.epsilon = epsilon;
 		this.p = p;
-		this.noise = noise;
 	}
 
 	/**
@@ -78,8 +75,8 @@ public class OBBBlockDecomposition {
 	 * @return List of parcels
 	 * @throws Exception
 	 */
-	public IFeatureCollection<IFeature> decompParcel() throws Exception {
-		return decompParcel(this.p);
+	public IFeatureCollection<IFeature> decompParcel(double noise) throws Exception {
+		return decompParcel(this.p, noise);
 	}
 
 	/**
@@ -89,7 +86,7 @@ public class OBBBlockDecomposition {
 	 * @return
 	 * @throws Exception
 	 */
-	private IFeatureCollection<IFeature> decompParcel(IPolygon p) throws Exception {
+	private IFeatureCollection<IFeature> decompParcel(IPolygon p, double noise) throws Exception {
 
 		IFeatureCollection<IFeature> featCollOut = new FT_FeatureCollection<>();
 
@@ -105,7 +102,7 @@ public class OBBBlockDecomposition {
 
 		// Determination of splitting polygon (it is a splitting line in the
 		// article)
-		List<IPolygon> splittingPolygon = computeSplittingPolygon(p, true);
+		List<IPolygon> splittingPolygon = computeSplittingPolygon(p, true, noise);
 
 		// Split into polygon
 		List<IPolygon> splittedPolygon = split(p, splittingPolygon);
@@ -116,7 +113,7 @@ public class OBBBlockDecomposition {
 			// Probability to make a perpendicular split
 			if (rng.nextDouble() < epsilon) {
 				// Same steps but with different splitting geometries
-				splittingPolygon = computeSplittingPolygon(p, false);
+				splittingPolygon = computeSplittingPolygon(p, false, noise);
 
 				splittedPolygon = split(p, splittingPolygon);
 			}
@@ -125,7 +122,7 @@ public class OBBBlockDecomposition {
 
 		// All splitted polygones are splitted and results added to the output
 		for (IPolygon pol : splittedPolygon) {
-			featCollOut.addAll(decompParcel(pol));
+			featCollOut.addAll(decompParcel(pol, noise));
 		}
 
 		return featCollOut;
@@ -170,7 +167,7 @@ public class OBBBlockDecomposition {
 	 * @return
 	 * @throws Exception
 	 */
-	private List<IPolygon> computeSplittingPolygon(IPolygon pol, boolean shortDirectionSplit) throws Exception {
+	public static List<IPolygon> computeSplittingPolygon(IGeometry pol, boolean shortDirectionSplit, double noise) throws Exception {
 
 		// Determination of the bounding box
 		OrientedBoundingBox oBB = new OrientedBoundingBox(pol);
@@ -216,7 +213,7 @@ public class OBBBlockDecomposition {
 	 * @param edge
 	 * @return
 	 */
-	private IPolygon determinePolygon(IDirectPositionList intersectedPoints, ILineString edge) {
+	private static IPolygon determinePolygon(IDirectPositionList intersectedPoints, ILineString edge) {
 
 		IDirectPosition dp1 = intersectedPoints.get(0);
 		IDirectPosition dp2 = intersectedPoints.get(1);
@@ -254,7 +251,7 @@ public class OBBBlockDecomposition {
 	 * @param ls
 	 * @return
 	 */
-	private IDirectPositionList determineIntersectedPoints(LineEquation eq, List<ILineString> ls) {
+	private static IDirectPositionList determineIntersectedPoints(LineEquation eq, List<ILineString> ls) {
 
 		IDirectPosition dp1 = eq
 				.intersectionLineLine(new LineEquation(ls.get(0).coord().get(0), ls.get(0).coord().get(1)));

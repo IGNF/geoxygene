@@ -40,11 +40,11 @@ public class TestOBBBlockDecomposition {
 		double maximalWidth = 40;
 		RandomGenerator rng = new MersenneTwister(42);
 		double epsilon = 0;
-		double noise = 10;
+		double noise = 0;
 
-		OBBBlockDecomposition obb = new OBBBlockDecomposition(pol, maximalArea, maximalWidth, rng, epsilon, noise);
+		OBBBlockDecomposition obb = new OBBBlockDecomposition(pol, maximalArea, maximalWidth, rng, epsilon);
 		try {
-			IFeatureCollection<IFeature> featCOut = obb.decompParcel();
+			IFeatureCollection<IFeature> featCOut = obb.decompParcel(noise);
 			assertNotNull(featCOut);
 			assertTrue(! featCOut.isEmpty());
 		} catch (Exception e) {

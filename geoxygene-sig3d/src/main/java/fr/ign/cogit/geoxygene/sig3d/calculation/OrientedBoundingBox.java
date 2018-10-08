@@ -83,10 +83,13 @@ public class OrientedBoundingBox {
 		IMultiSurface<? extends IOrientableSurface> lOS =  RoofDetection.detectRoof(geom, 0.2, false);
 
 		if (lOS == null || lOS.size() == 0) {
+			poly = SmallestSurroundingRectangleComputation.getSSR(geom);
 			return;
+		}else {
+			poly = SmallestSurroundingRectangleComputation.getSSR(lOS);
 		}
 
-		poly = SmallestSurroundingRectangleComputation.getSSR(lOS);
+
 
 		Box3D b = new Box3D(geom);
 
