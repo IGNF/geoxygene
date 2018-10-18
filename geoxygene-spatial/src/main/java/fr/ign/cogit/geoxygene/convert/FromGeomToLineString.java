@@ -3,10 +3,14 @@ package fr.ign.cogit.geoxygene.convert;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
 public class FromGeomToLineString {
 
@@ -26,12 +30,12 @@ public class FromGeomToLineString {
 			return l;
 
 		} else if (geom instanceof IPolygon) {
-			
+
 			IPolygon pol = (IPolygon) geom;
-			
+
 			List<IOrientableCurve> l = new ArrayList<IOrientableCurve>();
 			l.add(pol.getExterior());
-			if(pol.getInterior() != null){
+			if (pol.getInterior() != null) {
 				l.addAll(pol.getInterior());
 			}
 			return l;
@@ -41,5 +45,59 @@ public class FromGeomToLineString {
 
 		return new ArrayList<IOrientableCurve>();
 
+	}
+
+	public static List<IOrientableCurve> convertInSegment(IGeometry geom) {
+
+		if (geom instanceof IMultiCurve<?>) {
+
+			@SuppressWarnings("unchecked")
+			IMultiCurve<IOrientableCurve> iMC = (IMultiCurve<IOrientableCurve>) geom;
+
+			return iMC.getList();
+
+		} else if (geom instanceof IOrientableCurve) {
+			List<IOrientableCurve> l = new ArrayList<IOrientableCurve>();
+
+			l.addAll(generateListOrientableSurfaceFromCoord(geom.coord()));
+
+			return l;
+
+		} else if (geom instanceof IPolygon) {
+
+			IPolygon pol = (IPolygon) geom;
+
+			List<IOrientableCurve> l = new ArrayList<IOrientableCurve>();
+
+			l.addAll(generateListOrientableSurfaceFromCoord(pol.getExterior().coord()));
+			if (pol.getInterior() != null) {
+				for (IRing r : pol.getInterior()) {
+
+					l.addAll(generateListOrientableSurfaceFromCoord(r.coord()));
+				}
+
+			}
+			return l;
+		}
+
+		System.out.println("ConvertToLineString : cas non traité " + geom.getClass());
+
+		return new ArrayList<IOrientableCurve>();
+
+	}
+
+	private static List<IOrientableCurve> generateListOrientableSurfaceFromCoord(IDirectPositionList dpl) {
+
+		int nbPoints = dpl.size();
+
+		List<IOrientableCurve> lC = new ArrayList<>();
+
+		for (int i = 1; i < nbPoints; i++) {
+
+			lC.add(new GM_LineString(new DirectPositionList(dpl.get(i - 1), dpl.get(i))));
+
+		}
+
+		return lC;
 	}
 }
