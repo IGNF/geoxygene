@@ -39,7 +39,7 @@ public class OBBBlockDecomposition {
 
 	private double maximalArea, maximalWidth;
 	private double epsilon;
-	IPolygon p;
+	IPolygon polygonInit;
 
 	/**
 	 * 
@@ -54,7 +54,7 @@ public class OBBBlockDecomposition {
 		this.maximalArea = maximalArea;
 		this.maximalWidth = maximalWidth;
 		this.epsilon = epsilon;
-		this.p = p;
+		this.polygonInit = p;
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class OBBBlockDecomposition {
 	 * @throws Exception
 	 */
 	public IFeatureCollection<IFeature> decompParcel(double noise) throws Exception {
-		return decompParcel(this.p, noise);
+		return decompParcel(this.polygonInit, noise);
 	}
 
 	/**
@@ -139,7 +139,7 @@ public class OBBBlockDecomposition {
 	 */
 	private double frontSideWidth(IPolygon p) {
 
-		ILineString ext = new GM_LineString(this.p.getExterior().coord());
+		ILineString ext = new GM_LineString(this.polygonInit.getExterior().coord());
 
 		return (p.buffer(0.1)).intersection(ext).length();
 	}
@@ -293,7 +293,7 @@ public class OBBBlockDecomposition {
 	 */
 	private boolean hasRoadAccess(IPolygon poly) {
 
-		ILineString ext = new GM_LineString(this.p.getExterior().coord());
+		ILineString ext = new GM_LineString(this.polygonInit.getExterior().coord());
 
 		return poly.intersects(ext.buffer(0.5));
 	}
