@@ -3,8 +3,6 @@ package fr.ign.cogit.geoxygene.sig3d.calculation.parcelDecomposition;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.math3.random.RandomGenerator;
-
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -40,31 +38,23 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 public class OBBBlockDecomposition {
 
 	private double maximalArea, maximalWidth;
-	private RandomGenerator rng;
 	private double epsilon;
 	IPolygon p;
 
 	/**
 	 * 
-	 * @param p
-	 *            : the polygon block that is decomposed
-	 * @param maximalArea
-	 *            : maximal area of splitted parcel
-	 * @param maximalWidth
-	 *            : maximal road access of splitter parcel
-	 * @param rng
-	 *            : the random generator
-	 * @param epsilon
-	 *            : the likeness to garuantee road access to parcels
-	 * @param noise
-	 *            : the variety of parcel decomposition
+	 * @param p            : the polygon block that is decomposed
+	 * @param maximalArea  : maximal area of splitted parcel
+	 * @param maximalWidth : maximal road access of splitter parcel
+	 * @param rng          : the random generator
+	 * @param epsilon      : the likeness to garuantee road access to parcels
+	 * @param noise        : the variety of parcel decomposition
 	 */
-	public OBBBlockDecomposition(IPolygon p, double maximalArea, double maximalWidth, RandomGenerator rng, double epsilon) {
+	public OBBBlockDecomposition(IPolygon p, double maximalArea, double maximalWidth, double epsilon) {
 		super();
 
 		this.maximalArea = maximalArea;
 		this.maximalWidth = maximalWidth;
-		this.rng = rng;
 		this.epsilon = epsilon;
 		this.p = p;
 	}
@@ -111,7 +101,7 @@ public class OBBBlockDecomposition {
 		// perpendicular split
 		if (!hasRoadAccess(splittedPolygon.get(0)) || !hasRoadAccess(splittedPolygon.get(1))) {
 			// Probability to make a perpendicular split
-			if (rng.nextDouble() < epsilon) {
+			if (Math.random() < epsilon) {
 				// Same steps but with different splitting geometries
 				splittingPolygon = computeSplittingPolygon(p, false, noise);
 
@@ -160,14 +150,14 @@ public class OBBBlockDecomposition {
 	 * Computed the splitting polygons composed by two boxes determined from the
 	 * oriented bounding boxes splited from a line at its middle
 	 * 
-	 * @param pol
-	 *            : the input polygon
-	 * @param shortDirectionSplit
-	 *            : it is splitted by the short edges or by the long edge.
+	 * @param pol                 : the input polygon
+	 * @param shortDirectionSplit : it is splitted by the short edges or by the long
+	 *                            edge.
 	 * @return
 	 * @throws Exception
 	 */
-	public static List<IPolygon> computeSplittingPolygon(IGeometry pol, boolean shortDirectionSplit, double noise) throws Exception {
+	public static List<IPolygon> computeSplittingPolygon(IGeometry pol, boolean shortDirectionSplit, double noise)
+			throws Exception {
 
 		// Determination of the bounding box
 		OrientedBoundingBox oBB = new OrientedBoundingBox(pol);
@@ -181,24 +171,26 @@ public class OBBBlockDecomposition {
 		// (to avoid lines that go out of parcel)
 		double noiseTemp = Math.min(oBB.getWidth() / 3, noise);
 
-		//X and Y move of the centroid
+		// X and Y move of the centroid
 		double alphaX = (0.5 - Math.random()) * noiseTemp;
 		double alphaY = (0.5 - Math.random()) * noiseTemp;
 		IDirectPosition translateCentroid = new DirectPosition(centroid.getX() + alphaX, centroid.getY() + alphaY);
 
-		//Determine the points that intersect the line and the OBB according to chosen direction
-		//This points will be used for splitting
+		// Determine the points that intersect the line and the OBB according to chosen
+		// direction
+		// This points will be used for splitting
 		IDirectPositionList intersectedPoints = determineIntersectedPoints(
 				new LineEquation(translateCentroid, splitDirection),
 				(shortDirectionSplit) ? oBB.getLongestEdges() : oBB.getShortestEdges());
 
-		//Construction of the two splitting polygons by using the OBB edges and the intersection points
+		// Construction of the two splitting polygons by using the OBB edges and the
+		// intersection points
 		IPolygon pol1 = determinePolygon(intersectedPoints,
 				(shortDirectionSplit) ? oBB.getShortestEdges().get(0) : oBB.getLongestEdges().get(0));
 		IPolygon pol2 = determinePolygon(intersectedPoints,
 				(shortDirectionSplit) ? oBB.getShortestEdges().get(1) : oBB.getLongestEdges().get(1));
 
-		//Generated polygons are added and returned
+		// Generated polygons are added and returned
 		List<IPolygon> outList = new ArrayList<>();
 		outList.add(pol1);
 		outList.add(pol2);
@@ -206,9 +198,9 @@ public class OBBBlockDecomposition {
 		return outList;
 	}
 
-	
 	/**
 	 * Build the output polygon from OBB edges and splitting points
+	 * 
 	 * @param intersectedPoints
 	 * @param edge
 	 * @return
@@ -247,6 +239,7 @@ public class OBBBlockDecomposition {
 
 	/**
 	 * Determine the splitting points from line equation and OBB edges
+	 * 
 	 * @param eq
 	 * @param ls
 	 * @return
@@ -268,6 +261,7 @@ public class OBBBlockDecomposition {
 
 	/**
 	 * Split the input polygons by a list of polygons
+	 * 
 	 * @param poly
 	 * @param polygones
 	 * @return
@@ -294,7 +288,8 @@ public class OBBBlockDecomposition {
 	}
 
 	/**
-	 * Indicate if 
+	 * Indicate if
+	 * 
 	 * @param poly
 	 * @return
 	 */
