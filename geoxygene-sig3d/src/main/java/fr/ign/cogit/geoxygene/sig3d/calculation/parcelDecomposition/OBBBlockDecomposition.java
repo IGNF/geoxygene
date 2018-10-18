@@ -46,9 +46,7 @@ public class OBBBlockDecomposition {
 	 * @param p            : the polygon block that is decomposed
 	 * @param maximalArea  : maximal area of splitted parcel
 	 * @param maximalWidth : maximal road access of splitter parcel
-	 * @param rng          : the random generator
 	 * @param epsilon      : the likeness to garuantee road access to parcels
-	 * @param noise        : the variety of parcel decomposition
 	 */
 	public OBBBlockDecomposition(IPolygon p, double maximalArea, double maximalWidth, double epsilon) {
 		super();
