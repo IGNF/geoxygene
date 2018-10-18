@@ -15,6 +15,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
 import fr.ign.cogit.geoxygene.convert.FromGeomToLineString;
 import fr.ign.cogit.geoxygene.convert.FromGeomToSurface;
@@ -75,7 +76,7 @@ public class FlagParcelDecomposition {
 		// Maxmimal area for a parcel
 		double maximalArea = 500;
 		// MAximal with to the road
-		double maximalWidth = 5;
+		double maximalWidth = 20;
 		// Do we want noisy results
 		double noise = 0.5;
 		// The with of the road that is created
@@ -286,14 +287,14 @@ public class FlagParcelDecomposition {
 
 			// The first geometry is the polygon with road access and a remove of the
 			// geometry
-			IGeometry geomPol1 = polyWithRoadAccess.difference(road);
+			IGeometry geomPol1 = polyWithRoadAccess.difference(road).buffer(0.01);
 
 			// The second geometry is the union between the road (intersection between road
 			// and existing parcel) and the original of the geomtry of the parcel with no
 			// road acess
-			IGeometry geomPol2 = polyWithNORoadAccess.union(road.intersection(polyWithRoadAccess));
+			IGeometry geomPol2 = polyWithNORoadAccess.union(road.intersection(polyWithRoadAccess)).buffer(0.01);
 
-		
+			
 			
 			
 			//It might be a multi polygon so we remove the small area < 
@@ -331,7 +332,6 @@ public class FlagParcelDecomposition {
 		//If we do not suceed to generate a proper road, we keep the initial polygons
 		if(polygonesOut.isEmpty()) {
 			polygonesOut = splittedPolygon;
-			System.out.println("Initial polygone");
 		}
 
 		return polygonesOut;
