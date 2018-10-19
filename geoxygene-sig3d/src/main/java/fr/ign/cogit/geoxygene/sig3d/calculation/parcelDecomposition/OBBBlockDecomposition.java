@@ -3,12 +3,6 @@ package fr.ign.cogit.geoxygene.sig3d.calculation.parcelDecomposition;
 import java.util.ArrayList;
 import java.util.List;
 
-<<<<<<< HEAD
-=======
-import org.apache.commons.math3.random.MersenneTwister;
-import org.apache.commons.math3.random.RandomGenerator;
-
->>>>>>> 8664bae0666183b485afb7d0ee298683fd721c1f
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -63,7 +57,7 @@ public class OBBBlockDecomposition {
 		IPolygon pol = (IPolygon) FromGeomToSurface.convertGeom(WktGeOxygene.makeGeOxygene(strMuliPol)).get(0);
 		System.out.println(pol.toString());
 		
-		OBBBlockDecomposition decomposition = new OBBBlockDecomposition(pol, maximalArea, maximalWidth, new MersenneTwister() , roadEpsilon);
+		OBBBlockDecomposition decomposition = new OBBBlockDecomposition(pol, maximalArea, maximalWidth,  roadEpsilon);
 		IFeatureCollection<IFeature> featColl = decomposition.decompParcel(noise);
 		
 	
