@@ -7,7 +7,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
-import fr.ign.cogit.geoxygene.datatools.hibernate.GeodatabaseHibernate;
 import fr.ign.cogit.geoxygene.datatools.hibernate.data.Point_eau;
 import fr.ign.cogit.geoxygene.datatools.hibernate.data.Troncon_cours_eau;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;

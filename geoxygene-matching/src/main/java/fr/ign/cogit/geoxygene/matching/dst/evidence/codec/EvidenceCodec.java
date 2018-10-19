@@ -19,9 +19,9 @@
 
 package fr.ign.cogit.geoxygene.matching.dst.evidence.codec;
 
-import fr.ign.cogit.geoxygene.matching.dst.evidence.Hypothesis;
-
 import java.util.List;
+
+import fr.ign.cogit.geoxygene.matching.dst.evidence.Hypothesis;
 
 /**
  * A codec takes hypotheses and encodes them as byte[]. It also decodes them.

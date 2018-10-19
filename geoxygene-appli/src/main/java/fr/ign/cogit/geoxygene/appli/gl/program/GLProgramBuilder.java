@@ -28,7 +28,6 @@
 package fr.ign.cogit.geoxygene.appli.gl.program;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;

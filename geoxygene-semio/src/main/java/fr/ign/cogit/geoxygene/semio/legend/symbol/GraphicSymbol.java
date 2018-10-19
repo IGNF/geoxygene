@@ -2,17 +2,17 @@ package fr.ign.cogit.geoxygene.semio.legend.symbol;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.style.Layer;
-import fr.ign.cogit.geoxygene.style.PointSymbolizer;
-import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
-import fr.ign.cogit.geoxygene.style.Symbolizer;
-import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
+import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.style.PointSymbolizer;
+import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
+import fr.ign.cogit.geoxygene.style.Symbolizer;
+import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
 
 /**
  * 

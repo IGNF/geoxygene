@@ -2,12 +2,10 @@ package fr.ign.cogit.geoxygene.contrib.quality.estim.spatialcontext.grid.gridcat
 
 import java.util.Collection;
 
-import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
  * 

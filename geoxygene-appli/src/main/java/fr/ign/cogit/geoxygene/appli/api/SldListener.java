@@ -22,6 +22,7 @@ import java.awt.event.ActionListener;
 import java.util.Collection;
 
 import fr.ign.cogit.geoxygene.appli.LayerLegendPanel;
+import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 

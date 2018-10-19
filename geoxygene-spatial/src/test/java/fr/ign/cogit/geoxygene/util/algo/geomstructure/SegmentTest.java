@@ -3,13 +3,12 @@ package fr.ign.cogit.geoxygene.util.algo.geomstructure;
 import java.util.Iterator;
 import java.util.Set;
 
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
+import junit.framework.Assert;
 
 public class SegmentTest {
 

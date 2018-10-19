@@ -22,7 +22,6 @@ package fr.ign.cogit.geoxygene.schemageo.api.support.reseau;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 

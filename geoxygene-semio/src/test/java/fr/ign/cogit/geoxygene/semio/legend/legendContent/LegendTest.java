@@ -9,7 +9,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.custommonkey.xmlunit.XMLTestCase;
 import org.junit.Assert;
 import org.junit.Test;
-import org.w3c.dom.Document;
 
 
 /**

@@ -33,8 +33,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import javax.vecmath.Point2d;
-
 import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage;
 import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage.GradientPixel;
 import fr.ign.cogit.geoxygene.util.gl.Sample;

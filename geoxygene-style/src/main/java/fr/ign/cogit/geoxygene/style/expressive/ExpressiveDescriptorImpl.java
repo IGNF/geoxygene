@@ -28,7 +28,6 @@
 package fr.ign.cogit.geoxygene.style.expressive;
 
 import java.util.ArrayList;
-
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;

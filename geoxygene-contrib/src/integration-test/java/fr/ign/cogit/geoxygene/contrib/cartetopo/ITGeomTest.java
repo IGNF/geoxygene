@@ -1,12 +1,11 @@
 package fr.ign.cogit.geoxygene.contrib.cartetopo;
 
-import org.junit.Test;
-import org.junit.Assert;
-
-import java.sql.DriverManager;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 
+import org.junit.Assert;
+import org.junit.Test;
 import org.postgis.PGgeometry;
 import org.postgresql.PGConnection;
 

@@ -5,9 +5,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.style.colorimetry.ColorReferenceSystem;
-import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
-
 import fr.ign.cogit.geoxygene.semio.legend.legendContent.LegendComponent;
 import fr.ign.cogit.geoxygene.semio.legend.legendContent.LegendLeaf;
 import fr.ign.cogit.geoxygene.semio.legend.mapContent.Map;
@@ -16,6 +13,8 @@ import fr.ign.cogit.geoxygene.semio.legend.metadata.SemanticRelation;
 import fr.ign.cogit.geoxygene.semio.legend.symbol.GraphicSymbol;
 import fr.ign.cogit.geoxygene.semio.legend.symbol.color.HueQualityContrastComparator;
 import fr.ign.cogit.geoxygene.semio.legend.symbol.color.LightnessQualityContrastComparator;
+import fr.ign.cogit.geoxygene.style.colorimetry.ColorReferenceSystem;
+import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
 
 /**
  * 

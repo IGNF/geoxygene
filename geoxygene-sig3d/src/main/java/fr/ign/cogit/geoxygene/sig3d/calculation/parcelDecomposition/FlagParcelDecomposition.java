@@ -15,7 +15,6 @@ import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
-import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
 import fr.ign.cogit.geoxygene.convert.FromGeomToLineString;
 import fr.ign.cogit.geoxygene.convert.FromGeomToSurface;
@@ -55,9 +54,9 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  */
 public class FlagParcelDecomposition {
 
-	//We remove some parts that may have a too small area < 25
-	public static double TOO_SMALL_PARCEL_AREA = 25;	
-	
+	// We remove some parts that may have a too small area < 25
+	public static double TOO_SMALL_PARCEL_AREA = 25;
+
 	public static void main(String[] args) throws Exception {
 		// Precision si set
 		DirectPosition.PRECISION = 4;
@@ -274,7 +273,7 @@ public class FlagParcelDecomposition {
 		// The output polygon
 		List<IPolygon> polygonesOut = new ArrayList<>();
 
-		boucleside : for (IMultiCurve<IOrientableCurve> side : sides) {
+		boucleside: for (IMultiCurve<IOrientableCurve> side : sides) {
 			// The geometry road
 			IGeometry road = sides.get(0).buffer(this.roadWidth);
 
@@ -294,43 +293,40 @@ public class FlagParcelDecomposition {
 			// road acess
 			IGeometry geomPol2 = polyWithNORoadAccess.union(road.intersection(polyWithRoadAccess)).buffer(0.01);
 
-			
-			
-			
-			//It might be a multi polygon so we remove the small area < 
+			// It might be a multi polygon so we remove the small area <
 			List<IPolygon> lPolygonsOut1 = FromGeomToSurface.convertGeom(geomPol1).stream().map(x -> (IPolygon) x)
 					.collect(Collectors.toList());
-			lPolygonsOut1 = lPolygonsOut1.stream().filter(x -> x.area() > TOO_SMALL_PARCEL_AREA).collect(Collectors.toList());
+			lPolygonsOut1 = lPolygonsOut1.stream().filter(x -> x.area() > TOO_SMALL_PARCEL_AREA)
+					.collect(Collectors.toList());
 
 			List<IPolygon> lPolygonsOut2 = FromGeomToSurface.convertGeom(geomPol2).stream().map(x -> (IPolygon) x)
 					.collect(Collectors.toList());
-			lPolygonsOut2 = lPolygonsOut2.stream().filter(x -> x.area() > TOO_SMALL_PARCEL_AREA).collect(Collectors.toList());
+			lPolygonsOut2 = lPolygonsOut2.stream().filter(x -> x.area() > TOO_SMALL_PARCEL_AREA)
+					.collect(Collectors.toList());
 
-			
-			
-			//We check if there is a road acces for all, if not we abort
-			for(IPolygon pol : lPolygonsOut1) {
-				if(! hasRoadAccess(pol)) {
-					System.out.println("Road access is missing ; polyinit : "+ this.polygonInit);
+			// We check if there is a road acces for all, if not we abort
+			for (IPolygon pol : lPolygonsOut1) {
+				if (!hasRoadAccess(pol)) {
+					System.out.println("Road access is missing ; polyinit : " + this.polygonInit);
 					System.out.println("Current polyg : " + pol);
 					continue boucleside;
-				} 
+				}
 			}
-			for(IPolygon pol : lPolygonsOut2) {
-				if(! hasRoadAccess(pol)) {
-					System.out.println("Road access is missing ; polyinit : "+ this.polygonInit);
+			for (IPolygon pol : lPolygonsOut2) {
+				if (!hasRoadAccess(pol)) {
+					System.out.println("Road access is missing ; polyinit : " + this.polygonInit);
 					System.out.println("Current polyg : " + pol);
 					continue boucleside;
-				} 
+				}
 			}
-			
+
 			polygonesOut.addAll(lPolygonsOut1);
 			polygonesOut.addAll(lPolygonsOut2);
 
 		}
-		
-		//If we do not suceed to generate a proper road, we keep the initial polygons
-		if(polygonesOut.isEmpty()) {
+
+		// If we do not suceed to generate a proper road, we keep the initial polygons
+		if (polygonesOut.isEmpty()) {
 			polygonesOut = splittedPolygon;
 		}
 

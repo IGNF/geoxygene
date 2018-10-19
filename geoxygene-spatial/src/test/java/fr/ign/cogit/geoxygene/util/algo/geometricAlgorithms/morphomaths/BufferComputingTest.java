@@ -1,7 +1,5 @@
 package fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.morphomaths;
 
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,6 +10,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
+import junit.framework.Assert;
 
 public class BufferComputingTest {
 

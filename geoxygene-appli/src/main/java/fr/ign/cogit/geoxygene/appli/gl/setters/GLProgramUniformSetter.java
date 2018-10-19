@@ -27,27 +27,18 @@
 
 package fr.ign.cogit.geoxygene.appli.gl.setters;
 
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glBindTexture;
-
-import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 
-import fr.ign.cogit.geoxygene.appli.gl.RasterImage;
 import fr.ign.cogit.geoxygene.appli.render.methods.NamedRenderingParametersMap;
 import fr.ign.cogit.geoxygene.appli.render.texture.TextureManager;
-import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
 import fr.ign.cogit.geoxygene.util.gl.GLTexture;

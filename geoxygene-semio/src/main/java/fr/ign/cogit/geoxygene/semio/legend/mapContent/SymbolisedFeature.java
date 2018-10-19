@@ -2,8 +2,8 @@ package fr.ign.cogit.geoxygene.semio.legend.mapContent;
 
 import java.util.List;
 
-import fr.ign.cogit.geoxygene.semio.legend.symbol.color.Contrast;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.semio.legend.symbol.color.Contrast;
 
 /**
  * 

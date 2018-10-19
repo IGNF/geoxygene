@@ -1,22 +1,7 @@
 package fr.ign.cogit.geoxygene.contrib.appariement;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.Assert;
 import org.junit.Test;
-
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.feature.IPopulation;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.AppariementIO;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.process.NetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
-import fr.ign.cogit.geoxygene.contrib.cartetopo.OrientationInterface;
-import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 
 /**
  * Test de comparaison :

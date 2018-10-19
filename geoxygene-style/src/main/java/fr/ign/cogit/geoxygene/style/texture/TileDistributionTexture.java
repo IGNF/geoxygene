@@ -26,7 +26,6 @@
  *******************************************************************************/
 package fr.ign.cogit.geoxygene.style.texture;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -36,10 +36,16 @@ package fr.ign.cogit.geoxygene.util.graphcut;
  * Changes
  * -------
  */
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 
-import java.util.*;
-
-import org.jgrapht.*;
+import org.jgrapht.DirectedGraph;
 
 /**
  * A <a href = "http://en.wikipedia.org/wiki/Flow_network">flow network</a> is a

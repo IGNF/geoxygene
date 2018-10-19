@@ -2,6 +2,7 @@ package fr.ign.cogit.geoxygene.distance;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;

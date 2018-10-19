@@ -1,8 +1,6 @@
 package fr.ign.cogit.geoxygene.appli.plugin.matching.dst;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
-import java.io.File;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
@@ -10,12 +8,10 @@ import javax.swing.JButton;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
-import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.appli.FloatingProjectFrame;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.plugin.AbstractGeOxygeneApplicationPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.matching.dst.gui.EvidenceGuiProcess;
-import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 
 

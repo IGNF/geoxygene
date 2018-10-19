@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import fr.ign.cogit.geoxygene.semio.legend.symbol.color.Contrast;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
+import fr.ign.cogit.geoxygene.semio.legend.symbol.color.Contrast;
 
 /**
  * 

@@ -28,7 +28,6 @@
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
 import java.net.URI;
-import java.net.URL;
 
 import fr.ign.cogit.geoxygene.appli.task.AbstractTask;
 import fr.ign.cogit.geoxygene.util.gl.GLTexture;

@@ -4,14 +4,14 @@ import java.io.File;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Schema;
-
-import junit.framework.Assert;
+import javax.xml.validation.SchemaFactory;
 
 import org.custommonkey.xmlunit.XMLTestCase;
 import org.junit.Test;
 import org.w3c.dom.Document;
+
+import junit.framework.Assert;
 
 /**
  * 

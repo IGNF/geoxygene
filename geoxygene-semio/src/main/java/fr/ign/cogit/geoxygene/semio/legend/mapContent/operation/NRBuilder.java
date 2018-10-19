@@ -3,10 +3,9 @@ package fr.ign.cogit.geoxygene.semio.legend.mapContent.operation;
 import java.util.Collection;
 
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
-import fr.ign.cogit.geoxygene.util.index.Tiling;
-
 import fr.ign.cogit.geoxygene.semio.legend.mapContent.NeighbohoodRelationship;
 import fr.ign.cogit.geoxygene.semio.legend.mapContent.SymbolisedFeature;
+import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 /**
  * 

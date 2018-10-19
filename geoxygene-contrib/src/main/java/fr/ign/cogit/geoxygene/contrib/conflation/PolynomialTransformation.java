@@ -1,10 +1,10 @@
 package fr.ign.cogit.geoxygene.contrib.conflation;
 
-import Jama.Matrix;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateFilter;
 import com.vividsolutions.jts.geom.Point;
+
+import Jama.Matrix;
 
 public class PolynomialTransformation {
   private Matrix transform;

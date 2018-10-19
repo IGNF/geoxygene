@@ -15,7 +15,6 @@ import java.util.ArrayList;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
-import fr.ign.cogit.geoxygene.contrib.algorithms.SwingingArmNonConvexHull;
 
 
 // =================================================================================

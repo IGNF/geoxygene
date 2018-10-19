@@ -3,8 +3,6 @@ package fr.ign.cogit.calculation.parcelDecomposition;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.commons.math3.random.MersenneTwister;
-import org.apache.commons.math3.random.RandomGenerator;
 import org.junit.Test;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;

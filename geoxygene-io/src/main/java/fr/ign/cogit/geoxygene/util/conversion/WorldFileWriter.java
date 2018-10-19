@@ -1,13 +1,10 @@
 package fr.ign.cogit.geoxygene.util.conversion;
 
 import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
-import org.geotools.referencing.operation.matrix.AffineTransform2D;
 
 /**
  * 

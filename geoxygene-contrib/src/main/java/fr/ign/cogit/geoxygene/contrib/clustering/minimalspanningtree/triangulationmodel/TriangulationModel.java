@@ -1,6 +1,5 @@
 package fr.ign.cogit.geoxygene.contrib.clustering.minimalspanningtree.triangulationmodel;
 
-import fr.ign.cogit.geoxygene.contrib.I18N;
 import fr.ign.cogit.geoxygene.contrib.delaunay.Triangulation;
 import fr.ign.cogit.geoxygene.feature.Population;
 

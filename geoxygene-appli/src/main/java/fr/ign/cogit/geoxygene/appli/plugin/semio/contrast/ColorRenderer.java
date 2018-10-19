@@ -31,6 +31,9 @@
 
 package fr.ign.cogit.geoxygene.appli.plugin.semio.contrast;
 
+import java.awt.Color;
+import java.awt.Component;
+
 /* 
  * ColorRenderer.java (compiles with releases 1.2, 1.3, and 1.4) is used by 
  * TableDialogEditDemo.java.
@@ -41,8 +44,6 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.border.Border;
 import javax.swing.table.TableCellRenderer;
-import java.awt.Color;
-import java.awt.Component;
 
 public class ColorRenderer extends JLabel
                            implements TableCellRenderer {

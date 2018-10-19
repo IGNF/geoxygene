@@ -28,7 +28,6 @@
 package fr.ign.cogit.geoxygene.appli.render.primitive;
 
 import java.net.URI;
-import java.net.URL;
 
 import org.apache.log4j.Logger;
 

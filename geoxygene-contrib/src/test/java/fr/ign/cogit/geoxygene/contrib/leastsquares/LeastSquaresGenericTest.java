@@ -3,12 +3,11 @@ package fr.ign.cogit.geoxygene.contrib.leastsquares;
 
 import java.util.ArrayList;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import fr.ign.cogit.geoxygene.contrib.leastsquaresgeneric.Constraint;
 import fr.ign.cogit.geoxygene.contrib.leastsquaresgeneric.Solver;
+import junit.framework.Assert;
 
 public class LeastSquaresGenericTest {
 

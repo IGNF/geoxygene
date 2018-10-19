@@ -28,6 +28,7 @@
 package fr.ign.cogit.geoxygene.appli.gl.setters;
 
 import java.net.URI;
+
 import fr.ign.cogit.geoxygene.appli.render.methods.NamedRenderingParametersMap;
 import fr.ign.cogit.geoxygene.appli.render.texture.TextureManager;
 import fr.ign.cogit.geoxygene.util.gl.GLException;

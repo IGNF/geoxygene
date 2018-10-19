@@ -9,12 +9,9 @@
  ******************************************************************************/
 package fr.ign.cogit.ontology.similarite;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.Collection;
 import java.util.Iterator;
 
-import edu.stanford.smi.protegex.owl.ProtegeOWL;
 import edu.stanford.smi.protegex.owl.model.OWLModel;
 import edu.stanford.smi.protegex.owl.model.OWLNamedClass;
 

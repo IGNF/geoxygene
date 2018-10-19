@@ -1,14 +1,10 @@
 package fr.ign.cogit.geoxygene.semio.legend.mapContent;
 
-import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +21,8 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.style.UserLayerFactory;
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
 public class MapTest extends TestCase {
 	

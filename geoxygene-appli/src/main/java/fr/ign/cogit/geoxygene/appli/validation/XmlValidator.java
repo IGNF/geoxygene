@@ -30,7 +30,6 @@ package fr.ign.cogit.geoxygene.appli.validation;
 import java.io.File;
 import java.io.InputStream;
 
-import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;

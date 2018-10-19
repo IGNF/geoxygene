@@ -19,10 +19,9 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-import java.awt.Color;
-import java.lang.System;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

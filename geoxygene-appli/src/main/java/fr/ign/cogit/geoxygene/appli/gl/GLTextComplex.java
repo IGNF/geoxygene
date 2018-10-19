@@ -46,7 +46,6 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.appli.GeoxygeneConstants;
 import fr.ign.cogit.geoxygene.appli.render.texture.ExpressiveRendering;
 import fr.ign.cogit.geoxygene.util.gl.AbstractGLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
@@ -54,8 +53,8 @@ import fr.ign.cogit.geoxygene.util.gl.GLInput;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLRenderingCapability;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
-import fr.ign.cogit.geoxygene.util.gl.GLTools;
 import fr.ign.cogit.geoxygene.util.gl.GLTexture;
+import fr.ign.cogit.geoxygene.util.gl.GLTools;
 
 /**
  * GL Primitive is a representation of a 2D Object with 2D coordinates, Texture

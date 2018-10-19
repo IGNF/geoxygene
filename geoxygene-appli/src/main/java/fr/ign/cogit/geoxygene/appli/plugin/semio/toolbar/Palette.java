@@ -19,8 +19,6 @@
 
 package fr.ign.cogit.geoxygene.appli.plugin.semio.toolbar;
 
-import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
-
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -29,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+
+import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
 
 /**
  * @author Charlotte Hoarau

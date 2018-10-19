@@ -25,8 +25,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import junit.framework.Assert;
 import fr.ign.cogit.geoxygene.filter.function.Max;
+import junit.framework.Assert;
 
 /**
  * @author Julien Perret
