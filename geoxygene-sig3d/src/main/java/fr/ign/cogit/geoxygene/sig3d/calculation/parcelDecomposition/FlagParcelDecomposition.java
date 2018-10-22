@@ -14,6 +14,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
 import fr.ign.cogit.geoxygene.convert.FromGeomToLineString;
@@ -27,6 +28,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
+import fr.ign.cogit.geoxygene.util.attribute.AttributeManager;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
@@ -62,29 +64,32 @@ public class FlagParcelDecomposition {
 		DirectPosition.PRECISION = 4;
 
 		// Input 1/ the input shapes to split
-		String inputShapeFile = "/home/mbrasebin/Bureau/FolderTest/shapes.shp";
+		String inputShapeFile =   "/home/mbrasebin/Bureau/misc/shapes_final.shp";
 		// Input 2 : the buildings that mustnt intersects the allowed roads
 		String inputBuildingFile = "/home/mbrasebin/Bureau/FolderTest/batimentSys.shp";
 		// The output file that will contain all the decompositions
-		String shapeFileOut = "/home/mbrasebin/Bureau/FolderTest/out.shp";
+		String shapeFileOut = "/home/mbrasebin/Bureau/misc/outflag.shp";
 
 		// Reading collection
 		IFeatureCollection<IFeature> featColl = ShapefileReader.read(inputShapeFile);
 		IFeatureCollection<IFeature> featCollBuildings = ShapefileReader.read(inputBuildingFile);
 
 		// Maxmimal area for a parcel
-		double maximalArea = 500;
+		double maximalArea = 2500;
 		// MAximal with to the road
-		double maximalWidth = 20;
+		double maximalWidth = 30;
 		// Do we want noisy results
-		double noise = 0.5;
+		double noise = 0;
 		// The with of the road that is created
 		double roadWidth = 3;
 
 		IFeatureCollection<IFeature> featCollOut = new FT_FeatureCollection<>();
 
+		int count = featColl.size();
 		// For each shape
-		for (IFeature feat : featColl) {
+		for (int i=11; i < count ; i++) {
+			IFeature feat = featColl.get(i);
+			System.out.println(i + " / " + featColl.size());
 
 			List<IOrientableSurface> surfaces = FromGeomToSurface.convertGeom(feat.getGeom());
 
@@ -97,6 +102,9 @@ public class FlagParcelDecomposition {
 			FlagParcelDecomposition ffd = new FlagParcelDecomposition((IPolygon) surfaces.get(0), featCollBuildings,
 					maximalArea, maximalWidth, roadWidth);
 			IFeatureCollection<IFeature> results = ffd.decompParcel(noise);
+			
+			final int intCurrentCount = i;
+			results.stream().forEach(x -> AttributeManager.addAttribute(x, "ID", intCurrentCount, "Integer"));
 
 			// Get the results
 			featCollOut.addAll(results);
@@ -197,13 +205,21 @@ public class FlagParcelDecomposition {
 
 		// All splitted polygones are splitted and results added to the output
 		for (IPolygon pol : splittedPolygon) {
+			if(pol.area() == 11988.47948206538) {
+				System.out.println();
+			}
+			
 			featCollOut.addAll(decompParcel(pol, noise));
+			System.out.println("Aire : " + pol.area());
+			System.out.println("Traité"+ (count++));
 		}
 
 		return featCollOut;
 
 	}
 
+	private static int count = 0;
+	
 	private List<IMultiCurve<IOrientableCurve>> regroupLineStrings(List<IOrientableCurve> lineStrings) {
 
 		List<IMultiCurve<IOrientableCurve>> curvesOutput = new ArrayList<>();
@@ -267,7 +283,7 @@ public class FlagParcelDecomposition {
 		// Can we have more than 2 sides ? I do not know for know it will be interesting
 		// to get it
 		if (sides.size() != 2) {
-			System.out.println("Side != 2 for pol : " + this.polygonInit);
+			//System.out.println("Side != 2 for pol : " + this.polygonInit);
 		}
 
 		// The output polygon
@@ -279,7 +295,7 @@ public class FlagParcelDecomposition {
 
 			// The road intersects a building, we do not keep it
 			if (!this.buildings.select(road).isEmpty()) {
-				System.out.println("Building case : " + this.polygonInit);
+				//System.out.println("Building case : " + this.polygonInit);
 				continue;
 
 			}
@@ -307,15 +323,15 @@ public class FlagParcelDecomposition {
 			// We check if there is a road acces for all, if not we abort
 			for (IPolygon pol : lPolygonsOut1) {
 				if (!hasRoadAccess(pol)) {
-					System.out.println("Road access is missing ; polyinit : " + this.polygonInit);
-					System.out.println("Current polyg : " + pol);
+					//System.out.println("Road access is missing ; polyinit : " + this.polygonInit);
+					//System.out.println("Current polyg : " + pol);
 					continue boucleside;
 				}
 			}
 			for (IPolygon pol : lPolygonsOut2) {
 				if (!hasRoadAccess(pol)) {
-					System.out.println("Road access is missing ; polyinit : " + this.polygonInit);
-					System.out.println("Current polyg : " + pol);
+					//System.out.println("Road access is missing ; polyinit : " + this.polygonInit);
+					//System.out.println("Current polyg : " + pol);
 					continue boucleside;
 				}
 			}
@@ -510,8 +526,18 @@ public class FlagParcelDecomposition {
 	private boolean hasRoadAccess(IPolygon poly) {
 
 		ILineString ext = new GM_LineString(this.polygonInit.getExterior().coord());
+		
+		if(poly.intersects(ext.buffer(0.5))) {
+			return true;
+		}
+		
+		for(IRing r : this.polygonInit.getInterior()) {
+			if(poly.intersects(r.buffer(0.5))) {
+				return true;
+			}
+		}
 
-		return poly.intersects(ext.buffer(0.5));
+		return false;
 	}
 
 }
