@@ -5,6 +5,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.math3.util.Pair;
+
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -64,15 +66,15 @@ public class FlagParcelDecomposition {
 		DirectPosition.PRECISION = 3;
 
 		// Input 1/ the input shapes to split
-		String inputShapeFile = "/home/mbrasebin/Bureau/misc/shapes_final.shp";
+		String inputShapeFile = "/home/mickael/Téléchargements/misc/shapes_final.shp";
 		// Input 2 : the buildings that mustnt intersects the allowed roads
 		String inputBuildingFile = "/home/mbrasebin/Bureau/FolderTest/batimentSys.shp";
 		// The output file that will contain all the decompositions
-		String shapeFileOut = "/home/mbrasebin/Bureau/misc/outflag.shp";
+		String shapeFileOut = "/tmp/tmp/outflag.shp";
 
 		// Reading collection
 		IFeatureCollection<IFeature> featColl = ShapefileReader.read(inputShapeFile);
-		IFeatureCollection<IFeature> featCollBuildings = ShapefileReader.read(inputBuildingFile);
+		IFeatureCollection<IFeature> featCollBuildings = new FT_FeatureCollection<>(); // ShapefileReader.read(inputBuildingFile);
 
 		// Maxmimal area for a parcel
 		double maximalArea = 2500;
@@ -126,12 +128,17 @@ public class FlagParcelDecomposition {
 	/**
 	 * Flag decomposition algorithm
 	 * 
-	 * @param p            the initial polygon to decompose
-	 * @param buildings    the buildings that will constraint the possibility of
-	 *                     adding a road
-	 * @param maximalArea  the maximalArea for a parcel
-	 * @param maximalWidth the maximal width
-	 * @param roadWidth    the road width
+	 * @param p
+	 *            the initial polygon to decompose
+	 * @param buildings
+	 *            the buildings that will constraint the possibility of adding a
+	 *            road
+	 * @param maximalArea
+	 *            the maximalArea for a parcel
+	 * @param maximalWidth
+	 *            the maximal width
+	 * @param roadWidth
+	 *            the road width
 	 */
 	public FlagParcelDecomposition(IPolygon p, IFeatureCollection<IFeature> buildings, double maximalArea,
 			double maximalWidth, double roadWidth) {
@@ -186,32 +193,48 @@ public class FlagParcelDecomposition {
 		// Split into polygon
 		List<IPolygon> splittedPolygon = split(p, splittingPolygon);
 
+		long nbNoRoadAccess = splittedPolygon.stream().filter(x -> !hasRoadAccess(x)).count();
+
 		// If a parcel has no road access, there is a probability to make a
 		// perpendicular split
-		if (!hasRoadAccess(splittedPolygon.get(0)) || !hasRoadAccess(splittedPolygon.get(1))) {
+		if (nbNoRoadAccess != 0) {
 			// Probability to make a perpendicular split
 			// Same steps but with different splitting geometries
 			splittingPolygon = computeSplittingPolygon(p, false, noise);
 
 			List<IPolygon> splittedPolygon2 = split(p, splittingPolygon);
 
-			// If there is at least 1 road with no acess parcel
-			if (!hasRoadAccess(splittedPolygon2.get(0)) ^ !hasRoadAccess(splittedPolygon2.get(1))) {
-				// We generate flags parcel to provide an access
-				splittedPolygon = generateFlagParcel(splittedPolygon);
-				
-				
+			long nbNoRoadAccess2 = splittedPolygon2.stream().filter(x -> !hasRoadAccess(x)).count();
 
-			
-					featCollOut.add(new DefaultFeature(splittedPolygon2.get(1)));
-					splittedPolygon2.remove(1);
-			
-			
-					featCollOut.add(new DefaultFeature(splittedPolygon2.get(0)));
-					splittedPolygon2.remove(0);
-				
+			// If there is at least 1 road with no acess parcel
+			if (nbNoRoadAccess2 != 0) {
+
+				if (nbNoRoadAccess2 < nbNoRoadAccess) {
+					// We generate flags parcel to provide an access
+					splittedPolygon = generateFlagParcel(splittedPolygon2);
+
+				} else {
+					// We generate flags parcel to provide an access
+					splittedPolygon = generateFlagParcel(splittedPolygon);
+				}
+
+				int nbSplittedPolygon = splittedPolygon.size();
+
+				for (int i = 0; i < nbSplittedPolygon; i++) {
+					IPolygon currentPoly = splittedPolygon.get(i);
+					if (!hasRoadAccess(currentPoly)) {
+						// We cannot do anything for it
+						splittedPolygon.remove(i);
+						featCollOut.add(new DefaultFeature(currentPoly));
+						nbSplittedPolygon--;
+						i--;
+						continue;
+					}
+
+				}
 
 			} else {
+
 				// If not we keep the new cut
 				splittedPolygon = splittedPolygon2;
 			}
@@ -220,11 +243,6 @@ public class FlagParcelDecomposition {
 
 		// All splitted polygones are splitted and results added to the output
 		for (IPolygon pol : splittedPolygon) {
-			if (pol.area() == 4774.557110499999) {
-				System.out.println();
-			}
-			System.out.println("Aire : " + pol.area());
-			System.out.println("Traité" + (count++));
 			featCollOut.addAll(decompParcel(pol, noise));
 
 		}
@@ -266,97 +284,137 @@ public class FlagParcelDecomposition {
 		return curvesOutput;
 	}
 
-	private List<IPolygon> generateFlagParcel(List<IPolygon> splittedPolygon) {
-
-		// We get the two geometries with and withou road access
-		IPolygon polyWithRoadAccess = hasRoadAccess(splittedPolygon.get(0)) ? splittedPolygon.get(0)
-				: splittedPolygon.get(1);
-		IPolygon polyWithNORoadAccess = (!hasRoadAccess(splittedPolygon.get(0))) ? splittedPolygon.get(0)
-				: splittedPolygon.get(1);
-
-		// A buffer to get the sides of the polygon with road access
-		IGeometry buffer = polyWithNORoadAccess.buffer(0.1);
-		// We list the segments of the polygon with road access
-		List<IOrientableCurve> lExterior = FromGeomToLineString.convertInSegment(polyWithRoadAccess);
-		// We keep the ones that does not intersect the buffer
-		List<IOrientableCurve> lExteriorToKeep = lExterior.stream().filter(x -> (!buffer.contains(x)))
-				.filter(x -> !polygonInit.getExterior().buffer(0.1).contains(x)).collect(Collectors.toList());
-
-		// We regroup the lines according to their connectivity
-		List<IMultiCurve<IOrientableCurve>> sides = this.regroupLineStrings(lExteriorToKeep);
-
-		// We order the proposition according to the length (we will try at first to
-		// build the road on the shortest side
-		sides.sort(new Comparator<IMultiCurve<IOrientableCurve>>() {
-
-			@Override
-			public int compare(IMultiCurve<IOrientableCurve> o1, IMultiCurve<IOrientableCurve> o2) {
-				return Double.compare(o1.length(), o2.length());
-			}
-		});
-
-		// Can we have more than 2 sides ? I do not know for know it will be interesting
-		// to get it
-		if (sides.size() != 2) {
-			// System.out.println("Side != 2 for pol : " + this.polygonInit);
-		}
-
+	private <T> List<IPolygon> generateFlagParcel(List<IPolygon> splittedPolygon) {
+		
+		
 		// The output polygon
 		List<IPolygon> polygonesOut = new ArrayList<>();
+		
 
-		boucleside: for (IMultiCurve<IOrientableCurve> side : sides) {
-			// The geometry road
-			IGeometry road = side.buffer(this.roadWidth);
-
-			// The road intersects a building, we do not keep it
-			if (!this.buildings.select(road).isEmpty()) {
-				// System.out.println("Building case : " + this.polygonInit);
-				continue;
-
-			}
-
-			// The first geometry is the polygon with road access and a remove of the
-			// geometry
-			IGeometry geomPol1 = polyWithRoadAccess.difference(road).buffer(0.0);
-
-			// The second geometry is the union between the road (intersection between road
-			// and existing parcel) and the original of the geomtry of the parcel with no
-			// road acess
-			IGeometry geomPol2 = polyWithNORoadAccess.union(road.intersection(polyWithRoadAccess)).buffer(0.0);
-
-			// It might be a multi polygon so we remove the small area <
-			List<IPolygon> lPolygonsOut1 = FromGeomToSurface.convertGeom(geomPol1).stream().map(x -> (IPolygon) x)
-					.collect(Collectors.toList());
-			lPolygonsOut1 = lPolygonsOut1.stream().filter(x -> x.area() > TOO_SMALL_PARCEL_AREA)
-					.collect(Collectors.toList());
-
-			List<IPolygon> lPolygonsOut2 = FromGeomToSurface.convertGeom(geomPol2).stream().map(x -> (IPolygon) x)
-					.collect(Collectors.toList());
-			lPolygonsOut2 = lPolygonsOut2.stream().filter(x -> x.area() > TOO_SMALL_PARCEL_AREA)
-					.collect(Collectors.toList());
-
-			// We check if there is a road acces for all, if not we abort
-			for (IPolygon pol : lPolygonsOut1) {
-				if (!hasRoadAccess(pol)) {
-					// System.out.println("Road access is missing ; polyinit : " +
-					// this.polygonInit);
-					// System.out.println("Current polyg : " + pol);
-					continue boucleside;
+		// We get the two geometries with and without road access
+		List<IPolygon> lPolygonWithRoadAccess = splittedPolygon.stream().filter(x -> hasRoadAccess(x)).collect(Collectors.toList());
+		List<IPolygon> lPolygonWithNoRoadAccess = splittedPolygon.stream().filter(x -> ! hasRoadAccess(x)).collect(Collectors.toList());
+		
+		//A map to know to which polygon belongs a potential road
+		List<Pair<IMultiCurve<IOrientableCurve>, IPolygon>> listMap = new ArrayList<>();
+		
+		for(IPolygon currentPoly : lPolygonWithNoRoadAccess){
+			// A buffer to get the sides of the polygon with no road access
+			IGeometry buffer = currentPoly.buffer(0.1);
+			
+			for(IPolygon polyWithRoadAcces : lPolygonWithRoadAccess){
+				if(! polyWithRoadAcces.intersects(buffer)){
+					continue;
 				}
+				
+				
+				// We list the segments of the polygon with road access
+				List<IOrientableCurve> lExterior =  FromGeomToLineString.convertInSegment(polyWithRoadAcces);
+				
+				// We keep the ones that does not intersect the buffer
+				List<IOrientableCurve> lExteriorToKeep = lExterior.stream().filter(x -> (!buffer.contains(x)))
+						.filter(x -> !polygonInit.getExterior().buffer(0.1).contains(x)).collect(Collectors.toList());
+				
+				// We regroup the lines according to their connectivity
+				List<IMultiCurve<IOrientableCurve>> sides = this.regroupLineStrings(lExteriorToKeep);
+				//We add elements to list the correspondance between pears
+				sides.stream().forEach(x -> listMap.add(new Pair<>(x, currentPoly)));
 			}
-			for (IPolygon pol : lPolygonsOut2) {
-				if (!hasRoadAccess(pol)) {
-					// System.out.println("Road access is missing ; polyinit : " +
-					// this.polygonInit);
-					// System.out.println("Current polyg : " + pol);
-					continue boucleside;
+			
+			
+
+			
+
+			
+			// We order the proposition according to the length (we will try at first to
+			// build the road on the shortest side
+			listMap.sort(new Comparator<Pair<IMultiCurve<IOrientableCurve>, IPolygon>>() {
+
+		
+
+				@Override
+				public int compare(Pair<IMultiCurve<IOrientableCurve>, IPolygon> o1,
+						Pair<IMultiCurve<IOrientableCurve>, IPolygon> o2) {
+					
+					return Double.compare(o1.getKey().length(),o2.getKey().length());
 				}
+			});
+
+			
+			
+			boucleside: for (Pair<IMultiCurve<IOrientableCurve>, IPolygon> side : listMap) {
+				// The geometry road
+				IGeometry road = side.getKey().buffer(this.roadWidth);
+
+				// The road intersects a building, we do not keep it
+				if (!this.buildings.select(road).isEmpty()) {
+					// System.out.println("Building case : " + this.polygonInit);
+					continue;
+
+				}
+
+				// The first geometry is the polygon with road access and a remove of the
+				// geometry
+				IGeometry geomPol1 = side.getValue().difference(road).buffer(0.0);
+
+				// The second geometry is the union between the road (intersection between road
+				// and existing parcel) and the original of the geomtry of the parcel with no
+				// road acess
+				IGeometry geomPol2 = currentPoly.union(road.intersection(side.getValue())).buffer(0.0);
+
+				// It might be a multi polygon so we remove the small area <
+				List<IPolygon> lPolygonsOut1 = FromGeomToSurface.convertGeom(geomPol1).stream().map(x -> (IPolygon) x)
+						.collect(Collectors.toList());
+				lPolygonsOut1 = lPolygonsOut1.stream().filter(x -> x.area() > TOO_SMALL_PARCEL_AREA)
+						.collect(Collectors.toList());
+
+				List<IPolygon> lPolygonsOut2 = FromGeomToSurface.convertGeom(geomPol2).stream().map(x -> (IPolygon) x)
+						.collect(Collectors.toList());
+				lPolygonsOut2 = lPolygonsOut2.stream().filter(x -> x.area() > TOO_SMALL_PARCEL_AREA)
+						.collect(Collectors.toList());
+
+				// We check if there is a road acces for all, if not we abort
+				for (IPolygon pol : lPolygonsOut1) {
+					if (!hasRoadAccess(pol)) {
+						// System.out.println("Road access is missing ; polyinit : " +
+						// this.polygonInit);
+						// System.out.println("Current polyg : " + pol);
+						continue boucleside;
+					}
+				}
+				for (IPolygon pol : lPolygonsOut2) {
+					if (!hasRoadAccess(pol)) {
+						// System.out.println("Road access is missing ; polyinit : " +
+						// this.polygonInit);
+						// System.out.println("Current polyg : " + pol);
+						continue boucleside;
+					}
+				}
+
+				
+				
+				//We directly add the result from polygon 2 to the results
+				polygonesOut.addAll(lPolygonsOut2);
+				
+				//We update the geometry of the first polygon
+				lPolygonWithRoadAccess.remove(side.getValue());
+				lPolygonWithRoadAccess.addAll(polygonesOut);
 			}
 
-			polygonesOut.addAll(lPolygonsOut1);
-			polygonesOut.addAll(lPolygonsOut2);
-
+			
 		}
+		
+
+
+
+
+
+
+		polygonesOut.addAll(lPolygonWithRoadAccess);
+
+
+	
+
 
 		// If we do not suceed to generate a proper road, we keep the initial polygons
 		if (polygonesOut.isEmpty()) {
@@ -402,9 +460,10 @@ public class FlagParcelDecomposition {
 	 * Computed the splitting polygons composed by two boxes determined from the
 	 * oriented bounding boxes splited from a line at its middle
 	 * 
-	 * @param pol                 : the input polygon
-	 * @param shortDirectionSplit : it is splitted by the short edges or by the long
-	 *                            edge.
+	 * @param pol
+	 *            : the input polygon
+	 * @param shortDirectionSplit
+	 *            : it is splitted by the short edges or by the long edge.
 	 * @return
 	 * @throws Exception
 	 */
@@ -428,14 +487,16 @@ public class FlagParcelDecomposition {
 		double alphaY = (0.5 - Math.random()) * noiseTemp;
 		IDirectPosition translateCentroid = new DirectPosition(centroid.getX() + alphaX, centroid.getY() + alphaY);
 
-		// Determine the points that intersect the line and the OBB according to chosen
+		// Determine the points that intersect the line and the OBB according to
+		// chosen
 		// direction
 		// This points will be used for splitting
 		IDirectPositionList intersectedPoints = determineIntersectedPoints(
 				new LineEquation(translateCentroid, splitDirection),
 				(shortDirectionSplit) ? oBB.getLongestEdges() : oBB.getShortestEdges());
 
-		// Construction of the two splitting polygons by using the OBB edges and the
+		// Construction of the two splitting polygons by using the OBB edges and
+		// the
 		// intersection points
 		IPolygon pol1 = determinePolygon(intersectedPoints,
 				(shortDirectionSplit) ? oBB.getShortestEdges().get(0) : oBB.getLongestEdges().get(0));
@@ -531,8 +592,6 @@ public class FlagParcelDecomposition {
 		geom = polygones.get(0).intersection(polyGeom);
 		geom2 = polygones.get(1).intersection(polyGeom);
 
-
-
 		if (geom == null) {
 
 			geom = polygones.get(0).intersection(polyGeom.buffer(0.1));
@@ -554,14 +613,6 @@ public class FlagParcelDecomposition {
 
 		for (IOrientableSurface ios : iostemp2) {
 			listPoly.add((IPolygon) ios);
-		}
-
-		if (listPoly.size() < 2 || listPoly.size() > 2) {
-			System.out.println("poly : " + polyGeom.isValid());
-			System.out.println("poly : " + polyGeom.buffer(0.1).isValid());
-			System.out.println("poly : " + polygones.get(0).isValid());
-			System.out.println("poly : " + polygones.get(1).isValid());
-			System.out.println("Error ?");
 		}
 
 		return listPoly;
