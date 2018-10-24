@@ -452,8 +452,20 @@ public class FlagParcelDecomposition {
 	private double frontSideWidth(IPolygon p) {
 
 		ILineString ext = new GM_LineString(this.polygonInit.getExterior().coord());
+		
+		IGeometry geom = p.buffer(1).intersection(ext);
+	
+		if(geom == null){
+			geom = p.buffer(5).intersection(ext);
+		}
 
-		return (p.buffer(1)).intersection(ext).length();
+		if(geom == null){
+			System.out.println("Cannot process to intersection between");
+			System.out.println(p.toString());
+			System.out.println(ext.toString());
+			return 0;
+		}
+		return geom.length();
 	}
 
 	/**
