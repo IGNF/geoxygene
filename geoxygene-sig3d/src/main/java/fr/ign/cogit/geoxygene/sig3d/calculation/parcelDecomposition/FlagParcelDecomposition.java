@@ -89,7 +89,7 @@ public class FlagParcelDecomposition {
 
 		int count = featColl.size();
 		// For each shape
-		for (int i = 11; i < count; i++) {
+		for (int i = 401; i < count; i++) {
 			IFeature feat = featColl.get(i);
 			System.out.println(i + " / " + featColl.size());
 
@@ -453,7 +453,7 @@ public class FlagParcelDecomposition {
 
 		ILineString ext = new GM_LineString(this.polygonInit.getExterior().coord());
 
-		return (p.buffer(0.5)).intersection(ext).length();
+		return (p.buffer(1)).intersection(ext).length();
 	}
 
 	/**
