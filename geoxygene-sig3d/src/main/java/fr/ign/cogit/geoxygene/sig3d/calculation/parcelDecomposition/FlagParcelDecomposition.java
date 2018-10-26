@@ -339,7 +339,7 @@ public class FlagParcelDecomposition {
 
 					return Double.compare(o1.getKey().length(), o2.getKey().length());
 				}
-			}.reversed());
+			});
 
 			boucleside: for (Pair<IMultiCurve<IOrientableCurve>, IPolygon> side : listMap) {
 				// The geometry road
