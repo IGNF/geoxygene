@@ -49,7 +49,7 @@ public class OBBBlockDecomposition {
 		String inputShapeFile = "/home/mbrasebin/Bureau/misc/shapes_final.shp";
 
 		// The output file that will contain all the decompositions
-		String shapeFileOut = "/home/mbrasebin/Bureau/misc/out.shp";
+		String shapeFileOut = "/home/mbrasebin/Bureau/misc/outNoFlag.shp";
 
 		// Reading collection
 		IFeatureCollection<IFeature> featColl = ShapefileReader.read(inputShapeFile);
@@ -67,7 +67,7 @@ public class OBBBlockDecomposition {
 
 		int count = featColl.size();
 		// For each shape
-		for (int i=3500; i < count ; i++) {
+		for (int i=0; i < count ; i++) {
 			IFeature feat = featColl.get(i);
 			System.out.println(i + " / " + featColl.size());
 
