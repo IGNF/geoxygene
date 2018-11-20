@@ -19,6 +19,7 @@ package fr.ign.cogit.geoxygene.util.algo;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
@@ -33,9 +34,26 @@ public class PointInPolygon {
 
 	private static int IT_MAX = 10000;
 
-	public static IDirectPosition get(IPolygon poly) {
+	/**
+	 * 
+	 * @param poly
+	 *            the polygon
+	 * @param negBuffer
+	 *            a negative buffer will be applied in order to ensure that the
+	 *            point is quite far from the border (the value can be positive
+	 *            or null)
+	 * @return a point inside the polygon
+	 */
+	public static IDirectPosition get(IPolygon poly, double negBuffer) {
+		IGeometry currentGeometry = null;
 
-		IEnvelope env = poly.getEnvelope();
+		if (negBuffer == 0) {
+			currentGeometry = poly;
+		} else {
+			currentGeometry = poly.buffer(-negBuffer);
+		}
+
+		IEnvelope env = currentGeometry.getEnvelope();
 
 		int count = 0;
 
@@ -51,13 +69,18 @@ public class PointInPolygon {
 
 			IDirectPosition dp = new DirectPosition(x, y);
 
-			if (poly.contains(new GM_Point(dp).buffer(0.05))) {
+			if (currentGeometry.contains(new GM_Point(dp))) {
 				return dp;
 			}
 
 		}
 
 		return new DirectPosition(x, y);
+
+	}
+
+	public static IDirectPosition get(IPolygon poly) {
+		return get(poly, 0);
 
 	}
 }
