@@ -240,10 +240,10 @@ public class BuildingMenu extends JMenu {
             }
             IBuilding ab = (IBuilding) sel;
             double area = ab.getGeom().area();
-            if (area < GeneralisationSpecifications.AIRE_SEUIL_SUPPRESSION_BATIMENT) {
+            if (area < GeneralisationSpecifications.BUILDING_ELIMINATION_AREA_THRESHOLD) {
               ab.eliminate();
             } else {
-              double aireMini = GeneralisationSpecifications.AIRE_MINIMALE_BATIMENT
+              double aireMini = GeneralisationSpecifications.BUILDING_MIN_AREA
                   * Legend.getSYMBOLISATI0N_SCALE()
                   * Legend.getSYMBOLISATI0N_SCALE() / 1000000.0;
               if (area < aireMini) {
