@@ -6,11 +6,14 @@ import java.util.List;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 
 public class FromGeomToLineString {
 
@@ -30,21 +33,36 @@ public class FromGeomToLineString {
 			return l;
 
 		} else if (geom instanceof IPolygon) {
-
-			IPolygon pol = (IPolygon) geom;
-
+			return convertSurface((IPolygon) geom);
+		}else if (geom instanceof IMultiSurface<?> ){
 			List<IOrientableCurve> l = new ArrayList<IOrientableCurve>();
-			l.add(pol.getExterior());
-			if (pol.getInterior() != null) {
-				l.addAll(pol.getInterior());
+			IMultiSurface<IOrientableSurface> lOS = FromGeomToSurface.convertMSGeom(geom);
+			for(IOrientableSurface os :lOS) {
+				if(os instanceof IPolygon) {
+					l.addAll(convertSurface((IPolygon) os));
+				}else {
+					System.out.println("ConvertToLineString : cas non traité dans une multi-surface :" + os.getClass());
+				}
 			}
+			
 			return l;
+			
 		}
 
 		System.out.println("ConvertToLineString : cas non traité " + geom.getClass());
 
 		return new ArrayList<IOrientableCurve>();
 
+	}
+
+	private static List<IOrientableCurve> convertSurface(IPolygon pol) {
+
+		List<IOrientableCurve> l = new ArrayList<IOrientableCurve>();
+		l.add(pol.getExterior());
+		if (pol.getInterior() != null) {
+			l.addAll(pol.getInterior());
+		}
+		return l;
 	}
 
 	public static List<IOrientableCurve> convertInSegment(IGeometry geom) {
