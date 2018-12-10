@@ -9,6 +9,8 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
@@ -21,6 +23,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.util.attribute.AttributeManager;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
@@ -67,7 +70,7 @@ public class OBBBlockDecomposition {
 
 		int count = featColl.size();
 		// For each shape
-		for (int i=0; i < count ; i++) {
+		for (int i = 0; i < count; i++) {
 			IFeature feat = featColl.get(i);
 			System.out.println(i + " / " + featColl.size());
 
@@ -82,7 +85,7 @@ public class OBBBlockDecomposition {
 			OBBBlockDecomposition ffd = new OBBBlockDecomposition((IPolygon) surfaces.get(0), maximalArea, maximalWidth,
 					roadWidth);
 			IFeatureCollection<IFeature> results = ffd.decompParcel(noise);
-			
+
 			final int intCurrentCount = i;
 			results.stream().forEach(x -> AttributeManager.addAttribute(x, "ID", intCurrentCount, "Integer"));
 
@@ -113,6 +116,27 @@ public class OBBBlockDecomposition {
 		this.maximalWidth = maximalWidth;
 		this.epsilon = epsilon;
 		this.polygonInit = p;
+	}
+
+	/**
+	 * The polygon p is the polygon of a parcel to subdivide and the exteriori of
+	 * the urban block is extBlock
+	 * 
+	 * @param p            : the polygon block that is decomposed
+	 * @param maximalArea  : maximal area of splitted parcel
+	 * @param maximalWidth : maximal road access of splitter parcel
+	 * @param epsilon      : the likeness to garuantee road access to parcels ;
+	 *                     extBlock exterior of the urban block
+	 */
+	public OBBBlockDecomposition(IPolygon p, double maximalArea, double maximalWidth, double epsilon,
+			IMultiCurve<IOrientableCurve> extBlock) {
+		super();
+
+		this.maximalArea = maximalArea;
+		this.maximalWidth = maximalWidth;
+		this.epsilon = epsilon;
+		this.polygonInit = p;
+		this.ext = extBlock;
 	}
 
 	/**
@@ -211,7 +235,7 @@ public class OBBBlockDecomposition {
 	 */
 	private double frontSideWidth(IPolygon p) {
 
-		ILineString ext = new GM_LineString(this.polygonInit.getExterior().coord());
+		ILineString ext = new GM_LineString(this.getExt().coord());
 
 		return (p.buffer(0.2)).intersection(ext).length();
 	}
@@ -321,11 +345,10 @@ public class OBBBlockDecomposition {
 		IDirectPosition dp2 = eq
 				.intersectionLineLine(new LineEquation(ls.get(1).coord().get(0), ls.get(1).coord().get(1)));
 
-		if(dp1 == null) {
+		if (dp1 == null) {
 			System.out.println("Null");
-			dp1 = eq
-					.intersectionLineLine(new LineEquation(ls.get(0).coord().get(0), ls.get(0).coord().get(1)));
-			
+			dp1 = eq.intersectionLineLine(new LineEquation(ls.get(0).coord().get(0), ls.get(0).coord().get(1)));
+
 		}
 		IDirectPositionList dpl = new DirectPositionList();
 		dpl.add(dp1);
@@ -371,9 +394,31 @@ public class OBBBlockDecomposition {
 	 */
 	private boolean hasRoadAccess(IPolygon poly) {
 
-		ILineString ext = new GM_LineString(this.polygonInit.getExterior().coord());
+		ILineString ext = new GM_LineString(this.getExt().coord());
 
 		return poly.intersects(ext.buffer(0.5));
+	}
+
+	// This line represents the exterior of an urban island (it serves to determine
+	// if a parcel has road access)
+	private IMultiCurve<IOrientableCurve> ext = null;
+
+	public IMultiCurve<IOrientableCurve> getExt() {
+		if (ext == null) {
+			generateExt();
+		}
+		return ext;
+	}
+
+	public void setExt(IMultiCurve<IOrientableCurve> ext) {
+		this.ext = ext;
+	}
+
+	private void generateExt() {
+		// We determine it
+		ext = new GM_MultiCurve<>();
+		ILineString ls = new GM_LineString(this.polygonInit.getExterior().coord());
+		ext.add(ls);
 	}
 
 }
