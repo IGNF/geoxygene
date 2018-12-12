@@ -37,7 +37,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 public class GeOxygeneGeoToolsTypes {
-	private final static Logger logger = Logger.getLogger(GeOxygeneGeoToolsTypes.class.getName());
+	public final static Logger logger = Logger.getLogger(GeOxygeneGeoToolsTypes.class.getName());
 
 	/**
 	 * convert a GeoTools SimpleFeature to a iFeature (largely copied/pasted from the code below)
@@ -49,7 +49,6 @@ public class GeOxygeneGeoToolsTypes {
 	 * @throws Exception
 	 */
 	public static IFeature convert2IFeature(SimpleFeature feature) throws Exception {
-		logger.info("Schema name = " + feature.getFeatureType().getName() + " - " + feature.getFeatureType().getName().getLocalPart());
 		SchemaDefaultFeature schemaDefaultFeature = new SchemaDefaultFeature();
 		schemaDefaultFeature.setNom(feature.getFeatureType().getName().getLocalPart());
 		schemaDefaultFeature.setNomSchema(feature.getFeatureType().getName().getLocalPart());
@@ -95,7 +94,7 @@ public class GeOxygeneGeoToolsTypes {
 	}
 
 	public static IFeatureCollection<?> convert2IFeatureCollection(SimpleFeatureCollection collection) {
-		logger.info("Schema name = " + collection.getSchema().getName() + " - " + collection.getSchema().getName().getLocalPart());
+		//logger.info("Schema name = " + collection.getSchema().getName() + " - " + collection.getSchema().getName().getLocalPart());
 		SchemaDefaultFeature schemaDefaultFeature = new SchemaDefaultFeature();
 		schemaDefaultFeature.setNom(collection.getSchema().getName().getLocalPart());
 		schemaDefaultFeature.setNomSchema(collection.getSchema().getName().getLocalPart());
@@ -117,11 +116,11 @@ public class GeOxygeneGeoToolsTypes {
 			type.setValueType(valueType);
 			newFeatureType.addFeatureAttribute(type);
 			attLookup.put(new Integer(i), new String[] { nomField, memberName });
-			logger.info("Attribute " + i + " added " + nomField + " : " + valueType);
+			// logger.info("Attribute " + i + " added " + nomField + " : " + valueType);
 		}
 		/** Création d'un schéma associé au featureType */
 		newFeatureType.setGeometryType(geometryType(collection.getSchema().getGeometryDescriptor().getType().getBinding()));
-		logger.info("Schema Created with " + newFeatureType.getGeometryType());
+		// logger.info("Schema Created with " + newFeatureType.getGeometryType());
 		schemaDefaultFeature.setFeatureType(newFeatureType);
 		newFeatureType.setSchema(schemaDefaultFeature);
 		schemaDefaultFeature.setAttLookup(attLookup);
@@ -150,7 +149,7 @@ public class GeOxygeneGeoToolsTypes {
 				defaultFeature.setId(id++);
 				population.add(defaultFeature);
 			}
-			logger.info(population.size() + " Features converted");
+			// logger.info(population.size() + " Features converted");
 		} catch (Exception problem) {
 			problem.printStackTrace();
 		} finally {
@@ -198,7 +197,7 @@ public class GeOxygeneGeoToolsTypes {
 			throws Exception {
 
 		if (featureCollection == null) {
-			logger.warning("FeatureCollection null");
+			// logger.warning("FeatureCollection null");
 			return null;
 		}
 
@@ -206,13 +205,13 @@ public class GeOxygeneGeoToolsTypes {
 
 		if (featureType == null) {
 			if (featureCollection.isEmpty()) {
-				logger.warning("FeatureCollection empty and no featureType on collection");
+				// logger.warning("FeatureCollection empty and no featureType on collection");
 				return null;
 			}
 			featureType = featureCollection.get(0).getFeatureType();
 		}
 
-		logger.info("Typename = " + featureType.getTypeName());
+		// logger.info("Typename = " + featureType.getTypeName());
 
 		String typeName = featureType.getTypeName();
 		if (typeName == null) {

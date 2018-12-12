@@ -63,8 +63,8 @@ public class OBBBlockDecomposition {
 		double maximalWidth = 20;
 		// Do we want noisy results
 		double noise = 0;
-		// The with of the road that is created
-		double roadWidth = 3;
+		//Probability to get a cut perpendicular to the OBB
+		double epsilon = 0;
 
 		IFeatureCollection<IFeature> featCollOut = new FT_FeatureCollection<>();
 
@@ -83,7 +83,7 @@ public class OBBBlockDecomposition {
 
 			// We run the algorithm of decomposition
 			OBBBlockDecomposition ffd = new OBBBlockDecomposition((IPolygon) surfaces.get(0), maximalArea, maximalWidth,
-					roadWidth);
+					epsilon);
 			IFeatureCollection<IFeature> results = ffd.decompParcel(noise);
 
 			final int intCurrentCount = i;
