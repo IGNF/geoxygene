@@ -48,7 +48,7 @@ public class OBBBlockDecomposition {
 		DirectPosition.PRECISION = 4;
 
 		// Input 1/ the input shapes to split
-		String inputShapeFile = "/home/mbrasebin/Bureau/misc/ilot_test.shp";
+		String inputShapeFile = "/home/mbrasebin/Bureau/misc/tous_ilots.shp";
 
 		// The output file that will contain all the decompositions
 		String shapeFileOut = "/home/mbrasebin/Bureau/misc/outNoFlagAll.shp";
