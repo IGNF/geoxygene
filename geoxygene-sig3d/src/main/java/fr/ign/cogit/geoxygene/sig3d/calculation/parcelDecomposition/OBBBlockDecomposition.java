@@ -48,7 +48,7 @@ public class OBBBlockDecomposition {
 		DirectPosition.PRECISION = 4;
 
 		// Input 1/ the input shapes to split
-		String inputShapeFile = "/home/mbrasebin/Bureau/misc/tous_ilots.shp";
+		String inputShapeFile = "/home/mbrasebin/Bureau/misc/ilot_test.shp";
 
 		// The output file that will contain all the decompositions
 		String shapeFileOut = "/home/mbrasebin/Bureau/misc/outNoFlagAll.shp";
@@ -64,22 +64,27 @@ public class OBBBlockDecomposition {
 		double noise = 0;
 		// Probability to get a cut perpendicular to the OBB
 		double epsilon = 0;
-		//Exterior from the UrbanBlock if necessary or null
+		// Exterior from the UrbanBlock if necessary or null
 		IMultiCurve<IOrientableCurve> imC = null;
-		//Roads are created for this number of decomposition level
-		int decompositionLevelWithRoad = 2;
-		//Road width
+		// Roads are created for this number of decomposition level
+		int decompositionLevelWithRoad = 4;
+		// Road width
 		double roadWidth = 5.0;
+		//Boolean forceRoadaccess
+		boolean forceRoadAccess= false;
 		
-		IFeatureCollection<IFeature> featCollOut = featColl.parallelStream().map(x -> processAPolygon(x,  maximalArea,  maximalWidth,  epsilon,
-				 noise, imC,  decompositionLevelWithRoad,  roadWidth)).collect(FT_FeatureCollection::new, FT_FeatureCollection::addAll, FT_FeatureCollection::addAll);
+		IFeatureCollection<IFeature> featCollOut = featColl.parallelStream()
+				.map(x -> processAPolygon(x, maximalArea, maximalWidth, epsilon, noise, imC, decompositionLevelWithRoad,
+						roadWidth, forceRoadAccess))
+				.collect(FT_FeatureCollection::new, FT_FeatureCollection::addAll, FT_FeatureCollection::addAll);
 
 		ShapefileWriter.write(featCollOut, shapeFileOut);
 
 	}
 
-	private static List<IFeature> processAPolygon(IFeature feat, double maximalArea, double maximalWidth, double epsilon,
-			double noise, IMultiCurve<IOrientableCurve> imC, double decompositionLevelWithRoad, double roadWidth) {
+	private static List<IFeature> processAPolygon(IFeature feat, double maximalArea, double maximalWidth,
+			double epsilon, double noise, IMultiCurve<IOrientableCurve> imC, int decompositionLevelWithRoad,
+			double roadWidth, boolean forceRoadAccess) {
 
 		List<IOrientableSurface> surfaces = FromGeomToSurface.convertGeom(feat.getGeom());
 
@@ -90,7 +95,7 @@ public class OBBBlockDecomposition {
 
 		// We run the algorithm of decomposition
 		OBBBlockDecomposition ffd = new OBBBlockDecomposition((IPolygon) surfaces.get(0), maximalArea, maximalWidth,
-				epsilon, null, 2, 5.0);
+				epsilon, null, decompositionLevelWithRoad, 5.0, forceRoadAccess);
 		IFeatureCollection<IFeature> results;
 		try {
 			results = ffd.decompParcel(noise);
@@ -115,8 +120,8 @@ public class OBBBlockDecomposition {
 	 * @param maximalWidth : maximal road access of splitter parcel
 	 * @param epsilon      : the likeness to garuantee road access to parcels
 	 */
-	public OBBBlockDecomposition(IPolygon p, double maximalArea, double maximalWidth, double epsilon) {
-		this(p, maximalArea, maximalWidth, epsilon, null, 0, 0);
+	public OBBBlockDecomposition(IPolygon p, double maximalArea, double maximalWidth, double epsilon, boolean forceRoadAccess) {
+		this(p, maximalArea, maximalWidth, epsilon, null, 0, 0, forceRoadAccess);
 	}
 
 	/**
@@ -130,8 +135,8 @@ public class OBBBlockDecomposition {
 	 *                     extBlock exterior of the urban block
 	 */
 	public OBBBlockDecomposition(IPolygon p, double maximalArea, double maximalWidth, double epsilon,
-			IMultiCurve<IOrientableCurve> extBlock) {
-		this(p, maximalArea, maximalWidth, epsilon, extBlock, 0, 0);
+			IMultiCurve<IOrientableCurve> extBlock, boolean forceRoadAccess) {
+		this(p, maximalArea, maximalWidth, epsilon, extBlock, 0, 0, forceRoadAccess );
 	}
 
 	/**
@@ -148,7 +153,7 @@ public class OBBBlockDecomposition {
 	 * @param roadWidth                  : the road width when created
 	 */
 	public OBBBlockDecomposition(IPolygon p, double maximalArea, double maximalWidth, double epsilon,
-			IMultiCurve<IOrientableCurve> extBlock, int decompositionLevelWithRoad, double roadWidth) {
+			IMultiCurve<IOrientableCurve> extBlock, int decompositionLevelWithRoad, double roadWidth, boolean forceRoadAccess) {
 		super();
 
 		this.maximalArea = maximalArea;
@@ -158,8 +163,12 @@ public class OBBBlockDecomposition {
 		this.ext = extBlock;
 		this.decompositionLevelWithRoad = decompositionLevelWithRoad;
 		this.roadWidth = Math.max(0, roadWidth); // RoadWitdh must be positive
+		this.forceRoadAccess = forceRoadAccess;
 	}
 
+	
+	private boolean forceRoadAccess;
+	
 	/**
 	 * The decomposition method
 	 * 
@@ -167,7 +176,7 @@ public class OBBBlockDecomposition {
 	 * @throws Exception
 	 */
 	public IFeatureCollection<IFeature> decompParcel(double noise) throws Exception {
-		return decompParcel(this.polygonInit, noise, 0);
+		return decompParcel(this.polygonInit, noise, 0, forceRoadAccess);
 	}
 
 	/**
@@ -177,7 +186,7 @@ public class OBBBlockDecomposition {
 	 * @return
 	 * @throws Exception
 	 */
-	private IFeatureCollection<IFeature> decompParcel(IPolygon p, double noise, int decompositionLevel)
+	private IFeatureCollection<IFeature> decompParcel(IPolygon p, double noise, int decompositionLevel, boolean forceRoadAccess)
 			throws Exception {
 
 		IFeatureCollection<IFeature> featCollOut = new FT_FeatureCollection<>();
@@ -216,7 +225,9 @@ public class OBBBlockDecomposition {
 
 		// If a parcel has no road access, there is a probability to make a
 		// perpendicular split
-		if (!hasRoadAccess(splittedPolygon.get(0)) || !hasRoadAccess(splittedPolygon.get(1))) {
+		
+		
+		if (forceRoadAccess && (!hasRoadAccess(splittedPolygon.get(0)) || !hasRoadAccess(splittedPolygon.get(1)))) {
 			// Probability to make a perpendicular split
 			if (Math.random() < epsilon) {
 				// Same steps but with different splitting geometries
@@ -229,8 +240,9 @@ public class OBBBlockDecomposition {
 		}
 
 		// All splitted polygones are splitted and results added to the output
+		
 		for (IPolygon pol : splittedPolygon) {
-			featCollOut.addAll(decompParcel(pol, noise, decompositionLevel++));
+			featCollOut.addAll(decompParcel(pol, noise, decompositionLevel+1,forceRoadAccess));
 		}
 
 		return featCollOut;
@@ -247,7 +259,7 @@ public class OBBBlockDecomposition {
 	private boolean endCondition(double area, double frontSideWidth) {
 		boolean testArea = (area <= this.maximalArea);
 		boolean testWidth = (frontSideWidth <= this.maximalWidth);
-		return testArea || testWidth;
+		return testArea && testWidth;
 
 	}
 
@@ -261,7 +273,26 @@ public class OBBBlockDecomposition {
 
 		ILineString ext = new GM_LineString(this.getExt().coord());
 
-		return (p.buffer(0.2)).intersection(ext).length();
+		double value = 0.0;
+
+		
+		if(ext ==null|| ext.isEmpty()) {
+			return value;
+		}
+
+
+		try {
+			value = (p.buffer(0.2)).intersection(ext).length();
+		} catch (Exception e) {
+			try {
+				value = (p.buffer(0.4)).intersection(ext).length();
+			} catch (Exception e2) {
+				return 0;
+			}
+		}
+
+		return value;
+
 	}
 
 	/**
@@ -357,9 +388,21 @@ public class OBBBlockDecomposition {
 		IPolygon pol = new GM_Polygon(new GM_LineString(dpl1));
 
 		if (decompositionLevel < decompositionLevelWithRoad) {
-
-			IGeometry geom = pol.difference(edge.buffer(roadWidth));
-
+			
+			
+			IDirectPositionList dpl = new DirectPositionList(dp1, dp2);
+		
+			ILineString directionOfCut = (new GM_LineString(dpl));
+			
+			IGeometry geom = pol.difference(directionOfCut.buffer(roadWidth));
+			
+			//To check the geometries
+			//Decomment the follong lines
+			
+			//System.out.println(geom);
+			//System.out.println(roadWidth);
+			//System.out.println(directionOfCut);
+			
 			// We keep it if it is only a polygon
 			// If it is not a polygon it means that the OBB is too small to support this
 			// operation
