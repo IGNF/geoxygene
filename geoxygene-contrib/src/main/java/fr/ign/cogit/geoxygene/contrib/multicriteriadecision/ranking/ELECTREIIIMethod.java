@@ -21,8 +21,8 @@ import org.apache.log4j.Logger;
 public class ELECTREIIIMethod {
 
   @SuppressWarnings("unused")
-  private static Logger logger = Logger.getLogger(ELECTREIIIMethod.class
-      .getName());
+  private static Logger logger = Logger
+      .getLogger(ELECTREIIIMethod.class.getName());
 
   // //////////////////////////////////////////
   // Fields //
@@ -76,7 +76,7 @@ public class ELECTREIIIMethod {
     // build the comparator
     ELECTREIIIComparator c = new ELECTREIIIComparator(preOrderZ1, preOrderZ2);
     // then sort the actions according to the comparator
-    Collections.sort(this.actions, c);
+    this.actions = c.sort(this.actions);
     Collections.reverse(this.actions);
     return this.actions;
   }

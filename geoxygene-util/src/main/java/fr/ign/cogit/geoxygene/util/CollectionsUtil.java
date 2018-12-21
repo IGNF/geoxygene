@@ -89,6 +89,46 @@ public class CollectionsUtil {
   }
 
   /**
+   * Compute the Hamming distance between two lists. If lists are not the same
+   * size, the method removes the last elements of the largest list.
+   * @param list1
+   * @param list2
+   * @return
+   */
+  public static int getHammingDistance2DiffLists(List<? extends Object> list1,
+      List<? extends Object> list2) {
+    // first, cases with empty list(s)
+    if (list1.isEmpty() && list2.isEmpty())
+      return -1;
+    else if (list1.isEmpty())
+      return list2.size();
+    else if (list2.isEmpty())
+      return list1.size();
+
+    // then, cases with lists with different sizes
+    if (list1.size() > list2.size()) {
+      int diff = list1.size() - list2.size();
+      for (int i = 0; i < diff; i++) {
+        list1.remove(list1.size() - 1);
+      }
+    } else if (list1.size() < list2.size()) {
+      int diff = list2.size() - list1.size();
+      for (int i = 0; i < diff; i++) {
+        list2.remove(list2.size() - 1);
+      }
+    }
+
+    // finally the regular case with lists of same size
+    int result = 0;
+    for (int i = 0; i < list1.size(); i++) {
+      if (!list1.get(i).equals(list2.get(i))) {
+        result++;
+      }
+    }
+    return result;
+  }
+
+  /**
    * Compute the edit distance between two lists, using the Fischer-Wagner
    * algorithm.
    * @param list1
