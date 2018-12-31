@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.math3.util.Pair;
+import org.geotools.referencing.CRS;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -59,17 +60,17 @@ public class FlagParcelDecomposition {
 		DirectPosition.PRECISION = 3;
 
 		// Input 1/ the input parcelles to split
-		String inputShapeFile = "/home/mcolomb/tmp/parcelToFlag.shp";
+		String inputShapeFile = "/tmp/toFlag.shp";
 		// Input 2 : the buildings that mustnt intersects the allowed roads (facultatif)
-		String inputBuildingFile = "/home/mcolomb/informatique/ArtiScales/dataGeo/batimentSys.shp";
+		String inputBuildingFile = "/home/yo/Documents/these/ArtiScales/dataGeo/building.shp";
 
 		// Input 3 (facultative) : the exterior of the urban block (it serves to determiner the multicurve)
-		String inputUrbanBlock = "/home/mcolomb/informatique/ArtiScales/dataGeo/ilot.shp";
+		String inputUrbanBlock = "/home/yo/Documents/these/ArtiScales/dataGeo/ilot.shp";
 		IFeatureCollection<IFeature> featC = ShapefileReader.read(inputUrbanBlock);
 		
 		
 
-		String folderOut = "/tmp/tmp/";
+		String folderOut = "/tmp/";
 
 		// The output file that will contain all the decompositions
 		String shapeFileOut = folderOut + "outflag.shp";
@@ -128,7 +129,7 @@ public class FlagParcelDecomposition {
 
 		}
 
-		ShapefileWriter.write(featCollOut, shapeFileOut);
+		ShapefileWriter.write(featCollOut, shapeFileOut,CRS.decode("EPSG:2154"));
 
 	}
 

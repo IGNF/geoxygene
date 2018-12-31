@@ -3,6 +3,8 @@ package fr.ign.cogit.geoxygene.sig3d.calculation.parcelDecomposition;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -48,10 +50,10 @@ public class OBBBlockDecomposition {
 		DirectPosition.PRECISION = 4;
 
 		// Input 1/ the input shapes to split
-		String inputShapeFile = "/home/mbrasebin/Bureau/misc/tous_ilots.shp";
+		String inputShapeFile = "/tmp/parcelToCut.shp";
 
 		// The output file that will contain all the decompositions
-		String shapeFileOut = "/home/mbrasebin/Bureau/misc/outNoFlagAll.shp";
+		String shapeFileOut = "/tmp/parcelCuted.shp";
 
 		// Reading collection
 		IFeatureCollection<IFeature> featColl = ShapefileReader.read(inputShapeFile);
@@ -101,7 +103,6 @@ public class OBBBlockDecomposition {
 			results = ffd.decompParcel(noise);
 			return results.getElements();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return new ArrayList<>();
@@ -168,6 +169,36 @@ public class OBBBlockDecomposition {
 		this.forceRoadAccess = forceRoadAccess;
 	}
 
+	/**
+	 * This constructor is made for road decomposition purposes
+	 * The number of level in which a road is created on the splitting line is
+	 * automatically set to a level decided by this operation : 
+	 * number total of iteration - uncountedLevels
+	 * 
+	 * @param p
+	 * @param maximalArea
+	 * @param maximalWidth
+	 * @param epsilon
+	 * @param extBlock
+	 * @param roadWidth
+	 * @param forceRoadAccess
+	 * @param uncountedLevels : number of level of decomposition where there won't be any road construction. 
+	 * @throws Exception
+	 */
+	public OBBBlockDecomposition(IPolygon p, double maximalArea, double maximalWidth, double epsilon,
+			IMultiCurve<IOrientableCurve> extBlock, double roadWidth, boolean forceRoadAccess,int uncountedLevels) throws Exception {
+		super();
+
+		this.maximalArea = maximalArea;
+		this.maximalWidth = maximalWidth;
+		this.epsilon = epsilon;
+		this.polygonInit = p;
+		this.ext = extBlock;
+		this.decompositionLevelWithRoad = howManyIt(p, 0, forceRoadAccess)-uncountedLevels;
+		this.roadWidth = Math.max(0, roadWidth); // RoadWitdh must be positive
+		this.forceRoadAccess = forceRoadAccess;
+	}
+
 	private boolean forceRoadAccess;
 
 	/**
@@ -178,6 +209,95 @@ public class OBBBlockDecomposition {
 	 */
 	public IFeatureCollection<IFeature> decompParcel(double noise) throws Exception {
 		return decompParcel(this.polygonInit, noise, 0, forceRoadAccess);
+	}
+
+	/**
+	 * Return the median value of the number of iteration needed to decompose the polygons till their maxiumum
+	 * @param p : Main polygon to cut
+	 * @param noise : if we want to spicy life with a little bit of randomness
+	 * @return : the median number of step
+	 * @throws Exception
+	 */
+	public int howManyIt(IPolygon p, double noise, boolean forceRoadAccess) throws Exception {
+
+		List<Integer> nbIt = new ArrayList<Integer>();
+		nbIt = decompParcelToGetNumber(p, noise, 0, nbIt, forceRoadAccess);
+		DescriptiveStatistics dS = new DescriptiveStatistics();
+		for (int i : nbIt) {
+			dS.addValue(i);
+		}
+		return (int) dS.getPercentile(50);
+	}
+
+	/**
+	 * fake the core algorithm to have an approximation of how much iteration will
+	 * be mandatory to return all the finished parcels
+	 * Do all the decomp method (largely copied from the core algorithm) but doesn't save anything
+	 * 
+	 * @return the minimal number of decomposition
+	 * @throws Exception
+	 */
+	private List<Integer> decompParcelToGetNumber(IPolygon p, double noise, int decompositionLevel,
+			List<Integer> result, boolean forceRoadAccess) throws Exception {
+
+		IFeatureCollection<IFeature> featCollOut = new FT_FeatureCollection<>();
+
+		if (!p.isValid()) {
+			p = (IPolygon) p.buffer(0);
+
+			if (!p.isValid()) {
+				p = (IPolygon) p.buffer(0.001);
+			} else {
+				if (!p.isValid()) {
+					System.out.println("Invalid polygon : " + p);
+					System.out.println("Try maybe with less precision : DirectPosition.Precision = 4");
+				}
+			}
+
+		}
+
+		double area = p.area();
+		double frontSideWidth = this.frontSideWidth(p);
+
+		// End test condition
+		if (this.endCondition(area, frontSideWidth)) {
+			result.add(decompositionLevel);
+			return result;
+		}
+
+		// Determination of splitting polygon (it is a splitting line in the
+		// article)
+		List<IPolygon> splittingPolygon = computeSplittingPolygon(p, true, noise, decompositionLevel,
+				decompositionLevelWithRoad, this.roadWidth);
+
+		// Split into polygon
+		List<IPolygon> splittedPolygon = split(p, splittingPolygon);
+
+		// If a parcel has no road access, there is a probability to make a
+		// perpendicular split
+
+		// Probability to make a perpendicular split if no road access or a little
+		// probabibility epsilon
+
+		if ((forceRoadAccess && ((!hasRoadAccess(splittedPolygon.get(0)) || !hasRoadAccess(splittedPolygon.get(1)))))
+				|| (Math.random() < epsilon)) {
+
+			// Same steps but with different splitting geometries
+			splittingPolygon = computeSplittingPolygon(p, false, noise, decompositionLevel, decompositionLevelWithRoad,
+					this.roadWidth);
+
+			splittedPolygon = split(p, splittingPolygon);
+
+		}
+
+		// All splitted polygones are splitted and results added to the output
+		for (IPolygon pol : splittedPolygon) {
+			result = decompParcelToGetNumber(pol, noise, decompositionLevel + 1, result, forceRoadAccess);
+
+		}
+
+		return result;
+
 	}
 
 	/**
@@ -504,5 +624,4 @@ public class OBBBlockDecomposition {
 		ILineString ls = new GM_LineString(this.polygonInit.getExterior().coord());
 		ext.add(ls);
 	}
-
 }
