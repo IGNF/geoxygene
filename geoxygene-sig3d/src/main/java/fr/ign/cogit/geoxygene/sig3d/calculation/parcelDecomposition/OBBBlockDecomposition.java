@@ -16,6 +16,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
+import fr.ign.cogit.geoxygene.convert.FromGeomToLineString;
 import fr.ign.cogit.geoxygene.convert.FromGeomToSurface;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
@@ -44,10 +45,10 @@ public class OBBBlockDecomposition {
 	public static void main(String[] args) throws Exception {
 
 		// Precision si set
-		DirectPosition.PRECISION = 4;
+		DirectPosition.PRECISION = 3;
 
 		// Input 1/ the input shapes to split
-		String inputShapeFile = "/tmp/test.shp";
+		String inputShapeFile = "/home/mbrasebin/Bureau/misc/ilot_test_2.shp";
 
 		// The output file that will contain all the decompositions
 		String shapeFileOut = "/tmp/testCut.shp";
@@ -56,7 +57,7 @@ public class OBBBlockDecomposition {
 		IFeatureCollection<IFeature> featColl = ShapefileReader.read(inputShapeFile);
 
 		// Maxmimal area for a parcel
-		double maximalArea = 800;
+		double maximalArea = 200;
 		// MAximal with to the road
 		double maximalWidth = 7;
 		// Do we want noisy results
@@ -66,7 +67,7 @@ public class OBBBlockDecomposition {
 		// Exterior from the UrbanBlock if necessary or null
 		IMultiCurve<IOrientableCurve> imC = null;
 		// Roads are created for this number of decomposition level
-		int decompositionLevelWithRoad = 2;
+		
 		// Road width
 		double roadWidth = 5.0;
 		// Boolean forceRoadaccess
@@ -90,6 +91,7 @@ public class OBBBlockDecomposition {
 				continue;
 			}
 			IPolygon pol = (IPolygon) FromGeomToSurface.convertGeom(feat.getGeom()).get(0);
+			int decompositionLevelWithRoad = 2; //howManyIt(pol, 0, forceRoadAccess, maximalArea, maximalWidth) - 2;
 			OBBBlockDecomposition obb = new OBBBlockDecomposition(pol, maximalArea, maximalWidth, 0, imC, roadWidth, forceRoadAccess, decompositionLevelWithRoad);
 			ifeatCollOut = obb.decompParcel(noise);
 		}
@@ -203,7 +205,7 @@ public class OBBBlockDecomposition {
 	 * @throws Exception
 	 */
 	public OBBBlockDecomposition(IPolygon p, double maximalArea, double maximalWidth, double epsilon, IMultiCurve<IOrientableCurve> extBlock, double roadWidth,
-			boolean forceRoadAccess, int uncountedLevels) throws Exception {
+			boolean forceRoadAccess, int decompositionLevelWithRoad) throws Exception {
 		super();
 
 		this.maximalArea = maximalArea;
@@ -211,7 +213,7 @@ public class OBBBlockDecomposition {
 		this.epsilon = epsilon;
 		this.polygonInit = p;
 		this.ext = extBlock;
-		this.decompositionLevelWithRoad = howManyIt(p, 0, forceRoadAccess) - uncountedLevels;
+		this.decompositionLevelWithRoad = decompositionLevelWithRoad;
 		this.roadWidth = Math.max(0, roadWidth); // RoadWitdh must be positive
 		this.forceRoadAccess = forceRoadAccess;
 
@@ -239,10 +241,11 @@ public class OBBBlockDecomposition {
 	 * @return : the median number of step
 	 * @throws Exception
 	 */
-	public int howManyIt(IPolygon p, double noise, boolean forceRoadAccess) throws Exception {
+	public static int howManyIt(IPolygon p, double noise, boolean forceRoadAccess, double maximalArea, double maximalWidth) throws Exception {
 
 		List<Integer> nbIt = new ArrayList<Integer>();
-		nbIt = decompParcelToGetNumber(p, noise, 0, nbIt, forceRoadAccess);
+		OBBBlockDecomposition obbTemp = new OBBBlockDecomposition(p, maximalArea, maximalWidth, 0, forceRoadAccess);
+		nbIt = obbTemp.decompParcelToGetNumber(p, noise, 0, nbIt, forceRoadAccess);
 		DescriptiveStatistics dS = new DescriptiveStatistics();
 		for (int i : nbIt) {
 			dS.addValue(i);
@@ -283,7 +286,7 @@ public class OBBBlockDecomposition {
 
 		// Determination of splitting polygon (it is a splitting line in the
 		// article)
-		List<IPolygon> splittingPolygon = computeSplittingPolygon(p, true, noise, decompositionLevel, decompositionLevelWithRoad, this.roadWidth);
+		List<IPolygon> splittingPolygon = this.computeSplittingPolygon(p, true, noise, decompositionLevel, decompositionLevelWithRoad, this.roadWidth);
 
 		// Split into polygon
 		List<IPolygon> splittedPolygon = split(p, splittingPolygon);
@@ -297,7 +300,7 @@ public class OBBBlockDecomposition {
 		if ((forceRoadAccess && ((!hasRoadAccess(splittedPolygon.get(0)) || !hasRoadAccess(splittedPolygon.get(1))))) || (Math.random() < epsilon)) {
 
 			// Same steps but with different splitting geometries
-			splittingPolygon = computeSplittingPolygon(p, false, noise, decompositionLevel, decompositionLevelWithRoad, this.roadWidth);
+			splittingPolygon = this.computeSplittingPolygon(p, false, noise, decompositionLevel, decompositionLevelWithRoad, this.roadWidth);
 
 			splittedPolygon = split(p, splittingPolygon);
 
@@ -434,7 +437,7 @@ public class OBBBlockDecomposition {
 	 * @return
 	 * @throws Exception
 	 */
-	public static List<IPolygon> computeSplittingPolygon(IGeometry pol, boolean shortDirectionSplit, double noise, int decompositionLevel, int decompositionLevelWithRoad,
+	public  List<IPolygon> computeSplittingPolygon(IGeometry pol, boolean shortDirectionSplit, double noise, int decompositionLevel, int decompositionLevelWithRoad,
 			double roadWidth) throws Exception {
 
 		if (pol.area() < 1.0)
@@ -464,9 +467,9 @@ public class OBBBlockDecomposition {
 
 		// Construction of the two splitting polygons by using the OBB edges and the
 		// intersection points
-		IPolygon pol1 = determinePolygon(intersectedPoints, (shortDirectionSplit) ? oBB.getShortestEdges().get(0) : oBB.getLongestEdges().get(0), decompositionLevel,
+		IPolygon pol1 = this.determinePolygon(intersectedPoints, (shortDirectionSplit) ? oBB.getShortestEdges().get(0) : oBB.getLongestEdges().get(0), decompositionLevel,
 				decompositionLevelWithRoad, roadWidth);
-		IPolygon pol2 = determinePolygon(intersectedPoints, (shortDirectionSplit) ? oBB.getShortestEdges().get(1) : oBB.getLongestEdges().get(1), decompositionLevel,
+		IPolygon pol2 = this.determinePolygon(intersectedPoints, (shortDirectionSplit) ? oBB.getShortestEdges().get(1) : oBB.getLongestEdges().get(1), decompositionLevel,
 				decompositionLevelWithRoad, roadWidth);
 
 		// Generated polygons are added and returned
@@ -484,7 +487,7 @@ public class OBBBlockDecomposition {
 	 * @param edge
 	 * @return
 	 */
-	private static IPolygon determinePolygon(IDirectPositionList intersectedPoints, ILineString edge, int decompositionLevel, int decompositionLevelWithRoad, double roadWidth) {
+	private IPolygon determinePolygon(IDirectPositionList intersectedPoints, ILineString edge, int decompositionLevel, int decompositionLevelWithRoad, double roadWidth) {
 
 		IDirectPosition dp1 = intersectedPoints.get(0);
 		IDirectPosition dp2 = intersectedPoints.get(1);
@@ -515,12 +518,16 @@ public class OBBBlockDecomposition {
 		IPolygon pol = new GM_Polygon(new GM_LineString(dpl1));
 
 		if (decompositionLevel < decompositionLevelWithRoad) {
+			
+			System.out.println("Decomposition level : " + decompositionLevel + " decomposition level max :" + decompositionLevelWithRoad);
 
 			IDirectPositionList dpl = new DirectPositionList(dp1, dp2);
 
 			ILineString directionOfCut = (new GM_LineString(dpl));
+			
+			IGeometry bufferRoad = directionOfCut.buffer(roadWidth);
 
-			IGeometry geom = pol.difference(directionOfCut.buffer(roadWidth));
+			IGeometry geom = pol.difference(bufferRoad);
 
 			// To check the geometries
 			// Decomment the follong lines
@@ -536,6 +543,10 @@ public class OBBBlockDecomposition {
 			// So we do not create the road
 			if (geom instanceof IPolygon) {
 				pol = (IPolygon) geom;
+				if(pol != null && !pol.isEmpty()) {
+					List<IOrientableCurve> lCTemp = FromGeomToLineString.convert(bufferRoad);
+					this.getExt().addAll(lCTemp);
+				}
 			}
 		}
 
