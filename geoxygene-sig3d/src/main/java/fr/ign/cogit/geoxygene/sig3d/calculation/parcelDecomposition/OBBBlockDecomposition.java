@@ -519,7 +519,7 @@ public class OBBBlockDecomposition {
 
 		if (decompositionLevel < decompositionLevelWithRoad) {
 			
-			System.out.println("Decomposition level : " + decompositionLevel + " decomposition level max :" + decompositionLevelWithRoad);
+			//System.out.println("Decomposition level : " + decompositionLevel + " decomposition level max :" + decompositionLevelWithRoad);
 
 			IDirectPositionList dpl = new DirectPositionList(dp1, dp2);
 
