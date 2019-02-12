@@ -94,7 +94,7 @@ public class GeOxygeneGeoToolsTypes {
 	}
 
 	public static IFeatureCollection<?> convert2IFeatureCollection(SimpleFeatureCollection collection) {
-		//logger.info("Schema name = " + collection.getSchema().getName() + " - " + collection.getSchema().getName().getLocalPart());
+		// logger.info("Schema name = " + collection.getSchema().getName() + " - " + collection.getSchema().getName().getLocalPart());
 		SchemaDefaultFeature schemaDefaultFeature = new SchemaDefaultFeature();
 		schemaDefaultFeature.setNom(collection.getSchema().getName().getLocalPart());
 		schemaDefaultFeature.setNomSchema(collection.getSchema().getName().getLocalPart());
@@ -266,5 +266,48 @@ public class GeOxygeneGeoToolsTypes {
 		}
 
 		return collection.collection();
+	}
+
+	public static <Feat extends IFeature> SimpleFeature convert2SimpleFeature(IFeature feature, CoordinateReferenceSystem crs) throws Exception {
+
+		GF_FeatureType featureType = feature.getFeatureType();
+
+		// logger.info("Typename = " + featureType.getTypeName());
+
+		String typeName = featureType.getTypeName();
+		if (typeName == null) {
+			typeName = "CreatedType";
+		}
+
+		SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
+		builder.setName(typeName);
+		builder.setCRS(crs);
+
+		if (featureType != null) {
+			builder.add("the_geom", AdapterFactory.toJTSGeometryType(featureType.getGeometryType()), crs);
+			builder.setDefaultGeometry("the_geom");
+			for (GF_AttributeType attributeType : featureType.getFeatureAttributes()) {
+				Class<?> attributeClass = ShapefileWriter.valueType2Class(attributeType.getValueType());
+				String attributeName = attributeType.getMemberName();
+				if (AttributeType.class.isAssignableFrom(attributeType.getClass())) {
+					attributeName = ((AttributeType) attributeType).getNomField();
+				}
+				builder.add(attributeName, attributeClass);
+			}
+		}
+
+		SimpleFeatureBuilder sfBuilder = new SimpleFeatureBuilder(builder.buildFeatureType());
+
+		sfBuilder.add(AdapterFactory.toGeometry(new GeometryFactory(), feature.getGeom()));
+
+		if (featureType != null) {
+			for (GF_AttributeType attributeType : featureType.getFeatureAttributes()) {
+				sfBuilder.add(feature.getAttribute(attributeType.getMemberName()));
+			}
+		}
+
+		SimpleFeature simpleFeature = sfBuilder.buildFeature(null);
+
+		return simpleFeature;
 	}
 }
