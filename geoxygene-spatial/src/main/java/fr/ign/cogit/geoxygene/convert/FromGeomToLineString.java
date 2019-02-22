@@ -13,10 +13,16 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
-import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 
 public class FromGeomToLineString {
+	
+	public static IMultiCurve<IOrientableCurve> convertMC(IGeometry geom) {
+		 IMultiCurve<IOrientableCurve>  iMC = new GM_MultiCurve<>(convert( geom));
+		return iMC;
+	}
 
+	
 	public static List<IOrientableCurve> convert(IGeometry geom) {
 
 		if (geom instanceof IMultiCurve<?>) {
