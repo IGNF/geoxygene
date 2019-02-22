@@ -168,7 +168,7 @@ public class FindObjectInDirection {
 			double distDep = iOC.distance(new GM_Point(dpDep));
 			double distDepNeg = iOC.distance(new GM_Point(dpDepNeg));
 
-			if (distDep < distDepNeg) {
+			if (distDep > distDepNeg) {
 				isInPolygonDep = true;
 
 			} else {
