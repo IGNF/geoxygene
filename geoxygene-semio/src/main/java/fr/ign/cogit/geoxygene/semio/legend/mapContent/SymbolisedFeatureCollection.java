@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-
-import com.vividsolutions.jts.operation.buffer.BufferParameters;
+import org.locationtech.jts.operation.buffer.BufferParameters;
 
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.semio.legend.legendContent.LegendComponent;

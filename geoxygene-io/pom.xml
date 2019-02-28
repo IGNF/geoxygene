@@ -7,7 +7,7 @@
 	<parent>
 		<artifactId>geoxygene</artifactId>
 		<groupId>fr.ign.cogit</groupId>
-		<version>1.9-SNAPSHOT</version>
+		<version>1.10-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>geoxygene-io</artifactId>
@@ -62,9 +62,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.vividsolutions</groupId>
+			<groupId>org.locationtech.jts</groupId>
 			<artifactId>jts-core</artifactId>
-			<version>${jts.version}</version>
 		</dependency>
 
 		<dependency>
@@ -80,11 +79,6 @@
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-referencing</artifactId>
-			<version>${geotools.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt-api</artifactId>
 			<version>${geotools.version}</version>
 		</dependency>
 		<dependency>

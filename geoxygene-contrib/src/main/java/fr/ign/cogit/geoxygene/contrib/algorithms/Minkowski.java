@@ -12,7 +12,7 @@ package fr.ign.cogit.geoxygene.contrib.algorithms;
 
 import java.util.ArrayList;
 
-import org.geotools.gml3.MultiSurface;
+import org.geotools.geometry.jts.MultiSurface;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;

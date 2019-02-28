@@ -9,7 +9,7 @@
 	<parent>
 		<artifactId>geoxygene</artifactId>
 		<groupId>fr.ign.cogit</groupId>
-		<version>1.9-SNAPSHOT</version>
+		<version>1.10-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>geoxygene-database</artifactId>
@@ -119,11 +119,6 @@
 			<version>${postgis.jdbc.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt-api</artifactId>
-			<version>${geotools.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-main</artifactId>

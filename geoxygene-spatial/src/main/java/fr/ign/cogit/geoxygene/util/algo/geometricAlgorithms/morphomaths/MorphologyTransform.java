@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-
-import com.vividsolutions.jts.algorithm.CGAlgorithms;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.operation.buffer.BufferParameters;
+import org.locationtech.jts.algorithm.Orientation;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.operation.buffer.BufferParameters;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
@@ -440,7 +439,7 @@ public class MorphologyTransform {
     try {
       LineString jtsLine = (LineString) JtsGeOxygene.makeJtsGeom(line);
 
-      if (CGAlgorithms.isCCW(jtsLine.getCoordinates())) {
+      if (Orientation.isCCW(jtsLine.getCoordinates())) {
         line = (ILineString) line.getNegative();
       }
     } catch (Exception e) {

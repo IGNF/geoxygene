@@ -2,7 +2,7 @@ package fr.ign.cogit.geoxygene.semio.legend.mapContent.operation;
 
 import java.awt.BasicStroke;
 
-import com.vividsolutions.jts.operation.buffer.BufferParameters;
+import org.locationtech.jts.operation.buffer.BufferParameters;
 
 import fr.ign.cogit.geoxygene.semio.legend.mapContent.SymbolisedFeature;
 import fr.ign.cogit.geoxygene.semio.legend.symbol.GraphicSymbol;

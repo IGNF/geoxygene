@@ -8,8 +8,7 @@ import java.util.Stack;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
-
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;

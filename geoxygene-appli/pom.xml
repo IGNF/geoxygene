@@ -7,7 +7,7 @@
 	<parent>
 		<artifactId>geoxygene</artifactId>
 		<groupId>fr.ign.cogit</groupId>
-		<version>1.9-SNAPSHOT</version>
+		<version>1.10-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>geoxygene-appli</artifactId>
@@ -17,6 +17,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<dir.executable>/exec-geox</dir.executable>
+		<cartagen.version>0.2-SNAPSHOT</cartagen.version>
 	</properties>
 
 
@@ -272,7 +273,7 @@
 		<dependency>
 			<groupId>fr.ign.cogit</groupId>
 			<artifactId>cartagen-core</artifactId>
-			<version>0.1-SNAPSHOT</version>
+			<version>${cartagen.version}</version>
 		</dependency>
 
 		<!-- JGoodies Forms framework helps you lay out and implement elegant Swing 
@@ -298,11 +299,6 @@
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-render</artifactId>
-			<version>${geotools.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt-api</artifactId>
 			<version>${geotools.version}</version>
 		</dependency>
 		<dependency>

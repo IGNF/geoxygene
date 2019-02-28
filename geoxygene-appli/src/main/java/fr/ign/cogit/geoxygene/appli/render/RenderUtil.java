@@ -54,10 +54,9 @@ import org.geotools.styling.ContrastEnhancement;
 import org.geotools.styling.SelectedChannelType;
 import org.geotools.styling.StyleBuilder;
 import org.geotools.styling.StyleFactory;
+import org.locationtech.jts.geom.Envelope;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.style.ContrastMethod;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;

@@ -4,16 +4,17 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryCollection;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.LinearRing;
+import org.locationtech.jts.geom.MultiLineString;
+import org.locationtech.jts.geom.MultiPoint;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -241,8 +242,7 @@ public abstract class AbstractDTM {
   public IGeometry mapGeom(IGeometry geom, double altMax, boolean isHeigth,
       boolean isSurSampled) throws Exception {
 
-    com.vividsolutions.jts.geom.Geometry jtsGeom = JtsGeOxygene
-        .makeJtsGeom(geom);
+    Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
     return this.mapGeom(jtsGeom, altMax, isHeigth, isSurSampled);
 
   }
@@ -255,7 +255,7 @@ public abstract class AbstractDTM {
    * @return
    * @throws Exception
    */
-  public IGeometry mapGeom(com.vividsolutions.jts.geom.Geometry geom,
+  public IGeometry mapGeom(Geometry geom,
       double altMax, boolean isHeigth, boolean isSurSampled) throws Exception {
 
     // On adpate en fonction de la classe de la géométrie, la méthode à
@@ -267,7 +267,7 @@ public abstract class AbstractDTM {
     if (geom instanceof Polygon) {
       Polygon poly = (Polygon) geom;
 
-      com.vividsolutions.jts.geom.Geometry geometryJTS = this.mapSurface(poly,
+      Geometry geometryJTS = this.mapSurface(poly,
           altMax, isHeigth, isSurSampled && (isHeigth && altMax == 0));
       IGeometry geomTemp = JtsGeOxygene.makeGeOxygeneGeom(geometryJTS);
       return postProcessingSurface(geomTemp, isSurSampled, isHeigth, altMax);
@@ -286,7 +286,7 @@ public abstract class AbstractDTM {
       for (int i = 0; i < nbElem; i++) {
         Polygon polyTemp = (Polygon) poly.getGeometryN(i);
 
-        com.vividsolutions.jts.geom.Geometry geometryJTS = this.mapSurface(
+        Geometry geometryJTS = this.mapSurface(
             polyTemp, altMax, isHeigth, isSurSampled
                 && (isHeigth && altMax == 0));
 
@@ -540,7 +540,7 @@ public abstract class AbstractDTM {
   public IGeometry mapSurface(IPolygon poly, double altMax, boolean isHeigth,
       boolean isSurSampled) throws Exception {
 
-    com.vividsolutions.jts.geom.Geometry geom = JtsGeOxygene.makeJtsGeom(poly);
+    Geometry geom = JtsGeOxygene.makeJtsGeom(poly);
 
     return this.mapGeom(geom, altMax, isHeigth, isSurSampled);
 
@@ -563,7 +563,7 @@ public abstract class AbstractDTM {
    * @Fixme : cas avec une extrusion non gérée
    * @throws Exception
    */
-  public com.vividsolutions.jts.geom.Geometry mapSurface(Polygon poly,
+  public Geometry mapSurface(Polygon poly,
       double altMax, boolean isHeigth, boolean isSursampled) {
 
     // On surechantillonne ou non
@@ -636,7 +636,7 @@ public abstract class AbstractDTM {
 
       if (isSursampled) {
 
-        com.vividsolutions.jts.geom.Geometry ob = multiP.getGeometryN(i)
+        Geometry ob = multiP.getGeometryN(i)
             .intersection(poly);
 
         if (ob == null || ob.getNumPoints() == 0) {
@@ -673,8 +673,7 @@ public abstract class AbstractDTM {
 
   }
 
-  private List<Polygon> returnIntersectionFromPolygon(
-      com.vividsolutions.jts.geom.Geometry geom) {
+  private List<Polygon> returnIntersectionFromPolygon(Geometry geom) {
 
     List<Polygon> polys = new ArrayList<Polygon>();
 
@@ -732,7 +731,7 @@ public abstract class AbstractDTM {
   public ICurve mapCurve(ICurve ls, double altMax, boolean isHeigth,
       boolean isSurSampled) throws Exception {
 
-    com.vividsolutions.jts.geom.Geometry geom = JtsGeOxygene.makeJtsGeom(ls);
+    Geometry geom = JtsGeOxygene.makeJtsGeom(ls);
 
     return (GM_LineString) this.mapGeom(geom, altMax, isHeigth, isSurSampled);
 
@@ -760,7 +759,7 @@ public abstract class AbstractDTM {
     if (isSursampled) {
       // On sur échantillonne donc on découpe les lignes en fonctions des
       // lignes des mailles du MNT
-      com.vividsolutions.jts.geom.Geometry env = ls.getEnvelope();
+      Geometry env = ls.getEnvelope();
 
       Coordinate[] coordEnv = env.getCoordinates();
 
@@ -797,7 +796,7 @@ public abstract class AbstractDTM {
       gml = this.processLinearGrid(xmin, ymin, xmax, ymax);
 
       // On récupère les points d'intersections
-      com.vividsolutions.jts.geom.Geometry obj = gml.intersection(ls);
+      Geometry obj = gml.intersection(ls);
 
       // On réordonne les points obtenus et ceux de la ligne initiale
       lDPFinal = this.fusion(ls, obj.getCoordinates()).getCoordinates();
