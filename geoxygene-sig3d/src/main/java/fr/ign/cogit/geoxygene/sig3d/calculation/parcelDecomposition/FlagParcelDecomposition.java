@@ -486,6 +486,17 @@ public class FlagParcelDecomposition {
       return JtsGeOxygene.makeGeOxygeneGeom(FeaturePolygonizer.getUnion(new ArrayList<Geometry>(Arrays.asList(jtsGeomA, jtsGeomB))));
     }
   }
+  private IGeometry getIntersection(IGeometry a, IGeometry b) throws Exception {
+    try {
+      return a.intersection(b);
+    } catch (Exception e) {
+      GeometryFactory fact = new GeometryFactory();
+      PrecisionModel pm = new PrecisionModel(100);
+      Geometry jtsGeomA = GeometryPrecisionReducer.reduce(AdapterFactory.toGeometry(fact, a, true), pm);
+      Geometry jtsGeomB = GeometryPrecisionReducer.reduce(AdapterFactory.toGeometry(fact, b, true), pm);
+      return JtsGeOxygene.makeGeOxygeneGeom(FeaturePolygonizer.getIntersection(new ArrayList<Geometry>(Arrays.asList(jtsGeomA, jtsGeomB))));
+    }
+  }
 	/**
 	 * Generate a list of candidate for creating roads. The pair is composed of a linestring that may be used to generate the road and the parcel on which it may be built
 	 * 
@@ -687,17 +698,19 @@ public class FlagParcelDecomposition {
 
 		IGeometry geom = null;
 		IGeometry geom2 = null;
-
-		geom = polygones.get(0).intersection(polyGeom);
-		geom2 = polygones.get(1).intersection(polyGeom);
+		
+		try {
+      geom = getIntersection(polygones.get(0), polyGeom);
+      geom2 = getIntersection(polygones.get(1),polyGeom);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
 		if (geom == null) {
-
 			geom = polygones.get(0).intersection(polyGeom.buffer(0.1));
 		}
 
 		if (geom2 == null) {
-
 			geom2 = polygones.get(1).intersection(polyGeom.buffer(0.1));
 		}
 
