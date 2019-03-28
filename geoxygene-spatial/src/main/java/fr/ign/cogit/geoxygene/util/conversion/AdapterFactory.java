@@ -428,6 +428,7 @@ public class AdapterFactory {
    * @param coord coordonnée JTS
    * @return position GeOxygene équivalente
    */
+  @SuppressWarnings("deprecation")
   public static IDirectPosition toDirectPosition(Coordinate coord) {
     return new DirectPosition(coord.x, coord.y, coord.z);
   }
@@ -580,8 +581,7 @@ public class AdapterFactory {
       IMultiSurface<IOrientableSurface> mp = (IMultiSurface<IOrientableSurface>) geom;
       GM_MultiSurface<GM_OrientableSurface> multiPolygon = new GM_MultiSurface<GM_OrientableSurface>();
       for (int i = 0; i < mp.size(); i++) {
-        multiPolygon.add((GM_OrientableSurface) AdapterFactory
-            .to2DGM_Object(multiPolygon.get(i)));
+        multiPolygon.add((GM_OrientableSurface) AdapterFactory.to2DGM_Object(mp.get(i)));
       }
       multiPolygon.setCRS(geom.getCRS());
       return multiPolygon;
