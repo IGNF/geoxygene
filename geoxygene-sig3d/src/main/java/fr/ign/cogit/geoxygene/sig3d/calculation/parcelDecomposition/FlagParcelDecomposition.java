@@ -383,6 +383,7 @@ public class FlagParcelDecomposition {
         } catch (Exception e) {
           e.printStackTrace();
         }
+
 				geomPol1 = makePolygonValid(geomPol1);
 				// The second geometry is the union between the road (intersection between road
 				// and existing parcel) and the original of the geomtry of the parcel with no
