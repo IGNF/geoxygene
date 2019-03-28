@@ -95,8 +95,11 @@ public class FeaturePolygonizer {
   @SuppressWarnings("unchecked")
   public static Geometry getDifference(List<Geometry> features, List<Geometry> featuresToRemove) {
     Polygonizer polygonizer = new Polygonizer();
-    addFeatures(polygonizer, features);
-    addFeatures(polygonizer, featuresToRemove);
+    List<Geometry> allFeatures = new ArrayList<>(features);
+    allFeatures.addAll(featuresToRemove);
+    addFeatures(polygonizer, allFeatures);
+//    addFeatures(polygonizer, features);
+//    addFeatures(polygonizer, featuresToRemove);
     List<Polygon> polygons = new ArrayList<>();
     polygons.addAll(polygonizer.getPolygons());
     List<Polygon> buffer = new ArrayList<>();
@@ -111,8 +114,11 @@ public class FeaturePolygonizer {
   @SuppressWarnings("unchecked")
   public static Geometry[] getIntersectionDifference(List<Geometry> features, List<Geometry> featuresToRemove) {
     Polygonizer polygonizer = new Polygonizer();
-    addFeatures(polygonizer, features);
-    addFeatures(polygonizer, featuresToRemove);
+    List<Geometry> allFeatures = new ArrayList<>(features);
+    allFeatures.addAll(featuresToRemove);
+    addFeatures(polygonizer, allFeatures);
+//    addFeatures(polygonizer, features);
+//    addFeatures(polygonizer, featuresToRemove);
     List<Polygon> polygons = new ArrayList<>();
     polygons.addAll(polygonizer.getPolygons());
     List<Polygon> intersectionBuffer = new ArrayList<>();
@@ -122,7 +128,7 @@ public class FeaturePolygonizer {
       if (features.stream().anyMatch(g->g.intersects(point))) {
         if (featuresToRemove.stream().anyMatch(g->g.intersects(point))) {
           intersectionBuffer.add(p);
-        } else if (featuresToRemove.stream().allMatch(g->!g.intersects(point))) {
+        } else { //if (featuresToRemove.stream().noneMatch(g->g.intersects(point))) {
           differenceBuffer.add(p);
         }
       }

@@ -2,6 +2,7 @@ package fr.ign.cogit.geoxygene.sig3d.calculation.parcelDecomposition;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,8 +15,6 @@ import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.operation.union.CascadedPolygonUnion;
 import org.locationtech.jts.precision.GeometryPrecisionReducer;
-
-import com.google.common.collect.Lists;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -71,17 +70,15 @@ public class FlagParcelDecomposition {
 		DirectPosition.PRECISION = 3;
 
 		// Input 1/ the input parcelles to split
-		String inputShapeFile = "/tmp/toFlag.shp";
+		String inputShapeFile = "data/toFlag.shp";
 		// Input 2 : the buildings that mustnt intersects the allowed roads (facultatif)
-		String inputBuildingFile = "/home/yo/Documents/these/ArtiScales/dataGeo/building.shp";
+		String inputBuildingFile = "data/building.shp";
 
 		// Input 3 (facultative) : the exterior of the urban block (it serves to determiner the multicurve)
-		String inputUrbanBlock = "/home/yo/Documents/these/ArtiScales/dataGeo/ilot.shp";
+		String inputUrbanBlock = "data/ilot.shp";
 		IFeatureCollection<IFeature> featC = ShapefileReader.read(inputUrbanBlock);
 		
-		
-
-		String folderOut = "/tmp/";
+		String folderOut = "data/";
 
 		// The output file that will contain all the decompositions
 		String shapeFileOut = folderOut + "outflag.shp";
@@ -90,19 +87,16 @@ public class FlagParcelDecomposition {
 
 		// Reading collection
 		IFeatureCollection<IFeature> featColl = ShapefileReader.read(inputShapeFile);
-		IFeatureCollection<IFeature> featCollBuildings = ShapefileReader.read(inputBuildingFile);
+		IFeatureCollection<IFeature> featCollBuildings = ShapefileReader.read(inputBuildingFile);		
 		
-		
-		List<IOrientableCurve> lOC =   featC.select(featColl.envelope()).parallelStream().map(x ->  FromGeomToLineString.convert(x.getGeom())).collect(ArrayList::new, List::addAll, List::addAll);
+		List<IOrientableCurve> lOC = featC.select(featColl.envelope()).parallelStream().map(x ->  FromGeomToLineString.convert(x.getGeom())).collect(ArrayList::new, List::addAll, List::addAll);
 
 		IMultiCurve<IOrientableCurve> iMultiCurve = new GM_MultiCurve<>(lOC);
-		
-		
 
 		// Maxmimal area for a parcel
-		double maximalArea = 2500;
+		double maximalArea = 800;
 		// MAximal with to the road
-		double maximalWidth = 30;
+		double maximalWidth = 15;
 		// Do we want noisy results
 		double noise = 0;
 		// The with of the road that is created
@@ -140,7 +134,7 @@ public class FlagParcelDecomposition {
 
 		}
 
-		ShapefileWriter.write(featCollOut, shapeFileOut,CRS.decode("EPSG:2154"));
+		ShapefileWriter.write(featCollOut, shapeFileOut, CRS.decode("EPSG:2154"));
 
 	}
 
@@ -370,13 +364,22 @@ public class FlagParcelDecomposition {
 //					geomPol1 = side.getValue().difference(road.buffer(0.5));
 //				}
 
-				IGeometry[] intersectionDifference;
 				IGeometry geomPol1 = null;
 				IGeometry roadToAdd = null;
         try {
-          intersectionDifference = getIntersectionDifference(side.getValue(), road);
-          geomPol1 = intersectionDifference[0];
-          roadToAdd = intersectionDifference[1];
+          IGeometry[] intersectionDifference = getIntersectionDifference(side.getValue(), road);
+          roadToAdd = intersectionDifference[0];
+          geomPol1 = intersectionDifference[1];
+//          System.out.println("A");
+//          System.out.println(side.getValue());
+//          System.out.println("B");
+//          System.out.println(road);
+//          System.out.println("Difference");
+//          System.out.println(geomPol1);
+//          System.out.println("Should be");
+//          System.out.println(side.getValue().difference(road));
+//          System.out.println("Intersection");
+//          System.out.println(roadToAdd);
         } catch (Exception e) {
           e.printStackTrace();
         }
@@ -457,7 +460,7 @@ public class FlagParcelDecomposition {
 	  Geometry jtsGeomA = AdapterFactory.toGeometry(fact, a, true);
 	  Geometry jtsGeomB = AdapterFactory.toGeometry(fact, b, true);
 	  try {
-	  Geometry[] result = FeaturePolygonizer.getIntersectionDifference(Lists.newArrayList(jtsGeomA), Lists.newArrayList(jtsGeomB));
+	  Geometry[] result = FeaturePolygonizer.getIntersectionDifference(new ArrayList<Geometry>(Arrays.asList(jtsGeomA)), new ArrayList<Geometry>(Arrays.asList(jtsGeomB)));
 	  return new IGeometry[] {JtsGeOxygene.makeGeOxygeneGeom(result[0]), JtsGeOxygene.makeGeOxygeneGeom(result[1])};
 	  } catch (Exception e) {
 	    System.out.println("GeomA");
@@ -465,7 +468,7 @@ public class FlagParcelDecomposition {
       System.out.println("GeomB");
       System.out.println(jtsGeomB);
       System.out.println("Polygons");
-      for (Polygon p: FeaturePolygonizer.getPolygons(Lists.newArrayList(jtsGeomA, jtsGeomB))) {
+      for (Polygon p: FeaturePolygonizer.getPolygons(new ArrayList<Geometry>(Arrays.asList(jtsGeomA, jtsGeomB)))) {
         System.out.println(p);
       }
 	    throw e;
@@ -477,9 +480,9 @@ public class FlagParcelDecomposition {
     Geometry jtsGeomA = GeometryPrecisionReducer.reduce(AdapterFactory.toGeometry(fact, a, true), pm);
     Geometry jtsGeomB = GeometryPrecisionReducer.reduce(AdapterFactory.toGeometry(fact, b, true), pm);
     try {
-      return JtsGeOxygene.makeGeOxygeneGeom(new CascadedPolygonUnion(Lists.newArrayList(jtsGeomA, jtsGeomB)).union());
+      return JtsGeOxygene.makeGeOxygeneGeom(new CascadedPolygonUnion(new ArrayList<Geometry>(Arrays.asList(jtsGeomA, jtsGeomB))).union());
     } catch (Exception e) {
-      return JtsGeOxygene.makeGeOxygeneGeom(FeaturePolygonizer.getUnion(Lists.newArrayList(jtsGeomA, jtsGeomB)));
+      return JtsGeOxygene.makeGeOxygeneGeom(FeaturePolygonizer.getUnion(new ArrayList<Geometry>(Arrays.asList(jtsGeomA, jtsGeomB))));
     }
   }
 	/**
