@@ -2,6 +2,7 @@ package fr.ign.cogit.geoxygene.sig3d.calculation.parcelDecomposition;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +16,6 @@ import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.operation.union.CascadedPolygonUnion;
 import org.locationtech.jts.precision.GeometryPrecisionReducer;
 
-import com.google.common.collect.Lists;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -73,10 +73,9 @@ public class FlagParcelDecomposition {
 		// Input 1/ the input parcelles to split
 		String inputShapeFile = "/tmp/toFlag.shp";
 		// Input 2 : the buildings that mustnt intersects the allowed roads (facultatif)
-		String inputBuildingFile = "/home/yo/Documents/these/ArtiScales/dataGeo/building.shp";
-
+		String inputBuildingFile = "/tmp/building.shp";
 		// Input 3 (facultative) : the exterior of the urban block (it serves to determiner the multicurve)
-		String inputUrbanBlock = "/home/yo/Documents/these/ArtiScales/dataGeo/ilot.shp";
+		String inputUrbanBlock = "/tmp/ilot.shp";
 		IFeatureCollection<IFeature> featC = ShapefileReader.read(inputUrbanBlock);
 		
 		
@@ -100,9 +99,9 @@ public class FlagParcelDecomposition {
 		
 
 		// Maxmimal area for a parcel
-		double maximalArea = 2500;
+		double maximalArea = 800;
 		// MAximal with to the road
-		double maximalWidth = 30;
+		double maximalWidth = 15;
 		// Do we want noisy results
 		double noise = 0;
 		// The with of the road that is created
@@ -377,9 +376,11 @@ public class FlagParcelDecomposition {
           intersectionDifference = getIntersectionDifference(side.getValue(), road);
           geomPol1 = intersectionDifference[0];
           roadToAdd = intersectionDifference[1];
+          
         } catch (Exception e) {
           e.printStackTrace();
         }
+
 				geomPol1 = makePolygonValid(geomPol1);
 				// The second geometry is the union between the road (intersection between road
 				// and existing parcel) and the original of the geomtry of the parcel with no
@@ -457,7 +458,14 @@ public class FlagParcelDecomposition {
 	  Geometry jtsGeomA = AdapterFactory.toGeometry(fact, a, true);
 	  Geometry jtsGeomB = AdapterFactory.toGeometry(fact, b, true);
 	  try {
-	  Geometry[] result = FeaturePolygonizer.getIntersectionDifference(Lists.newArrayList(jtsGeomA), Lists.newArrayList(jtsGeomB));
+		  List<Geometry> features = new ArrayList<Geometry>();
+		  features.add(jtsGeomA);
+		  List<Geometry> featuresToRemove = new ArrayList<Geometry>();
+		  features.add(jtsGeomB);
+
+		  Geometry[] result = FeaturePolygonizer.getIntersectionDifference(features, featuresToRemove);
+		  System.out.println(result[0]);
+		  System.out.println(result[1]);
 	  return new IGeometry[] {JtsGeOxygene.makeGeOxygeneGeom(result[0]), JtsGeOxygene.makeGeOxygeneGeom(result[1])};
 	  } catch (Exception e) {
 	    System.out.println("GeomA");
@@ -465,7 +473,10 @@ public class FlagParcelDecomposition {
       System.out.println("GeomB");
       System.out.println(jtsGeomB);
       System.out.println("Polygons");
-      for (Polygon p: FeaturePolygonizer.getPolygons(Lists.newArrayList(jtsGeomA, jtsGeomB))) {
+      List<Geometry> features = new ArrayList<Geometry>();
+      features.add(jtsGeomA);
+      features.add(jtsGeomB);
+      for (Polygon p: FeaturePolygonizer.getPolygons(features)) {
         System.out.println(p);
       }
 	    throw e;
@@ -476,10 +487,13 @@ public class FlagParcelDecomposition {
     PrecisionModel pm = new PrecisionModel(100);
     Geometry jtsGeomA = GeometryPrecisionReducer.reduce(AdapterFactory.toGeometry(fact, a, true), pm);
     Geometry jtsGeomB = GeometryPrecisionReducer.reduce(AdapterFactory.toGeometry(fact, b, true), pm);
+    List<Geometry> features = new ArrayList<Geometry>();
+    features.add(jtsGeomA);
+    features.add(jtsGeomB);
     try {
-      return JtsGeOxygene.makeGeOxygeneGeom(new CascadedPolygonUnion(Lists.newArrayList(jtsGeomA, jtsGeomB)).union());
+      return JtsGeOxygene.makeGeOxygeneGeom(new CascadedPolygonUnion(features).union());
     } catch (Exception e) {
-      return JtsGeOxygene.makeGeOxygeneGeom(FeaturePolygonizer.getUnion(Lists.newArrayList(jtsGeomA, jtsGeomB)));
+      return JtsGeOxygene.makeGeOxygeneGeom(FeaturePolygonizer.getUnion(features));
     }
   }
 	/**
