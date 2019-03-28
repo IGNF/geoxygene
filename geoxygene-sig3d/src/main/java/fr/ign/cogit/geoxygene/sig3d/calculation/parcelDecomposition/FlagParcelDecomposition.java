@@ -8,6 +8,14 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.math3.util.Pair;
 import org.geotools.referencing.CRS;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.geom.PrecisionModel;
+import org.locationtech.jts.operation.union.CascadedPolygonUnion;
+import org.locationtech.jts.precision.GeometryPrecisionReducer;
+
+import com.google.common.collect.Lists;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -31,7 +39,10 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
+import fr.ign.cogit.geoxygene.util.FeaturePolygonizer;
 import fr.ign.cogit.geoxygene.util.attribute.AttributeManager;
+import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
+import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
@@ -295,7 +306,7 @@ public class FlagParcelDecomposition {
 
 	private IGeometry makePolygonValid(IGeometry pol) {
 
-		if (!pol.isValid()) {
+		if (pol != null && !pol.isValid()) {
 			pol = pol.buffer(0);
 			if (!pol.isValid()) {
 				pol = pol.buffer(0.5);
@@ -353,26 +364,43 @@ public class FlagParcelDecomposition {
 
 				// The first geometry is the polygon with road access and a remove of the
 				// geometry
-				IGeometry geomPol1 = side.getValue().difference(road);
+//				IGeometry geomPol1 = side.getValue().difference(road);
+//
+//				if (geomPol1 == null) {
+//					geomPol1 = side.getValue().difference(road.buffer(0.5));
+//				}
 
-				if (geomPol1 == null) {
-					geomPol1 = side.getValue().difference(road.buffer(0.5));
-				}
-
+				IGeometry[] intersectionDifference;
+				IGeometry geomPol1 = null;
+				IGeometry roadToAdd = null;
+        try {
+          intersectionDifference = getIntersectionDifference(side.getValue(), road);
+          geomPol1 = intersectionDifference[0];
+          roadToAdd = intersectionDifference[1];
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
 				geomPol1 = makePolygonValid(geomPol1);
 				// The second geometry is the union between the road (intersection between road
 				// and existing parcel) and the original of the geomtry of the parcel with no
 				// road acess
 
-				IGeometry roadToAdd = road.intersection(side.getValue());
-
-				if (roadToAdd == null) {
-					roadToAdd = road.buffer(0.5).intersection(side.getValue());
-				}
+//				IGeometry roadToAdd = road.intersection(side.getValue());
+//
+//				if (roadToAdd == null) {
+//					roadToAdd = road.buffer(0.5).intersection(side.getValue());
+//				}
 
 				roadToAdd = makePolygonValid(roadToAdd);
 
-				IGeometry geomPol2 = currentPoly.union(roadToAdd.buffer(0.01)).buffer(0.0);
+//				IGeometry geomPol2 = currentPoly.union(roadToAdd.buffer(0.01)).buffer(0.0);
+				IGeometry geomPol2;
+        try {
+          geomPol2 = getUnion(currentPoly,roadToAdd);
+        } catch (Exception e) {
+          e.printStackTrace();
+          geomPol2 = currentPoly.union(roadToAdd.buffer(0.01)).buffer(0.0);
+        }
 				geomPol2 = makePolygonValid(geomPol2);
 
 				// It might be a multi polygon so we remove the small area <
@@ -424,7 +452,36 @@ public class FlagParcelDecomposition {
 
 		return polygonesOut;
 	}
-
+	private IGeometry[] getIntersectionDifference(IGeometry a, IGeometry b) throws Exception {
+	  GeometryFactory fact = new GeometryFactory();
+	  Geometry jtsGeomA = AdapterFactory.toGeometry(fact, a, true);
+	  Geometry jtsGeomB = AdapterFactory.toGeometry(fact, b, true);
+	  try {
+	  Geometry[] result = FeaturePolygonizer.getIntersectionDifference(Lists.newArrayList(jtsGeomA), Lists.newArrayList(jtsGeomB));
+	  return new IGeometry[] {JtsGeOxygene.makeGeOxygeneGeom(result[0]), JtsGeOxygene.makeGeOxygeneGeom(result[1])};
+	  } catch (Exception e) {
+	    System.out.println("GeomA");
+	    System.out.println(jtsGeomA);
+      System.out.println("GeomB");
+      System.out.println(jtsGeomB);
+      System.out.println("Polygons");
+      for (Polygon p: FeaturePolygonizer.getPolygons(Lists.newArrayList(jtsGeomA, jtsGeomB))) {
+        System.out.println(p);
+      }
+	    throw e;
+	  }
+	}
+  private IGeometry getUnion(IGeometry a, IGeometry b) throws Exception {
+    GeometryFactory fact = new GeometryFactory();
+    PrecisionModel pm = new PrecisionModel(100);
+    Geometry jtsGeomA = GeometryPrecisionReducer.reduce(AdapterFactory.toGeometry(fact, a, true), pm);
+    Geometry jtsGeomB = GeometryPrecisionReducer.reduce(AdapterFactory.toGeometry(fact, b, true), pm);
+    try {
+      return JtsGeOxygene.makeGeOxygeneGeom(new CascadedPolygonUnion(Lists.newArrayList(jtsGeomA, jtsGeomB)).union());
+    } catch (Exception e) {
+      return JtsGeOxygene.makeGeOxygeneGeom(FeaturePolygonizer.getUnion(Lists.newArrayList(jtsGeomA, jtsGeomB)));
+    }
+  }
 	/**
 	 * Generate a list of candidate for creating roads. The pair is composed of a linestring that may be used to generate the road and the parcel on which it may be built
 	 * 

@@ -25,6 +25,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateSequence;
+import org.locationtech.jts.geom.CoordinateXY;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -98,16 +99,18 @@ public class AdapterFactory {
    * @throws Exception renvoie une exception si le type de géométrie n'est pas
    *           géré.
    */
+  public static Geometry toGeometry(GeometryFactory factory, IGeometry geom) throws Exception {
+    return toGeometry(factory, geom, false);
+  }
   @SuppressWarnings("unchecked")
-  public static Geometry toGeometry(GeometryFactory factory, IGeometry geom)
-      throws Exception {
+  public static Geometry toGeometry(GeometryFactory factory, IGeometry geom, boolean to2D) throws Exception {
     if (geom == null) {
       return null;
     }
     Geometry result = null;
     if (geom instanceof IPoint) {
       result = factory.createPoint(AdapterFactory.toCoordinateSequence(factory,
-          geom.coord()));
+          geom.coord(), to2D));
       result.setSRID(geom.getCRS());
       return result;
     }
@@ -122,7 +125,7 @@ public class AdapterFactory {
             I18N.getString("AdapterFactory.RingWithLessThan4Points")); //$NON-NLS-1$
       }
       CoordinateSequence sequence = AdapterFactory.toCoordinateSequence(
-          factory, coord);
+          factory, coord, to2D);
       if (sequence.size() > 3
           && sequence.getCoordinate(0).equals(
               sequence.getCoordinate(sequence.size() - 1))
@@ -139,7 +142,7 @@ public class AdapterFactory {
       throw new Exception(I18N.getString("AdapterFactory.RingNotClosed")); //$NON-NLS-1$
     }
     if (geom instanceof ILineString) {
-      result = AdapterFactory.toLineString(factory, (GM_LineString) geom);
+      result = AdapterFactory.toLineString(factory, (GM_LineString) geom, to2D);
       result.setSRID(geom.getCRS());
       return result;
     }
@@ -148,7 +151,7 @@ public class AdapterFactory {
       ILineString line = ((ICurve) geom).asLineString(
           AdapterFactory.getSpacing(), 0);
       // logger.error("ICURVE " + line);
-      result = AdapterFactory.toLineString(factory, line);
+      result = AdapterFactory.toLineString(factory, line, to2D);
       // logger.error("ICURVE " + result);
       result.setSRID(geom.getCRS());
       return result;
@@ -156,9 +159,9 @@ public class AdapterFactory {
     if (geom instanceof IPolygon) {
       result = factory.createPolygon(
           (LinearRing) AdapterFactory.toGeometry(factory,
-              ((IPolygon) geom).getExterior()),
+              ((IPolygon) geom).getExterior(), to2D),
           AdapterFactory.toLinearRingArray(factory,
-              ((IPolygon) geom).getInterior()));
+              ((IPolygon) geom).getInterior(), to2D));
       result.setSRID(geom.getCRS());
       return result;
     }
@@ -167,7 +170,7 @@ public class AdapterFactory {
       Point[] points = new Point[multiPoint.size()];
       for (int index = 0; index < multiPoint.size(); index++) {
         points[index] = (Point) AdapterFactory.toGeometry(factory,
-            multiPoint.get(index));
+            multiPoint.get(index), to2D);
       }
       result = factory.createMultiPoint(points);
       result.setSRID(geom.getCRS());
@@ -178,7 +181,7 @@ public class AdapterFactory {
       LineString[] lineStrings = new LineString[multiCurve.size()];
       for (int index = 0; index < multiCurve.size(); index++) {
         lineStrings[index] = (LineString) AdapterFactory.toGeometry(factory,
-            multiCurve.get(index));
+            multiCurve.get(index), to2D);
       }
       result = factory.createMultiLineString(lineStrings);
       result.setSRID(geom.getCRS());
@@ -189,7 +192,7 @@ public class AdapterFactory {
       Polygon[] polygons = new Polygon[multiSurface.size()];
       for (int index = 0; index < multiSurface.size(); index++) {
         polygons[index] = (Polygon) AdapterFactory.toGeometry(factory,
-            multiSurface.get(index));
+            multiSurface.get(index), to2D);
       }
       result = factory.createMultiPolygon(polygons);
       result.setSRID(geom.getCRS());
@@ -200,7 +203,7 @@ public class AdapterFactory {
       Geometry[] geometries = new Geometry[aggregate.size()];
       for (int index = 0; index < aggregate.size(); index++) {
         geometries[index] = AdapterFactory.toGeometry(factory,
-            aggregate.get(index));
+            aggregate.get(index), to2D);
       }
       result = factory.createGeometryCollection(geometries);
       result.setSRID(geom.getCRS());
@@ -213,7 +216,7 @@ public class AdapterFactory {
       Polygon[] polygons = new Polygon[multiSurface.size()];
       for (int index = 0; index < multiSurface.size(); index++) {
         polygons[index] = (Polygon) AdapterFactory.toGeometry(factory,
-            multiSurface.get(index));
+            multiSurface.get(index), to2D);
       }
       result = factory.createMultiPolygon(polygons);
       result.setSRID(geom.getCRS());
@@ -235,8 +238,12 @@ public class AdapterFactory {
 
   public static LineString toLineString(GeometryFactory factory,
       ILineString line) {
+    return toLineString(factory, line, false);
+  }
+  public static LineString toLineString(GeometryFactory factory,
+      ILineString line, boolean to2D) {
     return factory.createLineString(AdapterFactory.toCoordinateSequence(
-        factory, line.coord()));
+        factory, line.coord(), to2D));
   }
 
   /**
@@ -260,8 +267,19 @@ public class AdapterFactory {
    */
   public static CoordinateSequence toCoordinateSequence(
       GeometryFactory factory, IDirectPositionList list) {
+    return toCoordinateSequence(factory, list, false);
+  }
+  public static CoordinateSequence toCoordinateSequence(
+      GeometryFactory factory, IDirectPositionList list, boolean to2D) {
     if (list == null) {
-      return factory.getCoordinateSequenceFactory().create(new Coordinate[0]);
+      return factory.getCoordinateSequenceFactory().create(to2D ? new CoordinateXY[0]:new Coordinate[0]);
+    }
+    if (to2D) {
+      CoordinateXY[] coords = new CoordinateXY[list.size()];
+      for (int i = 0; i < list.size(); i++) {
+        coords[i] = new CoordinateXY(list.get(i).getX(), list.get(i).getY());
+      }
+      return factory.getCoordinateSequenceFactory().create(coords);
     }
     Coordinate[] coords = new Coordinate[list.size()];
     for (int i = 0; i < list.size(); i++) {
@@ -281,11 +299,15 @@ public class AdapterFactory {
    */
   public static LinearRing[] toLinearRingArray(GeometryFactory factory,
       List<IRing> list) throws Exception {
+    return toLinearRingArray(factory, list, false);
+  }
+  public static LinearRing[] toLinearRingArray(GeometryFactory factory,
+      List<IRing> list, boolean to2D) throws Exception {
     // LinearRing[] rings = new LinearRing[list.size()];
     List<LinearRing> rings = new ArrayList<LinearRing>();
     for (int i = 0; i < list.size(); i++) {
       LinearRing ring = (LinearRing) AdapterFactory.toGeometry(factory,
-          list.get(i));
+          list.get(i), to2D);
       if (ring != null) {
         rings.add(ring);
       } else {

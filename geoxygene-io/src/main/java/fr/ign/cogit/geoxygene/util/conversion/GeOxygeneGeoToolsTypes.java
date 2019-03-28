@@ -268,6 +268,9 @@ public class GeOxygeneGeoToolsTypes {
 	}
 
 	public static <Feat extends IFeature> SimpleFeature convert2SimpleFeature(IFeature feature, CoordinateReferenceSystem crs) throws Exception {
+	  return convert2SimpleFeature(feature, crs, false);
+	}
+	public static <Feat extends IFeature> SimpleFeature convert2SimpleFeature(IFeature feature, CoordinateReferenceSystem crs, boolean to2D) throws Exception {
 
 		GF_FeatureType featureType = feature.getFeatureType();
 
@@ -297,7 +300,7 @@ public class GeOxygeneGeoToolsTypes {
 
 		SimpleFeatureBuilder sfBuilder = new SimpleFeatureBuilder(builder.buildFeatureType());
 
-		sfBuilder.add(AdapterFactory.toGeometry(new GeometryFactory(), feature.getGeom()));
+		sfBuilder.add(AdapterFactory.toGeometry(new GeometryFactory(), feature.getGeom(), to2D));
 
 		if (featureType != null) {
 			for (GF_AttributeType attributeType : featureType.getFeatureAttributes()) {
