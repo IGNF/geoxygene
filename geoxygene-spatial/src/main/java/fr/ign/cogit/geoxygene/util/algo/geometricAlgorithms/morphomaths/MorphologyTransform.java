@@ -187,14 +187,18 @@ public class MorphologyTransform {
         // get the exterior of the polygon
         IRing exterior = geom.getExterior();
         // buffer the exterior
-        IPolygon buffer = (IPolygon) exterior.buffer(bufferSize, bufferStep,
-                capForm, capForm);
+        IGeometry buffer = exterior.buffer(bufferSize, bufferStep, capForm,
+                capForm);
+        if (!buffer.isPolygon()) {
+            // this a bug with the geometry, return null
+            return null;
+        }
 
         // the geometrie(s) that we're interested in : the buffer holes.
         // if there is only one, it's simple, return it
-        if (buffer.getInterior().size() == 1) {
+        if (((IPolygon) buffer).getInterior().size() == 1) {
             // we still have to check the hole is within the initial geometry
-            IRing hole = buffer.getInterior(0);
+            IRing hole = ((IPolygon) buffer).getInterior(0);
             // take a random point on the ring
             IDirectPosition coord = hole.coord().get(0);
             if (geom.contains(new GM_Point(coord))) {
@@ -206,13 +210,13 @@ public class MorphologyTransform {
             return null;
 
             // if there is no hole, return null
-        } else if (buffer.getInterior().size() == 0) {
+        } else if (((IPolygon) buffer).getInterior().size() == 0) {
             return null;
 
             // last case : multiple holes, return a multisurface.
         } else {
             List<IOrientableSurface> lOS = new ArrayList<IOrientableSurface>();
-            for (IRing hole : buffer.getInterior()) {
+            for (IRing hole : ((IPolygon) buffer).getInterior()) {
                 IPolygon surf = new GM_Polygon(hole);
                 // on n'ajoute que les surfaces contenues dans geom
                 if (surf.disjoint(geom)) {
