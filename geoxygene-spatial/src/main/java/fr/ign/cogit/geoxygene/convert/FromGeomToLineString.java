@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
@@ -22,6 +23,16 @@ public class FromGeomToLineString {
 		return iMC;
 	}
 
+	
+	public static List<ILineString> convertLineString(IGeometry geom) {
+		
+		List<IOrientableCurve> iml = convert(geom);
+		List<ILineString> ls = new ArrayList<ILineString>();
+		for(IOrientableCurve curve:iml) {
+			ls.add((ILineString)curve);
+		}
+		return ls;
+	}
 	
 	public static List<IOrientableCurve> convert(IGeometry geom) {
 

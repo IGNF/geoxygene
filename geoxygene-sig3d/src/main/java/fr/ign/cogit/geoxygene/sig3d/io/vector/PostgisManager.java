@@ -279,10 +279,8 @@ public class PostgisManager {
 				return null;
 			}
 
-			String nomColonneGeom = "";
-			while (r.next()) {
-				nomColonneGeom = r.getString(1);
-			}
+			String nomColonneGeom = r.getString(1);
+			
 
 			// Pas de colonne géométrique on renvoie null
 			if (nomColonneGeom == "") {
