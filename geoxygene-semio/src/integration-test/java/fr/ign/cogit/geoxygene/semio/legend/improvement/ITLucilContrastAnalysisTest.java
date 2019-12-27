@@ -1,23 +1,8 @@
 package fr.ign.cogit.geoxygene.semio.legend.improvement;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
-
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.feature.IPopulation;
-import fr.ign.cogit.geoxygene.filter.ShapeFilter;
-import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
-import fr.ign.cogit.geoxygene.semio.legend.legendContent.Legend;
-import fr.ign.cogit.geoxygene.semio.legend.mapContent.Map;
-import fr.ign.cogit.geoxygene.style.Layer;
-import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
-import fr.ign.cogit.geoxygene.style.UserLayerFactory;
 
 /**
  * 

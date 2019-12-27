@@ -2,11 +2,10 @@ package fr.ign.cogit.geoxygene.semio.legend.mapContent.operation;
 
 import java.awt.BasicStroke;
 
-import fr.ign.cogit.geoxygene.semio.legend.mapContent.SymbolisedFeature;
-import fr.ign.cogit.geoxygene.semio.legend.symbol.GraphicSymbol;
-
 import com.vividsolutions.jts.operation.buffer.BufferParameters;
 
+import fr.ign.cogit.geoxygene.semio.legend.mapContent.SymbolisedFeature;
+import fr.ign.cogit.geoxygene.semio.legend.symbol.GraphicSymbol;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;

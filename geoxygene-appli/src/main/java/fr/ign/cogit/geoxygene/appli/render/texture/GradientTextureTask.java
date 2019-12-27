@@ -27,16 +27,12 @@
 
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
-import java.awt.Color;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 
@@ -50,7 +46,6 @@ import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage;
 import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage.BinaryGradientImageParameters;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.style.texture.BinaryGradientImageDescriptor;
-import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 
 /**
  * @author JeT This Task generates a GradientImage and transform it into a

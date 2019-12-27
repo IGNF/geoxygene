@@ -42,9 +42,9 @@ import javax.swing.filechooser.FileFilter;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import fr.ign.cogit.geoxygene.appli.plugin.matching.netmatcher.data.ParamFilenamePopulationEdgesNetwork;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.I18N;
+import fr.ign.cogit.geoxygene.appli.plugin.matching.netmatcher.data.ParamFilenamePopulationEdgesNetwork;
 
 
 /**

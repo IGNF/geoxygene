@@ -1,17 +1,8 @@
 package fr.ign.cogit.geoxygene.style;
 
-import java.awt.Color;
-
 import org.apache.log4j.Logger;
 import org.custommonkey.xmlunit.XMLTestCase;
 import org.junit.Test;
-
-import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
-import fr.ign.cogit.geoxygene.style.thematic.DiagramRadius;
-import fr.ign.cogit.geoxygene.style.thematic.DiagramSymbolizer;
-import fr.ign.cogit.geoxygene.style.thematic.ThematicClass;
-import fr.ign.cogit.geoxygene.style.thematic.ThematicSymbolizer;
 
 /**
  * 

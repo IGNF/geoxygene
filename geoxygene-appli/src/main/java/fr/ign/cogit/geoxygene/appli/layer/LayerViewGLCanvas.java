@@ -37,7 +37,6 @@ import org.apache.log4j.Logger;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.AWTGLCanvas;
 
-import fr.ign.cogit.geoxygene.appli.GeoxygeneConstants;
 import fr.ign.cogit.geoxygene.appli.gl.GLContext;
 import fr.ign.cogit.geoxygene.style.BackgroundDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.GLException;

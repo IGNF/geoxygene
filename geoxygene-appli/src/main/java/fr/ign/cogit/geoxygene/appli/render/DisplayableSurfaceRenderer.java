@@ -30,6 +30,7 @@ package fr.ign.cogit.geoxygene.appli.render;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.render.groups.RenderingGroup;
 import fr.ign.cogit.geoxygene.appli.render.primitive.DisplayableSurface;

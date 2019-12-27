@@ -11,14 +11,14 @@ package fr.ign.cogit.geoxygene.vgi.twitter;
 
 import java.util.Date;
 
-import twitter4j.GeoLocation;
-import twitter4j.Place;
-import twitter4j.Status;
-import twitter4j.User;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.feature.AbstractFeature;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.geomengine.GeometryEngine;
+import twitter4j.GeoLocation;
+import twitter4j.Place;
+import twitter4j.Status;
+import twitter4j.User;
 
 public class TwitterFeature extends AbstractFeature {
 

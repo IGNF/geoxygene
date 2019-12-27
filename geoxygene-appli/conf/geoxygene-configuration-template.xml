@@ -16,7 +16,7 @@
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.SwingingArmPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.SpatialAnalysisPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.semio.SemioPlugin</plugin>
-    <plugin>fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin</plugin>
+    <plugin>fr.ign.cogit.geoxygene.appli.plugin.GeneralisationPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.ResamplerPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.CartoPlugin</plugin>
     

@@ -277,7 +277,7 @@ public class LineEquation {
     } else {
 
       if (l2.a1 == 0 && l2.b1 == 0 && l2.c1 == 0) {
-        //Parrallel line
+        //Undefined line
         return null;
       }
 
@@ -364,7 +364,27 @@ public class LineEquation {
     
     
     
+    //Non parallel line and only one of the slope parameters is not zero for this
+    if(this.a1 == 0) {
+    	//norally l2.getA1() != 0
+    	double t = (this.getA0() - l2.getA0() ) / l2.getA1() ;   
+    	return l2.valueAt(t);
+    }
     
+    if(this.b1 == 0) {
+    	//norally l2.getA1() != 0
+    	double t = (this.getB0() - l2.getB0() ) / l2.getB1() ;   
+    	return l2.valueAt(t);
+    }
+    
+    
+    if(this.c1 == 0) {
+    	//norally l2.getA1() != 0
+    	double t = (this.getC0() - l2.getC0() ) / l2.getC1() ;   
+    	return l2.valueAt(t);
+    }
+    
+    System.out.println("Missing case in LineLineIntersection : " + this.toString() + " - " + l2.toString());
     
     
     return null;

@@ -47,7 +47,12 @@ public interface AbstractGeomFactory {
 
   public IMultiSurface<IPolygon> createMultiPolygon();
 
-  public ILineSegment createLineSegment(IDirectPosition pt1, IDirectPosition pt2);
+  public ILineSegment createLineSegment(IDirectPosition pt1,
+      IDirectPosition pt2);
 
   public IMultiPoint createMultiPoint();
+
+  /** Create the envelope from two opposite corners. */
+  public IEnvelope createEnvelope(IDirectPosition upperRightCorner,
+      IDirectPosition lowerLeftCorner);
 }

@@ -31,8 +31,6 @@ import java.awt.Color;
 import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -66,12 +64,9 @@ import fr.ign.cogit.geoxygene.style.expressive.ExpressiveParameter;
 import fr.ign.cogit.geoxygene.style.texture.Texture;
 import fr.ign.cogit.geoxygene.style.texture.TileDistributionTexture;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
-import fr.ign.cogit.geoxygene.util.gl.GLComplexRenderer;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
-import fr.ign.cogit.geoxygene.util.gl.GLRenderingCapability;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
 import fr.ign.cogit.geoxygene.util.gl.GLTexture;
-import fr.ign.cogit.geoxygene.util.gl.GLVertex;
 
 /**
  * @author JeT A displayable surface is a displayable containing GL geometries

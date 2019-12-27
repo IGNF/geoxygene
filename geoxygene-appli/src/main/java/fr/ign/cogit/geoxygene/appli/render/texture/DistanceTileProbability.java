@@ -29,7 +29,6 @@ package fr.ign.cogit.geoxygene.appli.render.texture;
 
 import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage;
 import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage.GradientPixel;
-import fr.ign.cogit.geoxygene.appli.render.texture.TileProbability;
 
 /**
  * @author JeT

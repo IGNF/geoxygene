@@ -1,7 +1,5 @@
 package fr.ign.cogit.geoxygene.contrib.algorithms;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
@@ -9,6 +7,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
+import junit.framework.Assert;
 
 public class MinkowskiTest {
 

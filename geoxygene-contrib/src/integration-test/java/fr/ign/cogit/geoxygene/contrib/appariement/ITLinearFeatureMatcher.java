@@ -1,14 +1,8 @@
 package fr.ign.cogit.geoxygene.contrib.appariement;
 
-import junit.framework.TestCase;
-
-import org.custommonkey.xmlunit.XMLTestCase;
 import org.junit.Test;
 
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.feature.IPopulation;
-import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
-import fr.ign.parameters.Parameters;
+import junit.framework.TestCase;
 
 /**
  * 

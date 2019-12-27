@@ -22,10 +22,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.semio.legend.legendContent.Legend;
 import fr.ign.cogit.geoxygene.semio.legend.legendContent.LegendComponent;
-
-import org.apache.log4j.Logger;
 
 /**
  * 

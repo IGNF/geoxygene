@@ -28,6 +28,7 @@ package fr.ign.cogit.geoxygene.appli.render.groups;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.render.methods.RenderingMethodDescriptor;

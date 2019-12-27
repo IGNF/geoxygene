@@ -1,17 +1,7 @@
 package fr.ign.cogit.geoxygene.matching.hmmm;
 
-// import java.util.Arrays;
-import java.util.Collections;
-
 import org.apache.log4j.Logger;
-import org.junit.Assert;
 import org.junit.Test;
-
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.feature.IPopulation;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
-import fr.ign.cogit.geoxygene.matching.hmmm.HMMMapMatcher.Node;
-import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 
 
 /**

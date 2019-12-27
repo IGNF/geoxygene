@@ -30,6 +30,7 @@ package fr.ign.cogit.geoxygene.appli.render.methods;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+
 import fr.ign.cogit.geoxygene.style.StylingParameter;
 import fr.ign.cogit.geoxygene.style.SvgParameter;
 import fr.ign.cogit.geoxygene.style.expressive.ExpressiveParameter;

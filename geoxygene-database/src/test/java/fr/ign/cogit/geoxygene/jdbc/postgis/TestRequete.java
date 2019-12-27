@@ -1,15 +1,7 @@
 package fr.ign.cogit.geoxygene.jdbc.postgis;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFinder;
 import org.junit.Assert;
 import org.junit.Test;
-
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 
 
 public class TestRequete {

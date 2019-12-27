@@ -29,6 +29,7 @@ package fr.ign.cogit.geoxygene.appli.validation;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.Unmarshaller.Listener;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;

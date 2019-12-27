@@ -27,26 +27,21 @@
 
 package fr.ign.cogit.geoxygene.appli.gl;
 
-// GL import
-import org.lwjgl.opengl.GL11;
-//import org.lwjgl.opengl.GL12;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
-//import org.lwjgl.opengl.GL44;
-
-// Specific GL import
-import static org.lwjgl.opengl.GL11.GL_LINEAR;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
 import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glGenTextures;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL11.glTexParameteri;
-import static org.lwjgl.opengl.GL20.glUniform1i;
 
+import java.awt.Color;
+//import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferDouble;
+import java.awt.image.DataBufferFloat;
+import java.awt.image.DataBufferInt;
+import java.awt.image.DataBufferShort;
 import java.net.MalformedURLException;
 import java.net.URL;
 // Java import
@@ -56,22 +51,15 @@ import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
-import java.awt.Color;
-//import java.awt.image.DataBuffer;
-import java.awt.image.DataBufferByte;
-import java.awt.image.DataBufferFloat;
-import java.awt.image.DataBufferInt;
-import java.awt.image.DataBufferShort;
-import java.awt.image.DataBufferDouble;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 // Geotools import
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.coverage.processing.Operation2D;
-import org.geotools.coverage.processing.operation.*;
+// GL import
+import org.lwjgl.opengl.GL11;
+//import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL30;
+//import org.lwjgl.opengl.GL44;
 
 // Intern
 import fr.ign.cogit.geoxygene.style.RasterSymbolizer;

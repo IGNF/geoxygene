@@ -10,7 +10,6 @@
 package fr.ign.cogit.ontology.similarite;
 
 import edu.stanford.smi.protegex.owl.model.RDFResource;
-
 import fr.ign.cogit.ontology.OntologieOWL;
 
 /**

@@ -35,6 +35,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
+
 import fr.ign.cogit.geoxygene.style.StylingParameter;
 import fr.ign.cogit.geoxygene.style.SvgParameter;
 import fr.ign.cogit.geoxygene.style.expressive.ExpressiveParameter;

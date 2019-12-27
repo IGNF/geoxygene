@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
-
 import fr.ign.cogit.geoxygene.semio.legend.metadata.SemanticRelation;
 import fr.ign.cogit.geoxygene.semio.legend.symbol.color.Contrast;
 import fr.ign.cogit.geoxygene.semio.legend.symbol.color.ContrastCollection;
+import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
 
 /**
  * 

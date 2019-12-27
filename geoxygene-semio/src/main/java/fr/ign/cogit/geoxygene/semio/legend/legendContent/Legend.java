@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.semio.legend.mapContent.Map;
+import fr.ign.cogit.geoxygene.semio.legend.metadata.SemanticRelation;
 import fr.ign.cogit.geoxygene.semio.legend.metadata.SemanticRelationDescriptor;
 
 /**

@@ -2,10 +2,10 @@ package fr.ign.cogit.geoxygene.osm.anonymization.analysis.collections;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 /**
  * Classe permettant d'enregistrer des valeurs sur 

@@ -1,5 +1,6 @@
 package fr.ign.cogit.geoxygene.contrib.cartetopo;
 
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,8 +9,6 @@ import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.contrib.algorithms.SwingingArmNonConvexHull;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
-
-import org.apache.log4j.Logger;
 
 public class CarteTopoTest {
 	

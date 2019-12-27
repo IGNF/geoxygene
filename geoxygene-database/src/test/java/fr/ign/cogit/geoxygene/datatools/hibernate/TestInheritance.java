@@ -2,25 +2,21 @@ package fr.ign.cogit.geoxygene.datatools.hibernate;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.Statement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.List;
 
-import javax.persistence.InheritanceType;
-
 import org.apache.log4j.Logger;
-import junit.framework.TestCase;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.After;
 import org.junit.Test;
 
-import fr.ign.cogit.geoxygene.datatools.hibernate.GeodatabaseHibernate;
-import fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.ParisBarcelone;
-import fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.ParisNewYork;
-import fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.Flight;
 import fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.A320;
 import fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.Boeing747;
+import fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.ParisBarcelone;
+import fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.ParisNewYork;
+import junit.framework.TestCase;
 
 /**
  * @author Julien Perret

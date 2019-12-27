@@ -1,9 +1,6 @@
 package fr.ign.cogit.geoxygene.contrib.appariement;
 
 import java.io.ByteArrayOutputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.custommonkey.xmlunit.XMLTestCase;
 import org.geotools.GML;
@@ -11,18 +8,9 @@ import org.geotools.GML.Version;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.junit.Test;
 
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.feature.IPopulation;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.AppariementIO;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Recalage;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.process.NetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.util.conversion.GeOxygeneGeoToolsTypes;
-import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 
 /**
  * Tests d'intégration sur le recalage.

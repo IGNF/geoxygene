@@ -1,10 +1,8 @@
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
 import java.net.URI;
-import java.net.URL;
 
 import fr.ign.cogit.geoxygene.appli.task.Task;
-import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 import fr.ign.cogit.geoxygene.util.gl.GLTexture;
 
 public interface TextureTask<TextureType extends GLTexture> extends Task {

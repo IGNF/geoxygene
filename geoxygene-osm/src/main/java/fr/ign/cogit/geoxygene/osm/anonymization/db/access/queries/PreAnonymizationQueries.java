@@ -2,6 +2,8 @@ package fr.ign.cogit.geoxygene.osm.anonymization.db.access.queries;
 
 import java.util.HashMap;
 
+import org.geolatte.geom.V;
+
 /**
  * Cette classe sert à stocker les requêtes SQL 
  * utilisée par {@link fr.ign.cogit.geoxygene.osm.anonymization.db.SQLDBPreAnonymization}.

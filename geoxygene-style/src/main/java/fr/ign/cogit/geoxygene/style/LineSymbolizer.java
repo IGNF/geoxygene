@@ -23,7 +23,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
-import fr.ign.cogit.geoxygene.style.expressive.ExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.style.proxy.ProxySymbol;
 
 /**

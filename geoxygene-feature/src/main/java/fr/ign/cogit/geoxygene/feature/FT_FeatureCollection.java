@@ -19,6 +19,17 @@
 
 package fr.ign.cogit.geoxygene.feature;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.event.FeatureCollectionEvent;
@@ -38,11 +49,6 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
-import org.apache.log4j.Logger;
-
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
-import java.util.*;
 
 /**
  * Collection (liste) de IFeature. Peut porter un index spatial.

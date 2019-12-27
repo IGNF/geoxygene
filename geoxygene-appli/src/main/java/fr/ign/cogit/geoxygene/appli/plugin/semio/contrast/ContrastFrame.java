@@ -38,9 +38,9 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
+import fr.ign.cogit.geoxygene.appli.panel.COGITColorChooserPanel;
 import fr.ign.cogit.geoxygene.semio.legend.symbol.color.Contrast;
 import fr.ign.cogit.geoxygene.semio.legend.symbol.color.ContrastCollection;
-import fr.ign.cogit.geoxygene.appli.panel.COGITColorChooserPanel;
 import fr.ign.cogit.geoxygene.style.colorimetry.ColorReferenceSystem;
 import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
 

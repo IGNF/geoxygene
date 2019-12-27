@@ -27,10 +27,7 @@
 
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
-import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 

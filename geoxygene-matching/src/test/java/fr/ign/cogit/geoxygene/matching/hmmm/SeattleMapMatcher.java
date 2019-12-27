@@ -1,12 +1,5 @@
 package fr.ign.cogit.geoxygene.matching.hmmm;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
-import fr.ign.cogit.geoxygene.contrib.cartetopo.Chargeur;
-
 /**
  * This software is released under the licence CeCILL
  * 

@@ -1,17 +1,13 @@
 package fr.ign.cogit.geoxygene.semio.legend.mapContent;
 
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
-import fr.ign.cogit.geoxygene.style.Layer;
-import fr.ign.cogit.geoxygene.style.Rule;
-import fr.ign.cogit.geoxygene.style.Style;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.semio.legend.legendContent.Legend;
 import fr.ign.cogit.geoxygene.semio.legend.legendContent.LegendComponent;
 import fr.ign.cogit.geoxygene.semio.legend.mapContent.operation.ContrastOp;
@@ -19,6 +15,9 @@ import fr.ign.cogit.geoxygene.semio.legend.mapContent.operation.NRBuilder;
 import fr.ign.cogit.geoxygene.semio.legend.metadata.SemanticRelation;
 import fr.ign.cogit.geoxygene.semio.legend.symbol.GraphicSymbol;
 import fr.ign.cogit.geoxygene.semio.legend.symbol.color.Contrast;
+import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.style.Rule;
+import fr.ign.cogit.geoxygene.style.Style;
 
 /**
  * 

@@ -35,10 +35,16 @@ package fr.ign.cogit.geoxygene.util.graphcut;
  * -------
  * 26-Nov-2012 : Initial revision (JK);
  */
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 
-import java.util.*;
-
-import org.jgrapht.*;
+import org.jgrapht.DirectedGraph;
+import org.jgrapht.Graphs;
 
 /**
  * Given a directed, weighted graph G(V,E). This class computes a minimum s-t

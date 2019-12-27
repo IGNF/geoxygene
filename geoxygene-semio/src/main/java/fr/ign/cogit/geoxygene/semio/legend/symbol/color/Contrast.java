@@ -8,7 +8,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import fr.ign.cogit.geoxygene.semio.legend.mapContent.SymbolisedFeatureCollection;
 import fr.ign.cogit.geoxygene.semio.legend.metadata.SemanticRelation;
+import fr.ign.cogit.geoxygene.style.colorimetry.ColorReferenceSystem;
 
 /**
  * 

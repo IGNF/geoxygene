@@ -12,14 +12,7 @@ import org.jgrapht.UndirectedGraph;
 import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
-import scpsolver.constraints.LinearBiggerThanEqualsConstraint;
-import scpsolver.constraints.LinearSmallerThanEqualsConstraint;
-import scpsolver.lpsolver.LinearProgramSolver;
-import scpsolver.lpsolver.SolverFactory;
-import scpsolver.problems.LinearProgram;
-
 import Jama.Matrix;
-
 import fr.ign.cogit.evidence.configuration.Configuration;
 import fr.ign.cogit.evidence.configuration.ConfigurationSet;
 import fr.ign.cogit.evidence.variable.Variable;
@@ -42,6 +35,11 @@ import fr.ign.cogit.geoxygene.matching.dst.graph.Link;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.parameters.Parameters;
+import scpsolver.constraints.LinearBiggerThanEqualsConstraint;
+import scpsolver.constraints.LinearSmallerThanEqualsConstraint;
+import scpsolver.lpsolver.LinearProgramSolver;
+import scpsolver.lpsolver.SolverFactory;
+import scpsolver.problems.LinearProgram;
 
 /**
  * This software is released under the licence CeCILL

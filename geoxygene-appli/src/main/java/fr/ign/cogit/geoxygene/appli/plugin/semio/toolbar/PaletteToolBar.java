@@ -33,10 +33,10 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
 
-import fr.ign.cogit.geoxygene.semio.legend.legendContent.Legend;
-import fr.ign.cogit.geoxygene.semio.legend.mapContent.Map;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
+import fr.ign.cogit.geoxygene.semio.legend.legendContent.Legend;
+import fr.ign.cogit.geoxygene.semio.legend.mapContent.Map;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
 

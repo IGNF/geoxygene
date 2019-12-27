@@ -270,11 +270,17 @@ public class PostgisManager {
 					+ " AND " +PostgisManager.NAME_COLUMN_SCHEMA+ "='" + schema + "'";
 			//System.out.println(query);
 			ResultSet r = s.executeQuery(query);
-
-			String nomColonneGeom = "";
-			while (r.next()) {
-				nomColonneGeom = r.getString(1);
+			
+			// Pas de colonne géométrique on renvoie null
+			if (r == null ||!r.next()) {
+				s.close();
+				s1.close();
+				conn.close();
+				return null;
 			}
+
+			String nomColonneGeom = r.getString(1);
+			
 
 			// Pas de colonne géométrique on renvoie null
 			if (nomColonneGeom == "") {

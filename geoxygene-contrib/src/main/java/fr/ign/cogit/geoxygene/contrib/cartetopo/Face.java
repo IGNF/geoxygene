@@ -29,7 +29,6 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
-import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 
@@ -171,8 +170,8 @@ public class Face extends ElementCarteTopo {
    * méthode qui renvoie ces arcs dans le bon ordre de parcours
    */
   public List<Arc> arcs() {
-    List<Arc> Arcs = new ArrayList<Arc>(this.getArcsDirects().size()
-        + this.getArcsIndirects().size());
+    List<Arc> Arcs = new ArrayList<Arc>(
+        this.getArcsDirects().size() + this.getArcsIndirects().size());
     Arcs.addAll(this.getArcsDirects());
     Arcs.addAll(this.getArcsIndirects());
     return Arcs;
@@ -196,6 +195,8 @@ public class Face extends ElementCarteTopo {
   @SuppressWarnings("unchecked")
   public List<Object> arcsExterieursClasses() {
     List<Arc> arcsDeLaFace = this.arcs();
+    if (this.noeudsTrigo() == null)
+      return new ArrayList<>();
     Iterator<Noeud> itNoeudsDeLaFace = this.noeudsTrigo().iterator();
     List<Object> arcsDuNoeud;
     List<Object> resultat = new ArrayList<Object>();
@@ -287,7 +288,8 @@ public class Face extends ElementCarteTopo {
       Face.logger
           .error("Problème : incohérence dans la topologie arcs / faces");
       Face.logger.error("edge " + arc0);
-      Face.logger.error("with faces " + arc0.getFaceDroite() + " " + arc0.getFaceGauche());
+      Face.logger.error(
+          "with faces " + arc0.getFaceDroite() + " " + arc0.getFaceGauche());
       return null;
     }
 
@@ -340,16 +342,16 @@ public class Face extends ElementCarteTopo {
   public double surface() {
     return this.getGeometrie().area();
   }
-  
-  private double surface = -1; 
+
+  private double surface = -1;
+
   public double getSurface() {
     if (surface == -1) {
       this.surface = this.surface();
     }
     return this.surface;
   }
-  
-  
+
   protected String arcsUtilises = ""; //$NON-NLS-1$
   protected String arcsIgnores = ""; //$NON-NLS-1$
 

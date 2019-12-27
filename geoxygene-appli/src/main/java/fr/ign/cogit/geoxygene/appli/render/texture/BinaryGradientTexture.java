@@ -53,7 +53,6 @@ import org.lwjgl.opengl.GL30;
 import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage;
 import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage.GradientPixel;
 import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
-import fr.ign.cogit.geoxygene.util.gl.GLTexture;
 
 /**
  * @author JeT BinaryGradient texture returns the coordinates equal to the

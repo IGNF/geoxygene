@@ -29,6 +29,7 @@ package fr.ign.cogit.geoxygene.appli.render.primitive;
 
 import java.util.Collection;
 import java.util.Date;
+
 import fr.ign.cogit.geoxygene.appli.task.Task;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 

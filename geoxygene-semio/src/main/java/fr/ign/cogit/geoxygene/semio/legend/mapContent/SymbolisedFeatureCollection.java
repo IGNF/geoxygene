@@ -4,18 +4,17 @@ import java.awt.BasicStroke;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
+import com.vividsolutions.jts.operation.buffer.BufferParameters;
+
+import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.semio.legend.legendContent.LegendComponent;
 import fr.ign.cogit.geoxygene.semio.legend.legendContent.LegendLeaf;
 import fr.ign.cogit.geoxygene.semio.legend.mapContent.operation.AreaOp;
 import fr.ign.cogit.geoxygene.semio.legend.metadata.SemanticRelation;
 import fr.ign.cogit.geoxygene.semio.legend.symbol.GraphicSymbol;
 import fr.ign.cogit.geoxygene.semio.legend.symbol.color.Contrast;
-
-import org.apache.log4j.Logger;
-
-import com.vividsolutions.jts.operation.buffer.BufferParameters;
-
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;

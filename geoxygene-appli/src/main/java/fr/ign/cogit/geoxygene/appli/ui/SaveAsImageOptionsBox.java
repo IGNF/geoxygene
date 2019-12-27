@@ -1,33 +1,30 @@
 package fr.ign.cogit.geoxygene.appli.ui;
 
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-import javax.swing.JFileChooser;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
-import javax.swing.JButton;
-
-import fr.ign.cogit.geoxygene.appli.I18N;
-
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.border.TitledBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.apache.commons.io.FilenameUtils;
 
-import java.awt.Color;
-import javax.swing.JCheckBox;
+import fr.ign.cogit.geoxygene.appli.I18N;
 
 public class SaveAsImageOptionsBox extends JDialog {
 

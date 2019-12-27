@@ -2,8 +2,6 @@ package fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms;
 
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,6 +17,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
 import fr.ign.cogit.geoxygene.util.algo.geomstructure.Vector2D;
 import fr.ign.cogit.geoxygene.util.conversion.ParseException;
 import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
+import junit.framework.Assert;
 
 public class CommonAlgorithmsFromCartagenTest {
 

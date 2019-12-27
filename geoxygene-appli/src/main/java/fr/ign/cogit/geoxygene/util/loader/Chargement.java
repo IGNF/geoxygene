@@ -38,6 +38,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 import fr.ign.cogit.geoxygene.api.feature.IDataSet;
+import fr.ign.cogit.geoxygene.util.loader.gui.GUIChargementDonnees;
 
 /**
  * Classe permettant de représenter un chargement de données.

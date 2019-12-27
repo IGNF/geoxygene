@@ -34,7 +34,6 @@ import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
-import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.program.GLProgramBuilder;
 import fr.ign.cogit.geoxygene.appli.gl.setters.GLProgramSetterFactory;
 import fr.ign.cogit.geoxygene.appli.gl.setters.GLProgramUniformSetter;
@@ -42,7 +41,6 @@ import fr.ign.cogit.geoxygene.appli.render.methods.RenderingMethodDescriptor;
 import fr.ign.cogit.geoxygene.appli.render.stats.RenderingStatistics;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
-import fr.ign.cogit.geoxygene.util.gl.GLProgramAccessor;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
 
 /**
