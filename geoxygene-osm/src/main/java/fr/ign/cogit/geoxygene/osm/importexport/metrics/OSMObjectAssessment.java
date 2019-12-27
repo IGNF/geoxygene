@@ -1,5 +1,6 @@
 package fr.ign.cogit.geoxygene.osm.importexport.metrics;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -76,8 +77,19 @@ public class OSMObjectAssessment {
 			if (contributions.get(i - 1).getVersion() == contributions.get(i).getVersion() - 1)
 				// On se place dans le cas où les deux contributions se
 				// succèdent au niveau du numéro de version
-				if (OSMResourceQualityAssessment.isTagModification(contributions.get(i), contributions.get(i - 1)))
-					nbTagEdition++;
+				if (OSMResourceQualityAssessment.isTagModification(contributions.get(i), contributions.get(i - 1))) {
+					// nbTagEdition++;
+					// On compte le nombre de valeurs de tags modifiées
+					List<String> currentTagKeys = new ArrayList<String>(contributions.get(i).getTags().keySet());
+					List<String> previousTagKeys = new ArrayList<String>(contributions.get(i - 1).getTags().keySet());
+					currentTagKeys.retainAll(previousTagKeys);
+					for (String key : currentTagKeys) {
+						if (!contributions.get(i).getTags().get(key)
+								.equals(contributions.get(i - 1).getTags().get(key)))
+							nbTagEdition++;
+					}
+				}
+
 		}
 		return nbTagEdition;
 	}
@@ -91,8 +103,32 @@ public class OSMObjectAssessment {
 				// On se place dans le cas où les deux contributions se
 				// succèdent au niveau du numéro de version
 				if (OSMResourceQualityAssessment.isTagCreation(contributions.get(i).getTags(),
-						contributions.get(i - 1).getTags()))
-					nbTagAddition++;
+						contributions.get(i - 1).getTags())) {
+					// nbTagAddition++;
+
+					// On compte le nombre de valeurs de tags ajoutées
+					// Création de nouvelles listes pour ne pas impacter
+					// la liste des key tags dans chaque OSMResource
+					List<String> currentTagKeys = new ArrayList<String>(contributions.get(i).getTags().keySet());
+					System.out.println("-------Current Tag keys ------");
+					for (String c : currentTagKeys)
+						System.out.println(c);
+					System.out.println("------- Previous Tag keys ------");
+					List<String> previousTagKeys = new ArrayList<String>(contributions.get(i - 1).getTags().keySet());
+					for (String c : previousTagKeys)
+						System.out.println(c);
+
+					currentTagKeys.removeAll(previousTagKeys);
+					System.out.println("----Nouveaux key tags ------");
+					for (String s : currentTagKeys)
+						System.out.println(s);
+					System.out.println("---------------------------------");
+					System.out.println(currentTagKeys.size() + " nouveaux tag entre v."
+							+ contributions.get(i).getVersion() + " et v." + contributions.get(i - 1));
+					nbTagAddition += currentTagKeys.size();
+
+				}
+
 		}
 		return nbTagAddition;
 	}
@@ -106,8 +142,14 @@ public class OSMObjectAssessment {
 				// On se place dans le cas où les deux contributions se
 				// succèdent au niveau du numéro de version
 				if (OSMResourceQualityAssessment.isTagDelete(contributions.get(i).getTags(),
-						contributions.get(i - 1).getTags()))
-					nbTagDelete++;
+						contributions.get(i - 1).getTags())) {
+					// nbTagDelete++;
+					List<String> currentTagKeys = new ArrayList<String>(contributions.get(i).getTags().keySet());
+					List<String> previousTagKeys = new ArrayList<String>(contributions.get(i - 1).getTags().keySet());
+					previousTagKeys.removeAll(currentTagKeys);
+
+					nbTagDelete += previousTagKeys.size();
+				}
 		}
 		return nbTagDelete;
 	}

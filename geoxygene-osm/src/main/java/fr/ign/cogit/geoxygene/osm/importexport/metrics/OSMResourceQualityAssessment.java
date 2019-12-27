@@ -160,8 +160,11 @@ public class OSMResourceQualityAssessment {
 	 * 
 	 * @param resource
 	 * @return the former version of the resource if exists
+	 * @throws Exception
 	 */
-	public OSMResource getFormerVersion(OSMResource resource) {
+	public OSMResource getFormerVersion(OSMResource resource) throws Exception {
+		System.out.println("Get former version of resource id : " + resource.getId() + " current version : "
+				+ resource.getVersion());
 		if (resource.getVersion() == 1)
 			return null;
 		else {
@@ -173,6 +176,7 @@ public class OSMResourceQualityAssessment {
 			// List<OSMResource> allVersions =
 			// osmObj.get(resource.getId()).getContributions();
 			List<OSMResource> allVersions = osmObj.getContributions();
+			System.out.println("Nombre de versions " + allVersions.size());
 			Iterator<OSMResource> it = allVersions.iterator();
 			OSMResource former = null;
 			int i = 0;
@@ -184,6 +188,48 @@ public class OSMResourceQualityAssessment {
 			}
 			if (i > 1)
 				former = allVersions.get(i - 1);
+			if (former == null && i > 1) {
+				// Define object primitive type
+				System.out.println(osmObj.getPrimitiveGeomOSM());
+				String osmDataType = "relation";
+				if (osmObj.getPrimitiveGeomOSM().equals("OSMNode"))
+					osmDataType = "node";
+				else if (osmObj.getPrimitiveGeomOSM().equals("OSMWay"))
+					osmDataType = "way";
+
+				OSMObject histo = OSMObject.makeFromHistory(osmObj.getOsmId(), i - 1, osmDataType);
+				former = histo.getContributions().get(i - 1);
+			}
+
+			return former;
+		}
+	}
+
+	public OSMResource getFormerVersion2(OSMResource resource) throws Exception {
+		System.out.println("Get former version of resource id : " + resource.getId() + " current version : "
+				+ resource.getVersion());
+		if (resource.getVersion() == 1)
+			return null;
+		else {
+
+			OSMResource former = null;
+
+			// Define object primitive type
+			System.out.println(resource.getGeom().getClass().getSimpleName());
+			String osmDataType = "relation";
+			if (resource.getGeom().getClass().getSimpleName().equals("OSMNode"))
+				osmDataType = "node";
+			else if (resource.getGeom().getClass().getSimpleName().equals("OSMWay"))
+				osmDataType = "way";
+
+			OSMObject histo = OSMObject.makeFromHistory(resource.getId(), resource.getVersion(), osmDataType);
+			try {
+				former = histo.getContributions().get(resource.getVersion() - 2);
+			} catch (IndexOutOfBoundsException e) {
+				System.out.println("Versions manquantes dans la base de données pour l'objet " + osmDataType + " (ID"
+						+ resource.getVersion() + ")");
+			}
+
 			return former;
 		}
 	}
@@ -193,13 +239,17 @@ public class OSMResourceQualityAssessment {
 	 * 
 	 * @param resource
 	 * @return former set of tags
+	 * @throws Exception
 	 */
-	public Map<String, String> getFormerTags(OSMResource resource) {
-		OSMResource former = getFormerVersion(resource);
+	public Map<String, String> getFormerTags(OSMResource resource) throws Exception {
+		OSMResource former = getFormerVersion2(resource);
 		if (former != null)
 			return former.getTags();
-		else
+		else {
+			System.out.println("Former is null : ");
 			return null;
+		}
+
 	}
 
 	/**
@@ -220,8 +270,9 @@ public class OSMResourceQualityAssessment {
 	 * 
 	 * @param resource
 	 * @return creation, modification, delete or revert
+	 * @throws Exception
 	 */
-	public EditionType getEditionType(OSMResource resource) {
+	public EditionType getEditionType(OSMResource resource) throws Exception {
 		if (resource.getVersion() == 1)
 			return EditionType.creation;
 
@@ -233,8 +284,10 @@ public class OSMResourceQualityAssessment {
 			if (!versionMinus1.isVisible()) {
 				// Get former version v-2
 				OSMResource versionMinus2 = this.getFormerVersion(versionMinus1);
-				if (versionMinus2.equals(resource))
-					return EditionType.revert;
+				if (versionMinus2 != null) {
+					if (versionMinus2.equals(resource))
+						return EditionType.revert;
+				}
 			} else
 				return EditionType.modification;
 		}
@@ -252,7 +305,7 @@ public class OSMResourceQualityAssessment {
 			return EditionType.modification;
 	}
 
-	public Date getFormerEditionDate(OSMResource resource) {
+	public Date getFormerEditionDate(OSMResource resource) throws Exception {
 		return this.getFormerVersion(resource).getDate();
 	}
 
@@ -263,8 +316,9 @@ public class OSMResourceQualityAssessment {
 	 * @param resource
 	 * @return elapsed time in seconds or null if resource given in parameter is
 	 *         not a revert
+	 * @throws Exception
 	 */
-	public Double getTimeFrameBeforeRevert(OSMResource resource) {
+	public Double getTimeFrameBeforeRevert(OSMResource resource) throws Exception {
 		if (getEditionType(resource).equals(EditionType.revert)) {
 			Double diff = (double) (resource.getDate().getTime() - this.getFormerVersion(resource).getDate().getTime())
 					/ 1000;
@@ -317,18 +371,26 @@ public class OSMResourceQualityAssessment {
 	 * 
 	 * @param resource
 	 * @return true if there is a new tag key in the new set of tags
+	 * @throws Exception
 	 */
-	public boolean isTagCreation(OSMResource resource) {
+	public boolean isTagCreation(OSMResource resource) throws Exception {
 		System.out.println("Edition type " + getEditionType(resource));
+		if (resource.getVersion() == 1)
+			return false;
 		if (getEditionType(resource) == null)
 			return false;
-		if (getEditionType(resource).equals(EditionType.modification)) {
-			// Compares the two key sets: if the former key set does not contain
-			// the key set of the current version then there is some tag
-			// creation in the current version
-			if (!this.getFormerTags(resource).keySet().containsAll(resource.getTags().keySet()))
+		// if (getEditionType(resource).equals(EditionType.modification)) {
+		System.out.println("Id : " + resource.getId() + " - version : " + resource.getVersion() + " - type : "
+				+ resource.getGeom().getClass().getSimpleName());
+		// Compares the two key sets: if the former key set does not contain
+		// the key set of the current version then there is some tag
+		// creation in the current version
+		if (this.getFormerTags(resource).keySet() == null)
+			if (resource.getTags().keySet() != null)
 				return true;
-		}
+		if (!this.getFormerTags(resource).keySet().containsAll(resource.getTags().keySet()))
+			return true;
+		// }
 		return false;
 	}
 
@@ -344,19 +406,22 @@ public class OSMResourceQualityAssessment {
 	 * 
 	 * @param resource
 	 * @return true if the values of the former tags have been changed
+	 * @throws Exception
 	 */
-	public boolean isTagModification(OSMResource resource) {
-		if (getEditionType(resource) == null)
+	public boolean isTagModification(OSMResource resource) throws Exception {
+		if (resource.getVersion() == 1)
 			return false;
-		if (getEditionType(resource).equals(EditionType.modification)) {
-			Iterator<String> it = this.getFormerTags(resource).keySet().iterator();
-			while (it.hasNext()) {
-				String key = it.next();
-				String formerValue = this.getFormerTags(resource).get(key);
-				String currentValue = resource.getTags().get(key);
-				if (!formerValue.equals(currentValue))
-					return true;
-			}
+		// if (getEditionType(resource).equals(EditionType.modification)) {
+		Iterator<String> it = this.getFormerTags(resource).keySet().iterator();
+		while (it.hasNext()) {
+			String key = it.next();
+			String formerValue = this.getFormerTags(resource).get(key);
+			String currentValue = resource.getTags().get(key);
+			if (formerValue == null || currentValue == null)
+				return false;
+			if (!formerValue.equals(currentValue))
+				return true;
+			// }
 		}
 		return false;
 	}
@@ -369,17 +434,26 @@ public class OSMResourceQualityAssessment {
 	 */
 	public static boolean isTagModification(OSMResource resource, OSMResource former) {
 		try {
-			Iterator<String> it = resource.getTags().keySet().iterator();
-			while (it.hasNext()) {
-				String key = it.next();
-				if (!former.getTags().get(key).equals(resource.getTags().get(key)))
+			List<String> currentTagKeys = new ArrayList<String>(resource.getTags().keySet());
+			List<String> previousTagKeys = new ArrayList<String>(former.getTags().keySet());
+			currentTagKeys.retainAll(previousTagKeys);
+			for (String key : currentTagKeys)
+				if (!resource.getTags().get(key).equals(former.getTags().get(key)))
 					return true;
-			}
-			return false;
+
+			// Iterator<String> it = resource.getTags().keySet().iterator();
+			// while (it.hasNext()) {
+			// String key = it.next();
+			// if
+			// (!former.getTags().get(key).equals(resource.getTags().get(key)))
+			// return true;
+			// }
+
 		} catch (NullPointerException e) {
 			return false;
 
 		}
+		return false;
 	}
 
 	/**
@@ -388,14 +462,17 @@ public class OSMResourceQualityAssessment {
 	 * 
 	 * @param resource
 	 * @return true if a tag key is missing in the new set of tags
+	 * @throws Exception
 	 */
-	public boolean isTagDelete(OSMResource resource) {
+	public boolean isTagDelete(OSMResource resource) throws Exception {
+		if (resource.getVersion() == 1)
+			return false;
 		if (getEditionType(resource) == null)
 			return false;
-		if (getEditionType(resource).equals(EditionType.modification)) {
-			if (!resource.getTags().keySet().containsAll(this.getFormerTags(resource).keySet()))
-				return true;
-		}
+		// if (getEditionType(resource).equals(EditionType.modification)) {
+		if (!resource.getTags().keySet().containsAll(this.getFormerTags(resource).keySet()))
+			return true;
+		// }
 		return false;
 	}
 
@@ -503,6 +580,12 @@ public class OSMResourceQualityAssessment {
 
 	}
 
+	public boolean isGeomEdition(OSMResource resource) throws Exception {
+		if (resource.getVersion() == 1)
+			return false;
+		return !resource.isGeomEquals(this.getFormerVersion2(resource));
+	}
+
 	public List<OSMResource> getRelationComposition(OSMResource relation) {
 		List<OSMResource> myMemberList = new ArrayList<OSMResource>();
 		List<OsmRelationMember> members = ((OSMRelation) relation.getGeom()).getMembers();
@@ -561,8 +644,9 @@ public class OSMResourceQualityAssessment {
 	 * @param resource
 	 * @return the number of key tags which are different from the previous
 	 *         version
+	 * @throws Exception
 	 */
-	public Integer getNbChangedTags(OSMResource resource) {
+	public Integer getNbChangedTags(OSMResource resource) throws Exception {
 		int nbChanges = 0;
 		if (isTagModification(resource)) {
 			OSMResource former = this.getFormerVersion(resource);
@@ -578,8 +662,9 @@ public class OSMResourceQualityAssessment {
 	 * 
 	 * @param resource
 	 * @return the number of key tags that are missing in the current version
+	 * @throws Exception
 	 */
-	public Integer getNbDeletedTags(OSMResource resource) {
+	public Integer getNbDeletedTags(OSMResource resource) throws Exception {
 		int nbDeletes = 0;
 		if (this.isTagDelete(resource)) {
 			OSMResource former = this.getFormerVersion(resource);
@@ -594,8 +679,9 @@ public class OSMResourceQualityAssessment {
 	 * 
 	 * @param resource
 	 * @return The number of new key tags in the current version
+	 * @throws Exception
 	 */
-	public Integer getNbAddedTags(OSMResource resource) {
+	public Integer getNbAddedTags(OSMResource resource) throws Exception {
 		int nbAdditions = 0;
 		if (this.isTagCreation(resource)) {
 			OSMResource former = this.getFormerVersion(resource);
@@ -644,6 +730,32 @@ public class OSMResourceQualityAssessment {
 						String.valueOf(r.getContributeur()), String.valueOf(r.getDate()), String.valueOf(r.isVisible()),
 						String.valueOf(r.getGeom().getClass().getSimpleName()), String.valueOf(r.getSource()) };
 				writer.writeNext(row);
+			}
+
+		}
+		writer.close();
+	}
+
+	public void writeOSMObjectsDetails2CSV(String filename) throws Exception {
+		CSVWriter writer = new CSVWriter(new FileWriter(filename), ';');
+		// System.out.println("écriture du fichier csv");
+		// write header
+		String[] line = { "id", "version", "changeset", "uid", "user", "date", "visible", "primitive", "source",
+				"isTagCreation", "isTagDelete", "isTagModification", "isGeomEdition" };
+		writer.writeNext(line);
+
+		for (OSMObject obj : this.myOSMObjects.values()) {
+			for (OSMResource r : obj.getContributions()) {
+				if (r != null) {
+					String[] row = { String.valueOf(r.getId()), String.valueOf(r.getVersion()),
+							String.valueOf(r.getChangeSet()), String.valueOf(r.getUid()),
+							String.valueOf(r.getContributeur()), String.valueOf(r.getDate()),
+							String.valueOf(r.isVisible()), String.valueOf(r.getGeom().getClass().getSimpleName()),
+							String.valueOf(r.getSource()), String.valueOf(this.isTagCreation(r)),
+							String.valueOf(this.isTagDelete(r)), String.valueOf(this.isTagModification(r)),
+							String.valueOf(this.isGeomEdition(r)) };
+					writer.writeNext(row);
+				}
 			}
 
 		}

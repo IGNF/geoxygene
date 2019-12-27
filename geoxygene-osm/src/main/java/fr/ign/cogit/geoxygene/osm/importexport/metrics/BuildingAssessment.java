@@ -70,8 +70,10 @@ public class BuildingAssessment {
 
 	}
 
-	public Map<Long, IFeature> buildGeometry() throws Exception {
+	public Map<Long, IFeature> buildGeometry(String epsg) throws Exception {
 		Map<Long, IFeature> buildingGeom = new HashMap<Long, IFeature>();
+
+		OsmGeometryConversion converter = new OsmGeometryConversion(epsg);
 		for (OSMResource b : buildings.values()) {
 			if (!b.isVisible()) {
 				OSMDefaultFeature feature = new OSMDefaultFeature(b.getContributeur(), null, b.getId(),
@@ -104,9 +106,16 @@ public class BuildingAssessment {
 					// "Way #" + b.getId() + " est composé de " + nodes.size() +
 					// "nodes");
 
+					// OSMDefaultFeature feature = new
+					// OSMDefaultFeature(b.getContributeur(),
+					// OsmGeometryConversion.convertOSMPolygonToLambert93((OSMWay)
+					// b.getGeom(), nodes), b.getId(),
+					// b.getChangeSet(), b.getVersion(), b.getUid(),
+					// b.getDate(), b.getTags());
+
 					OSMDefaultFeature feature = new OSMDefaultFeature(b.getContributeur(),
-							OsmGeometryConversion.convertOSMPolygonToLambert93((OSMWay) b.getGeom(), nodes), b.getId(),
-							b.getChangeSet(), b.getVersion(), b.getUid(), b.getDate(), b.getTags());
+							converter.convertOSMPolygon((OSMWay) b.getGeom(), nodes), b.getId(), b.getChangeSet(),
+							b.getVersion(), b.getUid(), b.getDate(), b.getTags());
 					feature.setSource(OsmSource.valueOfTag(b.getSource()));
 					feature.setCaptureTool(b.getCaptureTool());
 					buildingGeom.put(b.getId(), feature);
@@ -123,9 +132,11 @@ public class BuildingAssessment {
 				nodes = loader.getNodes(((OSMWay) outerWay.getGeom()).getVertices(), timestamp);
 				if (nodes == null)
 					continue;
-
-				IPolygon polygon = OsmGeometryConversion.convertOSMPolygonToLambert93((OSMWay) outerWay.getGeom(),
-						nodes);
+				IPolygon polygon = null;
+				if (epsg.equals("2154"))
+					polygon = OsmGeometryConversion.convertOSMPolygonToLambert93((OSMWay) outerWay.getGeom(), nodes);
+				else
+					polygon = converter.convertOSMPolygon((OSMWay) outerWay.getGeom(), nodes);
 				// if (polygon.dimension() < 2)
 				// throw new NumberPointsException("Way #" + b.getId() + " est
 				// composé de " + nodes.size() + "nodes");
@@ -140,8 +151,12 @@ public class BuildingAssessment {
 					nodes = loader.getNodes(((OSMWay) resource.getGeom()).getVertices(), timestamp);
 					if (nodes == null)
 						continue;
-					IRing ring = OsmGeometryConversion.convertOSMPolygonToLambert93((OSMWay) resource.getGeom(), nodes)
-							.getExterior();
+					IRing ring = null;
+					if (epsg.equals("2154"))
+						ring = OsmGeometryConversion.convertOSMPolygonToLambert93((OSMWay) resource.getGeom(), nodes)
+								.getExterior();
+					else
+						ring = converter.convertOSMPolygon((OSMWay) resource.getGeom(), nodes).getExterior();
 					if (ring.coord().size() < 4)
 						continue;
 					polygon.addInterior(ring);
@@ -331,8 +346,8 @@ public class BuildingAssessment {
 	 * @return
 	 * @throws Exception
 	 */
-	public Map<Long, IFeature> getLULC() throws Exception {
-		String[] lulcKeyTags = { "amenity", "leisure", "landuse", "natural" };
+	public Map<Long, IFeature> getLULC(String epsg) throws Exception {
+		String[] lulcKeyTags = { "natural" };
 		Set<OSMResource> lulc = this.loader.filterByTags(lulcKeyTags);
 		Map<Long, IFeature> lulcGeom = new HashMap<Long, IFeature>();
 		for (OSMResource b : lulc) {
@@ -352,9 +367,20 @@ public class BuildingAssessment {
 				for (OSMResource n : nodes)
 					System.out.println(n.getId());
 				System.out.println(((OSMWay) b.getGeom()).isPolygon());
+
+				OsmGeometryConversion converter = new OsmGeometryConversion(epsg);
+
+				// OSMDefaultFeature feature = new
+				// OSMDefaultFeature(b.getContributeur(),
+				// OsmGeometryConversion.convertOSMPolygonToLambert93((OSMWay)
+				// b.getGeom(), nodes), b.getId(),
+				// b.getChangeSet(), b.getVersion(), b.getUid(),
+				// b.getDate(), b.getTags());
+
 				OSMDefaultFeature feature = new OSMDefaultFeature(b.getContributeur(),
-						OsmGeometryConversion.convertOSMPolygonToLambert93((OSMWay) b.getGeom(), nodes), b.getId(),
-						b.getChangeSet(), b.getVersion(), b.getUid(), b.getDate(), b.getTags());
+						converter.convertOSMPolygon((OSMWay) b.getGeom(), nodes), b.getId(), b.getChangeSet(),
+						b.getVersion(), b.getUid(), b.getDate(), b.getTags());
+
 				feature.setSource(OsmSource.valueOfTag(b.getSource()));
 				feature.setCaptureTool(b.getCaptureTool());
 				lulcGeom.put(b.getId(), feature);
@@ -363,6 +389,40 @@ public class BuildingAssessment {
 		}
 
 		return lulcGeom;
+	}
+
+	public Map<Long, IFeature> getRoads(String epsg) throws Exception {
+		String[] keytag = { "highway" };
+		Set<OSMResource> roads = this.loader.filterByTags(keytag);
+		Map<Long, IFeature> roadsGeom = new HashMap<Long, IFeature>();
+		for (OSMResource r : roads) {
+			System.out.println("OSMResource ID : " + r.getId());
+			// On ne prend pas les routes qui portent le tag "highway"="service"
+			// ou "highway"="footway"
+			if (r.getTags().get("highway").equals("footway") || r.getTags().get("highway").equals("service"))
+				continue;
+			List<Long> vertices = ((OSMWay) r.getGeom()).getVertices();
+			System.out.println("Number of vertices :" + vertices.size());
+			List<OSMResource> nodes = loader.getNodes(vertices, timestamp);
+			if (nodes == null)
+				continue;
+			System.out.println("Number of nodes :" + nodes.size());
+			for (OSMResource n : nodes)
+				System.out.println(n.getId());
+
+			OsmGeometryConversion converter = new OsmGeometryConversion(epsg);
+			OSMDefaultFeature feature = new OSMDefaultFeature(r.getContributeur(),
+					converter.convertOSMLine((OSMWay) r.getGeom(), nodes), r.getId(), r.getChangeSet(), r.getVersion(),
+					r.getUid(), r.getDate(), r.getTags());
+
+			feature.setSource(OsmSource.valueOfTag(r.getSource()));
+			feature.setCaptureTool(r.getCaptureTool());
+			roadsGeom.put(r.getId(), feature);
+			nodes.clear();
+
+		}
+		return roadsGeom;
+
 	}
 
 	public static void toCSV(String FILE_HEADER, Map<Long, Object[]> indicatorList, File file) throws IOException {
@@ -435,7 +495,35 @@ public class BuildingAssessment {
 	}
 
 	public double minSurfaceDistanceFromMatching(IFeature geom) throws Exception {
-		Double dist = 0.0;
+		Double dist = 1.0; // Max distance by default
+		if (nbIntersectionWithBatiBDTOPO(geom) == 0)
+			return dist;
+		// Make a WKT polygon
+		String wkt = WktGeOxygene.makeWkt(geom.getGeom());
+		java.sql.Connection conn;
+		try {
+			String url = "jdbc:postgresql://" + loader.host + ":" + loader.port + "/" + loader.dbName;
+			conn = DriverManager.getConnection(url, loader.dbUser, loader.dbPwd);
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			String query = "SELECT min(1-(ST_AREA(ST_INTERSECTION(bati.geometrie, ST_GeomFromText('" + wkt + "',2154)))"
+					+ "/" + "ST_AREA(ST_UNION(bati.geometrie, ST_GeomFromText('" + wkt + "',2154)))))" + " AS min "
+					+ "FROM ign.batiment93_non_detruit bati WHERE " + "ST_INTERSECTS(bati.geometrie, ST_GeomFromText('"
+					+ wkt + "',2154))";
+			ResultSet r = s.executeQuery(query);
+			while (r.next())
+				dist = r.getDouble("min");
+
+			s.close();
+			conn.close();
+			return dist;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	public Integer nbIntersectionWithBatiBDTOPO(IFeature geom) throws Exception {
+		Integer nb = 0;
+
 		// Make a WKT polygon
 		String wkt = WktGeOxygene.makeWkt(geom.getGeom());
 
@@ -444,20 +532,18 @@ public class BuildingAssessment {
 			String url = "jdbc:postgresql://" + loader.host + ":" + loader.port + "/" + loader.dbName;
 			conn = DriverManager.getConnection(url, loader.dbUser, loader.dbPwd);
 			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			String query = "SELECT min(1-(ST_AREA(ST_INTERSECTION(bati.geometrie, ST_GeomFromText('" + wkt + "',2154)))"
-					+ "/" + "ST_AREA(ST_UNION(bati.geometrie, ST_GeomFromText('" + wkt + "',2154)))))" + " AS min "
-					+ "FROM ign.batiment bati WHERE " + "ST_INTERSECTS(bati.geometrie, ST_GeomFromText('" + wkt
-					+ "',2154))";
+			String query = "SELECT COUNT(*) AS count FROM ign.batiment93_non_detruit bati "
+					+ "WHERE ST_INTERSECTS(bati.geometrie," + "ST_GeomFromText('" + wkt + "',2154));";
 			ResultSet r = s.executeQuery(query);
 			while (r.next())
-				dist = r.getDouble("min");
+				nb = r.getInt("count");
+
 			s.close();
 			conn.close();
-			return dist;
+			return nb;
 		} catch (Exception e) {
 			throw e;
 		}
-
 	}
 
 	public int countFromDB(String query) throws Exception {
@@ -712,9 +798,9 @@ public class BuildingAssessment {
 			conn = DriverManager.getConnection(url, loader.dbUser, loader.dbPwd);
 			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			String query = "SELECT " + columns;
-			query += " FROM indicators." + city + "_normalized_with_vandalism " + "WHERE v_contrib IS NOT NULL";
+			query += " FROM indicators." + city + "_all_with_vandalized_data WHERE v_contrib IS NOT NULL";
 			// query += " FROM indicators." + city
-			// + "_normalized_with_vandalism_without_moderators WHERE v_contrib
+			// + "normalized_with_vandalism WHERE v_contrib
 			// IS NOT NULL";
 			System.out.println(query);
 			ResultSet r = s.executeQuery(query);

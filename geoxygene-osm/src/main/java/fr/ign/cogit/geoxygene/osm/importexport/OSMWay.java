@@ -32,4 +32,5 @@ public class OSMWay extends PrimitiveGeomOSM {
 	public boolean isVerticeEquals(OSMWay way) {
 		return this.vertices.equals(way.vertices);
 	}
+
 }
