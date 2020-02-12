@@ -284,23 +284,15 @@
   </dependencies>
 	<repositories>
 		<repository>
-			<id>Central3</id>
-			<name>Central Repository 3</name>
-			<url>http://central.maven.org/maven2/</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
+			<id>jzy3d-snapshots</id>
+			<name>Jzy3d Snapshots</name>
+			<url>https://maven.jzy3d.org/snapshots</url>
 		</repository>
-  <repository>
-     <id>jzy3d-snapshots</id>
-     <name>Jzy3d Snapshots</name>
-     <url>http://maven.jzy3d.org/snapshots</url>
-  </repository>
-  <repository>
-     <id>jzy3d-releases</id>
-     <name>Jzy3d Releases</name>
-     <url>http://maven.jzy3d.org/releases</url>
-  </repository>
+		<repository>
+			<id>jzy3d-releases</id>
+			<name>Jzy3d Releases</name>
+			<url>https://maven.jzy3d.org/releases</url>
+		</repository>
 
 		
 		
