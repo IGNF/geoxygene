@@ -92,4 +92,12 @@ public class OSMRelation extends PrimitiveGeomOSM {
 		}
 		return membersID;
 	}
+
+	public boolean isMemberListEquals(OSMRelation relation) {
+		if (this.getMembers().equals(relation.getMembers()))
+			return true;
+		else
+			return false;
+
+	}
 }

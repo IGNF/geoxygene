@@ -29,6 +29,15 @@ import fr.ign.cogit.geoxygene.osm.anonymization.db.SQLDBPreAnonymization;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMResource;
 import fr.ign.cogit.geoxygene.osm.importexport.pbf.GeoxSink;
 
+/**
+ * Certaines méthodes de récupération d'information sur les changeset via l'API
+ * OpenStreetMap. Attention : il faut ajouter un certificat de l'API dans le
+ * fichier trust pour que l'appel à l'API fonctionne. Le certificat a une durée
+ * de validité de ~4 mois donc il faut changer le certificat régulièrement.
+ * 
+ * @author QTTruong
+ *
+ */
 public class ChangesetRetriever {
 	private String host;
 	private String port;
@@ -40,6 +49,7 @@ public class ChangesetRetriever {
 
 	public ChangesetRetriever(String host, String port, String dbName, String dbUser, String dbPwd)
 			throws SQLException {
+		// super(host, port, dbName, dbUser, dbPwd);
 		this.setHost(host);
 		this.setPort(port);
 		this.setDbName(dbName);
@@ -85,7 +95,7 @@ public class ChangesetRetriever {
 	 */
 	public void insertIntoChangeset(Set<String> values) throws Exception {
 		try {
-			conn = DriverManager.getConnection(this.url, this.dbUser, this.dbPwd);
+			conn = DriverManager.getConnection(this.getUrl(), this.getDbUser(), this.getDbPwd());
 			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			// System.out.println(changesetID);
 			StringBuffer insertQuery = new StringBuffer();
@@ -110,7 +120,7 @@ public class ChangesetRetriever {
 
 	public void insertOneRow(String value) throws Exception {
 		try {
-			conn = DriverManager.getConnection(this.url, this.dbUser, this.dbPwd);
+			conn = DriverManager.getConnection(this.getUrl(), this.getDbUser(), this.getDbPwd());
 			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			// System.out.println(changesetID);
 			StringBuffer insertQuery = new StringBuffer();
@@ -140,16 +150,16 @@ public class ChangesetRetriever {
 			Element changeset = (Element) osm.getChildNodes().item(1);
 
 			value.append("(" + changesetID + ",");
-			value.append(changeset.getAttribute("uid") + ",");
+			// System.out.println(
+			// "changeset.getAttribute(\"uid\") equals \"\" ? " +
+			// changeset.getAttribute("uid").equals(""));
+			if (changeset.getAttribute("uid").equals(""))
+				value.append("NULL,");
+			else
+				value.append(changeset.getAttribute("uid") + ",");
+
 			value.append("\'" + GeoxSink.escapeSQL(changeset.getAttribute("user")) + "\',");
 			// Dates
-			// System.out.println("\'" + changeset.getAttribute("created_at") +
-			// "\',");
-			// System.out.println("\'" + changeset.getAttribute("closed_at") +
-			// "\',");
-			// System.out.println("\'" +
-			// changeset.getAttribute("comments_count") +
-			// "\',");
 			value.append("\'" + changeset.getAttribute("created_at") + "\',");
 			value.append("\'" + changeset.getAttribute("closed_at") + "\',");
 			String min_lon = (changeset.getAttribute("min_lon").isEmpty() ? "NULL" : changeset.getAttribute("min_lon"));
@@ -167,8 +177,6 @@ public class ChangesetRetriever {
 				if (tagsAndDiscussion.item(i).getNodeType() == Node.ELEMENT_NODE) {
 					Element child = (Element) tagsAndDiscussion.item(i);
 					if (child.getNodeName().equals("tag")) {
-						// System.out.println("k " + child.getAttribute("k"));
-						// System.out.println("v " + child.getAttribute("v"));
 						hstore.append("\"" + GeoxSink.escapeSQL(child.getAttribute("k")) + "\"=>\""
 								+ GeoxSink.escapeSQL(child.getAttribute("v")) + "\",");
 					}
@@ -197,7 +205,7 @@ public class ChangesetRetriever {
 	 */
 	public boolean isInChangesetTable(Long changesetID) throws Exception {
 		try {
-			conn = DriverManager.getConnection(this.url, this.dbUser, this.dbPwd);
+			conn = DriverManager.getConnection(this.getUrl(), this.getDbUser(), this.getDbPwd());
 			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			ResultSet r = s.executeQuery("SELECT 1 FROM changeset WHERE changesetid = " + changesetID);
 			if (r.next())
@@ -303,26 +311,25 @@ public class ChangesetRetriever {
 
 	}
 
-	public void executeAnyQuery(String query) {
+	/**
+	 * Get the number of editions of a changeset (using OSM API)
+	 * 
+	 * @param changesetID
+	 * @return the number of modified features (either it was created, modified
+	 *         or deleted) of the changeset
+	 */
+	public static Integer getNbModifications(Long changesetID) {
+
 		try {
-			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			s.execute(query);
-		} catch (Exception e) {
-			// throw e;
-
+			String urlAPI = "https://api.openstreetmap.org/api/0.6/changeset/" + changesetID + "/download";
+			Document xml = SQLDBPreAnonymization.getDataFromAPI(urlAPI);
+			Node osmChange = xml.getFirstChild();
+			NodeList modifications = osmChange.getChildNodes();
+			return modifications.getLength();
+		} catch (NullPointerException e) {
+			System.out.println("See changeset ID : " + changesetID);
 		}
-
-	}
-
-	public ResultSet executeQuery(String query) {
-		ResultSet r = null;
-		try {
-			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			r = s.executeQuery(query);
-		} catch (Exception e) {
-			// throw e;
-		}
-		return r;
+		return null;
 
 	}
 
@@ -536,7 +543,7 @@ public class ChangesetRetriever {
 	 * @throws Exception
 	 */
 	public Double[] getChangesetsMeanExtent(Set<Integer> changesetIDs) throws Exception {
-		conn = DriverManager.getConnection(this.url, this.dbUser, this.dbPwd);
+		conn = DriverManager.getConnection(this.getUrl(), this.getDbUser(), this.getDbPwd());
 		Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		Double mean_lon_min = 0.0;
 		Double mean_lat_min = 0.0;
@@ -594,6 +601,29 @@ public class ChangesetRetriever {
 	 */
 	public static Integer getNbChangesets(Set<OSMResource> contributions) {
 		return getAllChangesets(contributions).size();
+	}
+
+	public void executeAnyQuery(String query) {
+		try {
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			s.execute(query);
+		} catch (Exception e) {
+			// throw e;
+
+		}
+
+	}
+
+	public ResultSet executeQuery(String query) {
+		ResultSet r = null;
+		try {
+			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			r = s.executeQuery(query);
+		} catch (Exception e) {
+			// throw e;
+		}
+		return r;
+
 	}
 
 	// Getters & Setters
