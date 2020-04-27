@@ -30,39 +30,46 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
  */
 public interface ArcReseau extends ElementDuReseau {
 
-  /**
-   * @return
-   */
-  public boolean isFictif();
+    /**
+     * @return
+     */
+    public boolean isFictif();
 
-  public void setFictif(boolean fictif);
+    public void setFictif(boolean fictif);
 
-  @Override
-  public ICurve getGeom();
+    @Override
+    public ICurve getGeom();
 
-  /**
-   * @return la direction du troncon
-   */
-  public Direction getDirection();
+    /**
+     * @return la direction du troncon
+     */
+    public Direction getDirection();
 
-  public void setDirection(Direction direction);
+    public void setDirection(Direction direction);
 
-  /**
-   * @return le noeud initial de l'arc
-   */
-  public NoeudReseau getNoeudInitial();
+    /**
+     * @return la direction du troncon
+     */
+    public int getImportance();
 
-  public void setNoeudInitial(NoeudReseau noeud);
+    public void setImportance(int importance);
 
-  /**
-   * @return le noeud final de l'arc
-   */
-  public NoeudReseau getNoeudFinal();
+    /**
+     * @return le noeud initial de l'arc
+     */
+    public NoeudReseau getNoeudInitial();
 
-  public void setNoeudFinal(NoeudReseau noeud);
+    public void setNoeudInitial(NoeudReseau noeud);
 
-  /**
-   * @return
-   */
-  public Collection<PassePar> getPassePar();
+    /**
+     * @return le noeud final de l'arc
+     */
+    public NoeudReseau getNoeudFinal();
+
+    public void setNoeudFinal(NoeudReseau noeud);
+
+    /**
+     * @return
+     */
+    public Collection<PassePar> getPassePar();
 }

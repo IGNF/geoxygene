@@ -44,101 +44,116 @@ import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.Reseau;
 @Table(name = "arc_reseau")
 public class ArcReseauImpl extends ElementDuReseauImpl implements ArcReseau {
 
-  /**
-   * constructeur par defaut
-   * @param res
-   * @param fictif
-   */
-  public ArcReseauImpl(Reseau res, boolean fictif, ICurve geom) {
-    this();
-    this.setReseau(res);
-    this.setFictif(fictif);
-    this.setGeom(geom);
-  }
+    /**
+     * constructeur par defaut
+     * 
+     * @param res
+     * @param fictif
+     */
+    public ArcReseauImpl(Reseau res, boolean fictif, ICurve geom,
+            int importance) {
+        this();
+        this.setReseau(res);
+        this.setFictif(fictif);
+        this.setGeom(geom);
+        this.setImportance(importance);
+    }
 
-  public ArcReseauImpl() {
-    super();
-  }
+    public ArcReseauImpl() {
+        super();
+    }
 
-  @Override
-  @Type(type = "fr.ign.cogit.geoxygene.datatools.hibernate.GeOxygeneGeometryUserType")
-  public ICurve getGeom() {
-    return (ICurve) super.getGeom();
-  }
+    @Override
+    @Type(type = "fr.ign.cogit.geoxygene.datatools.hibernate.GeOxygeneGeometryUserType")
+    public ICurve getGeom() {
+        return (ICurve) super.getGeom();
+    }
 
-  /**
-   * indique si l'arc est fictif ou non
-   */
-  private boolean fictif = false;
+    /**
+     * indique si l'arc est fictif ou non
+     */
+    private boolean fictif = false;
 
-  @Override
-  public boolean isFictif() {
-    return this.fictif;
-  }
+    @Override
+    public boolean isFictif() {
+        return this.fictif;
+    }
 
-  @Override
-  public void setFictif(boolean fictif) {
-    this.fictif = fictif;
-  }
+    @Override
+    public void setFictif(boolean fictif) {
+        this.fictif = fictif;
+    }
 
-  /**
-   * donne la direction de l'arc
-   */
-  private Direction direction = Direction.INCONNU;
+    /**
+     * donne la direction de l'arc
+     */
+    private Direction direction = Direction.INCONNU;
 
-  @Override
-  public Direction getDirection() {
-    return this.direction;
-  }
+    @Override
+    public Direction getDirection() {
+        return this.direction;
+    }
 
-  @Override
-  public void setDirection(Direction direction) {
-    this.direction = direction;
-  }
+    @Override
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
 
-  /**
-   * le noeud final de l'arc
-   */
-  private NoeudReseau noeudFinal = null;
+    /**
+     * le noeud final de l'arc
+     */
+    private NoeudReseau noeudFinal = null;
 
-  @Override
-  public NoeudReseau getNoeudFinal() {
-    return this.noeudFinal;
-  }
+    @Override
+    public NoeudReseau getNoeudFinal() {
+        return this.noeudFinal;
+    }
 
-  @Override
-  public void setNoeudFinal(NoeudReseau noeudFinal) {
-    this.noeudFinal = noeudFinal;
-  }
+    @Override
+    public void setNoeudFinal(NoeudReseau noeudFinal) {
+        this.noeudFinal = noeudFinal;
+    }
 
-  /**
-   * le noeud initial de l'arc
-   */
-  private NoeudReseau noeudInitial = null;
+    /**
+     * le noeud initial de l'arc
+     */
+    private NoeudReseau noeudInitial = null;
 
-  @Override
-  public NoeudReseau getNoeudInitial() {
-    return this.noeudInitial;
-  }
+    @Override
+    public NoeudReseau getNoeudInitial() {
+        return this.noeudInitial;
+    }
 
-  @Override
-  public void setNoeudInitial(NoeudReseau noeudInitial) {
-    this.noeudInitial = noeudInitial;
-  }
+    @Override
+    public void setNoeudInitial(NoeudReseau noeudInitial) {
+        this.noeudInitial = noeudInitial;
+    }
 
-  /**
-	 * 
-	 */
-  private Collection<PassePar> passePar = new FT_FeatureCollection<PassePar>();
+    /**
+     * 
+     */
+    private Collection<PassePar> passePar = new FT_FeatureCollection<PassePar>();
 
-  @Override
-  public Collection<PassePar> getPassePar() {
-    return this.passePar;
-  }
+    @Override
+    public Collection<PassePar> getPassePar() {
+        return this.passePar;
+    }
 
-  @Override
-  @ManyToOne(targetEntity = ReseauImpl.class)
-  public Reseau getReseau() {
-    return super.getReseau();
-  }
+    @Override
+    @ManyToOne(targetEntity = ReseauImpl.class)
+    public Reseau getReseau() {
+        return super.getReseau();
+    }
+
+    private int importance = 0;
+
+    @Override
+    public int getImportance() {
+        return importance;
+    }
+
+    @Override
+    public void setImportance(int importance) {
+        this.setImportance(importance);
+    }
 }

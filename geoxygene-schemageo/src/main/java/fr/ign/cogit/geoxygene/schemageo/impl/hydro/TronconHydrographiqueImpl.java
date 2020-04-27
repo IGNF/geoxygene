@@ -35,106 +35,107 @@ import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.ArcReseauImpl;
  */
 @Entity
 @Table(name = "troncon_hydrographique")
-public class TronconHydrographiqueImpl extends ArcReseauImpl implements
-    TronconHydrographique {
+public class TronconHydrographiqueImpl extends ArcReseauImpl
+        implements TronconHydrographique {
 
-  /**
-   * @param res
-   * @param estFictif
-   */
-  public TronconHydrographiqueImpl(Reseau res, boolean estFictif, ICurve geom) {
-    super(res, estFictif, geom);
-  }
+    /**
+     * @param res
+     * @param estFictif
+     */
+    public TronconHydrographiqueImpl(Reseau res, boolean estFictif, ICurve geom,
+            int importance) {
+        super(res, estFictif, geom, importance);
+    }
 
-  public TronconHydrographiqueImpl() {
-    super();
-  }
+    public TronconHydrographiqueImpl() {
+        super();
+    }
 
-  /**
-   * le nom
-   */
-  private String nom = ""; //$NON-NLS-1$
+    /**
+     * le nom
+     */
+    private String nom = ""; //$NON-NLS-1$
 
-  @Override
-  public String getNom() {
-    return this.nom;
-  }
+    @Override
+    public String getNom() {
+        return this.nom;
+    }
 
-  @Override
-  public void setNom(String nom) {
-    this.nom = nom;
-  }
+    @Override
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
 
-  private boolean artificiel = false;
+    private boolean artificiel = false;
 
-  @Override
-  public boolean isArtificiel() {
-    return this.artificiel;
-  }
+    @Override
+    public boolean isArtificiel() {
+        return this.artificiel;
+    }
 
-  @Override
-  public void setArtificiel(boolean artificiel) {
-    this.artificiel = artificiel;
-  }
+    @Override
+    public void setArtificiel(boolean artificiel) {
+        this.artificiel = artificiel;
+    }
 
-  private int positionParRapportAuSol = 0;
+    private int positionParRapportAuSol = 0;
 
-  @Override
-  public int getPositionParRapportAuSol() {
-    return this.positionParRapportAuSol;
-  }
+    @Override
+    public int getPositionParRapportAuSol() {
+        return this.positionParRapportAuSol;
+    }
 
-  @Override
-  public void setPositionParRapportAuSol(int positionParRapportAuSol) {
-    this.positionParRapportAuSol = positionParRapportAuSol;
-  }
+    @Override
+    public void setPositionParRapportAuSol(int positionParRapportAuSol) {
+        this.positionParRapportAuSol = positionParRapportAuSol;
+    }
 
-  private Regime regime;
+    private Regime regime;
 
-  @Override
-  public Regime getRegime() {
-    return this.regime;
-  }
+    @Override
+    public Regime getRegime() {
+        return this.regime;
+    }
 
-  @Override
-  public void setRegime(Regime regime) {
-    this.regime = regime;
-  }
+    @Override
+    public void setRegime(Regime regime) {
+        this.regime = regime;
+    }
 
-  private double zIni = 0;
+    private double zIni = 0;
 
-  @Override
-  public double getZIni() {
-    return this.zIni;
-  }
+    @Override
+    public double getZIni() {
+        return this.zIni;
+    }
 
-  @Override
-  public void setZIni(double zIni) {
-    this.zIni = zIni;
-  }
+    @Override
+    public void setZIni(double zIni) {
+        this.zIni = zIni;
+    }
 
-  private double zFin = 0;
+    private double zFin = 0;
 
-  @Override
-  public double getZFin() {
-    return this.zFin;
-  }
+    @Override
+    public double getZFin() {
+        return this.zFin;
+    }
 
-  @Override
-  public void setZFin(double zFin) {
-    this.zFin = zFin;
-  }
+    @Override
+    public void setZFin(double zFin) {
+        this.zFin = zFin;
+    }
 
-  private double largeur = 0;
+    private double largeur = 0;
 
-  @Override
-  public double getLargeur() {
-    return this.largeur;
-  }
+    @Override
+    public double getLargeur() {
+        return this.largeur;
+    }
 
-  @Override
-  public void setLargeur(double largeur) {
-    this.largeur = largeur;
-  }
+    @Override
+    public void setLargeur(double largeur) {
+        this.largeur = largeur;
+    }
 
 }
