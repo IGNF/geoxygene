@@ -154,6 +154,6 @@ public class ArcReseauImpl extends ElementDuReseauImpl implements ArcReseau {
 
     @Override
     public void setImportance(int importance) {
-        this.setImportance(importance);
+        this.importance = importance;
     }
 }

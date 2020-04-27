@@ -125,4 +125,9 @@ public class TronconDeRouteImpl extends ArcReseauImpl
         this.nomItineraire = nomItineraire;
     }
 
+    @Override
+    public int getImportance() {
+        return super.getImportance();
+    }
+
 }
