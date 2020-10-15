@@ -75,9 +75,12 @@ public class FromGeomToLineString {
 	private static List<IOrientableCurve> convertSurface(IPolygon pol) {
 
 		List<IOrientableCurve> l = new ArrayList<IOrientableCurve>();
-		l.add(pol.getExterior());
+		l.add(pol.exteriorLineString());
 		if (pol.getInterior() != null) {
-			l.addAll(pol.getInterior());
+		  for (int i = 0 ; i < pol.getInterior().size() ; i++) {
+		    l.add(pol.interiorLineString(i));
+		  }
+//			l.addAll(pol.getInterior());
 		}
 		return l;
 	}

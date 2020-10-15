@@ -57,7 +57,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<jts.version>1.16.1</jts.version>
-		<log4j.version>1.2.16</log4j.version>
+		<log4j.version>2.13.3</log4j.version>
 		<geotools.version>21.0</geotools.version>
 		<jfreechart.version>1.0.13</jfreechart.version>
 		<jgrapht.version>0.9.0</jgrapht.version>
@@ -702,11 +702,10 @@
 				<artifactId>jts-core</artifactId>
 				<version>${jts.version}</version>
 			</dependency>
-
 			<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				<version>${log4j.version}</version>
+			    <groupId>org.apache.logging.log4j</groupId>
+			    <artifactId>log4j-core</artifactId>
+			    <version>${log4j.version}</version>
 			</dependency>
 
 			<!-- Scope TEST -->

@@ -25,7 +25,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 
@@ -36,7 +37,7 @@ public class AppriouMapper {
   /**
    * The logger.
    */
-  private Logger logger = Logger.getLogger(AppriouMapper.class);
+  private Logger logger = LogManager.getLogger(AppriouMapper.class);
 
   /**
    * Default constructor.

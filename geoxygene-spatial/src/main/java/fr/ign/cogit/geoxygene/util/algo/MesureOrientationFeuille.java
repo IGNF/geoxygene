@@ -28,7 +28,8 @@ package fr.ign.cogit.geoxygene.util.algo;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -50,7 +51,7 @@ import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
  *
  */
 public class MesureOrientationFeuille {
-	private static Logger logger=Logger.getLogger(MesureOrientationFeuille.class.getName());
+	private static Logger logger=LogManager.getLogger(MesureOrientationFeuille.class.getName());
 
 	// précision de l'angle testé
 	private static double ANGLE_PRECISION = Math.PI/180; //(=1°)

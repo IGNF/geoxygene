@@ -10,7 +10,8 @@ import javax.media.j3d.TransformGroup;
 import javax.vecmath.Vector3d;
 import javax.vecmath.Vector3f;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -53,7 +54,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  */
 public class RepresentationModel extends Default3DRep {
 
-  private final static Logger logger = Logger
+  private final static Logger logger = LogManager
       .getLogger(RepresentationModel.class.getName());
 
   /**

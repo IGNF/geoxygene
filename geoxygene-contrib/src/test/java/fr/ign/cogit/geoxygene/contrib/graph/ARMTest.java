@@ -3,7 +3,8 @@ package fr.ign.cogit.geoxygene.contrib.graph;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +28,7 @@ public class ARMTest {
   IPopulation<Noeud> popNoeudsToCompare;
   IPopulation<Arc> popArcsToCompare;
   
-  private static Logger LOGGER = Logger.getLogger(ARMTest.class.getName());
+  private static Logger LOGGER = LogManager.getLogger(ARMTest.class.getName());
   
   /**
    * 

@@ -12,7 +12,8 @@ package fr.ign.cogit.geoxygene.contrib.algorithms;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
@@ -39,7 +40,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 public class CartogramDougenik {
   
   /** LOGGER. */
-  private final static Logger LOGGER = Logger.getLogger(CartogramDougenik.class.getName());
+  private final static Logger LOGGER = LogManager.getLogger(CartogramDougenik.class.getName());
   
   /**
    * 

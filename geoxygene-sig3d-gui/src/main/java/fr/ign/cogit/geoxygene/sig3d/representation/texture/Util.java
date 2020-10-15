@@ -7,7 +7,8 @@ import javax.vecmath.Point3f;
 import javax.vecmath.TexCoord2f;
 import javax.vecmath.Vector3f;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.sun.j3d.utils.geometry.GeometryInfo;
 
@@ -50,7 +51,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
  */
 public class Util {
 
-	private final static Logger logger = Logger.getLogger(Util.class.getName());
+	private final static Logger logger = LogManager.getLogger(Util.class.getName());
 
 	/**
 	 * Génère une géométrie Java3D texturée à partir d'une géométrie de

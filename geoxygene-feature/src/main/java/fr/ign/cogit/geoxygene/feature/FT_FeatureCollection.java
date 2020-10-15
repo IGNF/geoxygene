@@ -28,7 +28,8 @@ import java.util.List;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -63,7 +64,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
   /**
    * The logger.
    */
-  static Logger logger = Logger.getLogger(FT_FeatureCollection.class.getName());
+  static Logger logger = LogManager.getLogger(FT_FeatureCollection.class.getName());
   protected List<FeatureCollectionListener> listenerList = new ArrayList<FeatureCollectionListener>(
       0);
 

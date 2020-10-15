@@ -27,7 +27,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.EvidenceCodec;
 import fr.ign.cogit.geoxygene.matching.dst.operators.CombinationAlgos;
@@ -57,7 +58,7 @@ public class MatchingProcess<F, Hyp extends Hypothesis> {
   /**
    * 
    */
-  private final static Logger LOGGER = Logger.getLogger(MatchingProcess.class);
+  private final static Logger LOGGER = LogManager.getLogger(MatchingProcess.class);
 
   private Collection<Source<F, Hyp>> criteria;
   

@@ -20,7 +20,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * The ColorReferenceSystem class represent a specific organization of colors. A
@@ -39,7 +40,7 @@ import org.apache.log4j.Logger;
 @XmlType(name = "ColorReferenceSystem", propOrder = { "wheels" })
 public class ColorReferenceSystem {
 
-  static Logger logger = Logger.getLogger(ColorReferenceSystem.class.getName());
+  static Logger logger = LogManager.getLogger(ColorReferenceSystem.class.getName());
 
   /**
    * List of the Color Wheels of the COGIT Reference System.

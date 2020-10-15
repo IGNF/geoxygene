@@ -12,7 +12,8 @@ import javax.media.j3d.TriangleArray;
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3d;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.sun.j3d.utils.geometry.GeometryInfo;
 
@@ -58,7 +59,7 @@ import net.jgeom.ext.mesh.boolop.J3DBoolOp;
  */
 public class BooleanOperators {
  
-  private final static Logger logger = Logger.getLogger(BooleanOperators.class
+  private final static Logger logger = LogManager.getLogger(BooleanOperators.class
       .getName());
 
   public final static int INTERSECTION = J3DBoolOp.INTERSECTION;

@@ -6,7 +6,8 @@ import java.io.Reader;
 
 import javax.xml.bind.JAXBException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.style.AbstractSymbolizer;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
@@ -19,7 +20,7 @@ import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 
 public class SLDMixer {
-  protected static Logger logger = Logger.getLogger(AbstractSymbolizer.class
+  protected static Logger logger = LogManager.getLogger(AbstractSymbolizer.class
     .getName());
   public static StyledLayerDescriptor mix(StyledLayerDescriptor sld1, StyledLayerDescriptor sld2){
     

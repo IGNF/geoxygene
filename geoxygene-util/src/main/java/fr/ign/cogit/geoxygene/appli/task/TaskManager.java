@@ -35,14 +35,15 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author JeT manage a set of tasks
  */
 public class TaskManager implements TaskListener<Task> {
 
-    private static final Logger logger = Logger.getLogger(TaskManager.class
+    private static final Logger logger = LogManager.getLogger(TaskManager.class
             .getName()); // logger
 
     private static final boolean debug = false;

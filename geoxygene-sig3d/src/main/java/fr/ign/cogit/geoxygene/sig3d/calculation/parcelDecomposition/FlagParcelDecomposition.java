@@ -70,12 +70,12 @@ public class FlagParcelDecomposition {
 		DirectPosition.PRECISION = 3;
 
 		// Input 1/ the input parcelles to split
-		String inputShapeFile = "data/toFlag.shp";
+		String inputShapeFile = "/home/julien/devel/ParcelManager/src/main/resources/testData/parcelle.shp";
 		// Input 2 : the buildings that mustnt intersects the allowed roads (facultatif)
-		String inputBuildingFile = "data/building.shp";
+		String inputBuildingFile = "/home/julien/devel/ParcelManager/src/main/resources/testData/building.shp";
 
 		// Input 3 (facultative) : the exterior of the urban block (it serves to determiner the multicurve)
-		String inputUrbanBlock = "data/ilot.shp";
+		String inputUrbanBlock = "/home/julien/devel/ParcelManager/src/main/resources/testData/ilot.shp";
 		IFeatureCollection<IFeature> featC = ShapefileReader.read(inputUrbanBlock);
 		
 		String folderOut = "data/";
@@ -110,6 +110,9 @@ public class FlagParcelDecomposition {
 		for (int i = 0; i < count; i++) { // count
 			IFeature feat = featColl.get(i);
 			System.out.println(i + " / " + featColl.size());
+      if (feat.getAttribute("NUMERO").toString().equalsIgnoreCase("0024")
+          && feat.getAttribute("FEUILLE").toString().equalsIgnoreCase("2")
+          && feat.getAttribute("SECTION").toString().equalsIgnoreCase("0A")) {
 
 			IGeometry geom = feat.getGeom();
 			IDirectPosition dp = new DirectPosition(0, 0, 0); // geom.centroid();
@@ -131,7 +134,7 @@ public class FlagParcelDecomposition {
 			results.stream().forEach(x -> x.setGeom(x.getGeom().translate(dp.getX(), dp.getY(), 0)));
 			// Get the results
 			featCollOut.addAll(results);
-
+      }
 		}
 
 		ShapefileWriter.write(featCollOut, shapeFileOut, CRS.decode("EPSG:2154"));
@@ -320,7 +323,8 @@ public class FlagParcelDecomposition {
 	 * @return
 	 */
 	private List<List<IPolygon>> generateFlagParcel(List<IPolygon> splittedPolygon) {
-
+System.out.println("generateFlagParcel");
+splittedPolygon.stream().forEach(p->System.out.println(p));
 		// The output polygon
 		List<List<IPolygon>> polygonesOut = new ArrayList<>();
 		polygonesOut.add(new ArrayList<>());
@@ -348,10 +352,11 @@ public class FlagParcelDecomposition {
 			boucleside: for (Pair<IMultiCurve<IOrientableCurve>, IPolygon> side : listMap) {
 				// The geometry road
 				IGeometry road = side.getKey().buffer(this.roadWidth);
-
+System.out.println("ROAD");
+System.out.println(road);
 				// The road intersects a building, we do not keep it
 				if (!this.buildings.select(road).isEmpty()) {
-					// System.out.println("Building case : " + this.polygonInit);
+					 System.out.println("Building case : " + this.polygonInit);
 					continue;
 
 				}
@@ -414,20 +419,24 @@ public class FlagParcelDecomposition {
 				List<IPolygon> lPolygonsOut2 = FromGeomToSurface.convertGeom(geomPol2).stream().map(x -> (IPolygon) x).collect(Collectors.toList());
 				lPolygonsOut2 = lPolygonsOut2.stream().filter(x -> x.area() > TOO_SMALL_PARCEL_AREA).collect(Collectors.toList());
 
+				System.out.println("lPolygonsOut1");
+				lPolygonsOut1.stream().forEach(p->System.out.println(p));
+        System.out.println("lPolygonsOut2");
+        lPolygonsOut2.stream().forEach(p->System.out.println(p));
 				// We check if there is a road acces for all, if not we abort
 				for (IPolygon pol : lPolygonsOut1) {
 					if (!hasRoadAccess(pol)) {
-						// System.out.println("Road access is missing ; polyinit : " +
-						// this.polygonInit);
-						// System.out.println("Current polyg : " + pol);
+						 System.out.println("Road access is missing ; polyinit : " +
+						 this.polygonInit);
+						 System.out.println("Current polyg : " + pol);
 						continue boucleside;
 					}
 				}
 				for (IPolygon pol : lPolygonsOut2) {
 					if (!hasRoadAccess(pol)) {
-						// System.out.println("Road access is missing ; polyinit : " +
-						// this.polygonInit);
-						// System.out.println("Current polyg : " + pol);
+						 System.out.println("Road access is missing ; polyinit : " +
+						 this.polygonInit);
+						 System.out.println("Current polyg : " + pol);
 						continue boucleside;
 					}
 				}

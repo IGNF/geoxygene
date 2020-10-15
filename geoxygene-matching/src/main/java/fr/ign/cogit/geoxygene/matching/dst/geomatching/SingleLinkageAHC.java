@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
@@ -26,7 +27,7 @@ import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
  */
 public class SingleLinkageAHC {
 
-  static Logger logger = Logger
+  static Logger logger = LogManager
       .getLogger(SingleLinkageAHC.class.getName());
 
   List<Vertex> vertices = new ArrayList<Vertex>();

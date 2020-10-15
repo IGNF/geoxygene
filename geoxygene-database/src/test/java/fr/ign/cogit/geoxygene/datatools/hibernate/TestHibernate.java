@@ -2,7 +2,8 @@ package fr.ign.cogit.geoxygene.datatools.hibernate;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -28,7 +29,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 public class TestHibernate {
 
 	// Logger
-	private static Logger logger = Logger.getLogger(TestHibernate.class);
+	private static Logger logger = LogManager.getLogger(TestHibernate.class);
 
 	/**
 	 * Chargement POINT_EAU avec Hibernate. Test le chargement et l'ajout.

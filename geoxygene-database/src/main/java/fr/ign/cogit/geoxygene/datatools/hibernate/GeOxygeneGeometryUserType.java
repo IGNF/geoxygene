@@ -7,7 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
@@ -31,7 +32,7 @@ import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
  */
 public class GeOxygeneGeometryUserType implements UserType {
 
-	static Logger logger = Logger.getLogger(GeOxygeneGeometryUserType.class.getName());
+	static Logger logger = LogManager.getLogger(GeOxygeneGeometryUserType.class.getName());
 
 	private static final int[] geometryTypes = new int[] { Types.OTHER };
 

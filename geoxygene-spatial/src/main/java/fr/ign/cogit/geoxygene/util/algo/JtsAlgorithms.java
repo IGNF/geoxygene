@@ -30,7 +30,8 @@ import java.util.TreeSet;
 
 import javax.swing.event.EventListenerList;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.locationtech.jts.algorithm.Orientation;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateFilter;
@@ -81,7 +82,7 @@ import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
  */
 
 public class JtsAlgorithms implements GeomAlgorithms {
-  private static Logger logger = Logger.getLogger(JtsAlgorithms.class.getName());
+  private static Logger logger = LogManager.getLogger(JtsAlgorithms.class.getName());
 
   public JtsAlgorithms() {
   }

@@ -36,7 +36,8 @@ import java.util.List;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -61,7 +62,7 @@ public abstract class AbstractFeature implements IFeature {
   /**
    * Logger.
    */
-  protected static final Logger logger = Logger.getLogger(AbstractFeature.class
+  protected static final Logger logger = LogManager.getLogger(AbstractFeature.class
       .getName());
 
   /**

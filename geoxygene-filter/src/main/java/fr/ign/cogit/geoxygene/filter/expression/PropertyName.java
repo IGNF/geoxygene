@@ -29,7 +29,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 
@@ -40,7 +41,7 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "PropertyName")
 public class PropertyName extends Expression {
-  static Logger logger = Logger.getLogger(PropertyName.class.getName());
+  static Logger logger = LogManager.getLogger(PropertyName.class.getName());
 
   /**
      *

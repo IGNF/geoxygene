@@ -32,7 +32,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Classe supportant les opérations sur les ensembles
@@ -40,7 +41,7 @@ import org.apache.log4j.Logger;
  * @version 1.0
  */
 public class Ensemble {
-  final static Logger logger = Logger.getLogger(Ensemble.class.getName());
+  final static Logger logger = LogManager.getLogger(Ensemble.class.getName());
 
   /**
    * Renvoie une liste de liste contenant l'ensemble des combinaisons des

@@ -7,7 +7,8 @@ import javax.media.j3d.WakeupCondition;
 import javax.media.j3d.WakeupCriterion;
 import javax.media.j3d.WakeupOnElapsedFrames;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 /**
@@ -39,7 +40,7 @@ public class FPSBehavior extends Behavior {
   protected long startTime = 0;
   protected final int nbImageEcoulees = 10;
 
-  private final static Logger logger = Logger.getLogger(FPSBehavior.class
+  private final static Logger logger = LogManager.getLogger(FPSBehavior.class
       .getName());
 
   int count = 0;

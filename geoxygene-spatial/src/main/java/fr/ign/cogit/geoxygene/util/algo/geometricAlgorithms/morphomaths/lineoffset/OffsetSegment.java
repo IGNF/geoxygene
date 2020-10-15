@@ -3,7 +3,8 @@
  */
 package fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.morphomaths.lineoffset;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IArc2;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -18,7 +19,7 @@ import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.morphomaths.Side;
  * 
  */
 public class OffsetSegment {
-  private static Logger logger = Logger
+  private static Logger logger = LogManager
       .getLogger(OffsetSegment.class.getName());
 
   /**

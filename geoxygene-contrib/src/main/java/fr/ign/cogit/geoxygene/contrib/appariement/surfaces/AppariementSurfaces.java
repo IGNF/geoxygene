@@ -29,7 +29,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureStore;
@@ -76,7 +77,7 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * @author Sébastien Mustière
  */
 public abstract class AppariementSurfaces {
-  public static Logger LOGGER = Logger.getLogger(AppariementSurfaces.class.getName());
+  public static Logger LOGGER = LogManager.getLogger(AppariementSurfaces.class.getName());
 
   /**
    * Appariement entre deux ensembles de surfaces. Processus inspiré de celui

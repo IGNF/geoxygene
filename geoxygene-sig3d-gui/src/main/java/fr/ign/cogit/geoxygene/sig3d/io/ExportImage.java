@@ -5,7 +5,8 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.sig3d.Messages;
 import fr.ign.cogit.geoxygene.sig3d.gui.InterfaceMap3D;
@@ -32,7 +33,7 @@ import fr.ign.cogit.geoxygene.sig3d.gui.InterfaceMap3D;
  */
 public final class ExportImage {
 
-  private final static Logger logger = Logger.getLogger(ExportImage.class
+  private final static Logger logger = LogManager.getLogger(ExportImage.class
       .getName());
 
   /**

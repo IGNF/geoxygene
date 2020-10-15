@@ -3,7 +3,7 @@ package fr.ign.cogit.geoxygene.util.gl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL32;
 
@@ -35,7 +35,7 @@ public class GLShader {
             this.type = GL32.GL_GEOMETRY_SHADER;
             break;
         default:
-            Logger.getRootLogger().error("Unknow GL_TYPE " + type_as_string);
+            LogManager.getRootLogger().error("Unknow GL_TYPE " + type_as_string);
             break;
         }
     }

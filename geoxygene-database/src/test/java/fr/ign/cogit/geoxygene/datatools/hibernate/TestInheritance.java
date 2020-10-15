@@ -6,7 +6,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -25,7 +26,7 @@ import junit.framework.TestCase;
 public class TestInheritance extends TestCase {
   
   /** Logger. */
-  private static Logger logger = Logger.getLogger(TestInheritance.class);
+  private static Logger logger = LogManager.getLogger(TestInheritance.class);
   
   /** Connexion à la base de test. */
   private Connection jdbcConnection = null;

@@ -25,8 +25,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -59,7 +60,7 @@ public final class AppariementIO {
     }
 
     /** Static logger. */
-    private static final Logger LOGGER = Logger.getLogger(AppariementIO.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(AppariementIO.class.getName());
 
   /**
    * Lancement de l'appariement de réseaux sur des objets Géographiques : 1-
@@ -87,17 +88,17 @@ public final class AppariementIO {
   public static EnsembleDeLiens appariementDeJeuxGeo(
       final ParametresApp paramApp, final List<ReseauApp> cartesTopo) {
     
-      switch (paramApp.debugAffichageCommentaires) {
-        case 0:
-          AppariementIO.LOGGER.setLevel(Level.ERROR);
-          break;
-        case 1:
-          AppariementIO.LOGGER.setLevel(Level.INFO);
-          break;
-        default:
-          AppariementIO.LOGGER.setLevel(Level.DEBUG);
-          break;
-      }
+//      switch (paramApp.debugAffichageCommentaires) {
+//        case 0:
+//          AppariementIO.LOGGER.setLevel(Level.ERROR);
+//          break;
+//        case 1:
+//          AppariementIO.LOGGER.setLevel(Level.INFO);
+//          break;
+//        default:
+//          AppariementIO.LOGGER.setLevel(Level.DEBUG);
+//          break;
+//      }
       if (AppariementIO.LOGGER.isInfoEnabled()) {
         AppariementIO.LOGGER.info(""); //$NON-NLS-1$
         AppariementIO.LOGGER.info(I18N.getString("AppariementIO.MatchingStart")); //$NON-NLS-1$
@@ -254,17 +255,17 @@ public final class AppariementIO {
    */
   public static ReseauApp importData(final ParametresApp paramApp,
       final boolean ref) {
-    switch (paramApp.debugAffichageCommentaires) {
-      case 0:
-        AppariementIO.LOGGER.setLevel(Level.ERROR);
-        break;
-      case 1:
-        AppariementIO.LOGGER.setLevel(Level.INFO);
-        break;
-      default:
-        AppariementIO.LOGGER.setLevel(Level.DEBUG);
-        break;
-    }
+//    switch (paramApp.debugAffichageCommentaires) {
+//      case 0:
+//        AppariementIO.LOGGER.setLevel(Level.ERROR);
+//        break;
+//      case 1:
+//        AppariementIO.LOGGER.setLevel(Level.INFO);
+//        break;
+//      default:
+//        AppariementIO.LOGGER.setLevel(Level.DEBUG);
+//        break;
+//    }
     ReseauApp reseau = null;
     if (ref) {
       LOGGER.info(I18N.getString("AppariementIO.ReferenceNetwork"));

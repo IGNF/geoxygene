@@ -29,7 +29,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IDataSet;
 import fr.ign.cogit.geoxygene.api.feature.IExtraction;
@@ -60,7 +61,7 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
   /**
    * The logger.
    */
-  private static final Logger LOGGER = Logger
+  private static final Logger LOGGER = LogManager
       .getLogger(DataSet.class.getName());
 
   public static int STATICID = 0;

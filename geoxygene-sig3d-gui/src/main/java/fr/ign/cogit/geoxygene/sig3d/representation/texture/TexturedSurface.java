@@ -14,7 +14,8 @@ import javax.media.j3d.Texture2D;
 import javax.media.j3d.TextureAttributes;
 import javax.vecmath.Color3f;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.sun.j3d.utils.geometry.GeometryInfo;
 
@@ -55,7 +56,7 @@ public class TexturedSurface extends Default3DRep {
   private double imageLength;
   private double imageHeigth;
 
-  private final static Logger logger = Logger.getLogger(TexturedSurface.class
+  private final static Logger logger = LogManager.getLogger(TexturedSurface.class
       .getName());
 
   /**

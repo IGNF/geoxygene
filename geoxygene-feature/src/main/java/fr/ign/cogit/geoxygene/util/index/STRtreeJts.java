@@ -13,7 +13,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.index.strtree.STRtree;
 
@@ -30,7 +31,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
  */
 
 public class STRtreeJts<Feat extends IFeature> extends IndexTree<Feat> {
-  static Logger logger = Logger.getLogger(STRtreeJts.class.getName());
+  static Logger logger = LogManager.getLogger(STRtreeJts.class.getName());
   private STRtree stree;
 
   public STRtreeJts(IFeatureCollection<Feat> collection) {

@@ -27,7 +27,8 @@
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
@@ -46,7 +47,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
  * 
  */
 public class GM_Envelope implements IEnvelope {
-    protected final static Logger logger = Logger.getLogger(GM_Envelope.class
+    protected final static Logger logger = LogManager.getLogger(GM_Envelope.class
             .getName());
     // //////////////////////////////////////////////////////////////////////////////////////////////
     // Attributs et accesseurs

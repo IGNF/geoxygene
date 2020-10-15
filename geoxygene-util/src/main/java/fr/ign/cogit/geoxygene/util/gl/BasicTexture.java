@@ -38,7 +38,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
@@ -49,7 +50,7 @@ import org.lwjgl.opengl.GL13;
  */
 public class BasicTexture implements GLTexture {
 
-    private static final Logger logger = Logger.getLogger(BasicTexture.class.getName()); // logger
+    private static final Logger logger = LogManager.getLogger(BasicTexture.class.getName()); // logger
 
     private static final int CHECKERBOARDSIZE = 20;
 

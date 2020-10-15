@@ -22,7 +22,8 @@ package fr.ign.cogit.geoxygene.util.conversion;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.CoordinateXY;
@@ -85,7 +86,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * @author Julien Perret
  */
 public class AdapterFactory {
-  static Logger logger = Logger.getLogger(AdapterFactory.class.getName());
+  static Logger logger = LogManager.getLogger(AdapterFactory.class.getName());
 
   /**
    * Transforme une géométrie GeOxygene ({@link GM_Object}) en géométrie JTS (

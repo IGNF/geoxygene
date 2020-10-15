@@ -9,7 +9,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.contrib.agents.agent.IAgent;
 import fr.ign.cogit.geoxygene.contrib.agents.constraint.Constraint;
@@ -34,7 +35,7 @@ public abstract class ActionImpl implements Action {
   protected @interface ActionField {
   }
 
-  Logger logger = Logger.getLogger(ActionImpl.class.getName());
+  Logger logger = LogManager.getLogger(ActionImpl.class.getName());
 
   /**
    * Build an action for an agent, proposed by a constraint, with a weight

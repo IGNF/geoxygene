@@ -10,7 +10,8 @@ import java.nio.channels.FileChannel;
 import javax.imageio.ImageIO;
 import javax.media.jai.PlanarImage;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.DataSourceException;
 import org.opengis.geometry.Envelope;
@@ -25,7 +26,7 @@ public class GeoTiffReader {
   /**
    * Logger.
    */
-  private static Logger logger = Logger
+  private static Logger logger = LogManager
       .getLogger(GeoTiffReader.class.getName());
 
   public static BufferedImage loadGeoTiffImage(String fileName,

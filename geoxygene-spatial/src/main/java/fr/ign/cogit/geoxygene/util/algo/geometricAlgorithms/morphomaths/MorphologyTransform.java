@@ -3,7 +3,8 @@ package fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.morphomaths;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.locationtech.jts.algorithm.Orientation;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.operation.buffer.BufferParameters;
@@ -30,7 +31,7 @@ import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
 public class MorphologyTransform {
 
     @SuppressWarnings("unused")
-    private static Logger logger = Logger
+    private static Logger logger = LogManager
             .getLogger(MorphologyTransform.class.getName());
 
     private double bufferSize;

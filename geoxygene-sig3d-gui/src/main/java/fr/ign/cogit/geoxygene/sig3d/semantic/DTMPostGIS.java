@@ -20,7 +20,8 @@ import javax.vecmath.Color3f;
 import javax.vecmath.Color4f;
 import javax.vecmath.Point3d;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
@@ -97,7 +98,7 @@ public class DTMPostGIS extends AbstractDTMLayer {
 
   protected Color4f[] color4fShade = null;
 
-  private final static Logger logger = Logger.getLogger(DTMPostGIS.class
+  private final static Logger logger = LogManager.getLogger(DTMPostGIS.class
       .getName());
 
   private String host = "";

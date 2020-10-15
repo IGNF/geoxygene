@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.contrib.cartetopo;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +13,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
 public class CarteTopoTest {
 	
-  public final static Logger logger = Logger
+  public final static Logger logger = LogManager
 		      .getLogger(SwingingArmNonConvexHull.class.getName());
 	
   CarteTopo carte;

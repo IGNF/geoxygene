@@ -37,7 +37,8 @@ import org.apache.http.conn.routing.HttpRoutePlanner;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.protocol.HttpContext;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.scribe.model.ParameterList;
 import org.xml.sax.SAXException;
 
@@ -51,7 +52,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 
 public class FlickRLoader {
 
-    private static final Logger logger = Logger.getLogger(FlickRLoader.class);
+    private static final Logger logger = LogManager.getLogger(FlickRLoader.class);
 
     private String apiKey;
     private String sharedSecret;

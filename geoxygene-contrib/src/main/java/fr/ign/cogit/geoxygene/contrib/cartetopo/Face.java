@@ -25,7 +25,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
@@ -39,7 +40,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
  * @author Julien Perret
  */
 public class Face extends ElementCarteTopo {
-  static Logger logger = Logger.getLogger(Face.class.getName());
+  static Logger logger = LogManager.getLogger(Face.class.getName());
 
   public Face() {
   }

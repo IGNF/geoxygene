@@ -5,7 +5,8 @@ import java.util.StringTokenizer;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.codec.language.DoubleMetaphone;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeomHypothesis;
@@ -19,7 +20,7 @@ import fr.ign.cogit.geoxygene.matching.dst.sources.GeoSource;
 @XmlRootElement(name = "SimilaritiesDist")
 public class SimilaritiesDist extends GeoSource {
   
-private static Logger DST_LOGGER = Logger.getLogger("DSTLogger");
+private static Logger DST_LOGGER = LogManager.getLogger("DSTLogger");
   
   private String attributeNameRef = "";
   private String attributeNameCandidat = "";

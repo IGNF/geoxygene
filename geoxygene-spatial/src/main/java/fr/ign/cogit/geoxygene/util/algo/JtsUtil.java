@@ -33,7 +33,8 @@ import java.util.List;
 
 import javax.swing.event.EventListenerList;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -63,7 +64,7 @@ import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
  * 
  */
 public class JtsUtil {
-	static Logger logger=Logger.getLogger(JtsUtil.class.getName());
+	static Logger logger=LogManager.getLogger(JtsUtil.class.getName());
 	static JtsUtil singleton = new JtsUtil();
 	//static GeometryFactory geometryFactory = new GeometryFactory();
 

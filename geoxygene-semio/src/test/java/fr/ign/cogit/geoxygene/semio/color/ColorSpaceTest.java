@@ -28,11 +28,11 @@ public class ColorSpaceTest {
   static final Color sRGBYellow = Color.YELLOW; // 255 255 0
   static final Color sRGBWhite = Color.WHITE; // 255 255 255
 
-  private final Log4JLogger logger = new Log4JLogger("Default");
+//  private final Log4JLogger logger = new Log4JLogger("Default");
 
   @Test
   public void convert_sRGB_CIELab() {
-    logger.info("### Convert back and forth between sRGB and CIE L*a*b*");
+//    logger.info("### Convert back and forth between sRGB and CIE L*a*b*");
     CIELabColorSpace csLAB = new CIELabColorSpace(false);
 
     /**
@@ -97,7 +97,7 @@ public class ColorSpaceTest {
 
   @Test
   public void convert_sRGB_CIELch() {
-    logger.info("### Convert back and forth between sRGB and CIE L*c*h*");
+//    logger.info("### Convert back and forth between sRGB and CIE L*c*h*");
     CIELchColorSpace csLCH = new CIELchColorSpace(false);
 
     /**
@@ -168,7 +168,7 @@ public class ColorSpaceTest {
 
   @Test
   public void convert_sRGB_CIELuv() {
-    logger.info("### Convert back and forth between sRGB and CIE L*u*v*");
+//    logger.info("### Convert back and forth between sRGB and CIE L*u*v*");
     CIELuvColorSpace csLUV = new CIELuvColorSpace(false);
 
     /**

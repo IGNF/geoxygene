@@ -30,7 +30,8 @@ package fr.ign.cogit.geoxygene.spatial.coordgeom;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
@@ -53,7 +54,7 @@ public class GM_TriangulatedSurface extends GM_PolyhedralSurface implements
     ITriangulatedSurface {
 
   private List<ITriangle> lTriangles = null;
-  protected static Logger logger = Logger.getLogger(ITriangulatedSurface.class
+  protected static Logger logger = LogManager.getLogger(ITriangulatedSurface.class
       .getName());
 
   /**

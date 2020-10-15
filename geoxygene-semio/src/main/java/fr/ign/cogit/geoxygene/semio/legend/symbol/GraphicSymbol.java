@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.semio.legend.symbol;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
@@ -37,7 +38,7 @@ import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
  */
 public class GraphicSymbol {
   @SuppressWarnings("unused")
-  private static final Logger logger = Logger
+  private static final Logger logger = LogManager
                           .getLogger(GraphicSymbol.class);
   
   /**

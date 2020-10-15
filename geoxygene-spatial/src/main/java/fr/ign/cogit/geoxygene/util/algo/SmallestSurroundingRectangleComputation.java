@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.util.algo;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -15,7 +16,7 @@ import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
  * 
  */
 public class SmallestSurroundingRectangleComputation {
-  private static Logger logger = Logger
+  private static Logger logger = LogManager
       .getLogger(SmallestSurroundingRectangleComputation.class.getName());
 
   /**

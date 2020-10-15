@@ -3,7 +3,8 @@ package fr.ign.cogit.geoxygene.sig3d.semantic;
 import java.awt.Color;
 import java.io.InputStream;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -34,7 +35,7 @@ import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
  */
 public class DTMArea extends DTM {
 
-  private final static Logger logger = Logger.getLogger(DTMArea.class.getName());
+  private final static Logger logger = LogManager.getLogger(DTMArea.class.getName());
 
   /**
    * Same constructor as DTM

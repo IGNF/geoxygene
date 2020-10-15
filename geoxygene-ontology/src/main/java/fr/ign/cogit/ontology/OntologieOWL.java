@@ -18,7 +18,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import edu.stanford.smi.protegex.owl.ProtegeOWL;
 import edu.stanford.smi.protegex.owl.jena.JenaOWLModel;
@@ -34,7 +35,7 @@ import edu.stanford.smi.protegex.owl.model.impl.DefaultOWLNamedClass;
  */
 public final class OntologieOWL {
   
-  private static final Logger LOGGER = Logger.getLogger(OntologieOWL.class);
+  private static final Logger LOGGER = LogManager.getLogger(OntologieOWL.class);
   
   /** 
    * Nom de l'ontologie.

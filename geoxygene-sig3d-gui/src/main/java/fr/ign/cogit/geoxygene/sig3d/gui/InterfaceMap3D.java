@@ -42,7 +42,8 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Vector3d;
 import javax.vecmath.Vector3f;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.sun.j3d.exp.swing.JCanvas3D;
 import com.sun.j3d.utils.behaviors.keyboard.KeyNavigatorBehavior;
@@ -81,7 +82,7 @@ import fr.ign.cogit.geoxygene.sig3d.semantic.VectorLayer;
 
 public class InterfaceMap3D extends JPanel {
 
-  private final static Logger logger = Logger.getLogger(InterfaceMap3D.class.getName());
+  private final static Logger logger = LogManager.getLogger(InterfaceMap3D.class.getName());
 
   private static final long serialVersionUID = 1L;
 

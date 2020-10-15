@@ -3,7 +3,8 @@ package fr.ign.cogit.geoxygene.style.proxy;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * The ProxySymbol defines pre-processed symbolization attributes (such as a
@@ -15,7 +16,7 @@ import org.apache.log4j.Logger;
 public class ProxySymbol {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(ProxySymbol.class);
+    private static final Logger logger = LogManager.getLogger(ProxySymbol.class);
 
     @XmlElement(name = "ProxyColorPropertyName")
     String proxyColorPropertyName = null;

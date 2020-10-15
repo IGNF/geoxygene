@@ -22,7 +22,8 @@ package fr.ign.cogit.geoxygene.spatial.geomaggr;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSolid;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISolid;
@@ -36,7 +37,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISolid;
  */
 public class GM_MultiSolid<SolidType extends ISolid> extends
     GM_MultiPrimitive<SolidType> implements IMultiSolid<SolidType> {
-  static Logger logger = Logger.getLogger(GM_MultiSolid.class.getName());
+  static Logger logger = LogManager.getLogger(GM_MultiSolid.class.getName());
 
   // Dans la norme, ceci est un attribut et non une méthode.
   // Dans la norme, cet attribut est de type Volume et non double

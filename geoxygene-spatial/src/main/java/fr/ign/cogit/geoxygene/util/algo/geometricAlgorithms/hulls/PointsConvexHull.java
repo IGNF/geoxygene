@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.hulls;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.locationtech.jts.algorithm.ConvexHull;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -20,7 +21,7 @@ import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
  * 
  */
 public class PointsConvexHull {
-  private final static Logger logger = Logger.getLogger(PointsConvexHull.class
+  private final static Logger logger = LogManager.getLogger(PointsConvexHull.class
       .getName());
 
   /**

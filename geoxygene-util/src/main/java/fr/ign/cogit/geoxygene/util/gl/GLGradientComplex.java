@@ -38,7 +38,8 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
@@ -57,7 +58,7 @@ import org.lwjgl.opengl.GL30;
 public class GLGradientComplex extends AbstractGLComplex<GLSimpleVertex>
         implements GLComplex {
 
-    private static final Logger logger = Logger
+    private static final Logger logger = LogManager
             .getLogger(GLGradientComplex.class.getName()); // logger
 
     // private static final Integer[] IntegerConversionObject = new Integer[]

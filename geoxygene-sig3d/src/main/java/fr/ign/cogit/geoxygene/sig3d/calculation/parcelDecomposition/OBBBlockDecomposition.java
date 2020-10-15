@@ -48,7 +48,7 @@ public class OBBBlockDecomposition {
 		DirectPosition.PRECISION = 3;
 
 		// Input 1/ the input shapes to split
-		String inputShapeFile = "/home/mbrasebin/Bureau/misc/ilot_test_2.shp";
+		String inputShapeFile = "/home/julien/devel/ParcelManager/parcel.shp";
 
 		// The output file that will contain all the decompositions
 		String shapeFileOut = "/tmp/testCut.shp";
@@ -57,7 +57,7 @@ public class OBBBlockDecomposition {
 		IFeatureCollection<IFeature> featColl = ShapefileReader.read(inputShapeFile);
 
 		// Maxmimal area for a parcel
-		double maximalArea = 200;
+		double maximalArea = 10000;
 		// MAximal with to the road
 		double maximalWidth = 7;
 		// Do we want noisy results
@@ -92,8 +92,9 @@ public class OBBBlockDecomposition {
 			}
 			IPolygon pol = (IPolygon) FromGeomToSurface.convertGeom(feat.getGeom()).get(0);
 			int decompositionLevelWithRoad = 2; //howManyIt(pol, 0, forceRoadAccess, maximalArea, maximalWidth) - 2;
-			OBBBlockDecomposition obb = new OBBBlockDecomposition(pol, maximalArea, maximalWidth, 0, imC, roadWidth, forceRoadAccess, decompositionLevelWithRoad);
-			ifeatCollOut = obb.decompParcel(noise);
+			OBBBlockDecomposition obb = new OBBBlockDecomposition(pol, maximalArea, maximalWidth, epsilon, imC, roadWidth, forceRoadAccess, decompositionLevelWithRoad);
+			obb.generateExt();
+			ifeatCollOut.addAll(obb.decompParcel(noise));
 		}
 		ShapefileWriter.write(ifeatCollOut, shapeFileOut);
 
@@ -344,6 +345,7 @@ public class OBBBlockDecomposition {
 		double area = p.area();
 		double frontSideWidth = this.frontSideWidth(p);
 
+		System.out.println("endCondition for " + area + " - " + frontSideWidth + " - " + maximalArea + " - " + maximalWidth + " => " + this.endCondition(area, frontSideWidth));
 		// End test condition
 		if (this.endCondition(area, frontSideWidth)) {
 			featCollOut.add(new DefaultFeature(p));
@@ -354,7 +356,8 @@ public class OBBBlockDecomposition {
 		// Determination of splitting polygon (it is a splitting line in the
 		// article)
 		List<IPolygon> splittingPolygon = computeSplittingPolygon(p, true, noise, decompositionLevel, decompositionLevelWithRoad, this.roadWidth);
-
+		System.out.println(p);
+		for (IPolygon sp: splittingPolygon) System.out.println(sp); 
 		// Split into polygon
 		List<IPolygon> splittedPolygon = split(p, splittingPolygon);
 
@@ -405,8 +408,10 @@ public class OBBBlockDecomposition {
 	 */
 	private double frontSideWidth(IPolygon p) {
 
-		ILineString ext = new GM_LineString(this.getExt().coord());
+//    System.out.println(this.getExt());
+//		ILineString ext = new GM_LineString(this.getExt().coord());
 
+//		System.out.println(ext);
 		double value = 0.0;
 
 		if (ext == null || ext.isEmpty()) {
@@ -615,9 +620,9 @@ public class OBBBlockDecomposition {
 	 */
 	private boolean hasRoadAccess(IPolygon poly) {
 
-		ILineString ext = new GM_LineString(this.getExt().coord());
-
-		return poly.intersects(ext.buffer(0.5));
+//		ILineString ext = new GM_LineString(this.getExt().coord());
+	  System.out.println(this.getExt().buffer(0.5));
+		return poly.intersects(this.getExt().buffer(0.5));
 	}
 
 	// This line represents the exterior of an urban island (it serves to

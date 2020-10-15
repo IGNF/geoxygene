@@ -6,7 +6,8 @@ package fr.ign.cogit.geoxygene.contrib.agents.lifecycle;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.contrib.agents.AgentObservationSubject;
 import fr.ign.cogit.geoxygene.contrib.agents.AgentObserver;
@@ -21,7 +22,7 @@ import fr.ign.cogit.geoxygene.contrib.agents.state.AgentState;
  * @author jgaffuri
  */
 public class BasicLifeCycle implements AgentLifeCycle, AgentObservationSubject {
-  private static Logger logger = Logger
+  private static Logger logger = LogManager
       .getLogger(BasicLifeCycle.class.getName());
 
   /**

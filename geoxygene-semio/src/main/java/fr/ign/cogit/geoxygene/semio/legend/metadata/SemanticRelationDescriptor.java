@@ -22,7 +22,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.semio.legend.legendContent.Legend;
 import fr.ign.cogit.geoxygene.semio.legend.legendContent.LegendComponent;
@@ -55,7 +56,7 @@ import fr.ign.cogit.geoxygene.semio.legend.legendContent.LegendComponent;
 @XmlRootElement(name = "SemanticRelationDescriptor")
 public class SemanticRelationDescriptor {
 	
-	static Logger logger = Logger.getLogger(SemanticRelationDescriptor.class
+	static Logger logger = LogManager.getLogger(SemanticRelationDescriptor.class
             .getName());
 	
 	/**

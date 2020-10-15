@@ -3,7 +3,8 @@ package fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.morphomaths;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
@@ -21,7 +22,7 @@ import fr.ign.cogit.geoxygene.util.algo.geomstructure.Vector2D;
 
 public class BufferComputing {
 
-  private static Logger logger = Logger.getLogger(BufferComputing.class
+  private static Logger logger = LogManager.getLogger(BufferComputing.class
       .getName());
 
   /**

@@ -25,7 +25,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -83,7 +84,7 @@ public abstract class Appariement {
   /**
    * Static logger for this class.
    */
-  private static final Logger LOGGER = Logger.getLogger(Appariement.class.getName());
+  private static final Logger LOGGER = LogManager.getLogger(Appariement.class.getName());
   /**
    * Default tile size.
    */

@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.style;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.custommonkey.xmlunit.XMLTestCase;
 import org.junit.Test;
 
@@ -9,7 +10,7 @@ import org.junit.Test;
  */
 public class StyledLayerDescriptorTest extends XMLTestCase {
     
-    private static Logger LOGGER = Logger.getLogger(StyledLayerDescriptorTest.class.getName());
+    private static Logger LOGGER = LogManager.getLogger(StyledLayerDescriptorTest.class.getName());
     
     /**
      * On construit un fichier SLD manuellement, ensuite on genere le XML 

@@ -25,7 +25,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
@@ -54,7 +55,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
 public class Arc extends ElementCarteTopo {
   
-    private static Logger logger = Logger.getLogger(Arc.class.getName());
+    private static Logger logger = LogManager.getLogger(Arc.class.getName());
 
     public Arc() {
         super();

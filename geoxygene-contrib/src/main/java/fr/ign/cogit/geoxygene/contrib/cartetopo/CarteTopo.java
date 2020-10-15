@@ -32,7 +32,8 @@ import java.util.Stack;
 
 import javax.swing.event.EventListenerList;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -79,7 +80,7 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
 public class CarteTopo extends DataSet {
 
   /** Logger. */
-  protected final static Logger logger = Logger
+  protected final static Logger logger = LogManager
       .getLogger(CarteTopo.class.getName());
 
   protected EventListenerList listenerList = new EventListenerList();

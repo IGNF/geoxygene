@@ -21,14 +21,15 @@ package fr.ign.cogit.geoxygene.filter;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Julien Perret
  * 
  */
 public class PropertyIsLike extends BinaryComparisonOpsType {
-  static Logger logger = Logger.getLogger(PropertyIsLike.class.getName());
+  static Logger logger = LogManager.getLogger(PropertyIsLike.class.getName());
   @XmlAttribute(required = true)
   private String wildCard;
   @XmlAttribute(required = true)

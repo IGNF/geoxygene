@@ -12,7 +12,8 @@ package fr.ign.cogit.geoxygene.vgi.twitter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import twitter4j.GeoLocation;
 import twitter4j.Query;
@@ -31,7 +32,7 @@ import twitter4j.conf.ConfigurationBuilder;
  */
 public class TwitterLoader {
 
-  private static final Logger logger = Logger.getLogger(TwitterLoader.class);
+  private static final Logger logger = LogManager.getLogger(TwitterLoader.class);
 
   private boolean proxy = false;
   private String proxyHost;

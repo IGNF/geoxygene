@@ -1,6 +1,7 @@
 package fr.ign.cogit.sample;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +20,7 @@ import junit.framework.TestCase;
 public class TestSample extends TestCase {
 	
 	
-	private static Logger log = Logger.getLogger(TestSample.class);
+	private static Logger log = LogManager.getLogger(TestSample.class);
 
 	// ---------------------------------- PREPROCESS ----------------------------------
 

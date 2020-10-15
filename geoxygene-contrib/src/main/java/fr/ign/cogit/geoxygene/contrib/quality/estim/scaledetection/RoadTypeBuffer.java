@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.contrib.quality.estim.scaledetection;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 
@@ -19,7 +20,7 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
  */
 public class RoadTypeBuffer {
 
-  static Logger logger = Logger.getLogger(RoadTypeBuffer.class.getName());
+  static Logger logger = LogManager.getLogger(RoadTypeBuffer.class.getName());
 
   /**
    * A class to compute the buffer size used for the symbology of a road network

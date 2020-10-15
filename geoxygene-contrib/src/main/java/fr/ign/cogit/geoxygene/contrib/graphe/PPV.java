@@ -31,7 +31,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -56,7 +57,7 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  */
 public class PPV {
   
-  private static Logger LOGGER = Logger.getLogger(PPV.class.getName());
+  private static Logger LOGGER = LogManager.getLogger(PPV.class.getName());
   
   /**
    * Calcul du PPV points / lignes graviSHP.

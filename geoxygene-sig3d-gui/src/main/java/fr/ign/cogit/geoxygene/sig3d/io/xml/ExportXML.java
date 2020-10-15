@@ -4,7 +4,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
@@ -38,7 +39,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
 @Deprecated
 public class ExportXML {
 
-  private final static Logger logger = Logger.getLogger(ExportXML.class
+  private final static Logger logger = LogManager.getLogger(ExportXML.class
       .getName());
 
   /**

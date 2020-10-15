@@ -22,7 +22,8 @@ package fr.ign.cogit.geoxygene.generalisation;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
@@ -49,7 +50,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
  * @version 1.0
  */
 public class Filtering {
-  static Logger logger = Logger.getLogger(Filtering.class.getName());
+  static Logger logger = LogManager.getLogger(Filtering.class.getName());
 
   public Filtering() {
   }

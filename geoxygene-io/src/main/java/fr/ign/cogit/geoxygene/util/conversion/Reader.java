@@ -25,8 +25,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.geotools.data.PrjFileReader;
 import org.geotools.data.shapefile.dbf.DbaseFileReader;
 import org.geotools.data.shapefile.files.ShpFileType;
@@ -53,7 +54,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 public class Reader {
 
 	/** LOGGER. */
-	private final static Logger LOGGER = Logger.getLogger(Reader.class.getName());
+	private final static Logger LOGGER = LogManager.getLogger(Reader.class.getName());
 
 	String shapefileName;
 	double minX;

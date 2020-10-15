@@ -3,8 +3,9 @@ package fr.ign.cogit.geoxygene.jdbc.postgis;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.Query;
@@ -35,7 +36,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 public class PGReader {
 
   /** LOGGER. */
-  private final static Logger LOGGER = Logger.getLogger(PGReader.class
+  private final static Logger LOGGER = LogManager.getLogger(PGReader.class
       .getName());
 
   /** Params to connect. */

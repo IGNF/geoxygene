@@ -7,7 +7,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -50,7 +51,7 @@ public abstract class HMMMapMatcher {
   /**
    * Static logger.
    */
-  private static final Logger LOGGER = Logger.getLogger(HMMMapMatcher.class.getName());
+  private static final Logger LOGGER = LogManager.getLogger(HMMMapMatcher.class.getName());
   /**
    * Standard deviation of GPS measurements. {@latex[ \sigma _z }
    */

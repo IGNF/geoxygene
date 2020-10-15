@@ -29,12 +29,13 @@ package fr.ign.cogit.geoxygene.style.expressive;
 
 import java.util.Collection;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 public abstract class ExpressiveRenderingDescriptor {
 
-    Logger logger = Logger.getLogger(ExpressiveRenderingDescriptor.class);
+    Logger logger = LogManager.getLogger(ExpressiveRenderingDescriptor.class);
     public abstract  String getExpressiveMethod();
 
     public abstract Collection<String> getUserShaders();

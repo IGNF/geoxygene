@@ -11,7 +11,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.util.algo.MathUtil;
 
@@ -30,7 +31,7 @@ import fr.ign.cogit.geoxygene.util.algo.MathUtil;
     "lightness", "usualName", "cleCoul", "redRGB", "greenRGB", "blueRGB",
     "xScreen", "yScreen" })
 public class ColorimetricColor {
-  static Logger logger = Logger.getLogger(ColorimetricColor.class);
+  static Logger logger = LogManager.getLogger(ColorimetricColor.class);
 
   /**
    * Color identifier in the COGIT reference system.

@@ -11,7 +11,8 @@ package fr.ign.cogit.ontology.similarite;
 
 import java.io.File;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import edu.stanford.smi.protegex.owl.model.OWLNamedClass;
 import edu.stanford.smi.protegex.owl.model.RDFResource;
@@ -24,7 +25,7 @@ import fr.ign.cogit.ontology.OntologieOWL;
 public class WuPalmerSemanticSimilarity extends MesureSimilariteSemantique {
 
   /** Logger. */
-  private final static Logger LOGGER = Logger.getLogger(WuPalmerSemanticSimilarity.class);
+  private final static Logger LOGGER = LogManager.getLogger(WuPalmerSemanticSimilarity.class);
 
   public WuPalmerSemanticSimilarity(OntologieOWL onto) {
     super(onto);

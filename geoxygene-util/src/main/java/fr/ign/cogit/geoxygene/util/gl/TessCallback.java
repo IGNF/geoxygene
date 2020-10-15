@@ -5,7 +5,8 @@ import static org.lwjgl.opengl.GL11.glEnd;
 import static org.lwjgl.opengl.GL11.glTexCoord2d;
 import static org.lwjgl.opengl.GL11.glVertex2d;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.GLUtessellatorCallbackAdapter;
 
@@ -21,7 +22,7 @@ import org.lwjgl.util.glu.GLUtessellatorCallbackAdapter;
  */
 public class TessCallback extends GLUtessellatorCallbackAdapter {
 
-    private static final Logger logger = Logger.getLogger(TessCallback.class.getName()); // logger
+    private static final Logger logger = LogManager.getLogger(TessCallback.class.getName()); // logger
 
     @Override
     public void edgeFlag(final boolean boundaryEdge) {

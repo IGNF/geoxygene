@@ -5,7 +5,8 @@ package fr.ign.cogit.geoxygene.datatools.postgis;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -20,7 +21,7 @@ import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
  */
 public class GeodatabaseHibernatePostgis extends GeodatabaseHibernate implements
     Geodatabase {
-  static Logger logger = Logger.getLogger(GeodatabaseHibernatePostgis.class
+  static Logger logger = LogManager.getLogger(GeodatabaseHibernatePostgis.class
       .getName());
 
   public GeodatabaseHibernatePostgis() {

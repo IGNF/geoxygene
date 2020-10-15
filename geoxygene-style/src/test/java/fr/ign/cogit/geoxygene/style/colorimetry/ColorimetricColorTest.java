@@ -12,7 +12,8 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 // import org.junit.rules.Exception;
@@ -25,7 +26,7 @@ import org.junit.Test;
  */
 public class ColorimetricColorTest extends ColorimetryAssert {
   
-  private Logger logger = Logger.getLogger(ColorimetricColorTest.class);
+  private Logger logger = LogManager.getLogger(ColorimetricColorTest.class);
   
   /** Default ColorimetricColor. */
   private ColorimetricColor defaultColorimetric;

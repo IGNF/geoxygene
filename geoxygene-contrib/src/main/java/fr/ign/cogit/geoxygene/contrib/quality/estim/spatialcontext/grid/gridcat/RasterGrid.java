@@ -7,7 +7,8 @@ import java.util.Iterator;
 import java.util.Stack;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.locationtech.jts.geom.Geometry;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -32,7 +33,7 @@ import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
  */
 public abstract class RasterGrid {
     @SuppressWarnings("unused")
-    private final static Logger logger = Logger.getLogger(RasterGrid.class.getName());
+    private final static Logger logger = LogManager.getLogger(RasterGrid.class.getName());
     private int tailleCellule;// la taille de chaque cellule
     private int radiusCellule;
     private double xBas, xHaut, yBas, yHaut;// coordonnées de l'étendue de la

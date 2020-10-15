@@ -24,7 +24,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ICurveSegment;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -61,7 +62,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableCurve;
  */
 public class GM_CompositeCurve extends GM_OrientableCurve implements
     ICompositeCurve {
-  private static Logger logger = Logger.getLogger(GM_CompositeCurve.class
+  private static Logger logger = LogManager.getLogger(GM_CompositeCurve.class
       .getName());
   // Attribut "generator" et méthodes pour le traiter ////////////////////
   /** Les GM_OrientableCurve constituant self. */

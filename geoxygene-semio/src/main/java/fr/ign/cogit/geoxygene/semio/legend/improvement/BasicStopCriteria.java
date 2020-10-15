@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.semio.legend.improvement;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -21,7 +22,7 @@ import org.apache.log4j.Logger;
  * 
  */
 public class BasicStopCriteria implements StopCriteria {
-  private static final Logger logger = Logger.getLogger(BasicStopCriteria.class);
+  private static final Logger logger = LogManager.getLogger(BasicStopCriteria.class);
   
   /**
    * The counter controlling iterations.

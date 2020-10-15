@@ -20,8 +20,9 @@ package fr.ign.cogit.geoxygene.contrib.appariement.reseaux.process;
 
 import java.sql.Time;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement;
@@ -37,7 +38,7 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
 public class NetworkDataMatching {
 
     /** logger. */
-    private static final Logger LOGGER = Logger.getLogger(NetworkDataMatching.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(NetworkDataMatching.class.getName());
 
     /** Parameters, Dataset and Actions. */
     private ParametresApp param;
@@ -63,7 +64,7 @@ public class NetworkDataMatching {
     @SuppressWarnings("unchecked")
     public EnsembleDeLiens networkDataMatching() {
 
-        if (LOGGER.isEnabledFor(Level.INFO)) {
+        if (LOGGER.isInfoEnabled()) {
             LOGGER.info("------------------------------------------------------------------");
             LOGGER.info("NETWORK MATCHING START");
             LOGGER.info("1 = least detailled data;");
@@ -75,7 +76,7 @@ public class NetworkDataMatching {
         // NB: l'ordre dans lequel les projections sont faites n'est pas neutre
         if (param.projeteNoeuds2SurReseau1) {
             // if (paramApp.projeteNoeuds2SurReseau1) {
-            if (LOGGER.isEnabledFor(Level.DEBUG)) {
+            if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Projection of network 2 onto network1 "
                         + (new Time(System.currentTimeMillis())).toString());
             }
@@ -85,7 +86,7 @@ public class NetworkDataMatching {
         }
         // if (paramApp.projeteNoeuds1SurReseau2) {
         if (param.projeteNoeuds1SurReseau2) {
-            if (LOGGER.isEnabledFor(Level.DEBUG)) {
+            if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Projection of network 1 onto network2 "
                         + (new Time(System.currentTimeMillis())).toString());
             }
@@ -93,27 +94,27 @@ public class NetworkDataMatching {
                 param.projeteNoeuds1SurReseau2DistanceProjectionNoeud,
                 param.projeteNoeuds1SurReseau2ImpassesSeulement);
         }
-        if (LOGGER.isEnabledFor(Level.DEBUG)) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Filling of edges and nodes attributes " + (new Time(System.currentTimeMillis())).toString());
         }
         carteTopo1.instancieAttributsNuls(param.distanceNoeudsMax);
         carteTopo2.initialisePoids();
 
-        if (LOGGER.isEnabledFor(Level.INFO)) {
+        if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Data Structuring finished : ");
             LOGGER.info("network 1 : " + carteTopo1.getPopArcs().size() + " Edges, " + carteTopo1.getPopNoeuds().size()
                     + " Nodes.");
             LOGGER.info("network 2 : " + carteTopo2.getPopArcs().size() + " Edges, " + carteTopo2.getPopNoeuds().size()
                     + " Nodes.");
         }
-        if (LOGGER.isEnabledFor(Level.DEBUG)) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("END OF STRUCTURING " + new Time(System.currentTimeMillis()).toString());
         }
 
         // --------------------------------------------------------------------------------------
         // APPARIEMENT
         // --------------------------------------------------------------------------------------
-        if (LOGGER.isEnabledFor(Level.INFO)) {
+        if (LOGGER.isInfoEnabled()) {
             LOGGER.info("");
             LOGGER.info("NETWORK MATCHING");
         }

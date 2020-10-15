@@ -8,7 +8,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -39,7 +40,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  */
 public abstract class AbstractProjectionImpact {
 
-    static Logger logger = Logger.getLogger(AbstractProjectionImpact.class.getName());
+    static Logger logger = LogManager.getLogger(AbstractProjectionImpact.class.getName());
 
     private IFeatureCollection<IFeature> jddGrilleAlteration;
 

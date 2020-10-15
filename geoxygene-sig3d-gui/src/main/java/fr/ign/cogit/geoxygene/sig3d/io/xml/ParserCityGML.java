@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
@@ -53,7 +54,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
 @Deprecated
 public class ParserCityGML extends DefaultHandler {
 
-  private final static Logger logger = Logger.getLogger(ParserCityGML.class
+  private final static Logger logger = LogManager.getLogger(ParserCityGML.class
       .getName());
 
   private double xini = Double.POSITIVE_INFINITY;

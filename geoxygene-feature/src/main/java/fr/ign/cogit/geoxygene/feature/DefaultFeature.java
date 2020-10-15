@@ -27,7 +27,8 @@
 
 package fr.ign.cogit.geoxygene.feature;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
@@ -62,7 +63,7 @@ import fr.ign.cogit.geoxygene.api.spatial.toporoot.ITopology;
 public class DefaultFeature extends AbstractFeature {
 
   /** Logger. */
-  protected static final Logger LOGGER = Logger
+  protected static final Logger LOGGER = LogManager
       .getLogger(DefaultFeature.class.getName());
 
   /**

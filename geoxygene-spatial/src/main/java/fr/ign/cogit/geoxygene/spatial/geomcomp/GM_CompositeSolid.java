@@ -23,7 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomcomp.IComplex;
 import fr.ign.cogit.geoxygene.api.spatial.geomcomp.ICompositeSolid;
@@ -52,7 +53,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
  * 
  */
 public class GM_CompositeSolid extends GM_Solid implements ICompositeSolid {
-  private static Logger logger = Logger.getLogger(GM_CompositeSolid.class
+  private static Logger logger = LogManager.getLogger(GM_CompositeSolid.class
       .getName());
   /** Les GM_Solid constituant self. */
   protected List<ISolid> generator;

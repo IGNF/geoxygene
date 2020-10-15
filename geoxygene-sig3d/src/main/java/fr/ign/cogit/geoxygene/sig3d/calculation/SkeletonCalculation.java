@@ -16,10 +16,10 @@ public class SkeletonCalculation {
 
   public static void main(String[] args) {
 
-    String f = "E:/mbrasebin/Donnees/Strasbourg/ZoneTest/ExpBDH/RetrieveDatabase/destroyedBuildings.shp";
+    String f = "src/main/resources/demo3d/bdtopo_lam93/E_BATI/BATI_INDIFFERENCIE.SHP";
 
-    String fout = "E:/mbrasebin/Donnees/Strasbourg/ZoneTest/ExpBDH/RetrieveDatabase/destroyedBuildingsOut2.shp";
-    String foutProb = "E:/mbrasebin/Donnees/Strasbourg/ZoneTest/ExpBDH/RetrieveDatabase/destroyedBuildingsProb.shp";
+    String fout = "/tmp/destroyedBuildingsOut2.shp";
+    String foutProb = "/tmp/destroyedBuildingsProb.shp";
     
     
     
@@ -56,7 +56,7 @@ public class SkeletonCalculation {
    //     filteredFeat.add(new DefaultFeature((IPolygon) oS));
 
         CampSkeleton sC = new CampSkeleton((IPolygon) oS);
-        // iFCOut.addAll(sC.ct.getPopFaces());
+         iFCOut.addAll(sC.getCarteTopo().getPopFaces());
         
         
         List<Arc> lArcsOut = sC.getIncludedArcs();

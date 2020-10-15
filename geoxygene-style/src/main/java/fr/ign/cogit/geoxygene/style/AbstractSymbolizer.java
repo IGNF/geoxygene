@@ -25,7 +25,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.style.filter.LayerFilter;
 import fr.ign.cogit.geoxygene.style.filter.LayerFilterContrast;
@@ -36,7 +37,7 @@ import fr.ign.cogit.geoxygene.style.filter.LayerFilterIdentity;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class AbstractSymbolizer implements Symbolizer{
-    protected static Logger logger = Logger.getLogger(AbstractSymbolizer.class.getName());
+    protected static Logger logger = LogManager.getLogger(AbstractSymbolizer.class.getName());
 
     @XmlElements({ @XmlElement(name = "Stroke", type = Stroke.class)})
     private Stroke stroke = null;

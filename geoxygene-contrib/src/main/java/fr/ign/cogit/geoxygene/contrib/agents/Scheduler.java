@@ -12,7 +12,8 @@ package fr.ign.cogit.geoxygene.contrib.agents;
 import java.util.ArrayList;
 import java.util.Random;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.contrib.agents.agent.IAgent;
 
@@ -21,7 +22,7 @@ import fr.ign.cogit.geoxygene.contrib.agents.agent.IAgent;
  * @author JGaffuri 28 janv. 2009
  */
 public class Scheduler implements Runnable {
-  private static Logger logger = Logger.getLogger(Scheduler.class.getName());
+  private static Logger logger = LogManager.getLogger(Scheduler.class.getName());
 
   /**
    * The agent's list of the scheduler
