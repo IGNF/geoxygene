@@ -117,6 +117,10 @@ public class OSMResource {
 		this.date = date;
 	}
 
+	public String getPrimitiveName() {
+		return this.getGeom().getClass().getSimpleName();
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		OSMResource autre = (OSMResource) obj;
@@ -173,6 +177,7 @@ public class OSMResource {
 		Instant instant = Instant.parse(date);
 		Date d = Date.from(instant);
 		this.date = d;
+		tags = new HashMap<String, String>();
 
 	}
 
@@ -217,11 +222,14 @@ public class OSMResource {
 	public boolean isGeomEquals(OSMResource r) {
 		// Egalité géométrique
 		if (r.getGeom().getClass().getSimpleName().equals("OSMNode"))
-			return ((OSMNode) this.getGeom()).isGeomEquals((OSMNode) r.getGeom());
+			return ((OSMNode) this.geom).isGeomEquals((OSMNode) r.geom);
 		if (r.getGeom().getClass().getSimpleName().equals("OSMWay"))
-			return ((OSMWay) this.getGeom()).isVerticeEquals((OSMWay) r.getGeom());
-		// Cas des relations pas traité
-		return false;
+			return ((OSMWay) this.geom).isVerticeEquals((OSMWay) r.geom);
+		// Cas des relations : les géométries sont "égales" si lest listes des
+		// membres sont les mêmes
+		if (r.getGeom() instanceof OSMRelation)
+			return ((OSMRelation) this.geom).isMemberListEquals((OSMRelation) r.geom);
+		return true;
 	}
 
 	public boolean isTagsEquals(OSMResource r) {

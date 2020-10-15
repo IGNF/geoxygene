@@ -27,21 +27,21 @@ import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.ArcReseauImpl;
 
 public class TronconLaisseImpl extends ArcReseauImpl implements TronconLaisse {
 
-  private HauteurLaisse hauteur = HauteurLaisse.HAUTE_MER;
+    private HauteurLaisse hauteur = HauteurLaisse.HAUTE_MER;
 
-  public void setHauteur(HauteurLaisse hauteur) {
-    this.hauteur = hauteur;
-  }
+    public void setHauteur(HauteurLaisse hauteur) {
+        this.hauteur = hauteur;
+    }
 
-  @Override
-  public HauteurLaisse getHauteur() {
-    return hauteur;
-  }
+    @Override
+    public HauteurLaisse getHauteur() {
+        return hauteur;
+    }
 
-  public TronconLaisseImpl(Reseau res, boolean fictif, ICurve geom,
-      HauteurLaisse hauteur) {
-    super(res, fictif, geom);
-    this.hauteur = hauteur;
-  }
+    public TronconLaisseImpl(Reseau res, boolean fictif, ICurve geom,
+            int importance, HauteurLaisse hauteur) {
+        super(res, fictif, geom, importance);
+        this.hauteur = hauteur;
+    }
 
 }

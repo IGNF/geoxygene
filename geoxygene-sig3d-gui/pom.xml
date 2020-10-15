@@ -357,7 +357,7 @@
 	<repositories>
 		<repository>
 			<id>Imagej</id>
-			<url>http://maven.imagej.net/content/repositories/public</url>
+			<url>https://maven.scijava.org/content/repositories/public/</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>

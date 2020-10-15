@@ -121,6 +121,9 @@ public class SocialGraph<V, E> {
 			for (int i = lastContributionRange; i > 0; i--) {
 				if (!osmObject.getContributions().get(i).isVisible())
 					continue; // On ne s'intéresse pas à la suppression
+				if (osmObject.getContributions().get(i)
+						.getVersion() != osmObject.getContributions().get(i - 1).getVersion() + 1)
+					continue;
 				// N.B.: en revanche on prend en compte le cas de revert
 				// d'objets supprimés en objets visibles
 				Long nodeIni = (long) osmObject.getContributions().get(i).getUid();
@@ -799,6 +802,9 @@ public class SocialGraph<V, E> {
 			for (int i = 0; i < object.getContributions().size() - 1; i++) {
 				// Look for the case i visible and i+1 invisible
 				if (!object.getContributions().get(i).isVisible())
+					continue;
+				if (object.getContributions().get(i).getVersion() != object.getContributions().get(i + 1).getVersion()
+						- 1)
 					continue;
 				if (!object.getContributions().get(i + 1).isVisible()) {
 					Long nodeIni = (long) object.getContributions().get(i + 1).getUid();
