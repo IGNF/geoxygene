@@ -175,22 +175,45 @@
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
-			<version>2.2.11</version>
+			<version>${jaxb.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.sun.xml.bind</groupId>
-			<artifactId>jaxb-core</artifactId>
-			<version>2.2.11</version>
+			<groupId>org.glassfish.jaxb</groupId>
+			<artifactId>jaxb-runtime</artifactId>
+			<version>${jaxb.runtime.version}</version>
+			<scope>runtime</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.sun.xml.bind</groupId>
-			<artifactId>jaxb-impl</artifactId>
-			<version>2.2.11</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>com.sun.xml.bind</groupId> -->
+<!-- 			<artifactId>jaxb-core</artifactId> -->
+<!-- 			<version>${jaxb.version}</version> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>com.sun.xml.bind</groupId> -->
+<!-- 			<artifactId>jaxb-impl</artifactId> -->
+<!-- 			<version>${jaxb.version}</version> -->
+<!-- 		</dependency> -->
 		<dependency>
 			<groupId>javax.activation</groupId>
 			<artifactId>activation</artifactId>
 			<version>1.1.1</version>
 		</dependency>
 	</dependencies>
+	<repositories>
+		<repository>
+			<id>Central</id>
+			<name>Central Repository</name>
+			<url>https://repo1.maven.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+		    <id>osgeo</id>
+			<name>Open Source Geospatial Foundation Repository</name>
+			<url>https://repo.osgeo.org/repository/release/</url>
+		    <snapshots><enabled>false</enabled></snapshots>
+		    <releases><enabled>true</enabled></releases>
+		  </repository>
+	</repositories>
 </project>

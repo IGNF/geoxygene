@@ -64,7 +64,8 @@
 		<postgresql.version>9.1-901-1.jdbc4</postgresql.version>
 		<postgis.jdbc.version>2.2.0</postgis.jdbc.version>
 		<hibernate.version>5.4.1.Final</hibernate.version>
-
+		<jaxb.version>2.4.0-b180830.0359</jaxb.version>
+		<jaxb.runtime.version>2.4.0-b180830.0438</jaxb.runtime.version>
 		<!-- <skip.unit.tests>false</skip.unit.tests> -->
 		<!-- <skip.integration.tests>true</skip.integration.tests> -->
 	</properties>
@@ -640,8 +641,8 @@
 		</repository>
 		<repository>
 		    <id>osgeo</id>
-		    <name>OSGeo Release Repository</name>
-		    <url>https://repo.osgeo.org/repository/release/</url>
+			<name>Open Source Geospatial Foundation Repository</name>
+			<url>https://repo.osgeo.org/repository/release/</url>
 		    <snapshots><enabled>false</enabled></snapshots>
 		    <releases><enabled>true</enabled></releases>
 		  </repository>
