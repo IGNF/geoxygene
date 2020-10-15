@@ -2,7 +2,8 @@ package fr.ign.cogit.geoxygene.sig3d.io.vector;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
@@ -46,7 +47,7 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
  */
 public class ShapeFileLoader {
 
-  private final static Logger logger = Logger.getLogger(ShapeFileLoader.class
+  private final static Logger logger = LogManager.getLogger(ShapeFileLoader.class
       .getName());
 
   private static boolean IsPosAttZMinDouble = false;

@@ -2,7 +2,8 @@ package fr.ign.cogit.geoxygene.sig3d.gui.window.representation.choice;
 
 import javax.swing.JDialog;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -34,7 +35,7 @@ import fr.ign.cogit.geoxygene.sig3d.semantic.VectorLayer;
  */
 public class RepresentationWindowFactory {
 
-  private final static Logger logger = Logger
+  private final static Logger logger = LogManager
       .getLogger(RepresentationWindowFactory.class.getName());
 
   /**

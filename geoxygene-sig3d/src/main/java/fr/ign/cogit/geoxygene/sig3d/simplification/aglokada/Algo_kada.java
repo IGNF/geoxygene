@@ -8,7 +8,8 @@ package fr.ign.cogit.geoxygene.sig3d.simplification.aglokada;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
@@ -45,7 +46,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
  */
 public class Algo_kada {
 
-  private final static Logger logger = Logger.getLogger(Algo_kada.class
+  private final static Logger logger = LogManager.getLogger(Algo_kada.class
       .getName());
 
   private List<GM_Solid> lSolid1 = new ArrayList<GM_Solid>();

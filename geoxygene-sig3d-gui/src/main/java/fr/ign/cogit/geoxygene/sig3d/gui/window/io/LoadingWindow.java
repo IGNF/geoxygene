@@ -12,7 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
@@ -50,7 +51,7 @@ public class LoadingWindow extends JDialog implements ActionListener {
    */
   private static final long serialVersionUID = 8769447350926959185L;
   
-  private final static Logger logger = Logger.getLogger(LoadingWindow.class
+  private final static Logger logger = LogManager.getLogger(LoadingWindow.class
       .getName());
   // Nom de la couche
   JComboBox<String> jCBBFormat;

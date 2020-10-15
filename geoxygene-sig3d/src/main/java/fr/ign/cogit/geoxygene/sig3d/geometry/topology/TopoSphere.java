@@ -2,7 +2,8 @@ package fr.ign.cogit.geoxygene.sig3d.geometry.topology;
 
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.sig3d.Messages;
@@ -46,7 +47,7 @@ public class TopoSphere {
 
   }
 
-  static Logger logger = Logger.getLogger(GM_Solid.class.getName());
+  static Logger logger = LogManager.getLogger(GM_Solid.class.getName());
 
   /**
    * Permet de calculer une sphère en appliquant la topologie du package

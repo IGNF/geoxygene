@@ -3,7 +3,8 @@ package fr.ign.cogit.geoxygene.sig3d.calculation.raycasting;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -48,7 +49,7 @@ public class Visibility {
 
 	public static boolean WELL_ORIENTED_FACE = false;
 	
-	private final static Logger logger = Logger.getLogger(Visibility.class);
+	private final static Logger logger = LogManager.getLogger(Visibility.class);
 
 	public static List<IOrientableSurface> returnVisible(IFeature feat, IDirectPosition centre, double distMax) {
 		List<IOrientableSurface> lPoly = new ArrayList<IOrientableSurface>();

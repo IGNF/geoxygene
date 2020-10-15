@@ -14,7 +14,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -51,7 +52,7 @@ import fr.ign.cogit.geoxygene.sig3d.semantic.Layer;
  */
 public class ShapeFile3DWindow extends JDialog implements ActionListener {
 
-  private final static Logger logger = Logger.getLogger(ShapeFile3DWindow.class
+  private final static Logger logger = LogManager.getLogger(ShapeFile3DWindow.class
       .getName());
   /**
      * 

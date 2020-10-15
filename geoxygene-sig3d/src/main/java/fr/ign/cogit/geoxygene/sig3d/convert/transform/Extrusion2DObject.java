@@ -2,7 +2,8 @@
 
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -61,7 +62,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
  */
 public class Extrusion2DObject {
 
-  private final static Logger logger = Logger.getLogger(Extrusion2DObject.class
+  private final static Logger logger = LogManager.getLogger(Extrusion2DObject.class
       .getName());
 
   public static IFeatureCollection<IFeature> convertFromFeatureColllection(

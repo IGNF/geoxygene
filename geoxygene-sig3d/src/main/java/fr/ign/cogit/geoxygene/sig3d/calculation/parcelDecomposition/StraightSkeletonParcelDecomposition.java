@@ -6,7 +6,8 @@ import java.util.List;
 
 import org.apache.commons.math3.random.GaussianRandomGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -71,7 +72,7 @@ public class StraightSkeletonParcelDecomposition {
 	public static boolean DEBUG = false;
 	public static String FOLDER_OUT_DEBUG = "/home/mickael/Bureau/Parcel_div/test/test1/debug/";
 
-	private static Logger logger = Logger.getLogger(StraightSkeletonParcelDecomposition.class);
+	private static Logger logger = LogManager.getLogger(StraightSkeletonParcelDecomposition.class);
 
 	/**
 	 * Main algorithm to process the algorithm

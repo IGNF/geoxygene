@@ -3,7 +3,8 @@ package fr.ign.cogit.geoxygene.sig3d.tetraedrisation;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -49,7 +50,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
 
 public class Tetraedrisation {
 
-	private final static Logger logger = Logger.getLogger(Tetraedrisation.class.getName());
+	private final static Logger logger = LogManager.getLogger(Tetraedrisation.class.getName());
 
 	protected List<GM_Solid> tetraedres = new ArrayList<GM_Solid>();
 	protected List<ITriangle> triangles = new ArrayList<ITriangle>();

@@ -4,7 +4,8 @@ package fr.ign.cogit.convert.geom;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
@@ -20,7 +21,7 @@ import junit.framework.TestCase;
 public class TestFromGeomToSurface extends TestCase {
 	
 	
-	private static Logger log = Logger.getLogger(TestFromGeomToSurface.class);
+	private static Logger log = LogManager.getLogger(TestFromGeomToSurface.class);
 
 	// ----------------------------------- METHODS ------------------------------------
 

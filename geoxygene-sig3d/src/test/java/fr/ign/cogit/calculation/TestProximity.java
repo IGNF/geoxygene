@@ -2,7 +2,8 @@ package fr.ign.cogit.calculation;
 
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -22,7 +23,7 @@ public class TestProximity extends TestCase {
 
 	private double epsilon = Math.pow(10, -10);    // Scale error
 
-	private static Logger log = Logger.getLogger(TestProximity.class);
+	private static Logger log = LogManager.getLogger(TestProximity.class);
 
 	// ------------------------------------ TESTS -------------------------------------
 

@@ -5,7 +5,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -51,7 +52,7 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  */
 public class RayCasting {
 
-	private final static Logger logger = Logger.getLogger(RayCasting.class);
+	private final static Logger logger = LogManager.getLogger(RayCasting.class);
 	/**
 	 * Epsilon pour arrondir les zéro
 	 */

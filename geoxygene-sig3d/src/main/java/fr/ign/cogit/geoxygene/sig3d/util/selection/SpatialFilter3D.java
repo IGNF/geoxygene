@@ -2,7 +2,8 @@ package fr.ign.cogit.geoxygene.sig3d.util.selection;
 
 import java.util.Iterator;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -24,7 +25,7 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  */
 public class SpatialFilter3D {
 
-	private static Logger logger = Logger.getLogger(SpatialFilter3D.class);
+	private static Logger logger = LogManager.getLogger(SpatialFilter3D.class);
 
 	/**
 	 * Select the feature from fileIn that are included in 2D into the first

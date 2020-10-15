@@ -2,7 +2,8 @@ package fr.ign.cogit.geoxygene.sig3d.calculation;
 
 import java.io.FileWriter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import Jama.Matrix;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -41,7 +42,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
  */
 public class ShapeIndicator {
 
-  private final static Logger logger = Logger.getLogger(ShapeIndicator.class
+  private final static Logger logger = LogManager.getLogger(ShapeIndicator.class
       .getName());
 
   public final static int TYPE_LENGTH = 1;
