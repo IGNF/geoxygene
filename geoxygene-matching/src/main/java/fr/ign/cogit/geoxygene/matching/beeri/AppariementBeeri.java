@@ -13,7 +13,8 @@ package fr.ign.cogit.geoxygene.matching.beeri;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
@@ -36,7 +37,7 @@ import fr.ign.cogit.geoxygene.util.string.ApproximateMatcher;
  */
 public class AppariementBeeri {
   
-  private static final Logger LOGGER = Logger.getLogger(AppariementBeeri.class);
+  private static final Logger LOGGER = LogManager.getLogger(AppariementBeeri.class);
   
   /**
    * Appariement par recherche du plus proche voisin. Chaque élément de popRef

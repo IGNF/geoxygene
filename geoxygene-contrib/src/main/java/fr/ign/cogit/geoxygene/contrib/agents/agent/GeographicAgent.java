@@ -6,7 +6,8 @@ package fr.ign.cogit.geoxygene.contrib.agents.agent;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.contrib.agents.action.Action;
 import fr.ign.cogit.geoxygene.contrib.agents.action.ActionProposal;
@@ -23,7 +24,7 @@ import fr.ign.cogit.geoxygene.contrib.agents.state.GeographicAgentStateImpl;
 public abstract class GeographicAgent extends Agent
     implements IGeographicAgent {
 
-  private static Logger logger = Logger
+  private static Logger logger = LogManager
       .getLogger(GeographicAgent.class.getName());
 
   /**

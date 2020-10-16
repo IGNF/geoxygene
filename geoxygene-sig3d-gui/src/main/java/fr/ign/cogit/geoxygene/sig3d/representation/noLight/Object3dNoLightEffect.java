@@ -15,7 +15,8 @@ import javax.vecmath.Color4f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.sun.j3d.utils.geometry.GeometryInfo;
 
@@ -48,7 +49,7 @@ public class Object3dNoLightEffect extends BasicRep3D {
   /**
    * le logger.
    */
-  private static final Logger LOGGER = Logger.getLogger(Object3dNoLightEffect.class
+  private static final Logger LOGGER = LogManager.getLogger(Object3dNoLightEffect.class
       .getName());
 
   /**

@@ -42,7 +42,8 @@ import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.util.XMLResourceDescriptor;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.svg.SVGDocument;
 
 /**
@@ -53,7 +54,7 @@ import org.w3c.dom.svg.SVGDocument;
 public class ExternalGraphic {
 
   /** LOGGER. */
-  private final static Logger LOGGER = Logger
+  private final static Logger LOGGER = LogManager
       .getLogger(ExternalGraphic.class.getName());
   private static Proxy proxy;
 

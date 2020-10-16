@@ -2,7 +2,9 @@ package fr.ign.cogit.geoxygene.sig3d.tetraedrisation;
 
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Test;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -16,12 +18,11 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
-import junit.framework.Assert;
 
 public class TestTetra {
 	
 	
-	private static Logger log = Logger.getLogger(TestTetra.class);
+	private static Logger log = LogManager.getLogger(TestTetra.class);
 
 	public static void main(String[] args) {
 

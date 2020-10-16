@@ -32,7 +32,8 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
@@ -51,7 +52,7 @@ public class EuclidianDist extends GeoSource {
   private float threshold = 50f;
 
   // private final static Logger LOGGER = Logger.getLogger(EuclidianDist.class);
-  private static Logger DST_LOGGER = Logger.getLogger("DSTLogger");
+  private static Logger DST_LOGGER = LogManager.getLogger("DSTLogger");
 
   public EuclidianDist() {
   }

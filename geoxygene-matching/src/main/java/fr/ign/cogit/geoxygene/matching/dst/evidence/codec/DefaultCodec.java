@@ -26,7 +26,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.matching.dst.evidence.Hypothesis;
 
@@ -37,7 +38,7 @@ import fr.ign.cogit.geoxygene.matching.dst.evidence.Hypothesis;
  */
 public class DefaultCodec<H extends Hypothesis> implements EvidenceCodec<H> {
 
-  private static final Logger LOGGER = Logger.getLogger(DefaultCodec.class);
+  private static final Logger LOGGER = LogManager.getLogger(DefaultCodec.class);
   
   // L'ordre de la liste ne doit pas être modifié!.
   private final List<H> hypotheses;

@@ -4,9 +4,9 @@ import java.awt.BasicStroke;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
-import com.vividsolutions.jts.operation.buffer.BufferParameters;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.locationtech.jts.operation.buffer.BufferParameters;
 
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.semio.legend.legendContent.LegendComponent;
@@ -41,7 +41,7 @@ import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
 public class SymbolisedFeatureCollection extends
 		FT_FeatureCollection<SymbolisedFeature> {
 
-  private static final Logger logger = Logger
+  private static final Logger logger = LogManager
       .getLogger(SymbolisedFeatureCollection.class);
 
   // ////////////////////////////////////////////////////////

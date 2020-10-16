@@ -2,7 +2,8 @@ package fr.ign.cogit.geoxygene.sig3d.calculation;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import Jama.Matrix;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -41,7 +42,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
  */
 public class Calculation3D {
 
-  private final static Logger logger = Logger.getLogger(Calculation3D.class
+  private final static Logger logger = LogManager.getLogger(Calculation3D.class
       .getName());
 
   /**

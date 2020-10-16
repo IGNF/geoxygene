@@ -16,7 +16,8 @@ import javax.media.j3d.TransparencyAttributes;
 import javax.vecmath.Color3f;
 import javax.vecmath.Vector3f;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.sun.j3d.utils.geometry.Primitive;
 import com.sun.j3d.utils.geometry.Sphere;
@@ -54,7 +55,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  */
 public class Object0d extends BasicRep3D {
 
-  private final static Logger logger = Logger.getLogger(Object0d.class
+  private final static Logger logger = LogManager.getLogger(Object0d.class
       .getName());
   /**
    * Liste des sphères représentant les ponctuels

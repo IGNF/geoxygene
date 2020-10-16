@@ -7,13 +7,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
+import org.locationtech.jts.geom.Geometry;
 import org.postgis.PGgeometry;
-
-import com.vividsolutions.jts.geom.Geometry;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiPoint;
@@ -32,7 +32,7 @@ import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
  */
 public class GeOxygeneGeometryUserType implements UserType {
 
-	static Logger logger = Logger.getLogger(GeOxygeneGeometryUserType.class.getName());
+	static Logger logger = LogManager.getLogger(GeOxygeneGeometryUserType.class.getName());
 
 	private static final int[] geometryTypes = new int[] { Types.OTHER };
 
@@ -206,14 +206,14 @@ public class GeOxygeneGeometryUserType implements UserType {
 	}
 
 	@Override
-	public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor arg2, Object arg3)
+	public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor arg2, Object arg3)
 			throws HibernateException, SQLException {
 		Object geomObj = rs.getObject(names[0]);
 		return this.convert2GM_Object(geomObj);
 	}
 
 	@Override
-	public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session)
+	public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session)
 			throws HibernateException, SQLException {
 		if (value == null) {
 			st.setNull(index, this.sqlTypes()[0]);

@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.matching.dst.sources.semantic;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeomHypothesis;
@@ -9,7 +10,7 @@ import fr.ign.cogit.ontology.similarite.WuPalmerSemanticSimilarity;
 
 public class WuPalmerDistance extends GeoSource {
   
-  private static Logger DST_LOGGER = Logger.getLogger("DSTLogger");
+  private static Logger DST_LOGGER = LogManager.getLogger("DSTLogger");
   
   private String attributeName1 = "";
   private String attributeName2 = "";

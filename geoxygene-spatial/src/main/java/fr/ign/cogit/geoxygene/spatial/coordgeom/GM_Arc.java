@@ -27,7 +27,8 @@
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IArc;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -47,7 +48,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  * @author Julien Perret
  */
 public class GM_Arc extends GM_ArcString implements IArc {
-  private static Logger logger = Logger.getLogger(GM_Arc.class.getName());
+  private static Logger logger = LogManager.getLogger(GM_Arc.class.getName());
 
   private IPosition startPoint;
 

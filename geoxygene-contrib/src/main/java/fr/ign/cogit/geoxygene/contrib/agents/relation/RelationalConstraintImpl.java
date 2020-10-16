@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.contrib.agents.relation;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.contrib.agents.agent.IGeographicAgent;
 import fr.ign.cogit.geoxygene.contrib.agents.constraint.GeographicConstraintImpl;
@@ -14,7 +15,7 @@ import fr.ign.cogit.geoxygene.contrib.agents.constraint.GeographicConstraintImpl
  */
 public abstract class RelationalConstraintImpl extends GeographicConstraintImpl
     implements RelationalConstraint {
-  private static Logger logger = Logger
+  private static Logger logger = LogManager
       .getLogger(RelationalConstraintImpl.class.getName());
 
   /**

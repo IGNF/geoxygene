@@ -21,11 +21,11 @@ public class ColorDifferenceTest {
 
 	private static final float eqDelta = 0.001f;
 
-	private final Log4JLogger logger = new Log4JLogger("Default");
+//	private final Log4JLogger logger = new Log4JLogger("Default");
 
 	@Test
 	public void deltaETest() {
-		logger.info("### Color difference tests");
+//		logger.info("### Color difference tests");
 
 		double de76, de94, de2000;
 
@@ -91,8 +91,8 @@ public class ColorDifferenceTest {
 				de76 = ColorDifference.deltaE(a, b, ColorDifference.CIE76);
 				de94 = ColorDifference.deltaE(a, b, ColorDifference.CIE94);
 				de2000 = ColorDifference.deltaE(a, b, ColorDifference.CIE2000);
-				logger.info("(calculated - expected) = (dE76=" + (de76 - expdE[k][0]) + ", dE94=" + (de94 - expdE[k][1])
-						+ ", dE2000=" + (de2000 - expdE[k][2]) + ")");
+//				logger.info("(calculated - expected) = (dE76=" + (de76 - expdE[k][0]) + ", dE94=" + (de94 - expdE[k][1])
+//						+ ", dE2000=" + (de2000 - expdE[k][2]) + ")");
 				Assert.assertEquals(expdE[k][0], de76, eqDelta);
 				Assert.assertEquals(expdE[k][1], de94, eqDelta);
 				Assert.assertEquals(expdE[k][2], de2000, eqDelta);

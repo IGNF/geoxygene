@@ -16,7 +16,8 @@ import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jfree.ui.RefineryUtilities;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -65,7 +66,7 @@ public class DissimilarityMenu extends JPanel implements ActionListener {
   GM_Solid s1;
   GM_Solid s2;
 
-  private final static Logger logger = Logger.getLogger(DissimilarityMenu.class
+  private final static Logger logger = LogManager.getLogger(DissimilarityMenu.class
       .getName());
 
   public static final String[] choix = new String[] {

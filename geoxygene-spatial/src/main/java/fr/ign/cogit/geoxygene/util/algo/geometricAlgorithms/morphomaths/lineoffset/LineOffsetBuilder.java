@@ -5,7 +5,8 @@ package fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.morphomaths.lineoff
 
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IArc2.ArcDirection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -28,7 +29,7 @@ import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.morphomaths.Side;
  * @author julien Gaffuri 12 juillet 2009
  */
 public class LineOffsetBuilder {
-  private static Logger logger = Logger.getLogger(LineOffsetBuilder.class
+  private static Logger logger = LogManager.getLogger(LineOffsetBuilder.class
       .getName());
 
   /**

@@ -30,7 +30,8 @@ package fr.ign.cogit.geoxygene.spatial.geomprim;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ICurveSegment;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -57,7 +58,7 @@ import fr.ign.cogit.geoxygene.spatial.util.Resampler;
  * 
  */
 public class GM_Curve extends GM_OrientableCurve implements ICurve {
-  private static Logger logger = Logger.getLogger(GM_Curve.class.getName());
+  private static Logger logger = LogManager.getLogger(GM_Curve.class.getName());
   /** Liste de tous les segment de courbe (GM_CurveSegment) constituant self. */
   protected List<ICurveSegment> segment;
 

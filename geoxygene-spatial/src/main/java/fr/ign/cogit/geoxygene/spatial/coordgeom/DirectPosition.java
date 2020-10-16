@@ -19,7 +19,8 @@
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
@@ -38,7 +39,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  * @author Julien Perret
  */
 public class DirectPosition implements IDirectPosition {
-  static Logger logger = Logger.getLogger(DirectPosition.class.getName());
+  static Logger logger = LogManager.getLogger(DirectPosition.class.getName());
   /**
    * Identifiant du systeme de coordonnees de reference (CRS en anglais).
    * Lorsque les DirectPosition servent à definir un GM_Object, cet attribut

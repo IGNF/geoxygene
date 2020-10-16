@@ -30,7 +30,8 @@ package fr.ign.cogit.geoxygene.spatial.geomprim;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
@@ -50,7 +51,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
  * 
  */
 public class GM_Solid extends GM_Primitive implements ISolid {
-  static Logger logger = Logger.getLogger(GM_Solid.class.getName());
+  static Logger logger = LogManager.getLogger(GM_Solid.class.getName());
 
   @Override
   public double area() {

@@ -32,7 +32,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
@@ -51,7 +52,7 @@ import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 public class GM_LineString extends GM_CurveSegment implements ILineString {
 
   /** Classic logger. */
-  private static Logger LOGGER = Logger
+  private static Logger LOGGER = LogManager
       .getLogger(GM_LineString.class.getName());
 
   /**

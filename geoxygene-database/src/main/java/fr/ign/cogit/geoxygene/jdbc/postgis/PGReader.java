@@ -3,8 +3,9 @@ package fr.ign.cogit.geoxygene.jdbc.postgis;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.Query;
@@ -12,6 +13,7 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.filter.text.cql2.CQL;
+import org.locationtech.jts.geom.Geometry;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -19,8 +21,6 @@ import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.GeometryType;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
-import com.vividsolutions.jts.geom.Geometry;
 
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
@@ -36,7 +36,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 public class PGReader {
 
   /** LOGGER. */
-  private final static Logger LOGGER = Logger.getLogger(PGReader.class
+  private final static Logger LOGGER = LogManager.getLogger(PGReader.class
       .getName());
 
   /** Params to connect. */

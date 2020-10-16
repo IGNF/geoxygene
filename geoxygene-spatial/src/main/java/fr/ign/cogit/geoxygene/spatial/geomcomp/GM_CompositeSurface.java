@@ -23,7 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomcomp.IComplex;
 import fr.ign.cogit.geoxygene.api.spatial.geomcomp.ICompositeSurface;
@@ -53,7 +54,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Surface;
  */
 public class GM_CompositeSurface extends GM_OrientableSurface implements
     ICompositeSurface {
-  private static Logger logger = Logger.getLogger(GM_CompositeSurface.class
+  private static Logger logger = LogManager.getLogger(GM_CompositeSurface.class
       .getName());
   /** Les GM_OrientableSurface constituant self. */
   protected List<IOrientableSurface> generator;

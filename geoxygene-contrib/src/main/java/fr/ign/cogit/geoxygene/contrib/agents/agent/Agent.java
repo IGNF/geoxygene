@@ -6,7 +6,8 @@ package fr.ign.cogit.geoxygene.contrib.agents.agent;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.contrib.agents.action.Action;
 import fr.ign.cogit.geoxygene.contrib.agents.action.ActionProposal;
@@ -21,7 +22,7 @@ import fr.ign.cogit.geoxygene.contrib.agents.state.AgentStateImpl;
  * @author JGaffuri
  */
 public class Agent implements IAgent {
-  private static Logger logger = Logger.getLogger(Agent.class.getName());
+  private static Logger logger = LogManager.getLogger(Agent.class.getName());
 
   /**
    * Default constructor that defines a default Border Strategy

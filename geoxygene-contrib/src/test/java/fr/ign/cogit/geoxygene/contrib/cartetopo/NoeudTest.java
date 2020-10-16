@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.contrib.cartetopo;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +17,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 public class NoeudTest {
 
     // Logger
-    private static Logger logger = Logger.getLogger(NoeudTest.class);
+    private static Logger logger = LogManager.getLogger(NoeudTest.class);
     
  // La carte topologique 1
     protected CarteTopo ct1 = null;

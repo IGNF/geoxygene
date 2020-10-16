@@ -30,28 +30,28 @@ import java.util.TreeSet;
 
 import javax.swing.event.EventListenerList;
 
-import org.apache.log4j.Logger;
-
-import com.vividsolutions.jts.algorithm.CGAlgorithms;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.CoordinateFilter;
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineSegment;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.operation.buffer.BufferOp;
-import com.vividsolutions.jts.operation.buffer.BufferParameters;
-import com.vividsolutions.jts.operation.distance.DistanceOp;
-import com.vividsolutions.jts.operation.union.CascadedPolygonUnion;
-import com.vividsolutions.jts.simplify.DouglasPeuckerSimplifier;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.locationtech.jts.algorithm.Orientation;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.CoordinateFilter;
+import org.locationtech.jts.geom.Envelope;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryCollection;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.LineSegment;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.LinearRing;
+import org.locationtech.jts.geom.MultiLineString;
+import org.locationtech.jts.geom.MultiPoint;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.operation.buffer.BufferOp;
+import org.locationtech.jts.operation.buffer.BufferParameters;
+import org.locationtech.jts.operation.distance.DistanceOp;
+import org.locationtech.jts.operation.union.CascadedPolygonUnion;
+import org.locationtech.jts.simplify.DouglasPeuckerSimplifier;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
@@ -82,7 +82,7 @@ import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
  */
 
 public class JtsAlgorithms implements GeomAlgorithms {
-  private static Logger logger = Logger.getLogger(JtsAlgorithms.class.getName());
+  private static Logger logger = LogManager.getLogger(JtsAlgorithms.class.getName());
 
   public JtsAlgorithms() {
   }
@@ -1152,7 +1152,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
   public static boolean isCCW(ILineString line) {
     Coordinate[] coords = AdapterFactory.toCoordinateSequence(
         new GeometryFactory(), line.coord()).toCoordinateArray();
-    return CGAlgorithms.isCCW(coords);
+    return Orientation.isCCW(coords);
   }
 
   /**
@@ -1604,7 +1604,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
               // orientation
               if (previousCoordinate != null
                   && orientation != previousOrientation) {
-                orientations.add(-CGAlgorithms.orientationIndex(
+                orientations.add(-Orientation.index(
                         previousCoordinate, coordinate1, coordinate2));
               } else {
                 orientations.add(orientation);

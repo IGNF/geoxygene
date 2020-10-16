@@ -15,7 +15,8 @@ import javax.media.j3d.TransparencyAttributes;
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3d;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -51,7 +52,8 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableCurve;
  */
 public class Object1d extends BasicRep3D {
 
-  private final static Logger logger = Logger.getLogger(Object1d.class
+  private final static Logger logger = LogManager
+      .getLogger(Object1d.class
       .getName());
 
   public static float width = 4.0f;

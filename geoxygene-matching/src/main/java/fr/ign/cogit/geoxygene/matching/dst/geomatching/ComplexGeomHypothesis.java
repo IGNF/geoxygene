@@ -25,7 +25,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
@@ -37,7 +38,7 @@ import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
 public class ComplexGeomHypothesis extends SimpleGeomHypothesis {
   
   /** The logger. */
-  static final Logger LOGGER = Logger.getLogger(ComplexGeomHypothesis.class);
+  static final Logger LOGGER = LogManager.getLogger(ComplexGeomHypothesis.class);
 
   /** Features of the hypothesis. */
   List<IFeature> fromfeatures;

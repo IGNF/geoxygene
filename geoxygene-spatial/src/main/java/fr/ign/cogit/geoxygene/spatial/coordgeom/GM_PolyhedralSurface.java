@@ -29,7 +29,8 @@ package fr.ign.cogit.geoxygene.spatial.coordgeom;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
@@ -50,7 +51,7 @@ public class GM_PolyhedralSurface extends GM_Surface implements
 
   private List<IPolygon> lPolygons = null;
 
-  protected static Logger logger = Logger.getLogger(GM_PolyhedralSurface.class
+  protected static Logger logger = LogManager.getLogger(GM_PolyhedralSurface.class
       .getName());
 
   public List<IPolygon> getlPolygons() {

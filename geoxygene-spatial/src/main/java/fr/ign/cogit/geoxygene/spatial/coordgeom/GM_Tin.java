@@ -24,13 +24,13 @@ package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.triangulate.ConformingDelaunayTriangulationBuilder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryCollection;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.triangulate.ConformingDelaunayTriangulationBuilder;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
@@ -55,7 +55,7 @@ import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
  */
 public class GM_Tin extends GM_TriangulatedSurface implements ITin {
 
-  protected static Logger logger = Logger.getLogger(GM_Tin.class.getName());
+  protected static Logger logger = LogManager.getLogger(GM_Tin.class.getName());
 
   /**
    * Lignes où la continuité locale ou la régularité de la surface est remise en cause : un triangle intersectant une

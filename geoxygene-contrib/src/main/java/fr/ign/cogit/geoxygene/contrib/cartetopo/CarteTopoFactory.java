@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.contrib.cartetopo;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -14,7 +15,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
  * @author Julien Perret
  */
 public class CarteTopoFactory {
-  public static Logger logger = Logger.getLogger(CarteTopoFactory.class.getName());
+  public static Logger logger = LogManager.getLogger(CarteTopoFactory.class.getName());
 
   /**
    * Create a topological map from a feature collection, a name and a threshold.

@@ -13,7 +13,8 @@ import javax.media.j3d.Texture2D;
 import javax.media.j3d.TextureAttributes;
 import javax.swing.JPanel;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.sun.j3d.utils.geometry.GeometryInfo;
 
@@ -68,7 +69,7 @@ public class BuildingTexture extends Default3DRep {
 
   private double textureWallLength;
   private double textureWallHeigth;
-  private final static Logger logger = Logger.getLogger(BuildingTexture.class
+  private final static Logger logger = LogManager.getLogger(BuildingTexture.class
       .getName());
 
   /**

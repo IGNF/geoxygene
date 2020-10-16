@@ -9,14 +9,15 @@
  ******************************************************************************/
 package fr.ign.cogit.geoxygene.spatial.geomengine;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.spatial.JTSGeomFactory;
 
 public class GeometryEngine extends AbstractGeometryEngine {
   
   /** Logger. */
-  private final static Logger LOGGER = Logger.getLogger(GeometryEngine.class.getName());
+  private final static Logger LOGGER = LogManager.getLogger(GeometryEngine.class.getName());
 
   static {
     setInstance(new GeometryEngine());

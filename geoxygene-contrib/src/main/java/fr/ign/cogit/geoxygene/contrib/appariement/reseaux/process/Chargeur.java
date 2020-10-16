@@ -6,8 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -35,7 +36,7 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
 public class Chargeur {
   
   /** logger. */
-  private static final Logger LOGGER = Logger.getLogger(Chargeur.class.getName());
+  private static final Logger LOGGER = LogManager.getLogger(Chargeur.class.getName());
   
   
   public static ReseauApp importCarteTopo1(DataSet dataset1, ParametresApp param) {
@@ -46,12 +47,12 @@ public class Chargeur {
         LOGGER.info("DATA STRUCTURING");
         LOGGER.info("Topological structuring");
     }
-    if (LOGGER.isEnabledFor(Level.DEBUG)) {
+    if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("START OF STRUCTURING " + (new Time(System.currentTimeMillis())).toString());
     }
 
     //
-    if (LOGGER.isEnabledFor(Level.DEBUG)) {
+    if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("creation of network 1 " + (new Time(System.currentTimeMillis())).toString());
     }
     
@@ -75,11 +76,11 @@ public class Chargeur {
         LOGGER.info("DATA STRUCTURING");
         LOGGER.info("Topological structuring");
     }
-    if (LOGGER.isEnabledFor(Level.DEBUG)) {
+    if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("START OF STRUCTURING " + (new Time(System.currentTimeMillis())).toString());
     }
 
-    if (LOGGER.isEnabledFor(Level.DEBUG)) {
+    if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("creation of network 2 " + (new Time(System.currentTimeMillis())).toString());
     }
     ReseauApp reseau2 = importAsEdgesAndNodes("Réseau 2", dataset2, param.populationsArcsAvecOrientationDouble2,

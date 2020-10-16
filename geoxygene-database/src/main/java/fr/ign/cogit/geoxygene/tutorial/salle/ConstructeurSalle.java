@@ -27,7 +27,8 @@
 
 package fr.ign.cogit.geoxygene.tutorial.salle;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 
@@ -38,7 +39,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
  */
 public class ConstructeurSalle {
 
-  static Logger logger = Logger.getLogger(ConstructeurSalle.class);
+  static Logger logger = LogManager.getLogger(ConstructeurSalle.class);
 
   public static void main(String[] args) {
     ConstructeurSalle.CreationSalles(10, "Réunion");

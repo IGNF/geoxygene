@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.contrib.quality.estim.scaledetection;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -34,7 +35,8 @@ import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
  * 
  */
 public class RoadCoalescenceDetection extends AbstractScaleDetection {
-    static Logger logger = Logger.getLogger(RoadCoalescenceDetection.class.getName());
+    static Logger logger = LogManager
+        .getLogger(RoadCoalescenceDetection.class.getName());
 
     private boolean thickened;
 

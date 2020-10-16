@@ -19,13 +19,14 @@
 
 package fr.ign.cogit.geoxygene.filter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author GTouya
  */
 public class PropertyIsNull extends BinaryComparisonOpsType {
-  static Logger logger = Logger.getLogger(PropertyIsNull.class.getName());
+  static Logger logger = LogManager.getLogger(PropertyIsNull.class.getName());
 
   @Override
   public boolean evaluate(Object object) {

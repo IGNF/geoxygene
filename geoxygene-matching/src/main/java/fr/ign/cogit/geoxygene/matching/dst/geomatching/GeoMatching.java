@@ -27,7 +27,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.ChoiceType;
@@ -49,8 +50,8 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
  */
 public class GeoMatching {
 	
-  private final static Logger LOGGER = Logger.getLogger(GeoMatching.class);
-  private static Logger DST_LOGGER = Logger.getLogger("DSTLogger");
+  private final static Logger LOGGER = LogManager.getLogger(GeoMatching.class);
+  private static Logger DST_LOGGER = LogManager.getLogger("DSTLogger");
 
   // List<Hypothesis> candidates;
 

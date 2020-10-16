@@ -6,7 +6,8 @@ import java.util.Map;
 
 import javax.vecmath.Point3d;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.twak.camp.Corner;
 import org.twak.camp.Edge;
 import org.twak.camp.Machine;
@@ -45,7 +46,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
  */
 public class CampSkeleton {
 
-	private static Logger logger = Logger.getLogger(CampSkeleton.class);
+	private static Logger logger = LogManager.getLogger(CampSkeleton.class);
 
 	private IPolygon p;
 

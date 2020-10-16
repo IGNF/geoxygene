@@ -10,15 +10,14 @@ import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.MultiPoint;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -269,6 +268,9 @@ public class GeOxygeneGeoToolsTypes {
 	}
 
 	public static <Feat extends IFeature> SimpleFeature convert2SimpleFeature(IFeature feature, CoordinateReferenceSystem crs) throws Exception {
+	  return convert2SimpleFeature(feature, crs, false);
+	}
+	public static <Feat extends IFeature> SimpleFeature convert2SimpleFeature(IFeature feature, CoordinateReferenceSystem crs, boolean to2D) throws Exception {
 
 		GF_FeatureType featureType = feature.getFeatureType();
 
@@ -298,7 +300,7 @@ public class GeOxygeneGeoToolsTypes {
 
 		SimpleFeatureBuilder sfBuilder = new SimpleFeatureBuilder(builder.buildFeatureType());
 
-		sfBuilder.add(AdapterFactory.toGeometry(new GeometryFactory(), feature.getGeom()));
+		sfBuilder.add(AdapterFactory.toGeometry(new GeometryFactory(), feature.getGeom(), to2D));
 
 		if (featureType != null) {
 			for (GF_AttributeType attributeType : featureType.getFeatureAttributes()) {

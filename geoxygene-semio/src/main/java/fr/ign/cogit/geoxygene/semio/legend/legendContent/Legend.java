@@ -23,7 +23,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.semio.legend.mapContent.Map;
 import fr.ign.cogit.geoxygene.semio.legend.metadata.SemanticRelation;
@@ -84,7 +85,7 @@ import fr.ign.cogit.geoxygene.semio.legend.metadata.SemanticRelationDescriptor;
 @XmlRootElement(name = "Legend")
 public class Legend  {
 	
-	static Logger logger = Logger.getLogger(Legend.class.getName());
+	static Logger logger = LogManager.getLogger(Legend.class.getName());
 	
 	/**
 	 * The legend name.

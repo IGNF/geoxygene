@@ -15,7 +15,8 @@ import java.util.List;
 
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -47,7 +48,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 public class ArcDetection {
   
   /** LOGGER. */
-  private final static Logger LOGGER = Logger.getLogger(ArcDetection.class.getName());
+  private final static Logger LOGGER = LogManager.getLogger(ArcDetection.class.getName());
 
   // ---------------------------------------------------------------------------
   // Paramètres de calcul

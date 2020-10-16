@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.matching.geopoint;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
@@ -22,7 +23,7 @@ import fr.ign.cogit.geoxygene.util.string.ApproximateMatcher;
 public class SequentiallyPositionName {
   
   /** Logger. */
-  private static final Logger LOGGER = Logger.getLogger(SequentiallyPositionName.class);
+  private static final Logger LOGGER = LogManager.getLogger(SequentiallyPositionName.class);
   
   /**
    * Appariement par recherche du plus proche voisin 

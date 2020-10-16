@@ -9,7 +9,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
@@ -25,7 +26,7 @@ import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
  * @author Julien Perret
  */
 public abstract class AbstractLayerFactory implements LayerFactory {
-  protected static Logger logger = Logger.getLogger(AbstractLayerFactory.class
+  protected static Logger logger = LogManager.getLogger(AbstractLayerFactory.class
       .getName());
   protected StyledLayerDescriptor model = null;
 

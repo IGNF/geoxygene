@@ -5,7 +5,8 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.contrib.agents.action.Action;
 import fr.ign.cogit.geoxygene.contrib.agents.action.ActionProposal;
@@ -16,7 +17,7 @@ import fr.ign.cogit.geoxygene.contrib.agents.agent.IAgent;
  * @author julien Gaffuri 7 juil. 2007
  */
 public class AgentStateImpl implements AgentState {
-  private static Logger logger = Logger.getLogger(AgentState.class.getName());
+  private static Logger logger = LogManager.getLogger(AgentState.class.getName());
 
   /**
    * The agent the state is linked to

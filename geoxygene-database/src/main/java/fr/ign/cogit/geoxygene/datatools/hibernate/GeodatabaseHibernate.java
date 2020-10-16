@@ -16,7 +16,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Transaction;
 import org.hibernate.boot.MetadataSources;
@@ -27,8 +28,7 @@ import org.hibernate.persister.entity.AbstractEntityPersister;
 import org.hibernate.spatial.criterion.SpatialRestrictions;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.schema.TargetType;
-
-import com.vividsolutions.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.GeometryFactory;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -46,7 +46,7 @@ import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
  * 
  */
 public class GeodatabaseHibernate implements Geodatabase {
-	static Logger logger = Logger.getLogger(GeodatabaseHibernate.class.getName());
+	static Logger logger = LogManager.getLogger(GeodatabaseHibernate.class.getName());
 
 	// liste des metadonnnees pour les classes persistantes
 	protected List<Metadata> metadataList;

@@ -62,12 +62,11 @@ import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.store.ContentFeatureStore;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.xml.sax.SAXException;
-
-import com.vividsolutions.jts.geom.GeometryFactory;
 
 import fr.ign.cogit.cartagen.core.genericschema.urban.BuildingCategory;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;

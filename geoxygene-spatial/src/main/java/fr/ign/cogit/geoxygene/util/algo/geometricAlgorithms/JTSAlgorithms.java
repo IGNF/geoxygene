@@ -6,13 +6,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-import com.vividsolutions.jts.algorithm.CGAlgorithms;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.TopologyException;
+import org.locationtech.jts.algorithm.Orientation;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.geom.TopologyException;
+import org.locationtech.jts.geom.GeometryFactory;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
@@ -153,7 +153,7 @@ public class JTSAlgorithms {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    if (CGAlgorithms.isCCW(geom.getCoordinates()))
+    if (Orientation.isCCW(geom.getCoordinates()))
       return false;
     return true;
   }
@@ -165,7 +165,7 @@ public class JTSAlgorithms {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    if (CGAlgorithms.isCCW(geom.getCoordinates()))
+    if (Orientation.isCCW(geom.getCoordinates()))
       return false;
     return true;
   }

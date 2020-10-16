@@ -7,7 +7,7 @@
 	<parent>
 		<artifactId>geoxygene</artifactId>
 		<groupId>fr.ign.cogit</groupId>
-		<version>1.9</version>
+		<version>1.10-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>geoxygene-appli</artifactId>
@@ -17,6 +17,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<dir.executable>/exec-geox</dir.executable>
+		<cartagen.version>0.2-SNAPSHOT</cartagen.version>
 	</properties>
 
 
@@ -170,8 +171,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -272,7 +273,7 @@
 		<dependency>
 			<groupId>fr.ign.cogit</groupId>
 			<artifactId>cartagen-core</artifactId>
-			<version>0.1-SNAPSHOT</version>
+			<version>${cartagen.version}</version>
 		</dependency>
 
 		<!-- JGoodies Forms framework helps you lay out and implement elegant Swing 
@@ -298,11 +299,6 @@
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-render</artifactId>
-			<version>${geotools.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt-api</artifactId>
 			<version>${geotools.version}</version>
 		</dependency>
 		<dependency>
@@ -379,7 +375,7 @@
 		<dependency>
 			<groupId>xerces</groupId>
 			<artifactId>xercesImpl</artifactId>
-			<version>2.9.1</version>
+			<version>2.12.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -435,7 +431,7 @@
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
-			<version>1.4.6</version>
+			<version>1.4.10</version>
 		</dependency>
 
 		<dependency>

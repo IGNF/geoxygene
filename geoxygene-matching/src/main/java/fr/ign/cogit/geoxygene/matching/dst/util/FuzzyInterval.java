@@ -25,7 +25,8 @@
 
 package fr.ign.cogit.geoxygene.matching.dst.util;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Expression basique d'un intervalle flou. (continu)
@@ -44,7 +45,7 @@ import org.apache.log4j.Logger;
  * 
  */
 public class FuzzyInterval {
-    Logger logger = Logger.getLogger(FuzzyInterval.class);
+    Logger logger = LogManager.getLogger(FuzzyInterval.class);
 
     // Poinst de changements de signe de la dérivée.
     float[][] derivativezeros = null;

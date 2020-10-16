@@ -12,7 +12,8 @@ import javax.swing.JSplitPane;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * 
@@ -44,7 +45,7 @@ import org.apache.log4j.Logger;
  */
 public class MainWindow extends JFrame implements WindowListener {
 
-  private final static Logger logger = Logger.getLogger(MainWindow.class
+  private final static Logger logger = LogManager.getLogger(MainWindow.class
       .getName());
 
   private static final long serialVersionUID = 1L;

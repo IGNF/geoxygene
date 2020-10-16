@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.sig3d.analysis.streetprofile;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -26,7 +27,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  */
 public class TransformToCircle {
 
-  private static Logger logger = Logger.getLogger(TransformToCircle.class);
+  private static Logger logger = LogManager.getLogger(TransformToCircle.class);
 
   public static IFeatureCollection<IFeature> transform(
       IFeatureCollection<IFeature> pPoint, double nbX, int nbY, double rayon) {

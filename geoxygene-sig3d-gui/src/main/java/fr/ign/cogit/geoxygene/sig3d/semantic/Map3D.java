@@ -7,7 +7,8 @@ import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Group;
 import javax.swing.JOptionPane;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.sig3d.Messages;
@@ -49,7 +50,7 @@ public class Map3D {
 
   private List<Layer> lLayers = new ArrayList<Layer>();
 
-  private final static Logger logger = Logger.getLogger(Map3D.class.getName());
+  private final static Logger logger = LogManager.getLogger(Map3D.class.getName());
 
   /**
    * Crée un objet de carte et l'associe à une interface

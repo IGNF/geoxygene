@@ -31,7 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 import fr.ign.cogit.geoxygene.matching.dst.util.Utils;
@@ -40,7 +41,7 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Utils;
  * @author Bertrand Dumenieu
  */
 public final class CombinationAlgos {
-  static Logger logger = Logger.getLogger(CombinationAlgos.class);
+  static Logger logger = LogManager.getLogger(CombinationAlgos.class);
 
   /**
    * @param mass_sets

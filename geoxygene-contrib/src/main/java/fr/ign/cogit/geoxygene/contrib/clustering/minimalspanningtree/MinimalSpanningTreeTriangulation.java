@@ -3,7 +3,8 @@ package fr.ign.cogit.geoxygene.contrib.clustering.minimalspanningtree;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -27,7 +28,7 @@ public class MinimalSpanningTreeTriangulation {
   /**
    * Logger
    */
-  private static final Logger logger = Logger
+  private static final Logger logger = LogManager
       .getLogger(MinimalSpanningTreeTriangulation.class);
 
   /**

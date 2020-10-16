@@ -7,7 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -31,7 +32,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 public class ExportAttribut {
     
     /** LOGGER. */
-    protected static Logger LOGGER = Logger.getLogger(ExportAttribut.class.getName());
+    protected static Logger LOGGER = LogManager.getLogger(ExportAttribut.class.getName());
 
     /**
      * Méthode qui renvoie en sortie des liens 1 ARC - 1 ARC.

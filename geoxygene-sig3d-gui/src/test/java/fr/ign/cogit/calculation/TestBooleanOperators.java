@@ -2,7 +2,8 @@ package fr.ign.cogit.calculation;
 
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +27,7 @@ public class TestBooleanOperators extends TestCase {
 
 	private static boolean isJava3DInstalled = Java3DInstallated.isJava3DInstalled();
 
-	private static Logger log = Logger.getLogger(TestBooleanOperators.class);
+	private static Logger log = LogManager.getLogger(TestBooleanOperators.class);
 
 	// ---------------------------------- PREPROCESS
 	// ----------------------------------

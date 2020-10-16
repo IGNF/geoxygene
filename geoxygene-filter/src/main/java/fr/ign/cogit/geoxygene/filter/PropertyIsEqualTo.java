@@ -19,7 +19,8 @@
 
 package fr.ign.cogit.geoxygene.filter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.filter.expression.Literal;
 import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
@@ -28,7 +29,7 @@ import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
  * @author Julien Perret
  */
 public class PropertyIsEqualTo extends BinaryComparisonOpsType {
-  static Logger logger = Logger.getLogger(PropertyIsEqualTo.class.getName());
+  static Logger logger = LogManager.getLogger(PropertyIsEqualTo.class.getName());
 
   public PropertyIsEqualTo() {
   }

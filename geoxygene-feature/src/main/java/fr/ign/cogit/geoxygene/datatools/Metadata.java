@@ -19,7 +19,8 @@
 
 package fr.ign.cogit.geoxygene.datatools;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 
@@ -34,7 +35,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
  * 
  */
 public class Metadata {
-  static Logger logger = Logger.getLogger(Metadata.class.getName());
+  static Logger logger = LogManager.getLogger(Metadata.class.getName());
 
   // ///////////////////////////////////////////////////////////////
   // / attributs ///////////////////////////////////////////////////

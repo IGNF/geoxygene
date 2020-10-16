@@ -6,7 +6,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
@@ -27,7 +28,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
  * @author JFGirres
  */
 public class GridCell {
-    private final static Logger logger = Logger.getLogger(GridCell.class.getName());
+    private final static Logger logger = LogManager.getLogger(GridCell.class.getName());
     private RasterGrid grille;// la grille dont fait partie la cellule
     private int ligne, colonne;// coordonnées de la cellule dans la grille
     private double xCentre, yCentre;// les coord du centre de la cellule

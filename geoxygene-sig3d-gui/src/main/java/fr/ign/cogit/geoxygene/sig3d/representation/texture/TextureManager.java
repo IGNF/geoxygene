@@ -18,7 +18,8 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.sun.j3d.utils.image.TextureLoader;
 
@@ -44,7 +45,7 @@ import com.sun.j3d.utils.image.TextureLoader;
  */
 public class TextureManager {
 	
-	private static Logger log = Logger.getLogger(TextureManager.class);
+	private static Logger log = LogManager.getLogger(TextureManager.class);
 
   /**
    * Liste des noms associés aux textures (chemin sur le disque)

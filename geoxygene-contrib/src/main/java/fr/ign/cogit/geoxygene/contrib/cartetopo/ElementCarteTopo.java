@@ -19,7 +19,8 @@
 
 package fr.ign.cogit.geoxygene.contrib.cartetopo;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
@@ -32,7 +33,7 @@ import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 public class ElementCarteTopo extends DefaultFeature {
   
     /** Logger. */
-    private static final Logger LOGGER = Logger.getLogger(ElementCarteTopo.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(ElementCarteTopo.class.getName());
     
     /**
      * Default constructor.

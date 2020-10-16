@@ -27,7 +27,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import Jama.Matrix;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -71,7 +72,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
  * @author Mickaël Brasebin
  */
 public abstract class Operateurs {
-	private static Logger logger = Logger.getLogger(Operateurs.class.getName());
+	private static Logger logger = LogManager.getLogger(Operateurs.class.getName());
 
 	// ////////////////////////////////////////////////////////////////////
 	// Projections d'un point

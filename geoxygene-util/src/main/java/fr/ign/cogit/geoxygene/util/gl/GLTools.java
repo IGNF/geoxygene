@@ -65,7 +65,8 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.vecmath.Point2d;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
@@ -86,7 +87,7 @@ import org.lwjgl.util.Color;
 public final class GLTools {
 
     private static final Random randomSeed = new Random(new Date().getTime());
-    private static final Logger logger = Logger.getLogger(GLTools.class
+    private static final Logger logger = LogManager.getLogger(GLTools.class
             .getName()); // logger
     private static final Map<BufferedImage, Integer> existingTextureIDs = new HashMap<BufferedImage, Integer>();
     public static Map<Integer, String> shaderTypeNames = new HashMap<Integer, String>();

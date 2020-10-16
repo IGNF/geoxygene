@@ -1,12 +1,12 @@
 package fr.ign.cogit.geoxygene.util.algo;
 
-import org.apache.log4j.Logger;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.Polygon;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.Polygon;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
@@ -23,7 +23,7 @@ import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
  * 
  */
 public class OrientationMeasure {
-  private static Logger logger = Logger.getLogger(OrientationMeasure.class
+  private static Logger logger = LogManager.getLogger(OrientationMeasure.class
       .getName());
 
   // nombre d'orientations testees dans l'intervalle [0, Pi/2[ pour le calcul de

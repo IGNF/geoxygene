@@ -5,8 +5,9 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -62,7 +63,7 @@ public class Profile {
 		}
 	}
 
-	private static Logger logger = Logger.getLogger(Profile.class);
+	private static Logger logger = LogManager.getLogger(Profile.class);
 
 	// ---------------------------------- ATTRIBUTS
 	// ----------------------------------
@@ -305,7 +306,7 @@ public class Profile {
 	 */
 	public Profile(IFeatureCollection<? extends IFeature> roadsProfiled,
 			IFeatureCollection<? extends IFeature> buildings, IFeatureCollection<? extends IFeature> parcels) {
-		logger.setLevel(Level.ALL);
+//		logger.setLevel(Level.ALL);
 		this.roadsProfiled = new FT_FeatureCollection<>();
 		this.roadsProfiled.addAll(roadsProfiled);
 		this.setBuildings(buildings);

@@ -6,7 +6,8 @@ package fr.ign.cogit.convert.geom;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
@@ -22,7 +23,7 @@ import junit.framework.TestCase;
 
 public class TestFromPolygonToLineString extends TestCase {
 
-	private static Logger log = Logger.getLogger(TestFromPolygonToLineString.class);
+	private static Logger log = LogManager.getLogger(TestFromPolygonToLineString.class);
 
 	// ----------------------------------- METHODS ------------------------------------
 

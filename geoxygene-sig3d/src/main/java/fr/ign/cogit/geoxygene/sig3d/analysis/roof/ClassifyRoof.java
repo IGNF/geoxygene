@@ -4,7 +4,8 @@ package fr.ign.cogit.geoxygene.sig3d.analysis.roof;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -48,7 +49,7 @@ import fr.ign.cogit.geoxygene.util.algo.SmallestSurroundingRectangleComputation;
  */
 public class ClassifyRoof {
 
-  static Logger logger = Logger.getLogger(ClassifyRoof.class.getName());
+  static Logger logger = LogManager.getLogger(ClassifyRoof.class.getName());
 
   /**
    * Les noms associés aux différents types

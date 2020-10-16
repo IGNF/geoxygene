@@ -29,7 +29,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureStore;
@@ -38,11 +39,10 @@ import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -77,7 +77,7 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * @author Sébastien Mustière
  */
 public abstract class AppariementSurfaces {
-  public static Logger LOGGER = Logger.getLogger(AppariementSurfaces.class.getName());
+  public static Logger LOGGER = LogManager.getLogger(AppariementSurfaces.class.getName());
 
   /**
    * Appariement entre deux ensembles de surfaces. Processus inspiré de celui

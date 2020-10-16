@@ -2,7 +2,8 @@ package fr.ign.cogit.geoxygene.sig3d.io.xml;
 
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
@@ -46,7 +47,7 @@ public class ParserBATI3D extends DefaultHandler {
   boolean bParcelle = false;
   boolean bCenter = true;
 
-  private final static Logger logger = Logger.getLogger(ParserBATI3D.class
+  private final static Logger logger = LogManager.getLogger(ParserBATI3D.class
       .getName());
 
   // Liste d'objets geographiques, de faces et de noeuds

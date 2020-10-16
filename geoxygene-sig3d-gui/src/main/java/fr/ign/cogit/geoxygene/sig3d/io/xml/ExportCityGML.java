@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -50,7 +51,7 @@ public class ExportCityGML {
    */
 
   private static int LevelOfDetail = 0;
-  private final static Logger logger = Logger.getLogger(ExportCityGML.class
+  private final static Logger logger = LogManager.getLogger(ExportCityGML.class
       .getName());
 
   /**

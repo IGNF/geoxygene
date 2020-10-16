@@ -15,7 +15,8 @@ package fr.ign.cogit.geoxygene.contrib.algorithms;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
@@ -39,7 +40,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 public class SwingingArmNonConvexHull {
   
   /** LOGGER. */
-  public final static Logger LOGGER = Logger
+  public final static Logger LOGGER = LogManager
       .getLogger(SwingingArmNonConvexHull.class.getName());
   
   /** Points to construct the hull. */

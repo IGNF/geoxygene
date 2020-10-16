@@ -5,14 +5,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.sig3d.analysis.streetprofile.Profile;
 import fr.ign.cogit.geoxygene.sig3d.analysis.streetprofile.stats.ProfileAutoCorrelation;
 
 public class ProfilePatternDetector {
 
-	private static Logger logger = Logger.getLogger(ProfilePatternDetector.class);
+	private static Logger logger = LogManager.getLogger(ProfilePatternDetector.class);
 
 	private int patternMinLength;
 

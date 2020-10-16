@@ -3,7 +3,8 @@ package fr.ign.cogit.convert.transform;
 
 
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import fr.ign.cogit.geoxygene.sig3d.convert.transform.Extrusion2DObject;
@@ -21,7 +22,7 @@ import junit.framework.TestCase;
 
 public class TestExtrusion2DObject extends TestCase {
 
-	private static Logger log = Logger.getLogger(TestExtrusion2DObject.class);
+	private static Logger log = LogManager.getLogger(TestExtrusion2DObject.class);
 
 	// ----------------------------------- METHODS ------------------------------------
 

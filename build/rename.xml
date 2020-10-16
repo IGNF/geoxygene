@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Rename" default="rename">
+  <!--
+  Examples:
+
+    ant -f rename.xml -Drelease=1.9
+  -->
+  <tstamp/>
+  <property name="release" value="1.10-SNAPSHOT"/>
+  
+  <target name="test">
+     <echo>release: ${release}</echo>
+     <echo>VERSION: @VERSION@</echo>
+  </target>
+  
+  <target name="rename" depends="code"
+          description="Update the version references in code"
+   />
+  
+  <target name="code">
+    <replace dir="..">
+      <include name="**/pom.xml"/>
+      <replacefilter token="1.9-SNAPSHOT" value="@VERSION@"/>
+      <replacefilter token="1.9-SNAPSHOT" value="${release}"/>
+      <replacefilter token="@VERSION@" value="${release}"/>
+    </replace>
+  </target>
+  
+</project>
+

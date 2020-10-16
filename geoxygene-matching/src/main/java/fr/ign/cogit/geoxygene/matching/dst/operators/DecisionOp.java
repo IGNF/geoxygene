@@ -24,7 +24,8 @@ package fr.ign.cogit.geoxygene.matching.dst.operators;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.matching.dst.evidence.ChoiceType;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.EvidenceResult;
@@ -40,7 +41,7 @@ public class DecisionOp<H extends Hypothesis> {
   List<Pair<byte[], Float>> masspotentials;
   ChoiceType choice;
   boolean isChoiceOnSinglesOnly = true;
-  private Logger logger = Logger.getLogger(DecisionOp.class);
+  private Logger logger = LogManager.getLogger(DecisionOp.class);
   private float conflict = 0f;
   private EvidenceCodec<H> decoder;
 

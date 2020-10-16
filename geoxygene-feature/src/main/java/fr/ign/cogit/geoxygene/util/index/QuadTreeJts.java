@@ -13,10 +13,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.index.quadtree.Quadtree;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.locationtech.jts.geom.Envelope;
+import org.locationtech.jts.index.quadtree.Quadtree;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -31,7 +31,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 
 public class QuadTreeJts<Feat extends IFeature> extends IndexTree<Feat> {
 
-  static Logger logger = Logger.getLogger(QuadTreeJts.class.getName());
+  static Logger logger = LogManager.getLogger(QuadTreeJts.class.getName());
   private Quadtree quad;
 
   public QuadTreeJts(IFeatureCollection<Feat> collection) {

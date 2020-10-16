@@ -37,7 +37,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlMixed;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
 
@@ -49,7 +50,7 @@ import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
 public class SvgParameter implements StylingParameter {
 
   @SuppressWarnings("unused")
-  static private Logger LOGGER = Logger.getLogger(SvgParameter.class.getName());
+  static private Logger LOGGER = LogManager.getLogger(SvgParameter.class.getName());
 
   @XmlAttribute
   private String name;

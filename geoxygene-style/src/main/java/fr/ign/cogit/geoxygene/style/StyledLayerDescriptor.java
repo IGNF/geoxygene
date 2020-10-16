@@ -56,7 +56,8 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.event.FeatureCollectionEvent;
 import fr.ign.cogit.geoxygene.api.feature.event.FeatureCollectionListener;
@@ -84,7 +85,7 @@ import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
 @XmlRootElement(name = "StyledLayerDescriptor")
 public class StyledLayerDescriptor implements FeatureCollectionListener {
 
-    static Logger logger = Logger.getLogger(StyledLayerDescriptor.class
+    static Logger logger = LogManager.getLogger(StyledLayerDescriptor.class
             .getName());
 
     @XmlTransient

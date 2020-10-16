@@ -27,7 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -62,7 +63,7 @@ import fr.ign.parameters.Parameters;
 public class Chargeur {
   
   /** Logger. */
-  static Logger logger = Logger.getLogger(Chargeur.class.getName());
+  static Logger logger = LogManager.getLogger(Chargeur.class.getName());
 
   /**
    * Charge en mémoire les éléments de la classe 'nomClasseGeo' et remplit la

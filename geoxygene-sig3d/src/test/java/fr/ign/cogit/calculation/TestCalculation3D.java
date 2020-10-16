@@ -2,7 +2,8 @@ package fr.ign.cogit.calculation;
 
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import Jama.Matrix;
@@ -24,7 +25,7 @@ public class TestCalculation3D extends TestCase {
 
 	private static double epsilon = Math.pow(10,-1);
 	
-	private static Logger log = Logger.getLogger(TestCalculation3D.class);
+	private static Logger log = LogManager.getLogger(TestCalculation3D.class);
 
 	// ---------------------------------- PREPROCESS ----------------------------------
 

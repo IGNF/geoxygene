@@ -14,7 +14,8 @@ import javax.vecmath.Color4f;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3f;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.sun.j3d.utils.geometry.GeometryInfo;
 
@@ -44,7 +45,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
  */
 public class Object2dNoLight extends BasicRep3D {
 
-  private final static Logger logger = Logger.getLogger(Object2dNoLight.class
+  private final static Logger logger = LogManager.getLogger(Object2dNoLight.class
       .getName());
 
   /**

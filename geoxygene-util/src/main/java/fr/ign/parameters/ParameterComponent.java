@@ -3,7 +3,6 @@ package fr.ign.parameters;
 import java.io.File;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -65,36 +64,6 @@ public class ParameterComponent {
       Unmarshaller unmarshaller = context.createUnmarshaller();
       Parameters root = (Parameters) unmarshaller.unmarshal(file);
       return root;
-    } catch (Exception e1) {
-      e1.printStackTrace();
-      throw e1;
-    }
-  }
-
-  /**
-   * Unmarshal XML data from two specified Parameters files. In case of double
-   * correspondence of the entries, the entries of the last xml will be kept
-   * 
-   * @param listFile : the list of parameters files to be merged into one
-   * @author maxime colomb
-   * @return
-   * @return the merged Parameters object
-   * @throws Exception
-   */
-  public static Parameters unmarshall(List<File> listFile) throws Exception {
-    try {
-      JAXBContext context = JAXBContext.newInstance(Parameters.class,
-          Parameter.class);
-      Unmarshaller unmarshaller = context.createUnmarshaller();
-      Parameters root = new Parameters();
-      for (File f : listFile) {
-        Parameters rootTemp = (Parameters) unmarshaller.unmarshal(f);
-        for (ParameterComponent str : rootTemp.entry) {
-          root.set(((Parameter) str).getKey(), ((Parameter) str).getValue());
-        }
-      }
-      return root;
-
     } catch (Exception e1) {
       e1.printStackTrace();
       throw e1;

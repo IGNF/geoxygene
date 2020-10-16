@@ -39,7 +39,8 @@ import javax.swing.JFrame;
 import javax.swing.event.EventListenerList;
 import javax.swing.filechooser.FileFilter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.geotools.data.FeatureSource;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -60,7 +61,7 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * 
  */
 public class GPSTextfileReader {
-  private final static Logger logger = Logger.getLogger(GPSTextfileReader.class
+  private final static Logger logger = LogManager.getLogger(GPSTextfileReader.class
       .getName());
   String shapefileName;
   String populationName;

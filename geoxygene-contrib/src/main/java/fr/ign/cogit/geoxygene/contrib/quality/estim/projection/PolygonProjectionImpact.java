@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.contrib.quality.estim.projection;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -23,7 +24,7 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
  */
 public class PolygonProjectionImpact extends AbstractProjectionImpact {
 
-    static Logger logger = Logger.getLogger(LineStringProjectionImpact.class.getName());
+    static Logger logger = LogManager.getLogger(LineStringProjectionImpact.class.getName());
 
     private double correctedArea;
 

@@ -20,14 +20,15 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 public class FoursquareLoader {
 
-  private static final Logger logger = Logger.getLogger(FoursquareLoader.class);
+  private static final Logger logger = LogManager.getLogger(FoursquareLoader.class);
 
   private String proxyHost;
   private int proxyPort;

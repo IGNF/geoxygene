@@ -5,7 +5,7 @@ package fr.ign.cogit.geoxygene.generalisation.simplification;
 
 import java.util.ArrayList;
 
-import com.vividsolutions.jts.geom.LinearRing;
+import org.locationtech.jts.geom.LinearRing;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;

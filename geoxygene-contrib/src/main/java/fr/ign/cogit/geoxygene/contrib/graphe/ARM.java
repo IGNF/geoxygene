@@ -33,7 +33,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
@@ -55,7 +56,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  */
 public class ARM {
   
-  private static Logger LOGGER = Logger.getLogger(ARM.class.getName());
+  private static Logger LOGGER = LogManager.getLogger(ARM.class.getName());
 
   /**
    * Création d'un ARM à partir d'un ensemble de points

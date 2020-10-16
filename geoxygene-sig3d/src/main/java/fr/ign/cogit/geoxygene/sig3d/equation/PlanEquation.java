@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.sig3d.equation;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
@@ -53,7 +54,7 @@ public class PlanEquation {
 	public static double EPSILON = 0.001;
 
 	@SuppressWarnings("unused")
-	private final static Logger logger = Logger.getLogger(PlanEquation.class
+	private final static Logger logger = LogManager.getLogger(PlanEquation.class
 			.getName());
 
 	protected PlanEquation() {

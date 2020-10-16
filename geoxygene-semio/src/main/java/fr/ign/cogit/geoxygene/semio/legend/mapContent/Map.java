@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -43,7 +44,7 @@ import fr.ign.cogit.geoxygene.style.Style;
  * 
  */
 public class Map {
-    static Logger logger = Logger.getLogger(Map.class.getName());
+    static Logger logger = LogManager.getLogger(Map.class.getName());
     
     /**
      * name of the <code>Map</code>

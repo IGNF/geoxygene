@@ -9,8 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -65,7 +66,7 @@ public class PostgisManager {
 
 	}
 
-	private final static Logger logger = Logger.getLogger(PostgisManager.class.getName());
+	private final static Logger logger = LogManager.getLogger(PostgisManager.class.getName());
 	// Noms de tables contenant les informations géographiques dans PostGIS
 	public static String NAME_TABLE_SPATIALREF = "geometry_columns";
 	public static String NAME_TABLE = "f_table_name";
@@ -98,7 +99,7 @@ public class PostgisManager {
 
 
 	public static void setLoggerLevel(Level level) {
-		PostgisManager.logger.setLevel(level);
+//		PostgisManager.logger.setLevel(level);
 	}
 
 	/**

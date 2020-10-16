@@ -18,7 +18,8 @@ import javax.media.j3d.WakeupOnAWTEvent;
 import javax.swing.JComponent;
 import javax.vecmath.Point3d;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.sun.j3d.utils.picking.PickCanvas;
 import com.sun.j3d.utils.picking.PickResult;
@@ -61,7 +62,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  */
 public class Picking extends Behavior {
 
-	private final static Logger logger = Logger.getLogger(Picking.class.getName());
+	private final static Logger logger = LogManager.getLogger(Picking.class.getName());
 
 	/**
 	 * Nom de la couche dans laquelle seront ajouté les points issus du clic

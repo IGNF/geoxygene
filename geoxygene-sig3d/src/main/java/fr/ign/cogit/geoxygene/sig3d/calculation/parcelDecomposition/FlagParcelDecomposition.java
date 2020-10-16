@@ -2,12 +2,19 @@ package fr.ign.cogit.geoxygene.sig3d.calculation.parcelDecomposition;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.math3.util.Pair;
 import org.geotools.referencing.CRS;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.geom.PrecisionModel;
+import org.locationtech.jts.operation.union.CascadedPolygonUnion;
+import org.locationtech.jts.precision.GeometryPrecisionReducer;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -31,7 +38,10 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
+import fr.ign.cogit.geoxygene.util.FeaturePolygonizer;
 import fr.ign.cogit.geoxygene.util.attribute.AttributeManager;
+import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
+import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
@@ -60,17 +70,15 @@ public class FlagParcelDecomposition {
 		DirectPosition.PRECISION = 3;
 
 		// Input 1/ the input parcelles to split
-		String inputShapeFile = "/tmp/toFlag.shp";
+		String inputShapeFile = "/home/julien/devel/ParcelManager/src/main/resources/testData/parcelle.shp";
 		// Input 2 : the buildings that mustnt intersects the allowed roads (facultatif)
-		String inputBuildingFile = "/home/yo/Documents/these/ArtiScales/dataGeo/building.shp";
+		String inputBuildingFile = "/home/julien/devel/ParcelManager/src/main/resources/testData/building.shp";
 
 		// Input 3 (facultative) : the exterior of the urban block (it serves to determiner the multicurve)
-		String inputUrbanBlock = "/home/yo/Documents/these/ArtiScales/dataGeo/ilot.shp";
+		String inputUrbanBlock = "/home/julien/devel/ParcelManager/src/main/resources/testData/ilot.shp";
 		IFeatureCollection<IFeature> featC = ShapefileReader.read(inputUrbanBlock);
 		
-		
-
-		String folderOut = "/tmp/";
+		String folderOut = "data/";
 
 		// The output file that will contain all the decompositions
 		String shapeFileOut = folderOut + "outflag.shp";
@@ -79,19 +87,16 @@ public class FlagParcelDecomposition {
 
 		// Reading collection
 		IFeatureCollection<IFeature> featColl = ShapefileReader.read(inputShapeFile);
-		IFeatureCollection<IFeature> featCollBuildings = ShapefileReader.read(inputBuildingFile);
+		IFeatureCollection<IFeature> featCollBuildings = ShapefileReader.read(inputBuildingFile);		
 		
-		
-		List<IOrientableCurve> lOC =   featC.select(featColl.envelope()).parallelStream().map(x ->  FromGeomToLineString.convert(x.getGeom())).collect(ArrayList::new, List::addAll, List::addAll);
+		List<IOrientableCurve> lOC = featC.select(featColl.envelope()).parallelStream().map(x ->  FromGeomToLineString.convert(x.getGeom())).collect(ArrayList::new, List::addAll, List::addAll);
 
 		IMultiCurve<IOrientableCurve> iMultiCurve = new GM_MultiCurve<>(lOC);
-		
-		
 
 		// Maxmimal area for a parcel
-		double maximalArea = 2500;
+		double maximalArea = 800;
 		// MAximal with to the road
-		double maximalWidth = 30;
+		double maximalWidth = 15;
 		// Do we want noisy results
 		double noise = 0;
 		// The with of the road that is created
@@ -105,6 +110,9 @@ public class FlagParcelDecomposition {
 		for (int i = 0; i < count; i++) { // count
 			IFeature feat = featColl.get(i);
 			System.out.println(i + " / " + featColl.size());
+      if (feat.getAttribute("NUMERO").toString().equalsIgnoreCase("0024")
+          && feat.getAttribute("FEUILLE").toString().equalsIgnoreCase("2")
+          && feat.getAttribute("SECTION").toString().equalsIgnoreCase("0A")) {
 
 			IGeometry geom = feat.getGeom();
 			IDirectPosition dp = new DirectPosition(0, 0, 0); // geom.centroid();
@@ -126,10 +134,10 @@ public class FlagParcelDecomposition {
 			results.stream().forEach(x -> x.setGeom(x.getGeom().translate(dp.getX(), dp.getY(), 0)));
 			// Get the results
 			featCollOut.addAll(results);
-
+      }
 		}
 
-		ShapefileWriter.write(featCollOut, shapeFileOut,CRS.decode("EPSG:2154"));
+		ShapefileWriter.write(featCollOut, shapeFileOut, CRS.decode("EPSG:2154"));
 
 	}
 
@@ -295,7 +303,7 @@ public class FlagParcelDecomposition {
 
 	private IGeometry makePolygonValid(IGeometry pol) {
 
-		if (!pol.isValid()) {
+		if (pol != null && !pol.isValid()) {
 			pol = pol.buffer(0);
 			if (!pol.isValid()) {
 				pol = pol.buffer(0.5);
@@ -315,7 +323,8 @@ public class FlagParcelDecomposition {
 	 * @return
 	 */
 	private List<List<IPolygon>> generateFlagParcel(List<IPolygon> splittedPolygon) {
-
+System.out.println("generateFlagParcel");
+splittedPolygon.stream().forEach(p->System.out.println(p));
 		// The output polygon
 		List<List<IPolygon>> polygonesOut = new ArrayList<>();
 		polygonesOut.add(new ArrayList<>());
@@ -343,36 +352,64 @@ public class FlagParcelDecomposition {
 			boucleside: for (Pair<IMultiCurve<IOrientableCurve>, IPolygon> side : listMap) {
 				// The geometry road
 				IGeometry road = side.getKey().buffer(this.roadWidth);
-
+System.out.println("ROAD");
+System.out.println(road);
 				// The road intersects a building, we do not keep it
 				if (!this.buildings.select(road).isEmpty()) {
-					// System.out.println("Building case : " + this.polygonInit);
+					 System.out.println("Building case : " + this.polygonInit);
 					continue;
 
 				}
 
 				// The first geometry is the polygon with road access and a remove of the
 				// geometry
-				IGeometry geomPol1 = side.getValue().difference(road);
+//				IGeometry geomPol1 = side.getValue().difference(road);
+//
+//				if (geomPol1 == null) {
+//					geomPol1 = side.getValue().difference(road.buffer(0.5));
+//				}
 
-				if (geomPol1 == null) {
-					geomPol1 = side.getValue().difference(road.buffer(0.5));
-				}
+				IGeometry geomPol1 = null;
+				IGeometry roadToAdd = null;
+        try {
+          IGeometry[] intersectionDifference = getIntersectionDifference(side.getValue(), road);
+          roadToAdd = intersectionDifference[0];
+          geomPol1 = intersectionDifference[1];
+//          System.out.println("A");
+//          System.out.println(side.getValue());
+//          System.out.println("B");
+//          System.out.println(road);
+//          System.out.println("Difference");
+//          System.out.println(geomPol1);
+//          System.out.println("Should be");
+//          System.out.println(side.getValue().difference(road));
+//          System.out.println("Intersection");
+//          System.out.println(roadToAdd);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
 
 				geomPol1 = makePolygonValid(geomPol1);
 				// The second geometry is the union between the road (intersection between road
 				// and existing parcel) and the original of the geomtry of the parcel with no
 				// road acess
 
-				IGeometry roadToAdd = road.intersection(side.getValue());
-
-				if (roadToAdd == null) {
-					roadToAdd = road.buffer(0.5).intersection(side.getValue());
-				}
+//				IGeometry roadToAdd = road.intersection(side.getValue());
+//
+//				if (roadToAdd == null) {
+//					roadToAdd = road.buffer(0.5).intersection(side.getValue());
+//				}
 
 				roadToAdd = makePolygonValid(roadToAdd);
 
-				IGeometry geomPol2 = currentPoly.union(roadToAdd.buffer(0.01)).buffer(0.0);
+//				IGeometry geomPol2 = currentPoly.union(roadToAdd.buffer(0.01)).buffer(0.0);
+				IGeometry geomPol2;
+        try {
+          geomPol2 = getUnion(currentPoly,roadToAdd);
+        } catch (Exception e) {
+          e.printStackTrace();
+          geomPol2 = currentPoly.union(roadToAdd.buffer(0.01)).buffer(0.0);
+        }
 				geomPol2 = makePolygonValid(geomPol2);
 
 				// It might be a multi polygon so we remove the small area <
@@ -382,20 +419,24 @@ public class FlagParcelDecomposition {
 				List<IPolygon> lPolygonsOut2 = FromGeomToSurface.convertGeom(geomPol2).stream().map(x -> (IPolygon) x).collect(Collectors.toList());
 				lPolygonsOut2 = lPolygonsOut2.stream().filter(x -> x.area() > TOO_SMALL_PARCEL_AREA).collect(Collectors.toList());
 
+				System.out.println("lPolygonsOut1");
+				lPolygonsOut1.stream().forEach(p->System.out.println(p));
+        System.out.println("lPolygonsOut2");
+        lPolygonsOut2.stream().forEach(p->System.out.println(p));
 				// We check if there is a road acces for all, if not we abort
 				for (IPolygon pol : lPolygonsOut1) {
 					if (!hasRoadAccess(pol)) {
-						// System.out.println("Road access is missing ; polyinit : " +
-						// this.polygonInit);
-						// System.out.println("Current polyg : " + pol);
+						 System.out.println("Road access is missing ; polyinit : " +
+						 this.polygonInit);
+						 System.out.println("Current polyg : " + pol);
 						continue boucleside;
 					}
 				}
 				for (IPolygon pol : lPolygonsOut2) {
 					if (!hasRoadAccess(pol)) {
-						// System.out.println("Road access is missing ; polyinit : " +
-						// this.polygonInit);
-						// System.out.println("Current polyg : " + pol);
+						 System.out.println("Road access is missing ; polyinit : " +
+						 this.polygonInit);
+						 System.out.println("Current polyg : " + pol);
 						continue boucleside;
 					}
 				}
@@ -424,7 +465,47 @@ public class FlagParcelDecomposition {
 
 		return polygonesOut;
 	}
-
+	private IGeometry[] getIntersectionDifference(IGeometry a, IGeometry b) throws Exception {
+	  GeometryFactory fact = new GeometryFactory();
+	  Geometry jtsGeomA = AdapterFactory.toGeometry(fact, a, true);
+	  Geometry jtsGeomB = AdapterFactory.toGeometry(fact, b, true);
+	  try {
+	  Geometry[] result = FeaturePolygonizer.getIntersectionDifference(new ArrayList<Geometry>(Arrays.asList(jtsGeomA)), new ArrayList<Geometry>(Arrays.asList(jtsGeomB)));
+	  return new IGeometry[] {JtsGeOxygene.makeGeOxygeneGeom(result[0]), JtsGeOxygene.makeGeOxygeneGeom(result[1])};
+	  } catch (Exception e) {
+	    System.out.println("GeomA");
+	    System.out.println(jtsGeomA);
+      System.out.println("GeomB");
+      System.out.println(jtsGeomB);
+      System.out.println("Polygons");
+      for (Polygon p: FeaturePolygonizer.getPolygons(new ArrayList<Geometry>(Arrays.asList(jtsGeomA, jtsGeomB)))) {
+        System.out.println(p);
+      }
+	    throw e;
+	  }
+	}
+  private IGeometry getUnion(IGeometry a, IGeometry b) throws Exception {
+    GeometryFactory fact = new GeometryFactory();
+    PrecisionModel pm = new PrecisionModel(100);
+    Geometry jtsGeomA = GeometryPrecisionReducer.reduce(AdapterFactory.toGeometry(fact, a, true), pm);
+    Geometry jtsGeomB = GeometryPrecisionReducer.reduce(AdapterFactory.toGeometry(fact, b, true), pm);
+    try {
+      return JtsGeOxygene.makeGeOxygeneGeom(new CascadedPolygonUnion(new ArrayList<Geometry>(Arrays.asList(jtsGeomA, jtsGeomB))).union());
+    } catch (Exception e) {
+      return JtsGeOxygene.makeGeOxygeneGeom(FeaturePolygonizer.getUnion(new ArrayList<Geometry>(Arrays.asList(jtsGeomA, jtsGeomB))));
+    }
+  }
+  private IGeometry getIntersection(IGeometry a, IGeometry b) throws Exception {
+    try {
+      return a.intersection(b);
+    } catch (Exception e) {
+      GeometryFactory fact = new GeometryFactory();
+      PrecisionModel pm = new PrecisionModel(100);
+      Geometry jtsGeomA = GeometryPrecisionReducer.reduce(AdapterFactory.toGeometry(fact, a, true), pm);
+      Geometry jtsGeomB = GeometryPrecisionReducer.reduce(AdapterFactory.toGeometry(fact, b, true), pm);
+      return JtsGeOxygene.makeGeOxygeneGeom(FeaturePolygonizer.getIntersection(new ArrayList<Geometry>(Arrays.asList(jtsGeomA, jtsGeomB))));
+    }
+  }
 	/**
 	 * Generate a list of candidate for creating roads. The pair is composed of a linestring that may be used to generate the road and the parcel on which it may be built
 	 * 
@@ -626,17 +707,19 @@ public class FlagParcelDecomposition {
 
 		IGeometry geom = null;
 		IGeometry geom2 = null;
-
-		geom = polygones.get(0).intersection(polyGeom);
-		geom2 = polygones.get(1).intersection(polyGeom);
+		
+		try {
+      geom = getIntersection(polygones.get(0), polyGeom);
+      geom2 = getIntersection(polygones.get(1),polyGeom);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
 		if (geom == null) {
-
 			geom = polygones.get(0).intersection(polyGeom.buffer(0.1));
 		}
 
 		if (geom2 == null) {
-
 			geom2 = polygones.get(1).intersection(polyGeom.buffer(0.1));
 		}
 

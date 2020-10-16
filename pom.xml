@@ -8,7 +8,7 @@
 	<!-- ==================================================== -->
 	<groupId>fr.ign.cogit</groupId>
 	<artifactId>geoxygene</artifactId>
-	<version>1.9</version>
+	<version>1.10-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>GeOxygene</name>
 	<url>https://ignf.github.io/geoxygene/</url>
@@ -56,15 +56,16 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<jts.version>1.14.0</jts.version>
-		<log4j.version>1.2.16</log4j.version>
-		<geotools.version>19.1</geotools.version>
+		<jts.version>1.16.1</jts.version>
+		<log4j.version>2.13.3</log4j.version>
+		<geotools.version>21.0</geotools.version>
 		<jfreechart.version>1.0.13</jfreechart.version>
 		<jgrapht.version>0.9.0</jgrapht.version>
 		<postgresql.version>9.1-901-1.jdbc4</postgresql.version>
 		<postgis.jdbc.version>2.2.0</postgis.jdbc.version>
-		<hibernate.version>5.1.0.Final</hibernate.version>
-
+		<hibernate.version>5.4.1.Final</hibernate.version>
+		<jaxb.version>2.4.0-b180830.0359</jaxb.version>
+		<jaxb.runtime.version>2.4.0-b180830.0438</jaxb.runtime.version>
 		<!-- <skip.unit.tests>false</skip.unit.tests> -->
 		<!-- <skip.integration.tests>true</skip.integration.tests> -->
 	</properties>
@@ -640,8 +641,8 @@
 		</repository>
 		<repository>
 		    <id>osgeo</id>
-		    <name>OSGeo Release Repository</name>
-		    <url>https://repo.osgeo.org/repository/release/</url>
+			<name>Open Source Geospatial Foundation Repository</name>
+			<url>https://repo.osgeo.org/repository/release/</url>
 		    <snapshots><enabled>false</enabled></snapshots>
 		    <releases><enabled>true</enabled></releases>
 		  </repository>
@@ -698,15 +699,14 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>com.vividsolutions</groupId>
+				<groupId>org.locationtech.jts</groupId>
 				<artifactId>jts-core</artifactId>
 				<version>${jts.version}</version>
 			</dependency>
-
 			<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				<version>${log4j.version}</version>
+			    <groupId>org.apache.logging.log4j</groupId>
+			    <artifactId>log4j-core</artifactId>
+			    <version>${log4j.version}</version>
 			</dependency>
 
 			<!-- Scope TEST -->

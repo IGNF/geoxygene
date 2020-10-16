@@ -31,7 +31,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Julien Perret
@@ -40,7 +41,7 @@ import org.apache.log4j.Logger;
 public class Utils {
 
   
-  static Logger logger = Logger.getLogger(Utils.class);
+  static Logger logger = LogManager.getLogger(Utils.class);
   
   public static byte[] byteUnion(byte[] a, byte b[]){
     if (a.length != b.length){

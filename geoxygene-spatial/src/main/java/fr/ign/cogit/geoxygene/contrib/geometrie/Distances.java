@@ -24,7 +24,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
@@ -52,7 +53,7 @@ import fr.ign.cogit.geoxygene.spatial.util.Resampler;
  */
 
 public abstract class Distances {
-  public static Logger logger = Logger.getLogger(Distances.class.getName());
+  public static Logger logger = LogManager.getLogger(Distances.class.getName());
 
   // Organisation du code:
   // - Distances entre points

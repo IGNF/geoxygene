@@ -23,7 +23,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Angle;
@@ -46,7 +47,8 @@ import fr.ign.cogit.geoxygene.contrib.geometrie.Angle;
 public class Groupe extends ElementCarteTopo {
 
   /** Logger. */
-  protected final static Logger LOGGER = Logger.getLogger(Groupe.class
+  protected final static Logger LOGGER = LogManager
+      .getLogger(Groupe.class
       .getName());
 
   private double length = 0.0;

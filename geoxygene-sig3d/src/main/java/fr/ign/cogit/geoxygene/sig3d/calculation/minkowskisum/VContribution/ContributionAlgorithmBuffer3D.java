@@ -3,7 +3,8 @@ package fr.ign.cogit.geoxygene.sig3d.calculation.minkowskisum.VContribution;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -49,7 +50,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
  */
 public class ContributionAlgorithmBuffer3D {
 
-	private final static Logger logger = Logger.getLogger(ContributionAlgorithmBuffer3D.class.getName());
+	private final static Logger logger = LogManager.getLogger(ContributionAlgorithmBuffer3D.class.getName());
 
 	/**
 	 * On exécute le buffer 3D sur l'entité feat Val traduit la taille du buffer

@@ -27,7 +27,8 @@
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IArc2;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -51,7 +52,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  * 
  */
 public class GM_Arc2 extends GM_ArcString implements IArc2 {
-  private static Logger logger = Logger.getLogger(GM_Arc2.class.getName());
+  private static Logger logger = LogManager.getLogger(GM_Arc2.class.getName());
 
   /**
    * the center of the arc

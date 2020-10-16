@@ -42,7 +42,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL32;
@@ -53,7 +54,7 @@ import org.lwjgl.opengl.GL32;
  */
 public class GLProgram {
 
-    private static final Logger logger = Logger.getLogger(GLProgram.class.getName());
+    private static final Logger logger = LogManager.getLogger(GLProgram.class.getName());
 
     private int programId = -1;
     private String name = "unnamed";

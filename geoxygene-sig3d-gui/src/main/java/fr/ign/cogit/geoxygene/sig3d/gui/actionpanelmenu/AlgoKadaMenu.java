@@ -13,7 +13,8 @@ import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
@@ -45,7 +46,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
  */
 public class AlgoKadaMenu extends JPanel implements ActionListener {
 
-  private final static Logger logger = Logger.getLogger(AlgoKadaMenu.class
+  private final static Logger logger = LogManager.getLogger(AlgoKadaMenu.class
       .getName());
   // paramètres de l'algorithme
   JTextField jTFInitialValue;

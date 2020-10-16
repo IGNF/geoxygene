@@ -19,13 +19,14 @@
 
 package fr.ign.cogit.geoxygene.filter.expression;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Julien Perret
  */
 public class ExpressionFactory {
-  private static Logger logger = Logger.getLogger(ExpressionFactory.class
+  private static Logger logger = LogManager.getLogger(ExpressionFactory.class
       .getName());
 
   /**

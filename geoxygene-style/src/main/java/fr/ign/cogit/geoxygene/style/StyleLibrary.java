@@ -47,7 +47,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A Library to store Styles (UserStyle or NamedStyle).
@@ -56,7 +57,7 @@ import org.apache.log4j.Logger;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "StyleLibrary")
 public class StyleLibrary {
-  private static Logger logger = Logger.getLogger(StyleLibrary.class.getName());
+  private static Logger logger = LogManager.getLogger(StyleLibrary.class.getName());
   /**
    * Name of the library.
    */

@@ -19,13 +19,14 @@
 
 package fr.ign.cogit.geoxygene.filter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Julien Perret
  */
 public class PropertyIsLessThanOrEqualTo extends BinaryComparisonOpsType {
-  static Logger logger = Logger.getLogger(PropertyIsLessThanOrEqualTo.class
+  static Logger logger = LogManager.getLogger(PropertyIsLessThanOrEqualTo.class
       .getName());
 
   @Override

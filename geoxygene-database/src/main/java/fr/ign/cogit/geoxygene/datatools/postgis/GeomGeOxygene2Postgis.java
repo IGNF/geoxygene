@@ -29,7 +29,8 @@ package fr.ign.cogit.geoxygene.datatools.postgis;
 
 import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.postgis.PGgeometry;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
@@ -51,7 +52,7 @@ import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
  */
 
 public class GeomGeOxygene2Postgis {
-  static Logger logger = Logger
+  static Logger logger = LogManager
       .getLogger(GeomGeOxygene2Postgis.class.getName());
 
   @SuppressWarnings("unchecked")

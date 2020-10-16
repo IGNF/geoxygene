@@ -1,6 +1,7 @@
 package fr.ign.cogit.geometry;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +22,7 @@ public class TestBox3D extends TestCase {
 
 	// private static double epsilon = Math.pow(10,-1);
 	
-	private static Logger log = Logger.getLogger(TestBox3D.class);
+	private static Logger log = LogManager.getLogger(TestBox3D.class);
 
 	// ---------------------------------- PREPROCESS ----------------------------------
 
