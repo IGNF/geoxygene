@@ -8,7 +8,7 @@
 	<parent>
 		<artifactId>geoxygene</artifactId>
 		<groupId>fr.ign.cogit</groupId>
-		<version>1.9-SNAPSHOT</version>
+		<version>1.9</version>
 	</parent>
 
 	<artifactId>geoxygene-matching</artifactId>
