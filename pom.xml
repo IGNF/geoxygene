@@ -617,10 +617,10 @@
 			</snapshots>
 		</repository>
  -->
-		<repository>
+		<!-- <repository>
 			<id>cogit-snapshots</id>
 			<name>Cogit Snapshots Repository</name>
-			<url>https://forge-cogit.ign.fr/nexus/content/repositories/snapshots/</url>
+			<url>http://smlpfcogitap1.ign.fr/repository/Snapshots/</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
@@ -631,13 +631,45 @@
 		<repository>
 			<id>cogit-releases</id>
 			<name>Cogit Releases Repository</name>
-			<url>https://forge-cogit.ign.fr/nexus/content/repositories/releases/</url>
+			<url>http://smlpfcogitap1.ign.fr/repository/Releases/</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
+		</repository> -->
+
+		<!-- <repository>
+		    <id>local-releases</id>
+			<name>local-releases</name>
+			<url>file:///${project.basedir}/repository</url>
+		    <snapshots><enabled>false</enabled></snapshots>
+		    <releases><enabled>true</enabled></releases>
+		</repository>
+		<repository>
+		    <id>local-snapshots</id>
+			<name>local-snapshots</name>
+			<url>file:///${project.basedir}/repository</url>
+		    <snapshots><enabled>true</enabled></snapshots>
+		    <releases><enabled>false</enabled></releases>
+		</repository> -->
+		<repository>
+		    <id>local-repo</id>
+			<url>file://${project.basedir}/repository</url>
+		</repository>
+
+		<repository>
+			<id>evidence4j_repo</id>
+			<name>evidence4j_repo</name>
+			<url>https://maven.pkg.github.com/IGNF/evidence4j</url>
+		</repository>
+		<repository>
+		    <id>clojars</id>
+			<name>clojars</name>
+			<url>https://repo.clojars.org/</url>
+		    <snapshots><enabled>false</enabled></snapshots>
+		    <releases><enabled>true</enabled></releases>
 		</repository>
 		<repository>
 		    <id>osgeo</id>
@@ -723,30 +755,30 @@
 	<dependencies>
 	</dependencies>
 
-	<distributionManagement>
+	<!-- <distributionManagement>
 		<downloadUrl>https://github.com/IGNF/geoxygene/</downloadUrl>
 		<repository>
 			<id>releases</id>
 			<name>Nexus Releases Repository</name>
-			<url>https://forge-cogit.ign.fr/nexus/content/repositories/releases</url>
+			<url>http://smlpfcogitap1.ign.fr/repository/Releases/</url>
 		</repository>
 		<snapshotRepository>
 			<id>snapshots</id>
 			<name>Nexus Snapshots Repository</name>
-			<url>https://forge-cogit.ign.fr/nexus/content/repositories/snapshots/</url>
+			<url>http://smlpfcogitap1.ign.fr/repository/Snapshots/</url>
 		</snapshotRepository>
 		<site>
 			<id>oxygene-project.sf.net</id>
 			<name>GeOxygene website</name>
 			<url>https://github.com/IGNF/geoxygene/tree/gh-pages/</url>
 		</site>
-	</distributionManagement>
+	</distributionManagement> -->
 
 	<modules>
 		<module>geoxygene-api</module>
-		<module>geoxygene-appli</module>
+		<!--<module>geoxygene-appli</module>-->
 		
-		<module>geoxygene-carto</module>
+		<!--<module>geoxygene-carto</module>-->
 		<module>geoxygene-contrib</module>
 		<module>geoxygene-database</module>
 		<module>geoxygene-feature</module>
@@ -754,8 +786,8 @@
 		<module>geoxygene-io</module>
 		<module>geoxygene-schemageo</module>
 		<module>geoxygene-semio</module>
-		<module>geoxygene-sig3d</module>
-		<module>geoxygene-sig3d-gui</module>		
+		<!-- <module>geoxygene-sig3d</module> -->
+		<!-- <module>geoxygene-sig3d-gui</module>		 -->
 		<module>geoxygene-spatial</module>
 		<module>geoxygene-style</module>
 		<module>geoxygene-util</module>
