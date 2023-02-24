@@ -755,9 +755,9 @@
 	<dependencies>
 	</dependencies>
 
-	<!-- <distributionManagement>
+	<distributionManagement>
 		<downloadUrl>https://github.com/IGNF/geoxygene/</downloadUrl>
-		<repository>
+		<!-- <repository>
 			<id>releases</id>
 			<name>Nexus Releases Repository</name>
 			<url>http://smlpfcogitap1.ign.fr/repository/Releases/</url>
@@ -766,13 +766,18 @@
 			<id>snapshots</id>
 			<name>Nexus Snapshots Repository</name>
 			<url>http://smlpfcogitap1.ign.fr/repository/Snapshots/</url>
-		</snapshotRepository>
+		</snapshotRepository> -->
 		<site>
 			<id>oxygene-project.sf.net</id>
 			<name>GeOxygene website</name>
 			<url>https://github.com/IGNF/geoxygene/tree/gh-pages/</url>
 		</site>
-	</distributionManagement> -->
+		<repository>
+			<id>github</id>
+			<name>GitHub IGNF geoxygene Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/IGNF/geoxygene</url>
+		</repository>
+	</distributionManagement>
 
 	<modules>
 		<module>geoxygene-api</module>
