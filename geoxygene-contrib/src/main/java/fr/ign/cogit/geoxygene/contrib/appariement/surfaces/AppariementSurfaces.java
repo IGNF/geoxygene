@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.geotools.data.DataUtilities;
@@ -46,6 +47,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
@@ -66,6 +68,8 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
+import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
+import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 /**
@@ -763,5 +767,40 @@ public abstract class AppariementSurfaces {
     t.commit();
     t.close();
     store.dispose();
+  }
+  public static void main(String[] args) {
+    ParametresAppSurfaces param = new ParametresAppSurfaces();
+    param.surface_min_intersection = 1;
+    param.pourcentage_min_intersection = 0.0;
+    param.pourcentage_intersection_sur = 0.8;
+    param.minimiseDistanceSurfacique = true;
+    param.distSurfMaxFinal = 0.6;
+    param.completudeExactitudeMinFinal = 0.3;
+    param.regroupementOptimal = true;
+    param.filtrageFinal = true;
+    param.ajoutPetitesSurfaces = true;
+    param.seuilPourcentageTaillePetitesSurfaces = 0.1;
+    param.persistant = false;
+    param.resolutionMin = 1;
+    param.resolutionMax = 11;
+    IPopulation<IFeature> comp = ShapefileReader.read("./geoxygene-contrib/data/bati/bati_95430.shp", true);
+    IPopulation<IFeature> ref = ShapefileReader.read("./geoxygene-contrib/data/bati/cadastre_bati_95430.shp", true);
+    System.out.println("comp="+comp.size());
+    for (IFeature f : comp) {
+      f.setGeom(((GM_MultiSurface) f.getGeom()).get(0));
+    }
+    System.out.println("ref="+ref.size());
+    for (IFeature f : ref) {
+      f.setGeom(((GM_MultiSurface) f.getGeom()).get(0));
+    }
+    EnsembleDeLiens liensPreApp = AppariementSurfaces.preAppariementSurfaces(ref, comp, param);
+    for (Lien lien : liensPreApp) {
+      System.out.println("liensPreApp=" + lien);
+    }
+    EnsembleDeLiens liensPoly = AppariementSurfaces.appariementSurfaces(ref, comp, param);
+    for (Lien lien : liensPoly) {
+      System.out.println("liensPoly"+lien);
+    }
+    ShapefileWriter.write(liensPoly, "./geoxygene-contrib/data/bati/appariement.shp");
   }
 }
