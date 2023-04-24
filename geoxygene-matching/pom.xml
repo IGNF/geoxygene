@@ -168,7 +168,8 @@
 	<build>
     <plugins>
       <!-- any other plugins -->
-      <plugin>
+	    
+     <!--<plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <executions>
           <execution>
@@ -178,15 +179,63 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <!-- <descriptorRefs>
+     <configuration> -->
+		<!--<descriptorRefs>
             <descriptorRef>jar-with-dependencies</descriptorRef>
           </descriptorRefs> -->
-			<descriptors>    
+	  <!--<descriptors>    
 				<descriptor>assembly.xml</descriptor>    
 			</descriptors>
-        </configuration>
+        	</configuration>
+    	</plugin>
+	  -->
+	<plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.4.1</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+       	     <configuration>
+              <artifactSet>
+                <excludes>
+		  <exclude>org.apache.xmlgraphics:*</exclude>
+                  <exclude>com.github.yannrichet:*</exclude>
+                  <exclude>com.google.guava:guava</exclude>
+                  <exclude>org.hibernate:*</exclude>
+                  <exclude>nz.ac.waikato.cms.weka:*</exclude>
+                  <exclude>edu.stanford.smi.protege:*</exclude>
+                  <exclude>jfree:*</exclude>
+                  <exclude>net.sourceforge.owlapi:*</exclude>
+                  <exclude>org.lwjgl.lwjgl:*</exclude>
+                  <exclude>postgresql:*</exclude>
+                  <exclude>org.apache.pdfbox:*</exclude>
+                  <exclude>net.bytebuddy:*</exclude>
+                  <exclude>com.ibm.icu:*</exclude>
+                  <exclude>xalan:*</exclude>
+                  <exclude>org.apache.jena:*</exclude>
+                  <exclude>com.hp.hpl.jena:*</exclude>
+                  <exclude>org.hsqldb:*</exclude>
+                  <exclude>org.geolatte:*</exclude>
+                  <exclude>com.flickr4java:*</exclude>
+                  <exclude>org.twitter4j:*</exclude>
+                  <exclude>org.apache.httpcomponents:*</exclude>
+                  <exclude>org.javassist:*</exclude>
+		  <exclude>fr.ign.cogit:geoxygene-ontology</exclude>
+		  <exclude>org.apache.avalon.framework</exclude>
+		  <exclude>it.geosolutions.jaiext.*</exclude>
+	          <exclude>org.nuiton.thirdparty:*</exclude>
+	        </excludes>
+              </artifactSet>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
+
+
     </plugins>
   </build>
 </project>
