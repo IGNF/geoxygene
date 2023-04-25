@@ -71,6 +71,9 @@
                   <exclude>org.apache.avalon.framework</exclude>
                   <exclude>it.geosolutions.jaiext.*</exclude>
                   <exclude>org.nuiton.thirdparty:*</exclude>
+                  <exclude>org.postgresql</exclude>
+                  <exclude>net.postgis</exclude>
+                  <exclude>org.geotools.jdbc</exclude>
                 </excludes>
               </artifactSet>
             </configuration>
