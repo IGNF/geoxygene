@@ -41,12 +41,12 @@
 		</dependency>
 
 		<dependency>
-			<groupId>edu.stanford</groupId>
+			<groupId>edu.stanford.protege</groupId>
 			<artifactId>protege</artifactId>
 			<version>3.2.1</version>
 		</dependency>
 		<dependency>
-			<groupId>edu.stanford</groupId>
+			<groupId>edu.stanford.protege</groupId>
 			<artifactId>protege-owl</artifactId>
 			<version>3.2.1</version>
 		</dependency>
