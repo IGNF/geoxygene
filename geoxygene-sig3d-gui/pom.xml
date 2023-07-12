@@ -352,9 +352,12 @@
 			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
-
-
 	<repositories>
+		<repository>
+		    	<id>gui-local-repo</id>
+			<name>Local Repository</name>
+			<url>file://${project.basedir}/repository</url>
+		</repository>
 		<repository>
 			<id>Imagej</id>
 			<url>https://maven.scijava.org/content/repositories/public/</url>
@@ -366,7 +369,4 @@
 			<url>https://oss.sonatype.org/content/repositories/snapshots/</url> <snapshots> 
 			<enabled>true</enabled> </snapshots> </repository> -->
 	</repositories>
-
-
-
 </project>

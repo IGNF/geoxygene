@@ -296,11 +296,6 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.twak.utils</groupId>
-			<artifactId>utils</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>jama</groupId>
 			<artifactId>jama</artifactId>
 			<version>1.0.2</version>
@@ -311,10 +306,27 @@
 			<version>2.4.2</version>
 		</dependency>
 		<dependency>
-			<groupId>org.twak.campskeleton</groupId>
-			<artifactId>campskeleton</artifactId>
+		    <groupId>com.github.twak</groupId>
+		    <artifactId>campskeleton</artifactId>
+		    <version>0.0.1</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.github.twak</groupId>
+		    <artifactId>jutils</artifactId>
+		    <version>0.0.1</version>
+		</dependency>
+		<!--
+		<dependency>
+			<groupId>org.twak.utils</groupId>
+			<artifactId>utils</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+		    <groupId>com.github.twak</groupId>
+		    <artifactId>campskeleton</artifactId>
+		    <version>0.0.1</version>
+		</dependency>
+		-->
 		<!-- <dependency> <groupId>com.sun.xml.bind</groupId> <artifactId>jaxb-xjc</artifactId> 
 			<version>2.2.2</version> </dependency> <dependency> <groupId>xerces</groupId> 
 			<artifactId>xercesImpl</artifactId> <version>2.9.1</version> </dependency> 

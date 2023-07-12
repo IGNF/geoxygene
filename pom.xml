@@ -655,8 +655,12 @@
 		    <releases><enabled>false</enabled></releases>
 		</repository> -->
 		<repository>
-		    <id>local-repo</id>
-			<url>file://${project.basedir}/repository</url>
+			<id>local-gui-repo</id>
+			<url>file://${project.basedir}/geoxygene-sig3d/repository</url>
+		</repository>
+		<repository>
+			<id>local-matching-repo</id>
+			<url>file://${project.basedir}/geoxygene-matching/repository</url>
 		</repository>
 
 		<repository>
@@ -699,6 +703,10 @@
 			<releases>
 				<enabled>true</enabled>
 			</releases>
+		</repository>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
 		</repository>
 	</repositories>
 
@@ -791,8 +799,8 @@
 		<module>geoxygene-io</module>
 		<module>geoxygene-schemageo</module>
 		<module>geoxygene-semio</module>
-		<!-- <module>geoxygene-sig3d</module> -->
-		<!-- <module>geoxygene-sig3d-gui</module>		 -->
+		<module>geoxygene-sig3d</module>
+		<module>geoxygene-sig3d-gui</module>
 		<module>geoxygene-spatial</module>
 		<module>geoxygene-style</module>
 		<module>geoxygene-util</module>

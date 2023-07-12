@@ -102,7 +102,7 @@ public class Reader {
 		try {
 			
 			
-			if (shpf.get(ShpFileType.PRJ) != null && !shpf.exists(ShpFileType.PRJ)) {
+			if (shpf.get(ShpFileType.PRJ) != null && shpf.exists(ShpFileType.PRJ)) {
 				 instream =new FileInputStream(shpf.get(ShpFileType.PRJ));
 				prjFileReader = new PrjFileReader(instream.getChannel());
 			}

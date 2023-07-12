@@ -1,0 +1,93 @@
+<assembly  
+    xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+    xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">  
+    <id>jar-with-dependencies</id>  
+    <formats>  
+        <format>jar</format>  
+    </formats>  
+    <includeBaseDirectory>false</includeBaseDirectory>  
+    <dependencySets>  
+        <dependencySet>
+            <outputDirectory>/</outputDirectory>
+            <useProjectArtifact>true</useProjectArtifact>
+            <unpack>true</unpack>
+            <scope>runtime</scope>
+            <excludes>  
+                <exclude>org.apache.xmlgraphics:*</exclude>
+                <exclude>com.github.yannrichet:*</exclude>
+                <exclude>com.google.guava:guava</exclude>
+                <exclude>org.hibernate:*</exclude>
+                <exclude>nz.ac.waikato.cms.weka:*</exclude>
+                <exclude>edu.stanford.smi.protege:*</exclude>
+                <exclude>jfree:*</exclude>
+                <exclude>net.sourceforge.owlapi:*</exclude>
+                <exclude>org.lwjgl.lwjgl:*</exclude>
+                <exclude>postgresql:*</exclude>
+                <exclude>org.apache.pdfbox:*</exclude>
+                <exclude>net.bytebuddy:*</exclude>
+                <exclude>com.ibm.icu:*</exclude>
+                <exclude>xalan:*</exclude>
+                <exclude>org.apache.jena:*</exclude>
+                <exclude>com.hp.hpl.jena:*</exclude>
+                <exclude>org.hsqldb:*</exclude>
+                <exclude>org.geolatte:*</exclude>
+                <exclude>com.flickr4java:*</exclude>
+                <exclude>org.twitter4j:*</exclude>
+                <exclude>org.apache.httpcomponents:*</exclude>
+                <exclude>org.javassist:*</exclude>
+                <exclude>fr.ign.cogit:geoxygene-ontology</exclude>
+            </excludes>  
+        </dependencySet>        <!-- <dependencySet>  
+            <useProjectArtifact>true</useProjectArtifact>  
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>fr.ign.cogit.geoxygene.contrib.appariement.surfaces:*</include>
+            </includes>
+        </dependencySet>   -->
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>  
+            <outputDirectory>lib/</outputDirectory>
+            <includes>
+                <include>*:gt-*</include>
+            </includes>
+            <!-- <excludes>  
+                <exclude>org.apache.xmlgraphics:*</exclude>
+                <exclude>com.github.yannrichet:*</exclude>
+                <exclude>com.google.guava:guava</exclude>
+                <exclude>org.hibernate:*</exclude>
+                <exclude>nz.ac.waikato.cms.weka:*</exclude>
+                <exclude>edu.stanford.smi.protege:*</exclude>
+                <exclude>jfree:*</exclude>
+                <exclude>net.sourceforge.owlapi:*</exclude>
+                <exclude>org.lwjgl.lwjgl:*</exclude>
+                <exclude>postgresql:*</exclude>
+                <exclude>org.apache.pdfbox:*</exclude>
+                <exclude>net.bytebuddy:*</exclude>
+                <exclude>com.ibm.icu:*</exclude>
+                <exclude>xalan:*</exclude>
+                <exclude>org.apache.jena:*</exclude>
+                <exclude>com.hp.hpl.jena:*</exclude>
+                <exclude>org.hsqldb:*</exclude>
+                <exclude>org.geolatte:*</exclude>
+                <exclude>com.flickr4java:*</exclude>
+                <exclude>org.twitter4j:*</exclude>
+                <exclude>org.apache.httpcomponents:*</exclude>
+                <exclude>org.javassist:*</exclude>
+                <exclude>fr.ign.cogit:geoxygene-ontology</exclude>
+            </excludes>   -->
+        </dependencySet>  
+    </dependencySets>  
+
+    <!-- <fileSets>  
+        <fileSet>  
+            <directory>conf</directory>  
+            <outputDirectory>conf</outputDirectory>  
+        </fileSet>  
+        <fileSet>  
+            <directory>bundles</directory>  
+            <outputDirectory>bundles</outputDirectory>  
+        </fileSet>  
+    </fileSets>   -->
+
+</assembly>  
